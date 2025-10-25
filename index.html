@@ -159,7 +159,12 @@
         .chat-screen {
             display: none;
             flex-direction: column;
-            height: 100%;
+            height: 100vh; /* تغيير من 100% إلى 100vh */
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
         }
         
         .chat-header {
@@ -170,6 +175,7 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0; /* لمنع الانكماش */
         }
         
         .header-info h1 {
@@ -207,6 +213,7 @@
             display: flex;
             flex: 1;
             overflow: hidden;
+            min-height: 0; /* مهم لتفعيل flexbox بشكل صحيح */
         }
         
         .users-sidebar {
@@ -216,6 +223,7 @@
             padding: 20px;
             overflow-y: auto;
             display: none;
+            flex-shrink: 0;
         }
         
         .users-title {
@@ -274,6 +282,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            min-height: 0; /* مهم لتفعيل flexbox بشكل صحيح */
         }
         
         .messages-container {
@@ -281,6 +290,7 @@
             padding: 20px;
             overflow-y: auto;
             background-color: var(--card-bg);
+            min-height: 0; /* مهم لتفعيل flexbox بشكل صحيح */
         }
         
         .message {
@@ -359,6 +369,7 @@
             display: flex;
             gap: 12px;
             align-items: center;
+            flex-shrink: 0; /* لمنع الانكماش */
         }
         
         .message-input {
@@ -513,6 +524,7 @@
             padding: 15px;
             background-color: var(--light);
             border-top: 1px solid var(--border);
+            flex-shrink: 0; /* لمنع الانكماش */
         }
         
         .voice-timer {
@@ -1339,7 +1351,7 @@
             });
         }
 
-        // عرض الرسالة
+        // عرض الرسالة - تم التصحيح هنا لإضافة دعم الصوت
         function displayMessage(message) {
             const messageDiv = document.createElement('div');
             const isOwnMessage = appData.currentUser && message.userId === appData.currentUser.id;
@@ -1363,13 +1375,105 @@
             if (message.type === 'text') {
                 messageContent.textContent = message.text;
             } else if (message.type === 'image_code') {
-                // عرض الصورة من كود Base64 - التصحيح هنا
+                // عرض الصورة من كود Base64
                 const img = document.createElement('img');
                 img.src = message.imageCode;
                 img.className = 'message-image';
                 img.alt = 'صورة مرسلة';
                 img.addEventListener('click', () => openImageModal(message.imageCode));
                 messageContent.appendChild(img);
+                
+                if (message.text) {
+                    const textDiv = document.createElement('div');
+                    textDiv.textContent = message.text;
+                    textDiv.style.marginTop = '8px';
+                    messageContent.appendChild(textDiv);
+                }
+            } else if (message.type === 'audio') {
+                // عرض رسالة صوتية - تم التصحيح هنا
+                const audioDiv = document.createElement('div');
+                audioDiv.className = 'audio-message';
+                
+                const audioPlayer = document.createElement('div');
+                audioPlayer.className = 'audio-player';
+                
+                const audioControls = document.createElement('div');
+                audioControls.className = 'audio-controls';
+                
+                const playBtn = document.createElement('button');
+                playBtn.className = 'audio-play-btn';
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                
+                const audioProgress = document.createElement('div');
+                audioProgress.className = 'audio-progress';
+                
+                const audioProgressFilled = document.createElement('div');
+                audioProgressFilled.className = 'audio-progress-filled';
+                
+                const audioDuration = document.createElement('div');
+                audioDuration.className = 'audio-duration';
+                audioDuration.textContent = '00:00';
+                
+                audioProgress.appendChild(audioProgressFilled);
+                audioControls.appendChild(playBtn);
+                audioControls.appendChild(audioProgress);
+                audioControls.appendChild(audioDuration);
+                audioPlayer.appendChild(audioControls);
+                audioDiv.appendChild(audioPlayer);
+                
+                // إعداد تشغيل الصوت من Base64
+                playBtn.addEventListener('click', function() {
+                    const audio = new Audio(message.audioCode); // استخدام audioCode بدلاً من audioUrl
+                    
+                    if (appData.audioPlaying && !appData.audioPlaying.paused) {
+                        appData.audioPlaying.pause();
+                        if (appData.audioPlaying !== audio) {
+                            appData.audioPlaying = audio;
+                            audio.play();
+                            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        } else {
+                            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                            return;
+                        }
+                    } else {
+                        appData.audioPlaying = audio;
+                        audio.play();
+                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    }
+                    
+                    audio.addEventListener('loadedmetadata', function() {
+                        const duration = Math.floor(audio.duration);
+                        audioDuration.textContent = formatTimeSeconds(duration);
+                    });
+                    
+                    audio.addEventListener('timeupdate', function() {
+                        const progress = (audio.currentTime / audio.duration) * 100;
+                        audioProgressFilled.style.width = progress + '%';
+                        
+                        const currentTime = Math.floor(audio.currentTime);
+                        audioDuration.textContent = formatTimeSeconds(currentTime);
+                    });
+                    
+                    audio.addEventListener('ended', function() {
+                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        audioProgressFilled.style.width = '0%';
+                        audioDuration.textContent = '00:00';
+                    });
+                    
+                    audio.addEventListener('pause', function() {
+                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    });
+                });
+                
+                audioProgress.addEventListener('click', function(e) {
+                    if (appData.audioPlaying) {
+                        const rect = audioProgress.getBoundingClientRect();
+                        const percent = (e.clientX - rect.left) / rect.width;
+                        appData.audioPlaying.currentTime = percent * appData.audioPlaying.duration;
+                    }
+                });
+                
+                messageContent.appendChild(audioDiv);
                 
                 if (message.text) {
                     const textDiv = document.createElement('div');
@@ -1831,7 +1935,7 @@
             return `${mins}:${secs}`;
         }
 
-        // التمرير إلى الأسفل - تم التصحيح هنا
+        // التمرير إلى الأسفل
         function scrollToBottom() {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
