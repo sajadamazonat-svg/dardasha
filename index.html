@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+here<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -1176,6 +1176,7 @@
             loadMessages();
             
             // الاستماع للتحديثات في الوقت الفعلي
+            listenForNewMessages();
             listenForUsers();
             listenForTyping();
             
@@ -1217,16 +1218,21 @@
 
         // تحميل الرسائل من قاعدة البيانات (آخر 30 رسالة فقط)
         function loadMessages() {
-            const { database, ref, query, orderByChild, limitToLast, onValue } = window.firebaseApp;
+            const { database, ref, onValue } = window.firebaseApp;
             const messagesRef = ref(database, 'messages');
-            const messagesQuery = query(messagesRef, orderByChild('timestamp'), limitToLast(30));
             
-            onValue(messagesQuery, (snapshot) => {
+            onValue(messagesRef, (snapshot) => {
                 const messages = snapshot.val();
                 
                 if (messages) {
                     // عرض جميع الرسائل
                     displayMessages(messages);
+                    
+                    // التحقق من عدد الرسائل وحذف الزائد عن 30
+                    const messagesArray = Object.values(messages);
+                    if (messagesArray.length > 30) {
+                        deleteOldMessages(messagesArray);
+                    }
                 } else {
                     showEmptyChat();
                 }
@@ -1239,20 +1245,32 @@
 
         // الاستماع للرسائل الجديدة
         function listenForNewMessages() {
-            const { database, ref, query, orderByChild, limitToLast, onValue } = window.firebaseApp;
+            const { database, ref, onValue } = window.firebaseApp;
             const messagesRef = ref(database, 'messages');
-            const messagesQuery = query(messagesRef, orderByChild('timestamp'), limitToLast(30));
             
-            onValue(messagesQuery, (snapshot) => {
+            onValue(messagesRef, (snapshot) => {
                 const messages = snapshot.val();
                 if (messages) {
                     displayMessages(messages);
+                    
+                    // التحقق من عدد الرسائل وحذف الزائد عن 30
+                    const messagesArray = Object.values(messages);
+                    if (messagesArray.length > 30) {
+                        deleteOldMessages(messagesArray);
+                    }
                 }
             });
         }
 
         // عرض جميع الرسائل
         function displayMessages(messages) {
+            // إزالة رسالة التحميل إذا كانت موجودة
+            const loadingElement = messagesContainer.querySelector('.loading');
+            if (loadingElement) {
+                loadingElement.remove();
+            }
+            
+            // مسح الحاوية أولاً
             messagesContainer.innerHTML = '';
             
             // تحويل الكائن إلى مصفوفة وترتيبها حسب الوقت
@@ -1262,10 +1280,8 @@
                 displayMessage(message);
             });
             
-            // التحقق من عدد الرسائل وحذف الزائد عن 30
-            if (messagesArray.length > 30) {
-                deleteOldMessages(messagesArray);
-            }
+            // التمرير للأسفل بعد عرض الرسائل
+            setTimeout(scrollToBottom, 100);
         }
 
         // حذف الرسائل القديمة الزائدة عن 30
@@ -1281,6 +1297,7 @@
             for (const message of messagesToDelete) {
                 try {
                     await remove(ref(database, 'messages/' + message.id));
+                    console.log('تم حذف الرسالة القديمة:', message.id);
                 } catch (error) {
                     console.error('خطأ في حذف الرسالة القديمة:', error);
                 }
@@ -1324,12 +1341,6 @@
 
         // عرض الرسالة
         function displayMessage(message) {
-            // إزالة رسالة التحميل إذا كانت موجودة
-            const loadingElement = messagesContainer.querySelector('.loading');
-            if (loadingElement) {
-                loadingElement.remove();
-            }
-            
             const messageDiv = document.createElement('div');
             const isOwnMessage = appData.currentUser && message.userId === appData.currentUser.id;
             const isAdmin = message.isAdmin;
@@ -1352,105 +1363,13 @@
             if (message.type === 'text') {
                 messageContent.textContent = message.text;
             } else if (message.type === 'image_code') {
-                // عرض الصورة من كود Base64 - تم التصحيح هنا
+                // عرض الصورة من كود Base64 - التصحيح هنا
                 const img = document.createElement('img');
-                img.src = message.imageCode; // استخدام imageCode مباشرة
+                img.src = message.imageCode;
                 img.className = 'message-image';
                 img.alt = 'صورة مرسلة';
                 img.addEventListener('click', () => openImageModal(message.imageCode));
                 messageContent.appendChild(img);
-                
-                if (message.text) {
-                    const textDiv = document.createElement('div');
-                    textDiv.textContent = message.text;
-                    textDiv.style.marginTop = '8px';
-                    messageContent.appendChild(textDiv);
-                }
-            } else if (message.type === 'audio') {
-                // عرض رسالة صوتية
-                const audioDiv = document.createElement('div');
-                audioDiv.className = 'audio-message';
-                
-                const audioPlayer = document.createElement('div');
-                audioPlayer.className = 'audio-player';
-                
-                const audioControls = document.createElement('div');
-                audioControls.className = 'audio-controls';
-                
-                const playBtn = document.createElement('button');
-                playBtn.className = 'audio-play-btn';
-                playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                
-                const audioProgress = document.createElement('div');
-                audioProgress.className = 'audio-progress';
-                
-                const audioProgressFilled = document.createElement('div');
-                audioProgressFilled.className = 'audio-progress-filled';
-                
-                const audioDuration = document.createElement('div');
-                audioDuration.className = 'audio-duration';
-                audioDuration.textContent = '00:00';
-                
-                audioProgress.appendChild(audioProgressFilled);
-                audioControls.appendChild(playBtn);
-                audioControls.appendChild(audioProgress);
-                audioControls.appendChild(audioDuration);
-                audioPlayer.appendChild(audioControls);
-                audioDiv.appendChild(audioPlayer);
-                
-                // إعداد تشغيل الصوت
-                playBtn.addEventListener('click', function() {
-                    const audio = new Audio(message.audioUrl);
-                    
-                    if (appData.audioPlaying && !appData.audioPlaying.paused) {
-                        appData.audioPlaying.pause();
-                        if (appData.audioPlaying !== audio) {
-                            appData.audioPlaying = audio;
-                            audio.play();
-                            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                        } else {
-                            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                            return;
-                        }
-                    } else {
-                        appData.audioPlaying = audio;
-                        audio.play();
-                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    }
-                    
-                    audio.addEventListener('loadedmetadata', function() {
-                        const duration = Math.floor(audio.duration);
-                        audioDuration.textContent = formatTimeSeconds(duration);
-                    });
-                    
-                    audio.addEventListener('timeupdate', function() {
-                        const progress = (audio.currentTime / audio.duration) * 100;
-                        audioProgressFilled.style.width = progress + '%';
-                        
-                        const currentTime = Math.floor(audio.currentTime);
-                        audioDuration.textContent = formatTimeSeconds(currentTime);
-                    });
-                    
-                    audio.addEventListener('ended', function() {
-                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                        audioProgressFilled.style.width = '0%';
-                        audioDuration.textContent = '00:00';
-                    });
-                    
-                    audio.addEventListener('pause', function() {
-                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    });
-                });
-                
-                audioProgress.addEventListener('click', function(e) {
-                    if (appData.audioPlaying) {
-                        const rect = audioProgress.getBoundingClientRect();
-                        const percent = (e.clientX - rect.left) / rect.width;
-                        appData.audioPlaying.currentTime = percent * appData.audioPlaying.duration;
-                    }
-                });
-                
-                messageContent.appendChild(audioDiv);
                 
                 if (message.text) {
                     const textDiv = document.createElement('div');
@@ -1542,7 +1461,7 @@
                     userName: appData.currentUser.name,
                     text: messageText,
                     type: 'image_code',
-                    imageCode: base64String, // تم التصحيح هنا
+                    imageCode: base64String,
                     isAdmin: appData.currentUser.isAdmin,
                     timestamp: Date.now()
                 };
@@ -1754,8 +1673,16 @@
             showNotification('تم إيقاف التسجيل', 'info');
         }
 
-        // إرسال التسجيل الصوتي
+        // إرسال التسجيل الصوتي - تم التصحيح هنا
         async function sendVoiceRecording() {
+            // إيقاف التسجيل أولاً إذا كان قيد التشغيل
+            if (appData.isRecording) {
+                stopRecording();
+                
+                // الانتظار قليلاً لضمان جمع جميع البيانات
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
             if (appData.audioChunks.length === 0) {
                 showNotification('لا يوجد تسجيل صوتي لإرساله', 'error');
                 return;
@@ -1764,39 +1691,18 @@
             const messageText = messageInput.value.trim();
             const audioBlob = new Blob(appData.audioChunks, { type: 'audio/webm' });
             
-            // رفع الملف الصوتي إلى Firebase Storage
-            // ملاحظة: هذا يتطلب Firebase Storage مدفوع
-            // يمكنك تعطيل هذه الميزة إذا لم يكن لديك اشتراك مدفوع
-            showNotification('ميزة الصوت تتطلب اشتراك Firebase Storage مدفوع', 'error');
-            return;
-            
-            // الكود السابق محجوب لأنه يتطلب اشتراك مدفوع:
-            /*
-            try {
-                const { storage, storageRef, uploadBytes, getDownloadURL } = window.firebaseApp;
-                const audioRef = storageRef(storage, 'chat-audio/' + generateMessageId());
+            // تحويل الصوت إلى Base64 بدلاً من رفعه إلى Storage
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const base64String = e.target.result;
                 
-                // إظهار مؤشر التقدم
-                appData.uploadInProgress = true;
-                uploadProgress.style.display = 'block';
-                progressFill.style.width = '0%';
-                progressPercent.textContent = '0%';
-                
-                // محاكاة شريط التقدم
-                simulateUploadProgress();
-                
-                // رفع الملف الصوتي
-                const snapshot = await uploadBytes(audioRef, audioBlob);
-                const downloadURL = await getDownloadURL(snapshot.ref);
-                
-                // إنشاء رسالة صوتية
                 const messageData = {
                     id: generateMessageId(),
                     userId: appData.currentUser.id,
                     userName: appData.currentUser.name,
                     text: messageText,
                     type: 'audio',
-                    audioUrl: downloadURL,
+                    audioCode: base64String, // استخدام Base64 بدلاً من URL
                     isAdmin: appData.currentUser.isAdmin,
                     timestamp: Date.now()
                 };
@@ -1804,24 +1710,13 @@
                 // حفظ الرسالة في قاعدة البيانات
                 await saveMessageToDatabase(messageData);
                 
-                // إخفاء مؤشر التقدم
-                setTimeout(() => {
-                    uploadProgress.style.display = 'none';
-                    appData.uploadInProgress = false;
-                }, 500);
-                
                 // إعادة تعيين البيانات
                 appData.audioChunks = [];
                 messageInput.value = '';
                 
                 showNotification('تم إرسال التسجيل الصوتي', 'success');
-            } catch (error) {
-                console.error('خطأ في رفع التسجيل الصوتي:', error);
-                showNotification('حدث خطأ في إرسال التسجيل الصوتي', 'error');
-                uploadProgress.style.display = 'none';
-                appData.uploadInProgress = false;
-            }
-            */
+            };
+            reader.readAsDataURL(audioBlob);
         }
 
         // تحديث قائمة المستخدمين
@@ -1936,7 +1831,7 @@
             return `${mins}:${secs}`;
         }
 
-        // التمرير إلى الأسفل
+        // التمرير إلى الأسفل - تم التصحيح هنا
         function scrollToBottom() {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
@@ -2032,4 +1927,4 @@
         });
     </script>
 </body>
-                            </html>
+    </html>
