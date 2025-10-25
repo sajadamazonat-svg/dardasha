@@ -1,0 +1,1767 @@
+here<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دردشة متطورة - مدعومة بـ Firebase</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-dark: #564FD8;
+            --secondary: #FF6584;
+            --success: #36D1DC;
+            --warning: #FFB74D;
+            --dark: #2A2D3E;
+            --light: #F7F9FC;
+            --gray: #A0A4B8;
+            --bg-color: #F0F2F5;
+            --card-bg: #FFFFFF;
+            --border: #E6ECF0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --code-bg: #1E1E1E;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--dark);
+            line-height: 1.6;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            max-width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* شاشة الدخول */
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+        }
+        
+        .login-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: var(--shadow);
+            color: var(--dark);
+            text-align: center;
+        }
+        
+        .app-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 32px;
+        }
+        
+        .app-title {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+            font-weight: 700;
+        }
+        
+        .app-subtitle {
+            color: var(--gray);
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+        
+        .login-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .login-btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(108, 99, 255, 0.4);
+        }
+        
+        .login-btn.secondary {
+            background: var(--light);
+            color: var(--dark);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .login-btn.secondary:hover {
+            background: #eaeef5;
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .custom-name-input {
+            display: none;
+            margin-top: 15px;
+        }
+        
+        .name-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            margin-bottom: 15px;
+        }
+        
+        .name-input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .login-note {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: 20px;
+        }
+        
+        /* شاشة الدردشة */
+        .chat-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .chat-header {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-info h1 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .user-count {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .admin-badge {
+            background-color: var(--secondary);
+        }
+        
+        .chat-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .users-sidebar {
+            width: 300px;
+            background-color: var(--card-bg);
+            border-left: 1px solid var(--border);
+            padding: 20px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .users-title {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .user-item:hover {
+            background-color: var(--light);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-left: 12px;
+            font-size: 1.1rem;
+        }
+        
+        .user-details {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .user-status {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .user-status.online {
+            color: var(--success);
+        }
+        
+        .user-status.offline {
+            color: var(--gray);
+        }
+        
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .messages-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: var(--card-bg);
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            max-width: 85%;
+            animation: fadeIn 0.3s ease;
+            position: relative;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.own {
+            margin-right: auto;
+        }
+        
+        .message.other {
+            margin-left: auto;
+        }
+        
+        .message-bubble {
+            padding: 14px 18px;
+            border-radius: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        .message.own .message-bubble {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .message.other .message-bubble {
+            background-color: var(--light);
+            color: var(--dark);
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message.admin .message-bubble {
+            background: linear-gradient(135deg, var(--secondary), #FF4D6D);
+            color: white;
+        }
+        
+        .message.system .message-bubble {
+            background: linear-gradient(135deg, var(--warning), #FF9800);
+            color: white;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        .message-content {
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+        
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .message-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 12px;
+            margin-top: 8px;
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            background: #f0f0f0;
+        }
+        
+        .message-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .code-container {
+            background-color: var(--code-bg);
+            color: #f8f8f2;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        .copy-code-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .copy-code-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .input-area {
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .message-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid var(--border);
+            border-radius: 24px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+            resize: none;
+            max-height: 120px;
+            min-height: 50px;
+        }
+        
+        .message-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+        }
+        
+        .action-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(108, 99, 255, 0.4);
+        }
+        
+        .action-btn.secondary {
+            background: var(--light);
+            color: var(--dark);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .action-btn.secondary:hover {
+            background: #eaeef5;
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-btn.admin {
+            background: var(--secondary);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .system-message {
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .system-message .message-bubble {
+            background-color: var(--light);
+            color: var(--gray);
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 16px;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+        }
+        
+        .empty-chat {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+        
+        .empty-chat i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--primary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            z-index: 2000;
+            text-align: center;
+            transition: transform 0.3s ease;
+            max-width: 90%;
+        }
+        
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .notification.error {
+            background: var(--secondary);
+        }
+        
+        .notification.success {
+            background: var(--success);
+        }
+        
+        .notification.warning {
+            background: var(--warning);
+        }
+        
+        .image-preview {
+            max-width: 200px;
+            border-radius: 12px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            padding: 0 20px;
+            display: none;
+        }
+        
+        .remove-preview {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-top: 5px;
+            font-size: 0.8rem;
+        }
+        
+        /* شريط التقدم */
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: linear-gradient(to right, var(--primary), var(--success));
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        /* زر حذف الرسالة */
+        .delete-message-btn {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+        
+        .message:hover .delete-message-btn {
+            opacity: 1;
+        }
+        
+        /* مؤشر الكتابة */
+        .typing-indicator {
+            padding: 10px 20px;
+            font-style: italic;
+            color: var(--gray);
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .connection-status {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            z-index: 1000;
+        }
+        
+        .connection-status.connected {
+            background: var(--success);
+            color: white;
+        }
+        
+        .connection-status.disconnected {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .users-sidebar {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 85%;
+                height: 100%;
+                z-index: 100;
+                transition: right 0.3s ease;
+            }
+            
+            .users-sidebar.active {
+                right: 0;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .input-area {
+                padding: 15px;
+            }
+        }
+        
+        /* تحسين شريط التمرير */
+        .messages-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .messages-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .messages-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+        
+        .messages-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        /* نافذة المعاينة للصورة */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .modal-content img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 2.5rem;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+        
+        .close-modal:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- شاشة الدخول -->
+        <div class="login-screen" id="loginScreen">
+            <div class="login-card">
+                <div class="app-logo">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h1 class="app-title">دردشة متطورة</h1>
+                <p class="app-subtitle">مدعومة بـ Firebase - ميزات تحويل الصور إلى كود وإدارة متقدمة</p>
+                
+                <div class="login-options">
+                    <button class="login-btn" id="randomLoginBtn">
+                        <i class="fas fa-random"></i> الدخول باسم عشوائي
+                    </button>
+                    <button class="login-btn secondary" id="customLoginBtn">
+                        <i class="fas fa-user-edit"></i> الدخول باسم مخصص
+                    </button>
+                </div>
+                
+                <div class="custom-name-input" id="customNameInput">
+                    <input type="text" class="name-input" id="nameInput" placeholder="أدخل اسمك هنا">
+                    <button class="login-btn" id="confirmNameBtn">
+                        <i class="fas fa-check"></i> تأكيد الدخول
+                    </button>
+                </div>
+                
+                <p class="login-note">استخدم اسم "admin" للدخول كمدير مع صلاحيات كاملة</p>
+            </div>
+        </div>
+        
+        <!-- شاشة الدردشة -->
+        <div class="chat-screen" id="chatScreen">
+            <!-- رأس الدردشة -->
+            <div class="chat-header">
+                <div class="header-info">
+                    <h1><i class="fas fa-comment-dots"></i> غرفة الدردشة المتطورة</h1>
+                    <div class="user-count" id="userCount"><i class="fas fa-users"></i> <span id="usersCount">0</span> مستخدم متصل</div>
+                </div>
+                <div class="user-info">
+                    <div class="user-badge" id="userBadge">
+                        <i class="fas fa-user"></i> <span id="userNameDisplay"></span>
+                    </div>
+                    <button class="action-btn secondary" id="usersToggle">
+                        <i class="fas fa-users"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- منطقة المحادثة -->
+            <div class="chat-container">
+                <!-- القائمة الجانبية للمستخدمين -->
+                <div class="users-sidebar" id="usersSidebar">
+                    <h3 class="users-title">
+                        <i class="fas fa-users"></i> المستخدمون المتصلون
+                    </h3>
+                    <div id="usersList"></div>
+                </div>
+                
+                <!-- منطقة الرسائل -->
+                <div class="chat-area">
+                    <div class="messages-container" id="messagesContainer">
+                        <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري تحميل المحادثة...</div>
+                    </div>
+                    
+                    <!-- مؤشر الكتابة -->
+                    <div class="typing-indicator" id="typingIndicator"></div>
+                    
+                    <!-- شريط التقدم -->
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress-bar" id="progressBar"></div>
+                        <div class="progress-text" id="progressText">جاري إرسال الصورة...</div>
+                    </div>
+                    
+                    <!-- معاينة الصورة -->
+                    <div class="preview-container" id="previewContainer">
+                        <img id="imagePreview" class="image-preview" src="" alt="معاينة الصورة">
+                        <button class="remove-preview" id="removePreview">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- منطقة الإدخال -->
+                    <div class="input-area">
+                        <textarea class="message-input" id="messageInput" placeholder="اكتب رسالتك هنا..." rows="1"></textarea>
+                        <input type="file" class="file-input" id="imageFileInput" accept="image/*">
+                        <input type="file" class="file-input" id="codeFileInput" accept="image/*">
+                        <button class="action-btn secondary" id="imageFileBtn" title="إرسال صورة">
+                            <i class="fas fa-image"></i>
+                        </button>
+                        <button class="action-btn secondary" id="codeFileBtn" title="تحويل الصورة إلى كود">
+                            <i class="fas fa-code"></i>
+                        </button>
+                        <button class="action-btn" id="sendBtn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- نافذة معاينة الصورة -->
+    <div class="image-modal" id="imageModal">
+        <span class="close-modal" id="closeModal">
+            <i class="fas fa-times"></i>
+        </span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="صورة المعاينة">
+        </div>
+    </div>
+    
+    <!-- إشعارات -->
+    <div class="notification" id="notification"></div>
+    
+    <!-- حالة الاتصال -->
+    <div class="connection-status" id="connectionStatus">جاري الاتصال...</div>
+
+    <!-- إضافة Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue, push, remove, update, get, child, onDisconnect, serverTimestamp, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+            authDomain: "zio3-8ffdd.firebaseapp.com",
+            databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+            projectId: "zio3-8ffdd",
+            storageBucket: "zio3-8ffdd.firebasestorage.app",
+            messagingSenderId: "560939348415",
+            appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+            measurementId: "G-CVN2B2D0RD"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const database = getDatabase(app);
+
+        // جعل المتغيرات عالمية للوصول إليها من خارج هذا الموديول
+        window.firebaseApp = {
+            database,
+            ref,
+            set,
+            onValue,
+            push,
+            remove,
+            update,
+            get,
+            child,
+            onDisconnect,
+            serverTimestamp,
+            query,
+            orderByChild,
+            limitToLast
+        };
+        
+        console.log("تم تهيئة Firebase بنجاح!");
+        
+        // تحديث حالة الاتصال
+        const connectionStatus = document.getElementById('connectionStatus');
+        connectionStatus.textContent = 'متصل بـ Firebase';
+        connectionStatus.className = 'connection-status connected';
+        
+        // إخفاء حالة الاتصال بعد 3 ثواني
+        setTimeout(() => {
+            connectionStatus.style.display = 'none';
+        }, 3000);
+    </script>
+
+    <script>
+        // بيانات التطبيق
+        const appData = {
+            currentUser: null,
+            users: {},
+            messages: {},
+            typingUsers: {},
+            imageFile: null,
+            isFirebaseReady: false,
+            currentAction: null // 'image' أو 'code'
+        };
+
+        // أسماء عشوائية للمستخدمين
+        const randomNames = [
+            "أحمد", "محمد", "فاطمة", "علي", "مريم", "خالد", "سارة", "يوسف", 
+            "نورة", "عمر", "ليلى", "حسن", "زينب", "إبراهيم", "هدى", "مصطفى"
+        ];
+
+        // عناصر DOM
+        const loginScreen = document.getElementById('loginScreen');
+        const chatScreen = document.getElementById('chatScreen');
+        const randomLoginBtn = document.getElementById('randomLoginBtn');
+        const customLoginBtn = document.getElementById('customLoginBtn');
+        const customNameInput = document.getElementById('customNameInput');
+        const nameInput = document.getElementById('nameInput');
+        const confirmNameBtn = document.getElementById('confirmNameBtn');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const imageFileInput = document.getElementById('imageFileInput');
+        const codeFileInput = document.getElementById('codeFileInput');
+        const imageFileBtn = document.getElementById('imageFileBtn');
+        const codeFileBtn = document.getElementById('codeFileBtn');
+        const messagesContainer = document.getElementById('messagesContainer');
+        const usersList = document.getElementById('usersList');
+        const usersSidebar = document.getElementById('usersSidebar');
+        const usersToggle = document.getElementById('usersToggle');
+        const userCount = document.getElementById('userCount');
+        const usersCount = document.getElementById('usersCount');
+        const userNameDisplay = document.getElementById('userNameDisplay');
+        const userBadge = document.getElementById('userBadge');
+        const notification = document.getElementById('notification');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewContainer = document.getElementById('previewContainer');
+        const removePreview = document.getElementById('removePreview');
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const closeModal = document.getElementById('closeModal');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+
+        // الانتظار حتى يكون Firebase جاهزاً
+        function waitForFirebase() {
+            return new Promise((resolve) => {
+                const checkFirebase = () => {
+                    if (window.firebaseApp && window.firebaseApp.database) {
+                        resolve();
+                    } else {
+                        setTimeout(checkFirebase, 100);
+                    }
+                };
+                checkFirebase();
+            });
+        }
+
+        // توليد اسم عشوائي
+        function generateRandomName() {
+            const randomIndex = Math.floor(Math.random() * randomNames.length);
+            const randomNumber = Math.floor(Math.random() * 1000);
+            return `${randomNames[randomIndex]}${randomNumber}`;
+        }
+
+        // توليد لون عشوائي
+        function generateRandomColor() {
+            const colors = ['#6C63FF', '#FF6584', '#36D1DC', '#4ECDC4', '#FF9A8B'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // عرض إشعار
+        function showNotification(message, type = 'info') {
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // تسجيل الدخول باسم عشوائي
+        async function loginWithRandomName() {
+            await waitForFirebase();
+            const userName = generateRandomName();
+            loginUser(userName);
+        }
+
+        // تسجيل الدخول باسم مخصص
+        async function loginWithCustomName() {
+            await waitForFirebase();
+            const userName = nameInput.value.trim();
+            if (userName === '') {
+                showNotification('يرجى إدخال اسم المستخدم', 'error');
+                return;
+            }
+            loginUser(userName);
+        }
+
+        // تسجيل الدخول
+        async function loginUser(userName) {
+            const userColor = generateRandomColor();
+            
+            // إذا كان اسم المستخدم هو admin، يصبح مديراً
+            let isAdmin = false;
+            if (userName.toLowerCase() === 'admin') {
+                isAdmin = true;
+            }
+            
+            appData.currentUser = {
+                id: generateUserId(),
+                name: userName,
+                color: userColor,
+                isAdmin: isAdmin,
+                lastActive: Date.now(),
+                isOnline: true
+            };
+            
+            // تحديث الواجهة
+            userNameDisplay.textContent = appData.currentUser.name;
+            loginScreen.style.display = 'none';
+            chatScreen.style.display = 'flex';
+            
+            if (isAdmin) {
+                userBadge.classList.add('admin-badge');
+            }
+            
+            // حفظ المستخدم في قاعدة البيانات
+            await saveUserToDatabase();
+            
+            // تحميل الرسائل السابقة
+            loadMessages();
+            
+            // الاستماع للتحديثات في الوقت الفعلي
+            listenForNewMessages();
+            listenForUsers();
+            listenForTyping();
+            
+            showNotification(`مرحباً ${userName}!`, 'success');
+        }
+
+        // توليد معرف فريد للمستخدم
+        function generateUserId() {
+            return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // حفظ المستخدم في قاعدة البيانات
+        async function saveUserToDatabase() {
+            const { database, ref, set, onDisconnect, update } = window.firebaseApp;
+            
+            try {
+                // حفظ بيانات المستخدم
+                await set(ref(database, 'users/' + appData.currentUser.id), {
+                    name: appData.currentUser.name,
+                    color: appData.currentUser.color,
+                    isAdmin: appData.currentUser.isAdmin,
+                    lastActive: Date.now(),
+                    isOnline: true
+                });
+                
+                // إعداد عملية إزالة المستخدم عند انقطاع الاتصال
+                const userStatusRef = ref(database, 'users/' + appData.currentUser.id);
+                onDisconnect(userStatusRef).update({
+                    isOnline: false,
+                    lastActive: Date.now()
+                });
+                
+                console.log("تم حفظ المستخدم في قاعدة البيانات");
+            } catch (error) {
+                console.error("خطأ في حفظ المستخدم:", error);
+                showNotification('حدث خطأ في الاتصال بقاعدة البيانات', 'error');
+            }
+        }
+
+        // تحميل الرسائل من قاعدة البيانات
+        function loadMessages() {
+            const { database, ref, onValue } = window.firebaseApp;
+            const messagesRef = ref(database, 'messages');
+            
+            onValue(messagesRef, (snapshot) => {
+                const messages = snapshot.val();
+                
+                if (messages) {
+                    // عرض جميع الرسائل
+                    displayMessages(messages);
+                } else {
+                    showEmptyChat();
+                }
+                scrollToBottom();
+            }, (error) => {
+                console.error("خطأ في تحميل الرسائل:", error);
+                showNotification('حدث خطأ في تحميل الرسائل', 'error');
+            });
+        }
+
+        // الاستماع للرسائل الجديدة في الوقت الفعلي
+        function listenForNewMessages() {
+            const { database, ref, onValue, query, orderByChild, limitToLast } = window.firebaseApp;
+            
+            // جلب آخر 100 رسالة فقط لأداء أفضل
+            const messagesRef = query(
+                ref(database, 'messages'), 
+                orderByChild('timestamp'),
+                limitToLast(100)
+            );
+            
+            onValue(messagesRef, (snapshot) => {
+                const messages = snapshot.val();
+                
+                if (messages) {
+                    displayMessages(messages);
+                } else {
+                    showEmptyChat();
+                }
+                scrollToBottom();
+            }, (error) => {
+                console.error("خطأ في تحميل الرسائل:", error);
+                showNotification('حدث خطأ في تحميل الرسائل', 'error');
+            });
+        }
+
+        // عرض جميع الرسائل
+        function displayMessages(messages) {
+            messagesContainer.innerHTML = '';
+            
+            // تحويل الكائن إلى مصفوفة وترتيبها حسب الوقت
+            const messagesArray = Object.values(messages).sort((a, b) => a.timestamp - b.timestamp);
+            
+            messagesArray.forEach(message => {
+                displayMessage(message);
+            });
+        }
+
+        // عرض حالة الدردشة الفارغة
+        function showEmptyChat() {
+            messagesContainer.innerHTML = `
+                <div class="empty-chat">
+                    <i class="fas fa-comment-slash"></i>
+                    <h3>لا توجد رسائل بعد</h3>
+                    <p>كن أول من يرسل رسالة في هذه الدردشة!</p>
+                </div>
+            `;
+        }
+
+        // الاستماع للمستخدمين - عرض المستخدمين المتصلين فقط
+        function listenForUsers() {
+            const { database, ref, onValue } = window.firebaseApp;
+            const usersRef = ref(database, 'users');
+            
+            onValue(usersRef, (snapshot) => {
+                const users = snapshot.val();
+                appData.users = users || {};
+                updateUsersList();
+            });
+        }
+
+        // الاستماع للكتابة
+        function listenForTyping() {
+            const { database, ref, onValue } = window.firebaseApp;
+            const typingRef = ref(database, 'typing');
+            
+            onValue(typingRef, (snapshot) => {
+                const typingUsers = snapshot.val() || {};
+                appData.typingUsers = typingUsers;
+                updateTypingIndicator();
+            });
+        }
+
+        // عرض الرسالة
+        function displayMessage(message) {
+            // إزالة رسالة التحميل إذا كانت موجودة
+            const loadingElement = messagesContainer.querySelector('.loading');
+            if (loadingElement) {
+                loadingElement.remove();
+            }
+            
+            // التحقق من عدم وجود الرسالة مسبقاً (لتجنب التكرار)
+            const existingMessage = document.querySelector(`[data-message-id="${message.id}"]`);
+            if (existingMessage) {
+                return;
+            }
+            
+            const messageDiv = document.createElement('div');
+            const isOwnMessage = appData.currentUser && message.userId === appData.currentUser.id;
+            const isAdmin = message.isAdmin;
+            const isSystem = message.type === 'system';
+            
+            messageDiv.className = `message ${isOwnMessage ? 'own' : 'other'} ${isAdmin ? 'admin' : ''} ${isSystem ? 'system' : ''}`;
+            messageDiv.setAttribute('data-message-id', message.id);
+            
+            const messageBubble = document.createElement('div');
+            messageBubble.className = 'message-bubble';
+            
+            const messageHeader = document.createElement('div');
+            messageHeader.className = 'message-header';
+            messageHeader.innerHTML = `
+                <span>${message.userName}</span>
+                <span>${formatTime(message.timestamp)}</span>
+            `;
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            
+            if (message.type === 'text') {
+                messageContent.textContent = message.text;
+            } else if (message.type === 'image') {
+                // التحقق من وجود بيانات الصورة
+                if (message.imageData) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'image-container';
+                    
+                    const img = document.createElement('img');
+                    img.src = message.imageData;
+                    img.className = 'message-image';
+                    img.alt = 'صورة مرسلة';
+                    img.loading = 'lazy'; // تحميل كسول لتحسين الأداء
+                    
+                    // إضافة حدث خطأ إذا فشل تحميل الصورة
+                    img.onerror = function() {
+                        this.style.display = 'none';
+                        const errorMsg = document.createElement('div');
+                        errorMsg.textContent = '❌ تعذر تحميل الصورة';
+                        errorMsg.style.color = 'var(--secondary)';
+                        errorMsg.style.fontStyle = 'italic';
+                        imgContainer.appendChild(errorMsg);
+                    };
+                    
+                    img.addEventListener('click', () => openImageModal(message.imageData));
+                    imgContainer.appendChild(img);
+                    
+                    if (message.text) {
+                        const textDiv = document.createElement('div');
+                        textDiv.textContent = message.text;
+                        textDiv.style.marginTop = '8px';
+                        imgContainer.appendChild(textDiv);
+                    }
+                    
+                    messageContent.appendChild(imgContainer);
+                } else {
+                    // إذا لم توجد صورة، عرض رسالة خطأ
+                    const errorDiv = document.createElement('div');
+                    errorDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> تعذر تحميل الصورة';
+                    errorDiv.style.color = 'var(--secondary)';
+                    messageContent.appendChild(errorDiv);
+                }
+            } else if (message.type === 'code') {
+                // عرض الكود المولد من الصورة
+                const codeContainer = document.createElement('div');
+                codeContainer.className = 'code-container';
+                
+                const codeHeader = document.createElement('div');
+                codeHeader.className = 'code-header';
+                codeHeader.innerHTML = `
+                    <span>${message.codeLanguage || 'كود مولد'}</span>
+                    <button class="copy-code-btn">نسخ الكود</button>
+                `;
+                
+                const codeElement = document.createElement('pre');
+                codeElement.textContent = message.codeContent;
+                
+                codeContainer.appendChild(codeHeader);
+                codeContainer.appendChild(codeElement);
+                messageContent.appendChild(codeContainer);
+                
+                // إضافة وظيفة نسخ الكود
+                const copyBtn = codeHeader.querySelector('.copy-code-btn');
+                copyBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(message.codeContent)
+                        .then(() => {
+                            showNotification('تم نسخ الكود إلى الحافظة', 'success');
+                        })
+                        .catch(err => {
+                            console.error('فشل في نسخ الكود: ', err);
+                            showNotification('فشل في نسخ الكود', 'error');
+                        });
+                });
+                
+                if (message.text) {
+                    const textDiv = document.createElement('div');
+                    textDiv.textContent = message.text;
+                    textDiv.style.marginTop = '8px';
+                    messageContent.appendChild(textDiv);
+                }
+            } else if (message.type === 'system') {
+                messageContent.innerHTML = `<i class="fas fa-info-circle"></i> ${message.text}`;
+            }
+            
+            // إضافة زر حذف الرسالة إذا كان المستخدم مديراً أو صاحب الرسالة
+            if (appData.currentUser && (appData.currentUser.isAdmin || isOwnMessage)) {
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-message-btn';
+                deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+                deleteBtn.title = 'حذف الرسالة';
+                deleteBtn.addEventListener('click', () => {
+                    if (confirm('هل تريد حذف هذه الرسالة؟')) {
+                        deleteMessage(message.id);
+                    }
+                });
+                messageDiv.appendChild(deleteBtn);
+            }
+            
+            messageBubble.appendChild(messageHeader);
+            messageBubble.appendChild(messageContent);
+            messageDiv.appendChild(messageBubble);
+            
+            messagesContainer.appendChild(messageDiv);
+        }
+
+        // إرسال رسالة نصية
+        async function sendMessage() {
+            const messageText = messageInput.value.trim();
+            if (messageText === '' && !appData.imageFile) {
+                showNotification('يرجى إدخال نص الرسالة أو اختيار صورة', 'error');
+                return;
+            }
+            
+            try {
+                const messageData = {
+                    id: generateMessageId(),
+                    userId: appData.currentUser.id,
+                    userName: appData.currentUser.name,
+                    text: messageText,
+                    type: 'text',
+                    isAdmin: appData.currentUser.isAdmin,
+                    timestamp: Date.now()
+                };
+                
+                // إذا كان هناك صورة، أضفها إلى البيانات
+                if (appData.imageFile) {
+                    if (appData.currentAction === 'image') {
+                        messageData.type = 'image';
+                        // تحويل الصورة إلى Base64
+                        const imageData = await convertImageToBase64(appData.imageFile);
+                        messageData.imageData = imageData;
+                    } else if (appData.currentAction === 'code') {
+                        messageData.type = 'code';
+                        // تحويل الصورة إلى كود
+                        const codeResult = await convertImageToCode(appData.imageFile);
+                        messageData.codeLanguage = codeResult.language;
+                        messageData.codeContent = codeResult.content;
+                    }
+                }
+                
+                // حفظ الرسالة في قاعدة البيانات
+                await saveMessageToDatabase(messageData);
+                showNotification('تم إرسال الرسالة بنجاح', 'success');
+                
+                // مسح حقل الإدخال
+                messageInput.value = '';
+                autoResizeTextarea();
+                
+                // إزالة حالة الكتابة
+                removeTypingStatus();
+                
+                // مسح معاينة الصورة
+                clearImagePreview();
+                
+                // إخفاء شريط التقدم
+                progressContainer.style.display = 'none';
+                
+            } catch (error) {
+                console.error('خطأ في إرسال الرسالة:', error);
+                showNotification('حدث خطأ في إرسال الرسالة', 'error');
+                
+                // إخفاء شريط التقدم في حالة الخطأ
+                progressContainer.style.display = 'none';
+            }
+        }
+
+        // تحويل الصورة إلى Base64
+        function convertImageToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    resolve(e.target.result);
+                };
+                reader.onerror = function(error) {
+                    reject(error);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // تحويل الصورة إلى كود (محاكاة)
+        function convertImageToCode(file) {
+            return new Promise((resolve) => {
+                // محاكاة عملية تحويل الصورة إلى كود
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    updateProgressBar(progress, 'جاري تحويل الصورة إلى كود...');
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        
+                        // في التطبيق الحقيقي، هنا سيتم استخدام مكتبة مثل Tesseract.js لتحويل الصورة إلى نص
+                        // أو استخدام API لتحليل الصورة وإنشاء كود
+                        
+                        const codeLanguages = ['HTML', 'CSS', 'JavaScript', 'Python', 'Java', 'C++'];
+                        const randomLanguage = codeLanguages[Math.floor(Math.random() * codeLanguages.length)];
+                        
+                        // كود عشوائي كمثال
+                        let codeContent = '';
+                        if (randomLanguage === 'HTML') {
+                            codeContent = `<div class="container">\n  <h1>مرحباً بالعالم!</h1>\n  <p>هذا كود HTML مولد من الصورة</p>\n</div>`;
+                        } else if (randomLanguage === 'CSS') {
+                            codeContent = `.container {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background: linear-gradient(135deg, #6C63FF, #36D1DC);\n}`;
+                        } else if (randomLanguage === 'JavaScript') {
+                            codeContent = `function greetUser(name) {\n  console.log(\`مرحباً \${name}!\`);\n  return \`مرحباً \${name}!\`;\n}\n\ngreetUser("مستخدم");`;
+                        } else if (randomLanguage === 'Python') {
+                            codeContent = `def factorial(n):\n    if n == 0:\n        return 1\n    else:\n        return n * factorial(n-1)\n\nprint(factorial(5))`;
+                        } else if (randomLanguage === 'Java') {
+                            codeContent = `public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println("مرحباً بالعالم!");\n    }\n}`;
+                        } else {
+                            codeContent = `#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "مرحباً بالعالم!" << endl;\n    return 0;\n}`;
+                        }
+                        
+                        resolve({
+                            language: randomLanguage,
+                            content: codeContent
+                        });
+                    }
+                }, 200); // محاكاة وقت المعالجة
+            });
+        }
+
+        // تحديث شريط التقدم
+        function updateProgressBar(progress, text) {
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = text;
+        }
+
+        // حفظ الرسالة في قاعدة البيانات
+        async function saveMessageToDatabase(messageData) {
+            const { database, ref, set } = window.firebaseApp;
+            
+            try {
+                await set(ref(database, 'messages/' + messageData.id), messageData);
+            } catch (error) {
+                console.error('خطأ في حفظ الرسالة:', error);
+                throw error;
+            }
+        }
+
+        // توليد معرف فريد للرسالة
+        function generateMessageId() {
+            return 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // حذف رسالة
+        async function deleteMessage(messageId) {
+            const { database, ref, remove } = window.firebaseApp;
+            
+            try {
+                await remove(ref(database, 'messages/' + messageId));
+                showNotification('تم حذف الرسالة', 'success');
+            } catch (error) {
+                console.error('خطأ في حذف الرسالة:', error);
+                showNotification('حدث خطأ في حذف الرسالة', 'error');
+            }
+        }
+
+        // معالجة اختيار ملف صورة
+        function handleImageSelect(event, action) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // التحقق من نوع الملف
+            if (!file.type.match('image.*')) {
+                showNotification('يرجى اختيار ملف صورة فقط', 'error');
+                return;
+            }
+            
+            // التحقق من حجم الملف (2MB كحد أقصى للـ Base64)
+            if (file.size > 2 * 1024 * 1024) {
+                showNotification('حجم الصورة كبير جداً. الحد الأقصى هو 2MB', 'error');
+                return;
+            }
+            
+            appData.imageFile = file;
+            appData.currentAction = action;
+            
+            // عرض معاينة الصورة
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                previewContainer.style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+            
+            showNotification('تم تحميل الصورة بنجاح', 'success');
+            
+            // إظهار شريط التقدم
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            
+            if (action === 'image') {
+                progressText.textContent = 'جاري إرسال الصورة...';
+                // محاكاة تحميل الصورة
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 5;
+                    updateProgressBar(progress, 'جاري إرسال الصورة...');
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        sendMessage();
+                    }
+                }, 100);
+            } else if (action === 'code') {
+                progressText.textContent = 'جاري تحويل الصورة إلى كود...';
+                // محاكاة تحويل الصورة إلى كود
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 5;
+                    updateProgressBar(progress, 'جاري تحويل الصورة إلى كود...');
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        sendMessage();
+                    }
+                }, 150);
+            }
+        }
+
+        // مسح معاينة الصورة
+        function clearImagePreview() {
+            imagePreview.src = '';
+            previewContainer.style.display = 'none';
+            appData.imageFile = null;
+            imageFileInput.value = '';
+            codeFileInput.value = '';
+            progressContainer.style.display = 'none';
+        }
+
+        // تحديث قائمة المستخدمين - عرض المتصلين فقط
+        function updateUsersList() {
+            usersList.innerHTML = '';
+            
+            let onlineUsersCount = 0;
+            const now = Date.now();
+            // اعتبار المستخدم متصلاً إذا كان آخر نشاطه منذ أقل من 5 دقائق
+            const onlineThreshold = 5 * 60 * 1000; // 5 دقائق
+            
+            Object.values(appData.users).forEach(user => {
+                const isOnline = user.isOnline && (now - user.lastActive < onlineThreshold);
+                
+                if (isOnline) {
+                    onlineUsersCount++;
+                    
+                    const userItem = document.createElement('div');
+                    userItem.className = 'user-item';
+                    
+                    const userAvatar = document.createElement('div');
+                    userAvatar.className = 'user-avatar';
+                    userAvatar.style.background = user.color || generateRandomColor();
+                    userAvatar.textContent = user.name.charAt(0);
+                    
+                    const userDetails = document.createElement('div');
+                    userDetails.className = 'user-details';
+                    
+                    const userNameSpan = document.createElement('div');
+                    userNameSpan.className = 'user-name';
+                    userNameSpan.textContent = user.name;
+                    
+                    const userStatus = document.createElement('div');
+                    userStatus.className = 'user-status online';
+                    userStatus.textContent = 'نشط الآن';
+                    
+                    userDetails.appendChild(userNameSpan);
+                    userDetails.appendChild(userStatus);
+                    
+                    userItem.appendChild(userAvatar);
+                    userItem.appendChild(userDetails);
+                    
+                    usersList.appendChild(userItem);
+                }
+            });
+            
+            usersCount.textContent = onlineUsersCount;
+        }
+
+        // تحديث مؤشر الكتابة
+        function updateTypingIndicator() {
+            const typingUserIds = Object.keys(appData.typingUsers);
+            
+            if (typingUserIds.length === 0) {
+                typingIndicator.style.display = 'none';
+                return;
+            }
+            
+            // استبعاد المستخدم الحالي
+            const otherTypingUsers = typingUserIds.filter(id => id !== appData.currentUser.id);
+            
+            if (otherTypingUsers.length === 0) {
+                typingIndicator.style.display = 'none';
+                return;
+            }
+            
+            // الحصول على أسماء المستخدمين الذين يكتبون
+            const typingNames = otherTypingUsers.map(id => appData.users[id]?.name).filter(name => name);
+            
+            if (typingNames.length === 0) {
+                typingIndicator.style.display = 'none';
+                return;
+            }
+            
+            let text = '';
+            if (typingNames.length === 1) {
+                text = `${typingNames[0]} يكتب الآن...`;
+            } else if (typingNames.length === 2) {
+                text = `${typingNames[0]} و ${typingNames[1]} يكتبان الآن...`;
+            } else {
+                text = `${typingNames[0]} و ${typingNames.length - 1} آخرون يكتبون الآن...`;
+            }
+            
+            typingIndicator.textContent = text;
+            typingIndicator.style.display = 'block';
+        }
+
+        // إزالة حالة الكتابة
+        function removeTypingStatus() {
+            const { database, ref, remove } = window.firebaseApp;
+            remove(ref(database, 'typing/' + appData.currentUser.id));
+        }
+
+        // فتح نافذة معاينة الصورة
+        function openImageModal(imageUrl) {
+            modalImage.src = imageUrl;
+            imageModal.style.display = 'flex';
+        }
+
+        // تنسيق الوقت
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // التمرير إلى الأسفل
+        function scrollToBottom() {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // ضبط ارتفاع Textarea تلقائياً
+        function autoResizeTextarea() {
+            messageInput.style.height = 'auto';
+            messageInput.style.height = (messageInput.scrollHeight) + 'px';
+        }
+
+        // إعداد المستمعين للأحداث
+        randomLoginBtn.addEventListener('click', loginWithRandomName);
+        customLoginBtn.addEventListener('click', () => {
+            customNameInput.style.display = 'block';
+            customLoginBtn.style.display = 'none';
+        });
+        confirmNameBtn.addEventListener('click', loginWithCustomName);
+        
+        nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                loginWithCustomName();
+            }
+        });
+        
+        sendBtn.addEventListener('click', sendMessage);
+        
+        // زر إرسال الصورة كصورة
+        imageFileBtn.addEventListener('click', () => imageFileInput.click());
+        imageFileInput.addEventListener('change', (e) => handleImageSelect(e, 'image'));
+        
+        // زر تحويل الصورة إلى كود
+        codeFileBtn.addEventListener('click', () => codeFileInput.click());
+        codeFileInput.addEventListener('change', (e) => handleImageSelect(e, 'code'));
+        
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // ضبط ارتفاع Textarea تلقائياً
+        messageInput.addEventListener('input', autoResizeTextarea);
+        
+        // إدارة حالة الكتابة
+        let typingTimer;
+        messageInput.addEventListener('input', () => {
+            if (!appData.currentUser) return;
+            
+            // تحديث حالة الكتابة
+            const { database, ref, set } = window.firebaseApp;
+            set(ref(database, 'typing/' + appData.currentUser.id), {
+                name: appData.currentUser.name,
+                timestamp: Date.now()
+            });
+            
+            // إزالة حالة الكتابة بعد التوقف
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => {
+                removeTypingStatus();
+            }, 3000);
+        });
+        
+        usersToggle.addEventListener('click', () => {
+            usersSidebar.classList.toggle('active');
+        });
+        
+        removePreview.addEventListener('click', clearImagePreview);
+        
+        closeModal.addEventListener('click', () => {
+            imageModal.style.display = 'none';
+        });
+        
+        imageModal.addEventListener('click', (e) => {
+            if (e.target === imageModal) {
+                imageModal.style.display = 'none';
+            }
+        });
+
+        // تحديث آخر نشاط للمستخدم كل دقيقة
+        setInterval(() => {
+            if (appData.currentUser) {
+                const { database, ref, update } = window.firebaseApp;
+                update(ref(database, 'users/' + appData.currentUser.id), {
+                    lastActive: Date.now()
+                });
+            }
+        }, 60000);
+
+        // إعداد إزالة المستخدم عند إغلاق الصفحة
+        window.addEventListener('beforeunload', () => {
+            if (appData.currentUser) {
+                const { database, ref, update } = window.firebaseApp;
+                update(ref(database, 'users/' + appData.currentUser.id), {
+                    isOnline: false,
+                    lastActive: Date.now()
+                });
+            }
+        });
+
+        // إظهار إشعار عند تحميل الصفحة
+        window.addEventListener('load', () => {
+            showNotification('تم تحميل التطبيق بنجاح!', 'success');
+        });
+    </script>
+</body>
+</html>
