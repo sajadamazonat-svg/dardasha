@@ -1001,14 +1001,39 @@
     <!-- حالة الاتصال -->
     <div class="connection-status" id="connectionStatus">جاري الاتصال...</div>
 
-    <!-- إضافة Firebase SDK -->
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue, push, remove, update, get, child, onDisconnect, serverTimestamp, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics.js";
+    <!-- إضافة Firebase SDK بطريقة صحيحة -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js",
+                "firebase/database": "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js",
+                "firebase/analytics": "https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics.js"
+            }
+        }
+    </script>
 
-        // Your web app's Firebase configuration
+    <script type="module">
+        // استيراد Firebase بالطريقة الصحيحة
+        import { initializeApp } from 'firebase/app';
+        import { getAnalytics } from 'firebase/analytics';
+        import { 
+            getDatabase, 
+            ref, 
+            set, 
+            onValue, 
+            push, 
+            remove, 
+            update, 
+            get, 
+            child, 
+            onDisconnect, 
+            serverTimestamp, 
+            query, 
+            orderByChild, 
+            limitToLast 
+        } from 'firebase/database';
+
+        // تكوين Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
             authDomain: "zio3-8ffdd.firebaseapp.com",
@@ -1020,12 +1045,12 @@
             measurementId: "G-CVN2B2D0RD"
         };
 
-        // Initialize Firebase
+        // تهيئة Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const database = getDatabase(app);
 
-        // جعل المتغيرات عالمية للوصول إليها من outside هذا الموديول
+        // جعل المتغيرات عالمية للوصول إليها من السكربت العادي (غير المعياري)
         window.firebaseApp = {
             database,
             ref,
@@ -1207,7 +1232,7 @@
             // حفظ المستخدم في قاعدة البيانات
             await saveUserToDatabase();
             
-            // تحميل الرسائل السابقة
+            // تحميل الرسائل السابقة (آخر 10 فقط)
             loadMessages();
             
             // الاستماع للتحديثات في الوقت الفعلي
@@ -1251,23 +1276,19 @@
             }
         }
 
-        // تحميل الرسائل من قاعدة البيانات (آخر 30 رسالة فقط)
+        // تحميل الرسائل من قاعدة البيانات (آخر 10 رسائل فقط)
         function loadMessages() {
-            const { database, ref, onValue } = window.firebaseApp;
+            const { database, ref, query, orderByChild, limitToLast, onValue } = window.firebaseApp;
             const messagesRef = ref(database, 'messages');
+            // استعلام للحصول على آخر 10 رسائل حسب timestamp
+            const recentMessagesQuery = query(messagesRef, orderByChild('timestamp'), limitToLast(10));
             
-            onValue(messagesRef, (snapshot) => {
+            onValue(recentMessagesQuery, (snapshot) => {
                 const messages = snapshot.val();
                 
                 if (messages) {
                     // عرض جميع الرسائل
                     displayMessages(messages);
-                    
-                    // التحقق من عدد الرسائل وحذف الزائد عن 30
-                    const messagesArray = Object.values(messages);
-                    if (messagesArray.length > 30) {
-                        deleteOldMessages(messagesArray);
-                    }
                 } else {
                     showEmptyChat();
                 }
@@ -1278,23 +1299,57 @@
             });
         }
 
-        // الاستماع للرسائل الجديدة
+        // الاستماع للرسائل الجديدة (أيضاً آخر 10)
         function listenForNewMessages() {
-            const { database, ref, onValue } = window.firebaseApp;
+            const { database, ref, query, orderByChild, limitToLast, onValue } = window.firebaseApp;
             const messagesRef = ref(database, 'messages');
+            const recentMessagesQuery = query(messagesRef, orderByChild('timestamp'), limitToLast(10));
             
-            onValue(messagesRef, (snapshot) => {
+            onValue(recentMessagesQuery, (snapshot) => {
                 const messages = snapshot.val();
                 if (messages) {
                     displayMessages(messages);
                     
-                    // التحقق من عدد الرسائل وحذف الزائد عن 30
-                    const messagesArray = Object.values(messages);
-                    if (messagesArray.length > 30) {
-                        deleteOldMessages(messagesArray);
-                    }
+                    // بعد عرض الرسائل، تحقق من العدد الإجمالي (للتأكد من عدم تجاوز 10)
+                    // لكن بما أننا نستخدم limitToLast، فسنحصل فقط على آخر 10.
+                    // ومع ذلك، قد تكون هناك رسائل أقدم موجودة بالفعل في القاعدة بسبب عمليات سابقة.
+                    // لذلك سنقوم بحذف أي رسائل تزيد عن آخر 10.
+                    checkAndDeleteExcessMessages();
                 }
             });
+        }
+
+        // التحقق من إجمالي الرسائل وحذف الزائد عن آخر 10
+        async function checkAndDeleteExcessMessages() {
+            const { database, ref, get, query, orderByChild, limitToLast, remove } = window.firebaseApp;
+            const messagesRef = ref(database, 'messages');
+            
+            // نجلب جميع الرسائل مرتبة تصاعدياً (الأقدم أولاً)
+            const allMessagesQuery = query(messagesRef, orderByChild('timestamp'));
+            const snapshot = await get(allMessagesQuery);
+            
+            if (snapshot.exists()) {
+                const allMessages = snapshot.val();
+                const messagesArray = Object.entries(allMessages).map(([id, msg]) => ({ id, ...msg }));
+                
+                // إذا كان العدد أكثر من 10، نحذف الأقدم
+                if (messagesArray.length > 10) {
+                    // ترتيب تصاعدي (من الأقدم للأحدث)
+                    messagesArray.sort((a, b) => a.timestamp - b.timestamp);
+                    
+                    // الرسائل التي سنحتفظ بها هي آخر 10 (الأحدث)
+                    const messagesToKeep = messagesArray.slice(-10);
+                    const idsToKeep = new Set(messagesToKeep.map(m => m.id));
+                    
+                    // حذف الباقي
+                    for (const msg of messagesArray) {
+                        if (!idsToKeep.has(msg.id)) {
+                            await remove(ref(database, 'messages/' + msg.id));
+                            console.log('تم حذف الرسالة القديمة:', msg.id);
+                        }
+                    }
+                }
+            }
         }
 
         // عرض جميع الرسائل
@@ -1308,7 +1363,7 @@
             // مسح الحاوية أولاً
             messagesContainer.innerHTML = '';
             
-            // تحويل الكائن إلى مصفوفة وترتيبها حسب الوقت
+            // تحويل الكائن إلى مصفوفة وترتيبها حسب الوقت (تصاعدي للعرض)
             const messagesArray = Object.values(messages).sort((a, b) => a.timestamp - b.timestamp);
             
             messagesArray.forEach(message => {
@@ -1317,26 +1372,6 @@
             
             // التمرير للأسفل بعد عرض الرسائل
             setTimeout(scrollToBottom, 100);
-        }
-
-        // حذف الرسائل القديمة الزائدة عن 30
-        async function deleteOldMessages(messagesArray) {
-            const { database, ref, remove } = window.firebaseApp;
-            
-            // ترتيب الرسائل حسب الوقت (من الأقدم إلى الأحدث)
-            const sortedMessages = messagesArray.sort((a, b) => a.timestamp - b.timestamp);
-            
-            // احذف الرسائل الزائدة عن 30 (أقدم الرسائل)
-            const messagesToDelete = sortedMessages.slice(0, sortedMessages.length - 30);
-            
-            for (const message of messagesToDelete) {
-                try {
-                    await remove(ref(database, 'messages/' + message.id));
-                    console.log('تم حذف الرسالة القديمة:', message.id);
-                } catch (error) {
-                    console.error('خطأ في حذف الرسالة القديمة:', error);
-                }
-            }
         }
 
         // عرض حالة الدردشة الفارغة
@@ -1374,7 +1409,7 @@
             });
         }
 
-        // عرض الرسالة - تم التصحيح هنا لإضافة دعم الصوت
+        // عرض الرسالة
         function displayMessage(message) {
             const messageDiv = document.createElement('div');
             const isOwnMessage = appData.currentUser && message.userId === appData.currentUser.id;
@@ -1414,7 +1449,7 @@
                     messageContent.appendChild(textDiv);
                 }
             } else if (message.type === 'audio') {
-                // عرض رسالة صوتية - تم التصحيح هنا
+                // عرض رسالة صوتية
                 const audioDiv = document.createElement('div');
                 audioDiv.className = 'audio-message';
                 
@@ -1447,7 +1482,7 @@
                 
                 // إعداد تشغيل الصوت من Base64
                 playBtn.addEventListener('click', function() {
-                    const audio = new Audio(message.audioCode); // استخدام audioCode بدلاً من audioUrl
+                    const audio = new Audio(message.audioCode);
                     
                     if (appData.audioPlaying && !appData.audioPlaying.paused) {
                         appData.audioPlaying.pause();
@@ -1531,7 +1566,6 @@
 
         // إرسال رسالة نصية
         async function sendMessage() {
-            // إذا كان هناك عملية رفع جارية، لا نسمح بإرسال رسالة جديدة
             if (appData.uploadInProgress) {
                 showNotification('جاري إرسال صورة، يرجى الانتظار', 'error');
                 return;
@@ -1553,15 +1587,16 @@
                 timestamp: Date.now()
             };
             
-            // حفظ الرسالة في قاعدة البيانات
             await saveMessageToDatabase(messageData);
             
-            // مسح حقل الإدخال
             messageInput.value = '';
             autoResizeTextarea();
-            
-            // إزالة حالة الكتابة
             removeTypingStatus();
+            
+            // بعد إرسال الرسالة، نتحقق من عدد الرسائل ونحذف الزائد
+            setTimeout(() => {
+                checkAndDeleteExcessMessages();
+            }, 500);
         }
 
         // إرسال الصورة ككود Base64
@@ -1570,16 +1605,13 @@
             
             const messageText = messageInput.value.trim();
             
-            // إظهار مؤشر التقدم
             appData.uploadInProgress = true;
             uploadProgress.style.display = 'block';
             progressFill.style.width = '0%';
             progressPercent.textContent = '0%';
             
-            // محاكاة شريط التقدم
             simulateUploadProgress();
             
-            // تحويل الصورة إلى Base64
             const reader = new FileReader();
             reader.onload = async function(e) {
                 const base64String = e.target.result;
@@ -1595,26 +1627,28 @@
                     timestamp: Date.now()
                 };
                 
-                // حفظ الرسالة في قاعدة البيانات
                 await saveMessageToDatabase(messageData);
                 
-                // إخفاء مؤشر التقدم
                 setTimeout(() => {
                     uploadProgress.style.display = 'none';
                     appData.uploadInProgress = false;
                 }, 500);
                 
-                // مسح حقل الإدخال ومعاينة الصورة
                 messageInput.value = '';
                 clearImagePreview();
                 autoResizeTextarea();
                 
                 showNotification('تم إرسال الصورة بنجاح', 'success');
+                
+                // بعد إرسال الرسالة، نتحقق من عدد الرسائل
+                setTimeout(() => {
+                    checkAndDeleteExcessMessages();
+                }, 500);
             };
             reader.readAsDataURL(appData.imageFile);
         }
 
-        // محاكاة شريط التقدم لرفع الصورة
+        // محاكاة شريط التقدم
         function simulateUploadProgress() {
             let progress = 0;
             const interval = setInterval(() => {
@@ -1625,7 +1659,7 @@
                 if (progress >= 100) {
                     clearInterval(interval);
                 }
-            }, 80); // أسرع قليلاً
+            }, 80);
         }
 
         // حفظ الرسالة في قاعدة البيانات
@@ -1663,13 +1697,11 @@
             const file = event.target.files[0];
             if (!file) return;
             
-            // التحقق من نوع الملف
             if (!file.type.match('image.*')) {
                 showNotification('يرجى اختيار ملف صورة فقط', 'error');
                 return;
             }
             
-            // التحقق من حجم الملف (5MB كحد أقصى)
             if (file.size > 5 * 1024 * 1024) {
                 showNotification('حجم الصورة كبير جداً. الحد الأقصى هو 5MB', 'error');
                 return;
@@ -1677,7 +1709,6 @@
             
             appData.imageFile = file;
             
-            // عرض معاينة الصورة
             const reader = new FileReader();
             reader.onload = function(e) {
                 imagePreview.src = e.target.result;
@@ -1703,14 +1734,12 @@
                 appData.mediaRecorder = new MediaRecorder(stream);
                 appData.audioChunks = [];
                 
-                // إعداد التحليل البصري للصوت
                 appData.audioContext = new AudioContext();
                 const source = appData.audioContext.createMediaStreamSource(stream);
                 appData.analyser = appData.audioContext.createAnalyser();
                 appData.analyser.fftSize = 32;
                 source.connect(appData.analyser);
                 
-                // إنشاء أشرطة التصور البصري
                 createVisualizerBars();
                 
                 appData.mediaRecorder.ondataavailable = (event) => {
@@ -1722,14 +1751,11 @@
                 appData.mediaRecorder.start();
                 appData.isRecording = true;
                 
-                // بدء المؤقت
                 appData.recordingStartTime = Date.now();
                 appData.recordingTimer = setInterval(updateRecordingTimer, 1000);
                 
-                // تحديث التصور البصري
                 updateVisualizer();
                 
-                // تحديث الواجهة
                 voiceControls.style.display = 'flex';
                 voiceBtn.style.display = 'none';
                 
@@ -1743,7 +1769,7 @@
         // إنشاء أشرطة التصور البصري
         function createVisualizerBars() {
             voiceVisualizer.innerHTML = '';
-            const barCount = 12; // تقليل العدد قليلاً
+            const barCount = 12;
             for (let i = 0; i < barCount; i++) {
                 const bar = document.createElement('div');
                 bar.className = 'voice-bar';
@@ -1761,7 +1787,7 @@
             const bars = voiceVisualizer.querySelectorAll('.voice-bar');
             bars.forEach((bar, index) => {
                 const value = dataArray[index] || 0;
-                const height = 8 + (value / 255) * 20; // تصغير
+                const height = 8 + (value / 255) * 20;
                 bar.style.height = `${height}px`;
             });
             
@@ -1783,31 +1809,24 @@
             appData.mediaRecorder.stop();
             appData.isRecording = false;
             
-            // إيقاف التصور البصري والمؤقت
             clearInterval(appData.recordingTimer);
             
-            // إغلاق السياق الصوتي
             if (appData.audioContext) {
                 appData.audioContext.close();
             }
             
-            // إيقاف جميع المسارات
             appData.mediaRecorder.stream.getTracks().forEach(track => track.stop());
             
-            // تحديث الواجهة
             voiceControls.style.display = 'none';
             voiceBtn.style.display = 'flex';
             
             showNotification('تم إيقاف التسجيل', 'info');
         }
 
-        // إرسال التسجيل الصوتي - تم التصحيح هنا
+        // إرسال التسجيل الصوتي
         async function sendVoiceRecording() {
-            // إيقاف التسجيل أولاً إذا كان قيد التشغيل
             if (appData.isRecording) {
                 stopRecording();
-                
-                // الانتظار قليلاً لضمان جمع جميع البيانات
                 await new Promise(resolve => setTimeout(resolve, 300));
             }
             
@@ -1819,7 +1838,6 @@
             const messageText = messageInput.value.trim();
             const audioBlob = new Blob(appData.audioChunks, { type: 'audio/webm' });
             
-            // تحويل الصوت إلى Base64 بدلاً من رفعه إلى Storage
             const reader = new FileReader();
             reader.onload = async function(e) {
                 const base64String = e.target.result;
@@ -1830,19 +1848,22 @@
                     userName: appData.currentUser.name,
                     text: messageText,
                     type: 'audio',
-                    audioCode: base64String, // استخدام Base64 بدلاً من URL
+                    audioCode: base64String,
                     isAdmin: appData.currentUser.isAdmin,
                     timestamp: Date.now()
                 };
                 
-                // حفظ الرسالة في قاعدة البيانات
                 await saveMessageToDatabase(messageData);
                 
-                // إعادة تعيين البيانات
                 appData.audioChunks = [];
                 messageInput.value = '';
                 
                 showNotification('تم إرسال التسجيل الصوتي', 'success');
+                
+                // بعد إرسال الرسالة، نتحقق من عدد الرسائل
+                setTimeout(() => {
+                    checkAndDeleteExcessMessages();
+                }, 500);
             };
             reader.readAsDataURL(audioBlob);
         }
@@ -1906,7 +1927,6 @@
                 return;
             }
             
-            // استبعاد المستخدم الحالي
             const otherTypingUsers = typingUserIds.filter(id => id !== appData.currentUser.id);
             
             if (otherTypingUsers.length === 0) {
@@ -1914,7 +1934,6 @@
                 return;
             }
             
-            // الحصول على أسماء المستخدمين الذين يكتبون
             const typingNames = otherTypingUsers.map(id => appData.users[id]?.name).filter(name => name);
             
             if (typingNames.length === 0) {
@@ -2001,22 +2020,18 @@
             }
         });
         
-        // ضبط ارتفاع Textarea تلقائياً
         messageInput.addEventListener('input', autoResizeTextarea);
         
-        // إدارة حالة الكتابة
         let typingTimer;
         messageInput.addEventListener('input', () => {
             if (!appData.currentUser) return;
             
-            // تحديث حالة الكتابة
             const { database, ref, set } = window.firebaseApp;
             set(ref(database, 'typing/' + appData.currentUser.id), {
                 name: appData.currentUser.name,
                 timestamp: Date.now()
             });
             
-            // إزالة حالة الكتابة بعد التوقف
             clearTimeout(typingTimer);
             typingTimer = setTimeout(() => {
                 removeTypingStatus();
@@ -2039,7 +2054,6 @@
             }
         });
 
-        // إعداد إزالة المستخدم عند إغلاق الصفحة
         window.addEventListener('beforeunload', () => {
             if (appData.currentUser) {
                 const { database, ref, update } = window.firebaseApp;
@@ -2050,7 +2064,6 @@
             }
         });
 
-        // إظهار إشعار عند تحميل الصفحة
         window.addEventListener('load', () => {
             showNotification('تم تحميل التطبيق بنجاح!', 'success');
         });
