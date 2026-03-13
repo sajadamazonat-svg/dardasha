@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>اسهل حل | دردشة متطورة مع اتصال صوتي</title>
+    <title>اسهل حل | دردشة متطورة مع اتصال صوتي فوري</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts (Cairo) -->
@@ -433,7 +433,7 @@
         <div id="about-screen" class="screen">
             <div class="card">
                 <h2 style="color: var(--primary);">حول</h2>
-                <p>الإصدار 4.0 - مع اتصال صوتي مباشر</p>
+                <p>الإصدار 4.1 - استجابة فورية وتحديث لحظي للمتصلين</p>
                 <div class="back-btn-container">
                     <button class="back-btn" data-screen="login"><i class="fas fa-arrow-right"></i> العودة</button>
                 </div>
@@ -995,7 +995,7 @@
             }
         }
 
-        // مراقبة المكالمات الواردة
+        // مراقبة المكالمات الواردة - محسنة للاستجابة الفورية
         function listenForCalls() {
             if (!currentRoom) return;
             
@@ -1020,7 +1020,7 @@
                 
                 console.log('عرض وارد من:', offerData.from);
                 
-                // عرض لوحة المكالمة الواردة
+                // عرض لوحة المكالمة الواردة فوراً
                 callerName.textContent = offerData.name || 'مستخدم';
                 incomingCall.style.display = 'block';
                 
@@ -1153,34 +1153,49 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
+        // تحسين تحديث قائمة المستخدمين - استجابة فورية
         function updateUsersLists(users) {
-            usersMap = {};
-            Object.keys(users).forEach(key => usersMap[key] = users[key].name);
-            userCountSpan.textContent = `(${Object.keys(users).length})`;
-            if (popupUsersList) {
-                popupUsersList.innerHTML = '';
-                Object.keys(users).forEach(key => {
-                    const user = users[key];
-                    const item = document.createElement('div');
-                    item.className = 'user-item';
-                    item.innerHTML = `
+            const newUsersMap = {};
+            const usersListHtml = [];
+            
+            Object.keys(users).forEach(key => {
+                const user = users[key];
+                newUsersMap[key] = user.name;
+                usersListHtml.push(`
+                    <div class="user-item" data-user-id="${key}">
                         <div class="user-avatar">${user.name.charAt(0)}</div>
                         <span class="user-name">${user.name === ADMIN_LOGIN ? ADMIN_DISPLAY : user.name}</span>
                         ${user.name === ADMIN_LOGIN ? '<i class="fas fa-crown" style="color:#fbbf24;"></i>' : ''}
-                    `;
-                    popupUsersList.appendChild(item);
-                });
+                    </div>
+                `);
+            });
+            
+            // تحديث الخريطة
+            usersMap = newUsersMap;
+            
+            // تحديث العدد
+            userCountSpan.textContent = `(${Object.keys(users).length})`;
+            
+            // تحديث القائمة المنبثقة
+            if (popupUsersList) {
+                popupUsersList.innerHTML = usersListHtml.join('');
             }
+            
+            // تحديث قائمة الغرفة
             const roomList = document.getElementById('room-users-list');
             if (roomList) {
-                roomList.innerHTML = '';
+                const roomUsersHtml = [];
                 Object.keys(users).forEach(key => {
                     const user = users[key];
-                    const span = document.createElement('span');
-                    span.textContent = user.name === ADMIN_LOGIN ? ADMIN_DISPLAY : user.name;
-                    if (user.name === ADMIN_LOGIN) span.innerHTML += ' <i class="fas fa-crown" style="color:#fbbf24;"></i>';
-                    roomList.appendChild(span);
+                    const displayName = user.name === ADMIN_LOGIN ? ADMIN_DISPLAY : user.name;
+                    roomUsersHtml.push(`
+                        <span>
+                            ${displayName}
+                            ${user.name === ADMIN_LOGIN ? '<i class="fas fa-crown" style="color:#fbbf24;"></i>' : ''}
+                        </span>
+                    `);
                 });
+                roomList.innerHTML = roomUsersHtml.join('');
                 document.getElementById('room-detail-users').textContent = Object.keys(users).length;
             }
         }
