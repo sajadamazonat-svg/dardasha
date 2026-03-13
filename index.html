@@ -587,13 +587,14 @@
         let analyser = null;
         let visualizerAnimation = null;
         let usersMap = {};
+        let heartbeatInterval = null;
 
         // متغيرات WebRTC
         let peerConnection = null;
         let localStream = null;
         let callTimeout = null;
         let callTargetUserId = null;
-        let callType = null; // 'offer' or 'answer'
+        let callType = null;
         const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
         // مراقبة حالة الاتصال
@@ -731,7 +732,6 @@
             });
         }
 
-        // تحويل أي فيديو إلى MP4 أولاً ثم تطبيق التحجيم إلى 720p
         async function convertVideoTo720p(file) {
             try {
                 progressMessage.textContent = 'جاري تحميل محول الفيديو...';
@@ -778,7 +778,6 @@
             }
         }
 
-        // معالجة الفيديو: فحص الدقة والمدة، وتحويلها إذا لزم الأمر
         async function processVideo(file) {
             return new Promise((resolve, reject) => {
                 const video = document.createElement('video');
@@ -817,10 +816,9 @@
             });
         }
 
-        // دوال WebRTC - محسنة
+        // دوال WebRTC
         async function startCall(targetUserId) {
             try {
-                console.log('بدء مكالمة إلى:', targetUserId);
                 callTargetUserId = targetUserId;
                 callType = 'offer';
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -829,19 +827,16 @@
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
                 
                 peerConnection.ontrack = (event) => {
-                    console.log('تم استقبال الصوت البعيد');
                     callInfo.textContent = `تتحدث مع ${usersMap[callTargetUserId] || 'المستخدم'}`;
                 };
                 
                 peerConnection.onicecandidate = (event) => {
                     if (event.candidate) {
-                        console.log('إرسال مرشح ICE');
                         push(ref(db, `calls/${currentRoom}/candidates/${userId}`), event.candidate.toJSON());
                     }
                 };
                 
                 peerConnection.oniceconnectionstatechange = () => {
-                    console.log('حالة ICE:', peerConnection.iceConnectionState);
                     if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'failed') {
                         endCall();
                     }
@@ -850,27 +845,23 @@
                 const offer = await peerConnection.createOffer();
                 await peerConnection.setLocalDescription(offer);
                 
-                // إرسال العرض إلى Firebase
                 await set(ref(db, `calls/${currentRoom}/offers/${userId}`), {
                     offer: offer,
                     caller: currentUser,
                     callee: targetUserId
                 });
                 
-                // عرض واجهة المكالمة
                 callAvatar.innerHTML = `<i class="fas fa-phone"></i>`;
                 callInfo.textContent = `جارٍ الاتصال بـ ${usersMap[targetUserId] || 'المستخدم'}...`;
                 callAnswerBtn.style.display = 'none';
                 callContainer.classList.add('active');
                 
-                // مهلة 30 ثانية
                 callTimeout = setTimeout(() => {
                     endCall();
                     showNotification('لم يجب الطرف الآخر', 'danger');
                 }, 30000);
                 
             } catch (err) {
-                console.error('خطأ في بدء المكالمة:', err);
                 showNotification('تعذر الوصول إلى الميكروفون', 'danger');
                 endCall();
             }
@@ -878,7 +869,6 @@
         
         async function answerCall(offerData, callerId) {
             try {
-                console.log('الرد على مكالمة من:', callerId);
                 callTargetUserId = callerId;
                 callType = 'answer';
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -887,19 +877,16 @@
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
                 
                 peerConnection.ontrack = (event) => {
-                    console.log('تم استقبال الصوت البعيد');
                     callInfo.textContent = `تتحدث مع ${offerData.caller}`;
                 };
                 
                 peerConnection.onicecandidate = (event) => {
                     if (event.candidate) {
-                        console.log('إرسال مرشح ICE');
                         push(ref(db, `calls/${currentRoom}/candidates/${userId}`), event.candidate.toJSON());
                     }
                 };
                 
                 peerConnection.oniceconnectionstatechange = () => {
-                    console.log('حالة ICE:', peerConnection.iceConnectionState);
                     if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'failed') {
                         endCall();
                     }
@@ -921,14 +908,12 @@
                 callContainer.classList.add('active');
                 
             } catch (err) {
-                console.error('خطأ في الرد على المكالمة:', err);
                 showNotification('فشل الرد على المكالمة', 'danger');
                 endCall();
             }
         }
         
         function endCall() {
-            console.log('إنهاء المكالمة');
             if (callTimeout) clearTimeout(callTimeout);
             
             if (peerConnection) {
@@ -940,7 +925,6 @@
                 localStream = null;
             }
             
-            // حذف بيانات المكالمة من Firebase
             if (currentRoom && userId) {
                 remove(ref(db, `calls/${currentRoom}/offers/${userId}`));
                 remove(ref(db, `calls/${currentRoom}/answers/${userId}`));
@@ -952,35 +936,27 @@
             callType = null;
         }
 
-        // مراقبة المكالمات الواردة - محسنة
+        // مراقبة المكالمات الواردة
         function listenForCalls() {
             if (!currentRoom) return;
             
-            // الاستماع للعروض (offers)
             const offersRef = ref(db, `calls/${currentRoom}/offers`);
             onChildAdded(offersRef, (snap) => {
                 const offerData = snap.val();
                 const callerId = snap.key;
-                console.log('عرض وارد من:', callerId, offerData);
                 
-                // التأكد أن العرض موجه إلينا وأنا لست المتصل
                 if (offerData.callee === currentUser && callerId !== userId && !peerConnection) {
-                    console.log('عرض مناسب لي، عرض الإشعار');
-                    
-                    // عرض إشعار بالمكالمة الواردة
                     callAvatar.innerHTML = `<i class="fas fa-phone"></i>`;
                     callInfo.textContent = `مكالمة واردة من ${offerData.caller}`;
                     callAnswerBtn.style.display = 'flex';
                     callContainer.classList.add('active');
                     
-                    // تخزين بيانات العرض للرد
                     callTargetUserId = callerId;
                     
                     callAnswerBtn.onclick = () => {
                         answerCall(offerData, callerId);
                     };
                     
-                    // مهلة 30 ثانية
                     callTimeout = setTimeout(() => {
                         callContainer.classList.remove('active');
                         showNotification('لم يتم الرد على المكالمة', 'danger');
@@ -988,28 +964,23 @@
                 }
             });
             
-            // الاستماع للإجابات (answers) - للمتصل
             const answersRef = ref(db, `calls/${currentRoom}/answers`);
             onChildAdded(answersRef, async (snap) => {
                 const answerData = snap.val();
                 const answererId = snap.key;
-                console.log('إجابة واردة من:', answererId, answerData);
                 
                 if (callType === 'offer' && answererId === callTargetUserId && peerConnection && peerConnection.signalingState === 'have-local-offer') {
-                    console.log('تم استقبال الإجابة، تعيين الوصف البعيد');
                     clearTimeout(callTimeout);
                     await peerConnection.setRemoteDescription(new RTCSessionDescription(answerData.answer));
                 }
             });
             
-            // الاستماع للمرشحين (candidates) - لكلا الطرفين
             const candidatesRef = ref(db, `calls/${currentRoom}/candidates`);
             onChildAdded(candidatesRef, (snap) => {
                 const candidateData = snap.val();
                 const candidateUserId = snap.key;
                 if (!peerConnection || candidateUserId === userId) return;
                 
-                console.log('مرشح وارد من:', candidateUserId);
                 const candidate = new RTCIceCandidate(candidateData);
                 peerConnection.addIceCandidate(candidate).catch(e => console.log('خطأ في إضافة مرشح:', e));
             });
@@ -1089,14 +1060,32 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
+        // تحديث قائمة المستخدمين مع فلترة القديم
         function updateUsersLists(users) {
             usersMap = {};
-            Object.keys(users).forEach(key => usersMap[key] = users[key].name);
-            userCountSpan.textContent = `(${Object.keys(users).length})`;
+            const onlineUsers = {};
+            const now = Date.now();
+            const maxAge = 40000; // 40 ثانية كحد أقصى لاعتبار المستخدم متصلاً
+            
+            Object.keys(users).forEach(key => {
+                const user = users[key];
+                if (user && user.name) {
+                    // التحقق من أن آخر نشاط خلال 40 ثانية
+                    const lastActive = user.lastActive || user.joinedAt || 0;
+                    if (now - lastActive < maxAge) {
+                        usersMap[key] = user.name;
+                        onlineUsers[key] = user;
+                    }
+                }
+            });
+            
+            const onlineCount = Object.keys(onlineUsers).length;
+            userCountSpan.textContent = `(${onlineCount})`;
+            
             if (popupUsersList) {
                 popupUsersList.innerHTML = '';
-                Object.keys(users).forEach(key => {
-                    const user = users[key];
+                Object.keys(onlineUsers).forEach(key => {
+                    const user = onlineUsers[key];
                     const item = document.createElement('div');
                     item.className = 'user-item';
                     item.innerHTML = `
@@ -1107,17 +1096,36 @@
                     popupUsersList.appendChild(item);
                 });
             }
+            
             const roomList = document.getElementById('room-users-list');
             if (roomList) {
                 roomList.innerHTML = '';
-                Object.keys(users).forEach(key => {
-                    const user = users[key];
+                Object.keys(onlineUsers).forEach(key => {
+                    const user = onlineUsers[key];
                     const span = document.createElement('span');
                     span.textContent = user.name === ADMIN_LOGIN ? ADMIN_DISPLAY : user.name;
                     if (user.name === ADMIN_LOGIN) span.innerHTML += ' <i class="fas fa-crown" style="color:#fbbf24;"></i>';
                     roomList.appendChild(span);
                 });
-                document.getElementById('room-detail-users').textContent = Object.keys(users).length;
+                document.getElementById('room-detail-users').textContent = onlineCount;
+            }
+        }
+
+        // نبضات القلب للحفاظ على حالة الاتصال
+        function startHeartbeat() {
+            if (heartbeatInterval) clearInterval(heartbeatInterval);
+            heartbeatInterval = setInterval(() => {
+                if (currentRoom && userId) {
+                    const userRef = ref(db, `rooms/${currentRoom}/users/${userId}`);
+                    update(userRef, { lastActive: Date.now() }).catch(() => {});
+                }
+            }, 20000); // كل 20 ثانية
+        }
+
+        function stopHeartbeat() {
+            if (heartbeatInterval) {
+                clearInterval(heartbeatInterval);
+                heartbeatInterval = null;
             }
         }
 
@@ -1176,16 +1184,24 @@
             userStatus.innerHTML = isAdmin ? `<i class="fas fa-crown"></i> ${currentUser}` : `<i class="fas fa-user"></i> ${currentUser}`;
 
             const userRef = ref(db, `rooms/${room}/users/${userId}`);
-            await set(userRef, { name: isAdmin ? ADMIN_LOGIN : currentUser, joinedAt: Date.now() });
-            onDisconnect(userRef).remove();
+            await set(userRef, { 
+                name: isAdmin ? ADMIN_LOGIN : currentUser, 
+                joinedAt: Date.now(),
+                lastActive: Date.now()
+            });
+            
+            // تنظيف عند قطع الاتصال
+            onDisconnect(userRef).update({ lastActive: Date.now() - 60000 }); // جعله منتهي الصلاحية
+            onDisconnect(ref(db, `rooms/${room}/typing/${userId}`)).remove();
+            
             await push(ref(db, `rooms/${room}/messages`), { sender: 'نظام', text: `${currentUser} دخل الغرفة`, timestamp: Date.now() });
             monitorRoomUsers(room);
             setupTyping(room, userId);
             listenTyping(room);
             setupMessageListener();
             
-            // الاستماع للمكالمات
             listenForCalls();
+            startHeartbeat();
 
             const roomInfoRef = ref(db, `rooms/${room}/info`);
             const roomInfoSnap = await get(roomInfoRef);
@@ -1197,7 +1213,8 @@
         }
 
         function leaveRoom() {
-            endCall(); // إنهاء أي مكالمة نشطة
+            stopHeartbeat();
+            endCall();
             if (currentRoom && userId) {
                 push(ref(db, `rooms/${currentRoom}/messages`), { sender: 'نظام', text: `${currentUser} غادر الغرفة`, timestamp: Date.now() });
                 remove(ref(db, `rooms/${currentRoom}/users/${userId}`));
@@ -1439,11 +1456,9 @@
         // زر الاتصال الصوتي
         document.getElementById('call-user-btn').addEventListener('click', () => {
             if (!currentRoom) return;
-            // عرض قائمة المستخدمين للاتصال
             usersPopup.classList.toggle('show');
             popupOverlay.classList.toggle('show');
             
-            // تحويل كل user-item ليصبح قابل للنقر لبدء مكالمة
             document.querySelectorAll('#popup-users-list .user-item').forEach(item => {
                 const userName = item.querySelector('.user-name').textContent;
                 const targetId = Object.keys(usersMap).find(id => {
@@ -1465,7 +1480,7 @@
 
         callEndBtn.addEventListener('click', endCall);
 
-        // إغلاق نافذة المستخدمين
+        // إغلاق نافذة المستخدمين بسرعة
         function closeUsersPopup() {
             usersPopup.classList.remove('show');
             popupOverlay.classList.remove('show');
