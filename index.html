@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>اسهل حل | دردشة متطورة مع اتصال صوتي</title>
+    <title>اسهل حل | دردشة متطورة - تصميم فاتح</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts (Cairo) -->
@@ -13,21 +13,22 @@
     <!-- ffmpeg.wasm -->
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
     <style>
+        /* تصميم فاتح ونظيف */
         :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --primary-light: #818cf8;
-            --secondary: #10b981;
-            --success: #059669;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --dark: #1f2937;
-            --light: #f9fafb;
-            --gray: #6b7280;
-            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --primary-light: #6c7ffa;
+            --secondary: #06d6a0;
+            --success: #06d6a0;
+            --warning: #ffb703;
+            --danger: #ef476f;
+            --dark: #2b2d42;
+            --light: #f8f9fa;
+            --gray: #8d99ae;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             --card-bg: rgba(255, 255, 255, 0.95);
-            --border: #e5e7eb;
-            --shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            --border: #dee2e6;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
             
             --base-font: 16px;
             --btn-size: 52px;
@@ -47,32 +48,20 @@
         .logo h1 { font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .logo p { color: var(--gray); border-bottom: 2px solid var(--primary-light); padding-bottom: 12px; }
 
-        .input-field { width: 100%; padding: 12px 20px; margin: 8px 0; border: 2px solid rgba(79, 70, 229, 0.2); border-radius: 60px; background: white; transition: var(--transition); }
-        .input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15); }
+        .input-field { width: 100%; padding: 12px 20px; margin: 8px 0; border: 2px solid rgba(67, 97, 238, 0.2); border-radius: 60px; background: white; transition: var(--transition); }
+        .input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1); }
 
-        .btn { width: 100%; padding: 12px 20px; border: none; border-radius: 60px; font-weight: 700; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; cursor: pointer; transition: var(--transition); margin: 8px 0; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 6px 20px rgba(79, 70, 229, 0.25); }
+        .btn { width: 100%; padding: 12px 20px; border: none; border-radius: 60px; font-weight: 700; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; cursor: pointer; transition: var(--transition); margin: 8px 0; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 6px 20px rgba(67, 97, 238, 0.2); }
         .btn i { font-size: 1.2rem; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(79, 70, 229, 0.35); }
-        .btn-success { background: linear-gradient(135deg, var(--secondary), #0e9f6e); }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(67, 97, 238, 0.3); }
+        .btn-success { background: linear-gradient(135deg, var(--secondary), #05b386); }
         .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none; }
         .btn-outline:hover { background: var(--primary); color: white; }
-        .btn-danger { background: linear-gradient(135deg, var(--danger), #b91c1c); }
+        .btn-danger { background: linear-gradient(135deg, var(--danger), #d64161); }
 
         .top-bar { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.8); border-radius: 70px; padding: 8px 16px; margin: 8px 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); }
         .brand { font-weight: 800; font-size: 1.4rem; display: flex; align-items: center; gap: 8px; color: var(--primary); }
         .menu-btn { background: white; border: 1px solid var(--border); color: var(--primary); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; transition: var(--transition); }
-
-        .connection-status {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #fbbf24;
-            margin-left: 8px;
-            box-shadow: 0 0 5px currentColor;
-        }
-        .connection-status.connected { background: #10b981; box-shadow: 0 0 8px #10b981; }
-        .connection-status.disconnected { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
 
         .sidebar { position: fixed; top: 0; right: -320px; width: 280px; height: 100vh; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px); border-left: 1px solid rgba(0,0,0,0.05); box-shadow: -15px 0 40px rgba(0,0,0,0.1); z-index: 1000; transition: right 0.3s ease; padding: 24px 0; border-radius: 0 40px 40px 0; }
         .sidebar.open { right: 0; }
@@ -80,7 +69,7 @@
         .close-btn { background: white; border: 1px solid var(--border); color: var(--primary); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; }
         .sidebar-nav { display: flex; flex-direction: column; gap: 6px; padding: 0 16px; }
         .sidebar-nav .nav-btn { background: transparent; border: none; color: var(--dark); padding: 12px 16px; border-radius: 50px; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: var(--transition); width: 100%; border: 1px solid transparent; }
-        .sidebar-nav .nav-btn:hover { background: rgba(79, 70, 229, 0.05); color: var(--primary); border-color: var(--primary-light); }
+        .sidebar-nav .nav-btn:hover { background: rgba(67, 97, 238, 0.05); color: var(--primary); border-color: var(--primary-light); }
         .sidebar-nav .nav-btn i { font-size: 1.3rem; color: var(--primary); }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); backdrop-filter: blur(4px); z-index: 999; display: none; }
         .sidebar-overlay.active { display: block; }
@@ -95,7 +84,7 @@
             align-items: center; 
             border-radius: 60px 60px 20px 20px; 
             margin-bottom: 12px; 
-            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.25); 
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.2); 
             gap: 8px;
         }
         .header-info h2 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -107,9 +96,9 @@
         .action-btn.secondary { background: white; color: var(--primary); border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
         .messages-container { flex: 1; padding: 16px; background: rgba(255,255,255,0.6); backdrop-filter: blur(12px); border-radius: 36px; margin-bottom: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; border: 1px solid rgba(255,255,255,0.9); }
-        .message { max-width: 80%; padding: 12px 16px; border-radius: 28px 28px 28px 8px; align-self: flex-start; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.02); position: relative; word-break: break-word; }
+        .message { max-width: 80%; padding: 12px 16px; border-radius: 28px 28px 28px 8px; align-self: flex-start; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.02); position: relative; word-break: break-word; font-size: 1rem; }
         .message.own { align-self: flex-end; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-radius: 28px 28px 8px 28px; }
-        .message.system { align-self: center; background: rgba(107, 114, 128, 0.7); color: white; border-radius: 50px; font-size: 0.85rem; padding: 4px 20px; }
+        .message.system { align-self: center; background: rgba(141, 153, 174, 0.7); color: white; border-radius: 50px; font-size: 0.85rem; padding: 4px 20px; }
         .message .username { font-size: 0.7rem; font-weight: 700; margin-bottom: 6px; color: var(--primary-dark); display: flex; align-items: center; gap: 4px; opacity: 0.8; }
         .message.own .username { color: rgba(255,255,255,0.9); }
         .message .time { font-size: 0.55rem; opacity: 0.6; margin-top: 6px; text-align: left; }
@@ -127,7 +116,7 @@
         .media-popup.show { display: flex; }
         .media-popup .action-btn { width: auto; height: auto; padding: 10px 20px; border-radius: 40px; background: var(--primary); color: white; gap: 8px; font-size: 0.9rem; }
 
-        .voice-recording-bar { display: none; align-items: center; gap: 16px; background: white; padding: 10px 20px; border-radius: 60px; margin-top: 8px; border: 2px solid var(--primary); box-shadow: 0 4px 16px rgba(79,70,229,0.2); }
+        .voice-recording-bar { display: none; align-items: center; gap: 16px; background: white; padding: 10px 20px; border-radius: 60px; margin-top: 8px; border: 2px solid var(--primary); box-shadow: 0 4px 16px rgba(67,97,238,0.2); }
         .voice-recording-bar.active { display: flex; }
         .voice-timer { font-size: 1.2rem; font-weight: 700; color: var(--danger); direction: ltr; }
         .voice-visualizer { flex: 1; display: flex; align-items: center; justify-content: center; gap: 3px; height: 36px; }
@@ -141,6 +130,16 @@
         .user-item { display: flex; align-items: center; gap: 14px; padding: 10px; border-bottom: 1px solid var(--border); }
         .user-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; }
         .user-name { flex: 1; font-weight: 600; font-size: 0.95rem; }
+        .user-status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+            box-shadow: 0 0 5px currentColor;
+        }
+        .user-status-indicator.online { background: #10b981; box-shadow: 0 0 8px #10b981; }
+        .user-status-indicator.offline { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
 
         /* نافذة المكالمة الصوتية */
         .call-container {
@@ -204,7 +203,15 @@
         .room-detail .row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.95rem; }
         .room-users { background: rgba(255,255,255,0.6); backdrop-filter: blur(12px); border-radius: 36px; padding: 16px; max-height: 160px; overflow-y: auto; }
         .room-users-list { display: flex; flex-wrap: wrap; gap: 8px; }
-        .room-users-list span { background: white; padding: 6px 16px; border-radius: 40px; border: 1px solid var(--border); }
+        .room-users-list span { 
+            background: white; 
+            padding: 6px 16px; 
+            border-radius: 40px; 
+            border: 1px solid var(--border); 
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
 
         .back-btn-container { margin-top: 20px; text-align: center; }
         .back-btn { background: var(--light); color: var(--primary); border: 2px solid var(--primary); border-radius: 60px; padding: 12px 30px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 10px; }
@@ -259,7 +266,6 @@
         <div class="top-bar">
             <span class="brand">
                 <i class="fas fa-comments"></i> اسهل حل
-                <span id="connection-indicator" class="connection-status" title="حالة الاتصال"></span>
             </span>
             <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
         </div>
@@ -560,7 +566,6 @@
         const confirmDialog = document.getElementById('confirm-dialog');
         const confirmYes = document.getElementById('confirm-yes');
         const confirmNo = document.getElementById('confirm-no');
-        const connectionIndicator = document.getElementById('connection-indicator');
         
         // عناصر المكالمة
         const callContainer = document.getElementById('call-container');
@@ -597,22 +602,10 @@
         let callType = null;
         const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
         
-        // مستمعي Firebase للمكالمات (لإزالتها لاحقاً)
+        // مستمعي Firebase للمكالمات
         let offersUnsubscribe = null;
         let answersUnsubscribe = null;
         let candidatesUnsubscribe = null;
-
-        // مراقبة حالة الاتصال
-        const connectedRef = ref(db, ".info/connected");
-        onValue(connectedRef, (snap) => {
-            if (snap.val() === true) {
-                connectionIndicator.className = "connection-status connected";
-                connectionIndicator.title = "متصل بقاعدة البيانات";
-            } else {
-                connectionIndicator.className = "connection-status disconnected";
-                connectionIndicator.title = "غير متصل بقاعدة البيانات";
-            }
-        });
 
         // دوال مساعدة
         function showScreen(screenId) {
@@ -949,11 +942,10 @@
             callType = null;
         }
 
-        // مراقبة المكالمات الواردة (مع إزالة المستمعين القدامى)
+        // مراقبة المكالمات الواردة
         function listenForCalls() {
             if (!currentRoom) return;
             
-            // إزالة المستمعين السابقين إن وجدوا
             if (offersUnsubscribe) offersUnsubscribe();
             if (answersUnsubscribe) answersUnsubscribe();
             if (candidatesUnsubscribe) candidatesUnsubscribe();
@@ -963,10 +955,8 @@
                 const offerData = snap.val();
                 const callerId = snap.key;
                 
-                // تجاهل إذا كان العرض من نفس المستخدم أو إذا كان هناك اتصال نشط
                 if (callerId === userId || peerConnection) return;
                 
-                // التأكد من أن العرض موجه إلينا
                 if (offerData.callee === currentUser) {
                     callAvatar.innerHTML = `<i class="fas fa-phone"></i>`;
                     callInfo.textContent = `مكالمة واردة من ${offerData.caller}`;
@@ -1012,18 +1002,19 @@
             });
         }
 
-        // تحديث قائمة المستخدمين مع فلترة القديم
+        // تحديث قائمة المستخدمين مع مؤشرات الحالة
         function updateUsersLists(users) {
             usersMap = {};
             const onlineUsers = {};
             const now = Date.now();
-            const maxAge = 45000; // 45 ثانية كحد أقصى
+            const maxAge = 45000;
             
             Object.keys(users).forEach(key => {
                 const user = users[key];
                 if (user && user.name) {
                     const lastActive = user.lastActive || user.joinedAt || 0;
-                    if (now - lastActive < maxAge) {
+                    const isOnline = (now - lastActive < maxAge);
+                    if (isOnline) {
                         usersMap[key] = user.name;
                         onlineUsers[key] = user;
                     }
@@ -1033,29 +1024,37 @@
             const onlineCount = Object.keys(onlineUsers).length;
             userCountSpan.textContent = `(${onlineCount})`;
             
+            // تحديث popup المستخدمين
             if (popupUsersList) {
                 popupUsersList.innerHTML = '';
                 Object.keys(onlineUsers).forEach(key => {
                     const user = onlineUsers[key];
+                    const isOnline = true;
+                    const statusClass = 'online';
                     const item = document.createElement('div');
                     item.className = 'user-item';
                     item.innerHTML = `
                         <div class="user-avatar">${user.name.charAt(0)}</div>
                         <span class="user-name">${user.name === ADMIN_LOGIN ? ADMIN_DISPLAY : user.name}</span>
+                        <span class="user-status-indicator ${statusClass}" title="متصل"></span>
                         ${user.name === ADMIN_LOGIN ? '<i class="fas fa-crown" style="color:#fbbf24;"></i>' : ''}
                     `;
                     popupUsersList.appendChild(item);
                 });
             }
             
+            // تحديث قائمة المستخدمين في شاشة الغرفة
             const roomList = document.getElementById('room-users-list');
             if (roomList) {
                 roomList.innerHTML = '';
                 Object.keys(onlineUsers).forEach(key => {
                     const user = onlineUsers[key];
                     const span = document.createElement('span');
-                    span.textContent = user.name === ADMIN_LOGIN ? ADMIN_DISPLAY : user.name;
-                    if (user.name === ADMIN_LOGIN) span.innerHTML += ' <i class="fas fa-crown" style="color:#fbbf24;"></i>';
+                    span.innerHTML = `
+                        ${user.name === ADMIN_LOGIN ? ADMIN_DISPLAY : user.name}
+                        <span class="user-status-indicator online" title="متصل"></span>
+                        ${user.name === ADMIN_LOGIN ? '<i class="fas fa-crown" style="color:#fbbf24;"></i>' : ''}
+                    `;
                     roomList.appendChild(span);
                 });
                 document.getElementById('room-detail-users').textContent = onlineCount;
@@ -1123,11 +1122,85 @@
             });
         }
 
+        function displayMessage(msg, isOwn, isSystem, msgId) {
+            if (displayedMessages.has(msgId)) return;
+            displayedMessages.add(msgId);
+            const div = document.createElement('div');
+            div.className = `message ${isOwn ? 'own' : ''} ${isSystem ? 'system' : ''}`;
+            if (!isSystem) {
+                const nameSpan = document.createElement('div');
+                nameSpan.className = 'username';
+                nameSpan.textContent = msg.sender === ADMIN_LOGIN ? ADMIN_DISPLAY : msg.sender;
+                if (msg.sender === ADMIN_LOGIN) {
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-crown';
+                    icon.style.fontSize = '0.7rem';
+                    icon.style.color = '#fbbf24';
+                    nameSpan.appendChild(icon);
+                }
+                div.appendChild(nameSpan);
+            }
+            if (msg.type === 'image') {
+                const img = document.createElement('img');
+                img.src = msg.text;
+                img.className = 'message-image';
+                img.addEventListener('click', () => {
+                    document.getElementById('modalMediaContainer').innerHTML = `<img src="${msg.text}" class="modal-media">`;
+                    document.getElementById('mediaModal').classList.add('active');
+                });
+                div.appendChild(img);
+            } else if (msg.type === 'video') {
+                const video = document.createElement('video');
+                video.src = msg.text;
+                video.controls = true;
+                video.className = 'message-image';
+                video.addEventListener('click', () => {
+                    document.getElementById('modalMediaContainer').innerHTML = `<video src="${msg.text}" controls class="modal-media"></video>`;
+                    document.getElementById('mediaModal').classList.add('active');
+                });
+                div.appendChild(video);
+            } else if (msg.type === 'audio') {
+                const audioDiv = document.createElement('div');
+                audioDiv.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px; width:100%;">
+                        <button class="audio-play-btn" style="width:40px;height:40px;border-radius:50%;background:var(--primary);color:white;border:none;"><i class="fas fa-play"></i></button>
+                        <div style="flex:1;height:4px;background:rgba(255,255,255,0.3);border-radius:2px;"><div class="audio-progress-filled" style="width:0%;height:100%;background:white;border-radius:2px;"></div></div>
+                        <span class="audio-duration" style="font-size:0.75rem;">00:00</span>
+                    </div>
+                `;
+                const audio = new Audio(msg.text);
+                const playBtn = audioDiv.querySelector('.audio-play-btn');
+                const progressFilled = audioDiv.querySelector('.audio-progress-filled');
+                const durationSpan = audioDiv.querySelector('.audio-duration');
+                playBtn.addEventListener('click', () => {
+                    if (audio.paused) { audio.play(); playBtn.innerHTML = '<i class="fas fa-pause"></i>'; }
+                    else { audio.pause(); playBtn.innerHTML = '<i class="fas fa-play"></i>'; }
+                });
+                audio.addEventListener('timeupdate', () => {
+                    const percent = (audio.currentTime / audio.duration) * 100;
+                    progressFilled.style.width = percent + '%';
+                    const mins = Math.floor(audio.currentTime / 60);
+                    const secs = Math.floor(audio.currentTime % 60);
+                    durationSpan.textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+                });
+                audio.addEventListener('ended', () => { playBtn.innerHTML = '<i class="fas fa-play"></i>'; progressFilled.style.width = '0%'; });
+                div.appendChild(audioDiv);
+            } else {
+                // رسالة نصية
+                div.appendChild(document.createTextNode(msg.text));
+            }
+            const timeSpan = document.createElement('div');
+            timeSpan.className = 'time';
+            timeSpan.textContent = new Date(msg.timestamp).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+            div.appendChild(timeSpan);
+            messagesContainer.appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
         async function enterChat(room, name) {
             if (messagesUnsubscribe) messagesUnsubscribe(); 
             if (usersUnsubscribe) usersUnsubscribe();
             
-            // إنهاء أي مكالمة سابقة
             endCall();
             
             displayedMessages.clear();
@@ -1146,7 +1219,7 @@
                 lastActive: Date.now()
             });
             
-            onDisconnect(userRef).update({ lastActive: Date.now() - 60000 }); // ينتهي بعد دقيقة
+            onDisconnect(userRef).update({ lastActive: Date.now() - 60000 });
             onDisconnect(ref(db, `rooms/${room}/typing/${userId}`)).remove();
             
             await push(ref(db, `rooms/${room}/messages`), { sender: 'نظام', text: `${currentUser} دخل الغرفة`, timestamp: Date.now() });
@@ -1156,7 +1229,6 @@
             listenTyping(room);
             setupMessageListener();
             
-            // استماع للمكالمات
             listenForCalls();
             startHeartbeat();
 
@@ -1173,7 +1245,6 @@
             stopHeartbeat();
             endCall();
             
-            // إزالة مستمعي المكالمات
             if (offersUnsubscribe) offersUnsubscribe();
             if (answersUnsubscribe) answersUnsubscribe();
             if (candidatesUnsubscribe) candidatesUnsubscribe();
