@@ -142,14 +142,14 @@
         .user-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; }
         .user-name { flex: 1; font-weight: 600; font-size: 0.95rem; }
 
-        /* نافذة المكالمة الصوتية */
+        /* نافذة المكالمة الصوتية المحسنة */
         .call-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             backdrop-filter: blur(10px);
             z-index: 10000;
             display: none;
@@ -157,47 +157,94 @@
             align-items: center;
             justify-content: center;
             color: white;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
         .call-container.active { display: flex; }
         .call-avatar {
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 4rem;
             color: white;
             margin-bottom: 20px;
-            border: 4px solid white;
+            border: 4px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        .call-avatar.pulsing {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px 10px rgba(255,255,255,0.3); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
         }
         .call-info {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .call-timer {
+            font-size: 2rem;
+            font-weight: bold;
             margin-bottom: 30px;
+            background: rgba(0,0,0,0.2);
+            padding: 10px 30px;
+            border-radius: 50px;
+            direction: ltr;
+            letter-spacing: 2px;
         }
         .call-actions {
             display: flex;
             gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         .call-btn {
             width: 70px;
             height: 70px;
             border-radius: 50%;
-            background: var(--danger);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
             color: white;
-            border: none;
+            border: 2px solid rgba(255, 255, 255, 0.5);
             font-size: 2rem;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        .call-btn.answer {
+        .call-btn:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .call-btn.danger {
+            background: var(--danger);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+        .call-btn.success {
             background: var(--success);
+            border-color: rgba(255, 255, 255, 0.8);
         }
-        .call-btn:hover { transform: scale(1.1); }
+        .call-btn.muted {
+            background: var(--warning);
+            opacity: 0.8;
+        }
+        .call-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 
         .room-code-large { font-size: 3rem; font-weight: 800; color: var(--primary); text-align: center; direction: ltr; letter-spacing: 6px; background: white; padding: 8px 16px; border-radius: 60px; margin: 16px auto; border: 3px solid var(--primary); box-shadow: var(--shadow); }
         .room-detail { background: rgba(255,255,255,0.6); backdrop-filter: blur(12px); border-radius: 36px; padding: 16px; margin: 12px 0; border: 1px solid white; }
@@ -348,12 +395,15 @@
                 </div>
                 <div id="popup-overlay" class="sidebar-overlay"></div>
 
-                <!-- لوحة المكالمة الواردة -->
-                <div id="incoming-call" style="display: none; background: var(--primary); color: white; padding: 12px; border-radius: 40px; margin-bottom: 8px; text-align: center;">
-                    <span>مكالمة واردة من <span id="caller-name"></span></span>
-                    <div style="margin-top: 8px;">
-                        <button id="accept-call" class="btn btn-success" style="width: auto; padding: 8px 20px;">قبول</button>
-                        <button id="reject-call" class="btn btn-danger" style="width: auto; padding: 8px 20px;">رفض</button>
+                <!-- لوحة المكالمة الواردة المحسنة -->
+                <div id="incoming-call" style="display: none; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 16px; border-radius: 40px; margin-bottom: 8px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideIn 0.3s ease;">
+                    <div style="font-size: 1.3rem; margin-bottom: 12px;">
+                        <i class="fas fa-phone-alt" style="margin-left: 8px;"></i>
+                        مكالمة واردة من <strong id="caller-name"></strong>
+                    </div>
+                    <div style="display: flex; gap: 15px; justify-content: center;">
+                        <button id="accept-call" class="btn btn-success" style="width: auto; padding: 10px 30px; border-radius: 60px;"><i class="fas fa-check"></i> قبول</button>
+                        <button id="reject-call" class="btn btn-danger" style="width: auto; padding: 10px 30px; border-radius: 60px;"><i class="fas fa-times"></i> رفض</button>
                     </div>
                 </div>
 
@@ -433,7 +483,7 @@
         <div id="about-screen" class="screen">
             <div class="card">
                 <h2 style="color: var(--primary);">حول</h2>
-                <p>الإصدار 4.1 - استجابة فورية وتحديث لحظي للمتصلين</p>
+                <p>الإصدار 4.2 - تصميم مكالمات محسن مع مؤقت وكتم الصوت</p>
                 <div class="back-btn-container">
                     <button class="back-btn" data-screen="login"><i class="fas fa-arrow-right"></i> العودة</button>
                 </div>
@@ -476,15 +526,17 @@
         </div>
     </div>
 
-    <!-- نافذة المكالمة الصوتية -->
+    <!-- نافذة المكالمة الصوتية المحسنة -->
     <div id="call-container" class="call-container">
         <div class="call-avatar" id="call-avatar">
             <i class="fas fa-user"></i>
         </div>
         <div class="call-info" id="call-info">جاري الاتصال...</div>
+        <div class="call-timer" id="call-timer" style="display: none;">00:00</div>
         <div class="call-actions">
-            <button class="call-btn" id="call-end-btn"><i class="fas fa-phone-slash"></i></button>
-            <button class="call-btn answer" id="call-answer-btn" style="display: none;"><i class="fas fa-phone"></i></button>
+            <button class="call-btn danger" id="call-end-btn" title="إنهاء المكالمة"><i class="fas fa-phone-slash"></i></button>
+            <button class="call-btn success" id="call-answer-btn" style="display: none;" title="رد على المكالمة"><i class="fas fa-phone"></i></button>
+            <button class="call-btn" id="call-mute-btn" title="كتم الميكروفون" style="display: none;"><i class="fas fa-microphone"></i></button>
         </div>
     </div>
 
@@ -575,8 +627,10 @@
         const callContainer = document.getElementById('call-container');
         const callAvatar = document.getElementById('call-avatar');
         const callInfo = document.getElementById('call-info');
+        const callTimer = document.getElementById('call-timer');
         const callEndBtn = document.getElementById('call-end-btn');
         const callAnswerBtn = document.getElementById('call-answer-btn');
+        const callMuteBtn = document.getElementById('call-mute-btn');
         const incomingCall = document.getElementById('incoming-call');
         const callerName = document.getElementById('caller-name');
         const acceptCall = document.getElementById('accept-call');
@@ -608,7 +662,16 @@
         let callTargetUserId = null;
         let callType = null; // 'offer' or 'answer'
         let ringAudio = null;
+        let callStartTime = null;
+        let callTimerInterval = null;
+        let isMuted = false;
         const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+        // أصوات محسنة
+        const ringSound = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3');
+        ringSound.loop = true;
+        const callStartSound = new Audio('https://www.soundjay.com/misc/sounds/phone-ringing-1.mp3');
+        const callEndSound = new Audio('https://www.soundjay.com/misc/sounds/phone-hang-up-1.mp3');
 
         // مراقبة حالة الاتصال
         const connectedRef = ref(db, ".info/connected");
@@ -831,7 +894,7 @@
             });
         }
 
-        // دوال WebRTC - محسنة من الكود الشغال
+        // دوال WebRTC - محسنة
         async function startCall(targetUserId) {
             try {
                 console.log('بدء مكالمة إلى:', targetUserId);
@@ -853,6 +916,8 @@
                     audio.srcObject = event.streams[0];
                     document.body.appendChild(audio);
                     callInfo.textContent = `تتحدث مع ${usersMap[callTargetUserId] || 'المستخدم'}`;
+                    startCallTimer();
+                    callStartSound.play().catch(e => console.log('لا يمكن تشغيل الصوت'));
                 };
                 
                 peerConnection.onicecandidate = (event) => {
@@ -883,8 +948,11 @@
                 
                 // عرض واجهة المكالمة
                 callAvatar.innerHTML = `<i class="fas fa-phone"></i>`;
+                callAvatar.classList.add('pulsing');
                 callInfo.textContent = `جارٍ الاتصال بـ ${usersMap[targetUserId] || 'المستخدم'}...`;
+                callTimer.style.display = 'none';
                 callAnswerBtn.style.display = 'none';
+                callMuteBtn.style.display = 'none';
                 callContainer.classList.add('active');
                 
                 // مهلة 30 ثانية
@@ -920,6 +988,8 @@
                     audio.srcObject = event.streams[0];
                     document.body.appendChild(audio);
                     callInfo.textContent = `تتحدث مع ${offerData.name}`;
+                    startCallTimer();
+                    callStartSound.play().catch(e => console.log('لا يمكن تشغيل الصوت'));
                 };
                 
                 peerConnection.onicecandidate = (event) => {
@@ -949,7 +1019,10 @@
                 });
                 
                 callAvatar.innerHTML = `<i class="fas fa-user"></i>`;
+                callAvatar.classList.remove('pulsing');
                 callInfo.textContent = `تتحدث مع ${offerData.name}`;
+                callTimer.style.display = 'block';
+                callMuteBtn.style.display = 'flex';
                 callAnswerBtn.style.display = 'none';
                 callContainer.classList.add('active');
                 
@@ -959,6 +1032,8 @@
                     ringAudio.pause();
                     ringAudio = null;
                 }
+                ringSound.pause();
+                ringSound.currentTime = 0;
                 
             } catch (err) {
                 console.error('خطأ في الرد على المكالمة:', err);
@@ -970,6 +1045,7 @@
         function endCall() {
             console.log('إنهاء المكالمة');
             if (callTimeout) clearTimeout(callTimeout);
+            stopCallTimer();
             
             if (peerConnection) {
                 peerConnection.close();
@@ -988,14 +1064,48 @@
             incomingCall.style.display = 'none';
             callTargetUserId = null;
             callType = null;
+            isMuted = false;
+            callMuteBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            callMuteBtn.classList.remove('muted');
             
-            if (ringAudio) {
-                ringAudio.pause();
-                ringAudio = null;
+            if (ringSound) {
+                ringSound.pause();
+                ringSound.currentTime = 0;
+            }
+            callEndSound.play().catch(e => console.log('لا يمكن تشغيل الصوت'));
+        }
+
+        function startCallTimer() {
+            callStartTime = Date.now();
+            callTimer.style.display = 'block';
+            callTimerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - callStartTime) / 1000);
+                const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+                const secs = (elapsed % 60).toString().padStart(2, '0');
+                callTimer.textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function stopCallTimer() {
+            if (callTimerInterval) {
+                clearInterval(callTimerInterval);
+                callTimerInterval = null;
             }
         }
 
-        // مراقبة المكالمات الواردة - محسنة للاستجابة الفورية
+        function toggleMute() {
+            if (!localStream) return;
+            const audioTrack = localStream.getAudioTracks()[0];
+            if (audioTrack) {
+                isMuted = !isMuted;
+                audioTrack.enabled = !isMuted;
+                callMuteBtn.innerHTML = isMuted ? '<i class="fas fa-microphone-slash"></i>' : '<i class="fas fa-microphone"></i>';
+                callMuteBtn.classList.toggle('muted', isMuted);
+                showNotification(isMuted ? 'تم كتم الميكروفون' : 'تم إلغاء الكتم');
+            }
+        }
+
+        // مراقبة المكالمات الواردة - محسنة
         function listenForCalls() {
             if (!currentRoom) return;
             
@@ -1005,10 +1115,8 @@
                 const offerData = snap.val();
                 if (!offerData) {
                     incomingCall.style.display = 'none';
-                    if (ringAudio) {
-                        ringAudio.pause();
-                        ringAudio = null;
-                    }
+                    ringSound.pause();
+                    ringSound.currentTime = 0;
                     return;
                 }
                 
@@ -1024,12 +1132,8 @@
                 callerName.textContent = offerData.name || 'مستخدم';
                 incomingCall.style.display = 'block';
                 
-                // تشغيل الرنة
-                if (!ringAudio) {
-                    ringAudio = new Audio('https://actions.google.com/sounds/v1/alarms/phone_alerts_and_rings.ogg');
-                    ringAudio.loop = true;
-                    ringAudio.play().catch(e => console.log('لا يمكن تشغيل الرنة تلقائياً'));
-                }
+                // تشغيل الرنة المحسنة
+                ringSound.play().catch(e => console.log('لا يمكن تشغيل الرنة تلقائياً'));
             });
             
             // الاستماع للإجابات (answers) - للمتصل
@@ -1042,6 +1146,10 @@
                     console.log('تم استقبال الإجابة');
                     clearTimeout(callTimeout);
                     await peerConnection.setRemoteDescription(new RTCSessionDescription(answerData));
+                    callAvatar.classList.remove('pulsing');
+                    callTimer.style.display = 'block';
+                    callMuteBtn.style.display = 'flex';
+                    callStartSound.play().catch(e => console.log('لا يمكن تشغيل الصوت'));
                 }
             });
             
@@ -1073,11 +1181,11 @@
 
         rejectCall.addEventListener('click', () => {
             incomingCall.style.display = 'none';
-            if (ringAudio) {
-                ringAudio.pause();
-                ringAudio = null;
-            }
+            ringSound.pause();
+            ringSound.currentTime = 0;
         });
+
+        callMuteBtn.addEventListener('click', toggleMute);
 
         function displayMessage(msg, isOwn, isSystem, msgId) {
             if (displayedMessages.has(msgId)) return;
@@ -1153,7 +1261,7 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
-        // تحسين تحديث قائمة المستخدمين - استجابة فورية
+        // تحسين تحديث قائمة المستخدمين
         function updateUsersLists(users) {
             const newUsersMap = {};
             const usersListHtml = [];
@@ -1170,18 +1278,13 @@
                 `);
             });
             
-            // تحديث الخريطة
             usersMap = newUsersMap;
-            
-            // تحديث العدد
             userCountSpan.textContent = `(${Object.keys(users).length})`;
             
-            // تحديث القائمة المنبثقة
             if (popupUsersList) {
                 popupUsersList.innerHTML = usersListHtml.join('');
             }
             
-            // تحديث قائمة الغرفة
             const roomList = document.getElementById('room-users-list');
             if (roomList) {
                 const roomUsersHtml = [];
@@ -1276,7 +1379,7 @@
         }
 
         function leaveRoom() {
-            endCall(); // إنهاء أي مكالمة نشطة
+            endCall();
             if (currentRoom && userId) {
                 push(ref(db, `rooms/${currentRoom}/messages`), { sender: 'نظام', text: `${currentUser} غادر الغرفة`, timestamp: Date.now() });
                 remove(ref(db, `rooms/${currentRoom}/users/${userId}`));
@@ -1518,11 +1621,9 @@
         // زر الاتصال الصوتي
         document.getElementById('call-user-btn').addEventListener('click', () => {
             if (!currentRoom) return;
-            // عرض قائمة المستخدمين للاتصال
             usersPopup.classList.toggle('show');
             popupOverlay.classList.toggle('show');
             
-            // تحويل كل user-item ليصبح قابل للنقر لبدء مكالمة
             document.querySelectorAll('#popup-users-list .user-item').forEach(item => {
                 const userName = item.querySelector('.user-name').textContent;
                 const targetId = Object.keys(usersMap).find(id => {
@@ -1544,7 +1645,6 @@
 
         callEndBtn.addEventListener('click', endCall);
 
-        // إغلاق نافذة المستخدمين
         function closeUsersPopup() {
             usersPopup.classList.remove('show');
             popupOverlay.classList.remove('show');
