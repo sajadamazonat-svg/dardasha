@@ -481,7 +481,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, push, onChildAdded, onDisconnect, get, remove, onValue, query, limitToLast, orderByChild } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, push, onChildAdded, onDisconnect, get, remove, onValue, query, limitToLast, orderByChild, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const { createFFmpeg, fetchFile } = window.FFmpeg;
         const ffmpeg = createFFmpeg({ 
@@ -596,6 +596,11 @@
         let callTargetUserId = null;
         let callType = null;
         const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+        
+        // مستمعي Firebase للمكالمات (لإزالتها لاحقاً)
+        let offersUnsubscribe = null;
+        let answersUnsubscribe = null;
+        let candidatesUnsubscribe = null;
 
         // مراقبة حالة الاتصال
         const connectedRef = ref(db, ".info/connected");
@@ -819,6 +824,8 @@
         // دوال WebRTC
         async function startCall(targetUserId) {
             try {
+                if (peerConnection) endCall();
+                
                 callTargetUserId = targetUserId;
                 callType = 'offer';
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -848,7 +855,8 @@
                 await set(ref(db, `calls/${currentRoom}/offers/${userId}`), {
                     offer: offer,
                     caller: currentUser,
-                    callee: targetUserId
+                    callee: targetUserId,
+                    timestamp: Date.now()
                 });
                 
                 callAvatar.innerHTML = `<i class="fas fa-phone"></i>`;
@@ -862,6 +870,7 @@
                 }, 30000);
                 
             } catch (err) {
+                console.error('startCall error', err);
                 showNotification('تعذر الوصول إلى الميكروفون', 'danger');
                 endCall();
             }
@@ -869,6 +878,8 @@
         
         async function answerCall(offerData, callerId) {
             try {
+                if (peerConnection) endCall();
+                
                 callTargetUserId = callerId;
                 callType = 'answer';
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -899,7 +910,8 @@
                 await set(ref(db, `calls/${currentRoom}/answers/${userId}`), {
                     answer: answer,
                     caller: offerData.caller,
-                    callee: currentUser
+                    callee: currentUser,
+                    timestamp: Date.now()
                 });
                 
                 callAvatar.innerHTML = `<i class="fas fa-user"></i>`;
@@ -908,6 +920,7 @@
                 callContainer.classList.add('active');
                 
             } catch (err) {
+                console.error('answerCall error', err);
                 showNotification('فشل الرد على المكالمة', 'danger');
                 endCall();
             }
@@ -936,16 +949,25 @@
             callType = null;
         }
 
-        // مراقبة المكالمات الواردة
+        // مراقبة المكالمات الواردة (مع إزالة المستمعين القدامى)
         function listenForCalls() {
             if (!currentRoom) return;
             
+            // إزالة المستمعين السابقين إن وجدوا
+            if (offersUnsubscribe) offersUnsubscribe();
+            if (answersUnsubscribe) answersUnsubscribe();
+            if (candidatesUnsubscribe) candidatesUnsubscribe();
+            
             const offersRef = ref(db, `calls/${currentRoom}/offers`);
-            onChildAdded(offersRef, (snap) => {
+            offersUnsubscribe = onChildAdded(offersRef, (snap) => {
                 const offerData = snap.val();
                 const callerId = snap.key;
                 
-                if (offerData.callee === currentUser && callerId !== userId && !peerConnection) {
+                // تجاهل إذا كان العرض من نفس المستخدم أو إذا كان هناك اتصال نشط
+                if (callerId === userId || peerConnection) return;
+                
+                // التأكد من أن العرض موجه إلينا
+                if (offerData.callee === currentUser) {
                     callAvatar.innerHTML = `<i class="fas fa-phone"></i>`;
                     callInfo.textContent = `مكالمة واردة من ${offerData.caller}`;
                     callAnswerBtn.style.display = 'flex';
@@ -965,18 +987,22 @@
             });
             
             const answersRef = ref(db, `calls/${currentRoom}/answers`);
-            onChildAdded(answersRef, async (snap) => {
+            answersUnsubscribe = onChildAdded(answersRef, async (snap) => {
                 const answerData = snap.val();
                 const answererId = snap.key;
                 
                 if (callType === 'offer' && answererId === callTargetUserId && peerConnection && peerConnection.signalingState === 'have-local-offer') {
                     clearTimeout(callTimeout);
-                    await peerConnection.setRemoteDescription(new RTCSessionDescription(answerData.answer));
+                    try {
+                        await peerConnection.setRemoteDescription(new RTCSessionDescription(answerData.answer));
+                    } catch (e) {
+                        console.error('Error setting remote description:', e);
+                    }
                 }
             });
             
             const candidatesRef = ref(db, `calls/${currentRoom}/candidates`);
-            onChildAdded(candidatesRef, (snap) => {
+            candidatesUnsubscribe = onChildAdded(candidatesRef, (snap) => {
                 const candidateData = snap.val();
                 const candidateUserId = snap.key;
                 if (!peerConnection || candidateUserId === userId) return;
@@ -986,91 +1012,16 @@
             });
         }
 
-        function displayMessage(msg, isOwn, isSystem, msgId) {
-            if (displayedMessages.has(msgId)) return;
-            displayedMessages.add(msgId);
-            const div = document.createElement('div');
-            div.className = `message ${isOwn ? 'own' : ''} ${isSystem ? 'system' : ''}`;
-            if (!isSystem) {
-                const nameSpan = document.createElement('div');
-                nameSpan.className = 'username';
-                nameSpan.textContent = msg.sender === ADMIN_LOGIN ? ADMIN_DISPLAY : msg.sender;
-                if (msg.sender === ADMIN_LOGIN) {
-                    const icon = document.createElement('i');
-                    icon.className = 'fas fa-crown';
-                    icon.style.fontSize = '0.7rem';
-                    icon.style.color = '#fbbf24';
-                    nameSpan.appendChild(icon);
-                }
-                div.appendChild(nameSpan);
-            }
-            if (msg.type === 'image') {
-                const img = document.createElement('img');
-                img.src = msg.text;
-                img.className = 'message-image';
-                img.addEventListener('click', () => {
-                    document.getElementById('modalMediaContainer').innerHTML = `<img src="${msg.text}" class="modal-media">`;
-                    document.getElementById('mediaModal').classList.add('active');
-                });
-                div.appendChild(img);
-            } else if (msg.type === 'video') {
-                const video = document.createElement('video');
-                video.src = msg.text;
-                video.controls = true;
-                video.className = 'message-image';
-                video.addEventListener('click', () => {
-                    document.getElementById('modalMediaContainer').innerHTML = `<video src="${msg.text}" controls class="modal-media"></video>`;
-                    document.getElementById('mediaModal').classList.add('active');
-                });
-                div.appendChild(video);
-            } else if (msg.type === 'audio') {
-                const audioDiv = document.createElement('div');
-                audioDiv.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:10px; width:100%;">
-                        <button class="audio-play-btn" style="width:40px;height:40px;border-radius:50%;background:var(--primary);color:white;border:none;"><i class="fas fa-play"></i></button>
-                        <div style="flex:1;height:4px;background:rgba(255,255,255,0.3);border-radius:2px;"><div class="audio-progress-filled" style="width:0%;height:100%;background:white;border-radius:2px;"></div></div>
-                        <span class="audio-duration" style="font-size:0.75rem;">00:00</span>
-                    </div>
-                `;
-                const audio = new Audio(msg.text);
-                const playBtn = audioDiv.querySelector('.audio-play-btn');
-                const progressFilled = audioDiv.querySelector('.audio-progress-filled');
-                const durationSpan = audioDiv.querySelector('.audio-duration');
-                playBtn.addEventListener('click', () => {
-                    if (audio.paused) { audio.play(); playBtn.innerHTML = '<i class="fas fa-pause"></i>'; }
-                    else { audio.pause(); playBtn.innerHTML = '<i class="fas fa-play"></i>'; }
-                });
-                audio.addEventListener('timeupdate', () => {
-                    const percent = (audio.currentTime / audio.duration) * 100;
-                    progressFilled.style.width = percent + '%';
-                    const mins = Math.floor(audio.currentTime / 60);
-                    const secs = Math.floor(audio.currentTime % 60);
-                    durationSpan.textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
-                });
-                audio.addEventListener('ended', () => { playBtn.innerHTML = '<i class="fas fa-play"></i>'; progressFilled.style.width = '0%'; });
-                div.appendChild(audioDiv);
-            } else {
-                div.appendChild(document.createTextNode(msg.text));
-            }
-            const timeSpan = document.createElement('div');
-            timeSpan.className = 'time';
-            timeSpan.textContent = new Date(msg.timestamp).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-            div.appendChild(timeSpan);
-            messagesContainer.appendChild(div);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
         // تحديث قائمة المستخدمين مع فلترة القديم
         function updateUsersLists(users) {
             usersMap = {};
             const onlineUsers = {};
             const now = Date.now();
-            const maxAge = 40000; // 40 ثانية كحد أقصى لاعتبار المستخدم متصلاً
+            const maxAge = 45000; // 45 ثانية كحد أقصى
             
             Object.keys(users).forEach(key => {
                 const user = users[key];
                 if (user && user.name) {
-                    // التحقق من أن آخر نشاط خلال 40 ثانية
                     const lastActive = user.lastActive || user.joinedAt || 0;
                     if (now - lastActive < maxAge) {
                         usersMap[key] = user.name;
@@ -1111,7 +1062,7 @@
             }
         }
 
-        // نبضات القلب للحفاظ على حالة الاتصال
+        // نبضات القلب
         function startHeartbeat() {
             if (heartbeatInterval) clearInterval(heartbeatInterval);
             heartbeatInterval = setInterval(() => {
@@ -1119,7 +1070,7 @@
                     const userRef = ref(db, `rooms/${currentRoom}/users/${userId}`);
                     update(userRef, { lastActive: Date.now() }).catch(() => {});
                 }
-            }, 20000); // كل 20 ثانية
+            }, 20000);
         }
 
         function stopHeartbeat() {
@@ -1173,7 +1124,12 @@
         }
 
         async function enterChat(room, name) {
-            if (messagesUnsubscribe) messagesUnsubscribe(); if (usersUnsubscribe) usersUnsubscribe();
+            if (messagesUnsubscribe) messagesUnsubscribe(); 
+            if (usersUnsubscribe) usersUnsubscribe();
+            
+            // إنهاء أي مكالمة سابقة
+            endCall();
+            
             displayedMessages.clear();
             currentRoom = room;
             const isAdmin = (name === ADMIN_LOGIN);
@@ -1190,16 +1146,17 @@
                 lastActive: Date.now()
             });
             
-            // تنظيف عند قطع الاتصال
-            onDisconnect(userRef).update({ lastActive: Date.now() - 60000 }); // جعله منتهي الصلاحية
+            onDisconnect(userRef).update({ lastActive: Date.now() - 60000 }); // ينتهي بعد دقيقة
             onDisconnect(ref(db, `rooms/${room}/typing/${userId}`)).remove();
             
             await push(ref(db, `rooms/${room}/messages`), { sender: 'نظام', text: `${currentUser} دخل الغرفة`, timestamp: Date.now() });
+            
             monitorRoomUsers(room);
             setupTyping(room, userId);
             listenTyping(room);
             setupMessageListener();
             
+            // استماع للمكالمات
             listenForCalls();
             startHeartbeat();
 
@@ -1215,12 +1172,20 @@
         function leaveRoom() {
             stopHeartbeat();
             endCall();
+            
+            // إزالة مستمعي المكالمات
+            if (offersUnsubscribe) offersUnsubscribe();
+            if (answersUnsubscribe) answersUnsubscribe();
+            if (candidatesUnsubscribe) candidatesUnsubscribe();
+            
             if (currentRoom && userId) {
                 push(ref(db, `rooms/${currentRoom}/messages`), { sender: 'نظام', text: `${currentUser} غادر الغرفة`, timestamp: Date.now() });
                 remove(ref(db, `rooms/${currentRoom}/users/${userId}`));
                 remove(ref(db, `rooms/${currentRoom}/typing/${userId}`));
             }
-            if (messagesUnsubscribe) messagesUnsubscribe(); if (usersUnsubscribe) usersUnsubscribe();
+            if (messagesUnsubscribe) messagesUnsubscribe(); 
+            if (usersUnsubscribe) usersUnsubscribe();
+            
             displayedMessages.clear();
             currentRoom = currentUser = userId = messagesRef = null;
             messagesContainer.innerHTML = '';
