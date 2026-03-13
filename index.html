@@ -817,9 +817,10 @@
             });
         }
 
-        // دوال WebRTC
+        // دوال WebRTC - محسنة
         async function startCall(targetUserId) {
             try {
+                console.log('بدء مكالمة إلى:', targetUserId);
                 callTargetUserId = targetUserId;
                 callType = 'offer';
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -828,18 +829,19 @@
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
                 
                 peerConnection.ontrack = (event) => {
-                    // تم استقبال الصوت البعيد
+                    console.log('تم استقبال الصوت البعيد');
                     callInfo.textContent = `تتحدث مع ${usersMap[callTargetUserId] || 'المستخدم'}`;
                 };
                 
                 peerConnection.onicecandidate = (event) => {
                     if (event.candidate) {
-                        // إرسال المرشح إلى الطرف الآخر عبر Firebase
+                        console.log('إرسال مرشح ICE');
                         push(ref(db, `calls/${currentRoom}/candidates/${userId}`), event.candidate.toJSON());
                     }
                 };
                 
                 peerConnection.oniceconnectionstatechange = () => {
+                    console.log('حالة ICE:', peerConnection.iceConnectionState);
                     if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'failed') {
                         endCall();
                     }
@@ -868,6 +870,7 @@
                 }, 30000);
                 
             } catch (err) {
+                console.error('خطأ في بدء المكالمة:', err);
                 showNotification('تعذر الوصول إلى الميكروفون', 'danger');
                 endCall();
             }
@@ -875,6 +878,7 @@
         
         async function answerCall(offerData, callerId) {
             try {
+                console.log('الرد على مكالمة من:', callerId);
                 callTargetUserId = callerId;
                 callType = 'answer';
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -883,16 +887,19 @@
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
                 
                 peerConnection.ontrack = (event) => {
+                    console.log('تم استقبال الصوت البعيد');
                     callInfo.textContent = `تتحدث مع ${offerData.caller}`;
                 };
                 
                 peerConnection.onicecandidate = (event) => {
                     if (event.candidate) {
+                        console.log('إرسال مرشح ICE');
                         push(ref(db, `calls/${currentRoom}/candidates/${userId}`), event.candidate.toJSON());
                     }
                 };
                 
                 peerConnection.oniceconnectionstatechange = () => {
+                    console.log('حالة ICE:', peerConnection.iceConnectionState);
                     if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'failed') {
                         endCall();
                     }
@@ -914,12 +921,14 @@
                 callContainer.classList.add('active');
                 
             } catch (err) {
+                console.error('خطأ في الرد على المكالمة:', err);
                 showNotification('فشل الرد على المكالمة', 'danger');
                 endCall();
             }
         }
         
         function endCall() {
+            console.log('إنهاء المكالمة');
             if (callTimeout) clearTimeout(callTimeout);
             
             if (peerConnection) {
@@ -943,7 +952,7 @@
             callType = null;
         }
 
-        // مراقبة المكالمات الواردة
+        // مراقبة المكالمات الواردة - محسنة
         function listenForCalls() {
             if (!currentRoom) return;
             
@@ -952,13 +961,20 @@
             onChildAdded(offersRef, (snap) => {
                 const offerData = snap.val();
                 const callerId = snap.key;
+                console.log('عرض وارد من:', callerId, offerData);
+                
                 // التأكد أن العرض موجه إلينا وأنا لست المتصل
                 if (offerData.callee === currentUser && callerId !== userId && !peerConnection) {
+                    console.log('عرض مناسب لي، عرض الإشعار');
+                    
                     // عرض إشعار بالمكالمة الواردة
                     callAvatar.innerHTML = `<i class="fas fa-phone"></i>`;
                     callInfo.textContent = `مكالمة واردة من ${offerData.caller}`;
                     callAnswerBtn.style.display = 'flex';
                     callContainer.classList.add('active');
+                    
+                    // تخزين بيانات العرض للرد
+                    callTargetUserId = callerId;
                     
                     callAnswerBtn.onclick = () => {
                         answerCall(offerData, callerId);
@@ -977,7 +993,10 @@
             onChildAdded(answersRef, async (snap) => {
                 const answerData = snap.val();
                 const answererId = snap.key;
+                console.log('إجابة واردة من:', answererId, answerData);
+                
                 if (callType === 'offer' && answererId === callTargetUserId && peerConnection && peerConnection.signalingState === 'have-local-offer') {
+                    console.log('تم استقبال الإجابة، تعيين الوصف البعيد');
                     clearTimeout(callTimeout);
                     await peerConnection.setRemoteDescription(new RTCSessionDescription(answerData.answer));
                 }
@@ -989,7 +1008,8 @@
                 const candidateData = snap.val();
                 const candidateUserId = snap.key;
                 if (!peerConnection || candidateUserId === userId) return;
-                // إضافة المرشح إذا كان الاتصال نشطاً
+                
+                console.log('مرشح وارد من:', candidateUserId);
                 const candidate = new RTCIceCandidate(candidateData);
                 peerConnection.addIceCandidate(candidate).catch(e => console.log('خطأ في إضافة مرشح:', e));
             });
