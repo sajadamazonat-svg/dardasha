@@ -348,6 +348,15 @@
                 </div>
                 <div id="popup-overlay" class="sidebar-overlay"></div>
 
+                <!-- لوحة المكالمة الواردة -->
+                <div id="incoming-call" style="display: none; background: var(--primary); color: white; padding: 12px; border-radius: 40px; margin-bottom: 8px; text-align: center;">
+                    <span>مكالمة واردة من <span id="caller-name"></span></span>
+                    <div style="margin-top: 8px;">
+                        <button id="accept-call" class="btn btn-success" style="width: auto; padding: 8px 20px;">قبول</button>
+                        <button id="reject-call" class="btn btn-danger" style="width: auto; padding: 8px 20px;">رفض</button>
+                    </div>
+                </div>
+
                 <div id="messages-container" class="messages-container">
                     <div class="typing-indicator" id="typing-indicator"></div>
                 </div>
@@ -568,6 +577,10 @@
         const callInfo = document.getElementById('call-info');
         const callEndBtn = document.getElementById('call-end-btn');
         const callAnswerBtn = document.getElementById('call-answer-btn');
+        const incomingCall = document.getElementById('incoming-call');
+        const callerName = document.getElementById('caller-name');
+        const acceptCall = document.getElementById('accept-call');
+        const rejectCall = document.getElementById('reject-call');
 
         // متغيرات الحالة
         let currentRoom = null, currentUser = null, userId = null, messagesRef = null, typingTimeout = null;
@@ -594,6 +607,7 @@
         let callTimeout = null;
         let callTargetUserId = null;
         let callType = null; // 'offer' or 'answer'
+        let ringAudio = null;
         const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
         // مراقبة حالة الاتصال
@@ -817,26 +831,34 @@
             });
         }
 
-        // دوال WebRTC - محسنة
+        // دوال WebRTC - محسنة من الكود الشغال
         async function startCall(targetUserId) {
             try {
                 console.log('بدء مكالمة إلى:', targetUserId);
                 callTargetUserId = targetUserId;
                 callType = 'offer';
-                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                if (!localStream) {
+                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                }
+                
                 peerConnection = new RTCPeerConnection(configuration);
                 
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
                 
                 peerConnection.ontrack = (event) => {
                     console.log('تم استقبال الصوت البعيد');
+                    const audio = document.createElement('audio');
+                    audio.autoplay = true;
+                    audio.srcObject = event.streams[0];
+                    document.body.appendChild(audio);
                     callInfo.textContent = `تتحدث مع ${usersMap[callTargetUserId] || 'المستخدم'}`;
                 };
                 
                 peerConnection.onicecandidate = (event) => {
                     if (event.candidate) {
                         console.log('إرسال مرشح ICE');
-                        push(ref(db, `calls/${currentRoom}/candidates/${userId}`), event.candidate.toJSON());
+                        push(ref(db, `calls/${currentRoom}/callerCandidates`), event.candidate.toJSON());
                     }
                 };
                 
@@ -851,10 +873,12 @@
                 await peerConnection.setLocalDescription(offer);
                 
                 // إرسال العرض إلى Firebase
-                await set(ref(db, `calls/${currentRoom}/offers/${userId}`), {
-                    offer: offer,
-                    caller: currentUser,
-                    callee: targetUserId
+                await set(ref(db, `calls/${currentRoom}/offer`), {
+                    type: offer.type,
+                    sdp: offer.sdp,
+                    from: userId,
+                    name: currentUser,
+                    ts: Date.now()
                 });
                 
                 // عرض واجهة المكالمة
@@ -876,25 +900,32 @@
             }
         }
         
-        async function answerCall(offerData, callerId) {
+        async function answerCall(offerData) {
             try {
-                console.log('الرد على مكالمة من:', callerId);
-                callTargetUserId = callerId;
+                console.log('الرد على مكالمة');
                 callType = 'answer';
-                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                if (!localStream) {
+                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                }
+                
                 peerConnection = new RTCPeerConnection(configuration);
                 
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
                 
                 peerConnection.ontrack = (event) => {
                     console.log('تم استقبال الصوت البعيد');
-                    callInfo.textContent = `تتحدث مع ${offerData.caller}`;
+                    const audio = document.createElement('audio');
+                    audio.autoplay = true;
+                    audio.srcObject = event.streams[0];
+                    document.body.appendChild(audio);
+                    callInfo.textContent = `تتحدث مع ${offerData.name}`;
                 };
                 
                 peerConnection.onicecandidate = (event) => {
                     if (event.candidate) {
                         console.log('إرسال مرشح ICE');
-                        push(ref(db, `calls/${currentRoom}/candidates/${userId}`), event.candidate.toJSON());
+                        push(ref(db, `calls/${currentRoom}/calleeCandidates`), event.candidate.toJSON());
                     }
                 };
                 
@@ -905,20 +936,29 @@
                     }
                 };
                 
-                await peerConnection.setRemoteDescription(new RTCSessionDescription(offerData.offer));
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(offerData));
                 const answer = await peerConnection.createAnswer();
                 await peerConnection.setLocalDescription(answer);
                 
-                await set(ref(db, `calls/${currentRoom}/answers/${userId}`), {
-                    answer: answer,
-                    caller: offerData.caller,
-                    callee: currentUser
+                await set(ref(db, `calls/${currentRoom}/answer`), {
+                    type: answer.type,
+                    sdp: answer.sdp,
+                    from: userId,
+                    name: currentUser,
+                    ts: Date.now()
                 });
                 
                 callAvatar.innerHTML = `<i class="fas fa-user"></i>`;
-                callInfo.textContent = `تتحدث مع ${offerData.caller}`;
+                callInfo.textContent = `تتحدث مع ${offerData.name}`;
                 callAnswerBtn.style.display = 'none';
                 callContainer.classList.add('active');
+                
+                // إخفاء لوحة المكالمة الواردة
+                incomingCall.style.display = 'none';
+                if (ringAudio) {
+                    ringAudio.pause();
+                    ringAudio = null;
+                }
                 
             } catch (err) {
                 console.error('خطأ في الرد على المكالمة:', err);
@@ -935,85 +975,109 @@
                 peerConnection.close();
                 peerConnection = null;
             }
-            if (localStream) {
-                localStream.getTracks().forEach(track => track.stop());
-                localStream = null;
-            }
             
             // حذف بيانات المكالمة من Firebase
-            if (currentRoom && userId) {
-                remove(ref(db, `calls/${currentRoom}/offers/${userId}`));
-                remove(ref(db, `calls/${currentRoom}/answers/${userId}`));
-                remove(ref(db, `calls/${currentRoom}/candidates/${userId}`));
+            if (currentRoom) {
+                remove(ref(db, `calls/${currentRoom}/offer`));
+                remove(ref(db, `calls/${currentRoom}/answer`));
+                remove(ref(db, `calls/${currentRoom}/callerCandidates`));
+                remove(ref(db, `calls/${currentRoom}/calleeCandidates`));
             }
             
             callContainer.classList.remove('active');
+            incomingCall.style.display = 'none';
             callTargetUserId = null;
             callType = null;
+            
+            if (ringAudio) {
+                ringAudio.pause();
+                ringAudio = null;
+            }
         }
 
-        // مراقبة المكالمات الواردة - محسنة
+        // مراقبة المكالمات الواردة
         function listenForCalls() {
             if (!currentRoom) return;
             
             // الاستماع للعروض (offers)
-            const offersRef = ref(db, `calls/${currentRoom}/offers`);
-            onChildAdded(offersRef, (snap) => {
+            const offersRef = ref(db, `calls/${currentRoom}/offer`);
+            onValue(offersRef, (snap) => {
                 const offerData = snap.val();
-                const callerId = snap.key;
-                console.log('عرض وارد من:', callerId, offerData);
+                if (!offerData) {
+                    incomingCall.style.display = 'none';
+                    if (ringAudio) {
+                        ringAudio.pause();
+                        ringAudio = null;
+                    }
+                    return;
+                }
                 
-                // التأكد أن العرض موجه إلينا وأنا لست المتصل
-                if (offerData.callee === currentUser && callerId !== userId && !peerConnection) {
-                    console.log('عرض مناسب لي، عرض الإشعار');
-                    
-                    // عرض إشعار بالمكالمة الواردة
-                    callAvatar.innerHTML = `<i class="fas fa-phone"></i>`;
-                    callInfo.textContent = `مكالمة واردة من ${offerData.caller}`;
-                    callAnswerBtn.style.display = 'flex';
-                    callContainer.classList.add('active');
-                    
-                    // تخزين بيانات العرض للرد
-                    callTargetUserId = callerId;
-                    
-                    callAnswerBtn.onclick = () => {
-                        answerCall(offerData, callerId);
-                    };
-                    
-                    // مهلة 30 ثانية
-                    callTimeout = setTimeout(() => {
-                        callContainer.classList.remove('active');
-                        showNotification('لم يتم الرد على المكالمة', 'danger');
-                    }, 30000);
+                // إذا العرض من نفس المستخدم فتجاهل
+                if (offerData.from === userId) return;
+                
+                // إذا كنا في مكالمة بالفعل، تجاهل العرض الجديد
+                if (peerConnection) return;
+                
+                console.log('عرض وارد من:', offerData.from);
+                
+                // عرض لوحة المكالمة الواردة
+                callerName.textContent = offerData.name || 'مستخدم';
+                incomingCall.style.display = 'block';
+                
+                // تشغيل الرنة
+                if (!ringAudio) {
+                    ringAudio = new Audio('https://actions.google.com/sounds/v1/alarms/phone_alerts_and_rings.ogg');
+                    ringAudio.loop = true;
+                    ringAudio.play().catch(e => console.log('لا يمكن تشغيل الرنة تلقائياً'));
                 }
             });
             
             // الاستماع للإجابات (answers) - للمتصل
-            const answersRef = ref(db, `calls/${currentRoom}/answers`);
-            onChildAdded(answersRef, async (snap) => {
+            const answersRef = ref(db, `calls/${currentRoom}/answer`);
+            onValue(answersRef, async (snap) => {
                 const answerData = snap.val();
-                const answererId = snap.key;
-                console.log('إجابة واردة من:', answererId, answerData);
+                if (!answerData) return;
                 
-                if (callType === 'offer' && answererId === callTargetUserId && peerConnection && peerConnection.signalingState === 'have-local-offer') {
-                    console.log('تم استقبال الإجابة، تعيين الوصف البعيد');
+                if (callType === 'offer' && answerData.from !== userId && peerConnection && peerConnection.signalingState === 'have-local-offer') {
+                    console.log('تم استقبال الإجابة');
                     clearTimeout(callTimeout);
-                    await peerConnection.setRemoteDescription(new RTCSessionDescription(answerData.answer));
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(answerData));
                 }
             });
             
-            // الاستماع للمرشحين (candidates) - لكلا الطرفين
-            const candidatesRef = ref(db, `calls/${currentRoom}/candidates`);
-            onChildAdded(candidatesRef, (snap) => {
+            // الاستماع للمرشحين (candidates) - للمتصل
+            const calleeCandidatesRef = ref(db, `calls/${currentRoom}/calleeCandidates`);
+            onChildAdded(calleeCandidatesRef, (snap) => {
                 const candidateData = snap.val();
-                const candidateUserId = snap.key;
-                if (!peerConnection || candidateUserId === userId) return;
-                
-                console.log('مرشح وارد من:', candidateUserId);
+                if (!peerConnection || callType !== 'offer') return;
+                const candidate = new RTCIceCandidate(candidateData);
+                peerConnection.addIceCandidate(candidate).catch(e => console.log('خطأ في إضافة مرشح:', e));
+            });
+            
+            // الاستماع للمرشحين (candidates) - للمجيب
+            const callerCandidatesRef = ref(db, `calls/${currentRoom}/callerCandidates`);
+            onChildAdded(callerCandidatesRef, (snap) => {
+                const candidateData = snap.val();
+                if (!peerConnection || callType !== 'answer') return;
                 const candidate = new RTCIceCandidate(candidateData);
                 peerConnection.addIceCandidate(candidate).catch(e => console.log('خطأ في إضافة مرشح:', e));
             });
         }
+
+        acceptCall.addEventListener('click', async () => {
+            const snap = await get(ref(db, `calls/${currentRoom}/offer`));
+            if (snap.exists()) {
+                await answerCall(snap.val());
+            }
+        });
+
+        rejectCall.addEventListener('click', () => {
+            incomingCall.style.display = 'none';
+            if (ringAudio) {
+                ringAudio.pause();
+                ringAudio = null;
+            }
+        });
 
         function displayMessage(msg, isOwn, isSystem, msgId) {
             if (displayedMessages.has(msgId)) return;
