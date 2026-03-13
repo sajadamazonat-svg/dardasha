@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>اسهل حل | دردشة متطورة مع اتصال صوتي فوري</title>
+    <title>اسهل حل | دردشة متطورة مع اتصال صوتي</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts (Cairo) -->
@@ -142,14 +142,14 @@
         .user-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; }
         .user-name { flex: 1; font-weight: 600; font-size: 0.95rem; }
 
-        /* نافذة المكالمة الصوتية المحسنة */
+        /* نافذة المكالمة الصوتية */
         .call-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(10px);
             z-index: 10000;
             display: none;
@@ -157,94 +157,47 @@
             align-items: center;
             justify-content: center;
             color: white;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
         }
         .call-container.active { display: flex; }
         .call-avatar {
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(5px);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 4rem;
             color: white;
             margin-bottom: 20px;
-            border: 4px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
-        }
-        .call-avatar.pulsing {
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
-            50% { transform: scale(1.05); box-shadow: 0 0 20px 10px rgba(255,255,255,0.3); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
+            border: 4px solid white;
         }
         .call-info {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        .call-timer {
-            font-size: 2rem;
-            font-weight: bold;
+            font-size: 1.5rem;
             margin-bottom: 30px;
-            background: rgba(0,0,0,0.2);
-            padding: 10px 30px;
-            border-radius: 50px;
-            direction: ltr;
-            letter-spacing: 2px;
         }
         .call-actions {
             display: flex;
             gap: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
         }
         .call-btn {
             width: 70px;
             height: 70px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(5px);
+            background: var(--danger);
             color: white;
-            border: 2px solid rgba(255, 255, 255, 0.5);
+            border: none;
             font-size: 2rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        .call-btn:hover {
-            transform: scale(1.1);
-            background: rgba(255, 255, 255, 0.3);
-        }
-        .call-btn.danger {
-            background: var(--danger);
-            border-color: rgba(255, 255, 255, 0.8);
-        }
-        .call-btn.success {
+        .call-btn.answer {
             background: var(--success);
-            border-color: rgba(255, 255, 255, 0.8);
         }
-        .call-btn.muted {
-            background: var(--warning);
-            opacity: 0.8;
-        }
-        .call-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .call-btn:hover { transform: scale(1.1); }
 
         .room-code-large { font-size: 3rem; font-weight: 800; color: var(--primary); text-align: center; direction: ltr; letter-spacing: 6px; background: white; padding: 8px 16px; border-radius: 60px; margin: 16px auto; border: 3px solid var(--primary); box-shadow: var(--shadow); }
         .room-detail { background: rgba(255,255,255,0.6); backdrop-filter: blur(12px); border-radius: 36px; padding: 16px; margin: 12px 0; border: 1px solid white; }
@@ -395,18 +348,6 @@
                 </div>
                 <div id="popup-overlay" class="sidebar-overlay"></div>
 
-                <!-- لوحة المكالمة الواردة المحسنة -->
-                <div id="incoming-call" style="display: none; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 16px; border-radius: 40px; margin-bottom: 8px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideIn 0.3s ease;">
-                    <div style="font-size: 1.3rem; margin-bottom: 12px;">
-                        <i class="fas fa-phone-alt" style="margin-left: 8px;"></i>
-                        مكالمة واردة من <strong id="caller-name"></strong>
-                    </div>
-                    <div style="display: flex; gap: 15px; justify-content: center;">
-                        <button id="accept-call" class="btn btn-success" style="width: auto; padding: 10px 30px; border-radius: 60px;"><i class="fas fa-check"></i> قبول</button>
-                        <button id="reject-call" class="btn btn-danger" style="width: auto; padding: 10px 30px; border-radius: 60px;"><i class="fas fa-times"></i> رفض</button>
-                    </div>
-                </div>
-
                 <div id="messages-container" class="messages-container">
                     <div class="typing-indicator" id="typing-indicator"></div>
                 </div>
@@ -483,7 +424,7 @@
         <div id="about-screen" class="screen">
             <div class="card">
                 <h2 style="color: var(--primary);">حول</h2>
-                <p>الإصدار 4.2 - تصميم مكالمات محسن مع مؤقت وكتم الصوت</p>
+                <p>الإصدار 4.0 - مع اتصال صوتي مباشر</p>
                 <div class="back-btn-container">
                     <button class="back-btn" data-screen="login"><i class="fas fa-arrow-right"></i> العودة</button>
                 </div>
@@ -526,17 +467,15 @@
         </div>
     </div>
 
-    <!-- نافذة المكالمة الصوتية المحسنة -->
+    <!-- نافذة المكالمة الصوتية -->
     <div id="call-container" class="call-container">
         <div class="call-avatar" id="call-avatar">
             <i class="fas fa-user"></i>
         </div>
         <div class="call-info" id="call-info">جاري الاتصال...</div>
-        <div class="call-timer" id="call-timer" style="display: none;">00:00</div>
         <div class="call-actions">
-            <button class="call-btn danger" id="call-end-btn" title="إنهاء المكالمة"><i class="fas fa-phone-slash"></i></button>
-            <button class="call-btn success" id="call-answer-btn" style="display: none;" title="رد على المكالمة"><i class="fas fa-phone"></i></button>
-            <button class="call-btn" id="call-mute-btn" title="كتم الميكروفون" style="display: none;"><i class="fas fa-microphone"></i></button>
+            <button class="call-btn" id="call-end-btn"><i class="fas fa-phone-slash"></i></button>
+            <button class="call-btn answer" id="call-answer-btn" style="display: none;"><i class="fas fa-phone"></i></button>
         </div>
     </div>
 
@@ -627,14 +566,8 @@
         const callContainer = document.getElementById('call-container');
         const callAvatar = document.getElementById('call-avatar');
         const callInfo = document.getElementById('call-info');
-        const callTimer = document.getElementById('call-timer');
         const callEndBtn = document.getElementById('call-end-btn');
         const callAnswerBtn = document.getElementById('call-answer-btn');
-        const callMuteBtn = document.getElementById('call-mute-btn');
-        const incomingCall = document.getElementById('incoming-call');
-        const callerName = document.getElementById('caller-name');
-        const acceptCall = document.getElementById('accept-call');
-        const rejectCall = document.getElementById('reject-call');
 
         // متغيرات الحالة
         let currentRoom = null, currentUser = null, userId = null, messagesRef = null, typingTimeout = null;
@@ -661,17 +594,7 @@
         let callTimeout = null;
         let callTargetUserId = null;
         let callType = null; // 'offer' or 'answer'
-        let ringAudio = null;
-        let callStartTime = null;
-        let callTimerInterval = null;
-        let isMuted = false;
         const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-
-        // أصوات محسنة
-        const ringSound = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3');
-        ringSound.loop = true;
-        const callStartSound = new Audio('https://www.soundjay.com/misc/sounds/phone-ringing-1.mp3');
-        const callEndSound = new Audio('https://www.soundjay.com/misc/sounds/phone-hang-up-1.mp3');
 
         // مراقبة حالة الاتصال
         const connectedRef = ref(db, ".info/connected");
@@ -900,30 +823,20 @@
                 console.log('بدء مكالمة إلى:', targetUserId);
                 callTargetUserId = targetUserId;
                 callType = 'offer';
-                
-                if (!localStream) {
-                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                }
-                
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 peerConnection = new RTCPeerConnection(configuration);
                 
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
                 
                 peerConnection.ontrack = (event) => {
                     console.log('تم استقبال الصوت البعيد');
-                    const audio = document.createElement('audio');
-                    audio.autoplay = true;
-                    audio.srcObject = event.streams[0];
-                    document.body.appendChild(audio);
                     callInfo.textContent = `تتحدث مع ${usersMap[callTargetUserId] || 'المستخدم'}`;
-                    startCallTimer();
-                    callStartSound.play().catch(e => console.log('لا يمكن تشغيل الصوت'));
                 };
                 
                 peerConnection.onicecandidate = (event) => {
                     if (event.candidate) {
                         console.log('إرسال مرشح ICE');
-                        push(ref(db, `calls/${currentRoom}/callerCandidates`), event.candidate.toJSON());
+                        push(ref(db, `calls/${currentRoom}/candidates/${userId}`), event.candidate.toJSON());
                     }
                 };
                 
@@ -938,21 +851,16 @@
                 await peerConnection.setLocalDescription(offer);
                 
                 // إرسال العرض إلى Firebase
-                await set(ref(db, `calls/${currentRoom}/offer`), {
-                    type: offer.type,
-                    sdp: offer.sdp,
-                    from: userId,
-                    name: currentUser,
-                    ts: Date.now()
+                await set(ref(db, `calls/${currentRoom}/offers/${userId}`), {
+                    offer: offer,
+                    caller: currentUser,
+                    callee: targetUserId
                 });
                 
                 // عرض واجهة المكالمة
                 callAvatar.innerHTML = `<i class="fas fa-phone"></i>`;
-                callAvatar.classList.add('pulsing');
                 callInfo.textContent = `جارٍ الاتصال بـ ${usersMap[targetUserId] || 'المستخدم'}...`;
-                callTimer.style.display = 'none';
                 callAnswerBtn.style.display = 'none';
-                callMuteBtn.style.display = 'none';
                 callContainer.classList.add('active');
                 
                 // مهلة 30 ثانية
@@ -968,34 +876,25 @@
             }
         }
         
-        async function answerCall(offerData) {
+        async function answerCall(offerData, callerId) {
             try {
-                console.log('الرد على مكالمة');
+                console.log('الرد على مكالمة من:', callerId);
+                callTargetUserId = callerId;
                 callType = 'answer';
-                
-                if (!localStream) {
-                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                }
-                
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 peerConnection = new RTCPeerConnection(configuration);
                 
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
                 
                 peerConnection.ontrack = (event) => {
                     console.log('تم استقبال الصوت البعيد');
-                    const audio = document.createElement('audio');
-                    audio.autoplay = true;
-                    audio.srcObject = event.streams[0];
-                    document.body.appendChild(audio);
-                    callInfo.textContent = `تتحدث مع ${offerData.name}`;
-                    startCallTimer();
-                    callStartSound.play().catch(e => console.log('لا يمكن تشغيل الصوت'));
+                    callInfo.textContent = `تتحدث مع ${offerData.caller}`;
                 };
                 
                 peerConnection.onicecandidate = (event) => {
                     if (event.candidate) {
                         console.log('إرسال مرشح ICE');
-                        push(ref(db, `calls/${currentRoom}/calleeCandidates`), event.candidate.toJSON());
+                        push(ref(db, `calls/${currentRoom}/candidates/${userId}`), event.candidate.toJSON());
                     }
                 };
                 
@@ -1006,34 +905,20 @@
                     }
                 };
                 
-                await peerConnection.setRemoteDescription(new RTCSessionDescription(offerData));
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(offerData.offer));
                 const answer = await peerConnection.createAnswer();
                 await peerConnection.setLocalDescription(answer);
                 
-                await set(ref(db, `calls/${currentRoom}/answer`), {
-                    type: answer.type,
-                    sdp: answer.sdp,
-                    from: userId,
-                    name: currentUser,
-                    ts: Date.now()
+                await set(ref(db, `calls/${currentRoom}/answers/${userId}`), {
+                    answer: answer,
+                    caller: offerData.caller,
+                    callee: currentUser
                 });
                 
                 callAvatar.innerHTML = `<i class="fas fa-user"></i>`;
-                callAvatar.classList.remove('pulsing');
-                callInfo.textContent = `تتحدث مع ${offerData.name}`;
-                callTimer.style.display = 'block';
-                callMuteBtn.style.display = 'flex';
+                callInfo.textContent = `تتحدث مع ${offerData.caller}`;
                 callAnswerBtn.style.display = 'none';
                 callContainer.classList.add('active');
-                
-                // إخفاء لوحة المكالمة الواردة
-                incomingCall.style.display = 'none';
-                if (ringAudio) {
-                    ringAudio.pause();
-                    ringAudio = null;
-                }
-                ringSound.pause();
-                ringSound.currentTime = 0;
                 
             } catch (err) {
                 console.error('خطأ في الرد على المكالمة:', err);
@@ -1045,64 +930,26 @@
         function endCall() {
             console.log('إنهاء المكالمة');
             if (callTimeout) clearTimeout(callTimeout);
-            stopCallTimer();
             
             if (peerConnection) {
                 peerConnection.close();
                 peerConnection = null;
             }
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
             
             // حذف بيانات المكالمة من Firebase
-            if (currentRoom) {
-                remove(ref(db, `calls/${currentRoom}/offer`));
-                remove(ref(db, `calls/${currentRoom}/answer`));
-                remove(ref(db, `calls/${currentRoom}/callerCandidates`));
-                remove(ref(db, `calls/${currentRoom}/calleeCandidates`));
+            if (currentRoom && userId) {
+                remove(ref(db, `calls/${currentRoom}/offers/${userId}`));
+                remove(ref(db, `calls/${currentRoom}/answers/${userId}`));
+                remove(ref(db, `calls/${currentRoom}/candidates/${userId}`));
             }
             
             callContainer.classList.remove('active');
-            incomingCall.style.display = 'none';
             callTargetUserId = null;
             callType = null;
-            isMuted = false;
-            callMuteBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-            callMuteBtn.classList.remove('muted');
-            
-            if (ringSound) {
-                ringSound.pause();
-                ringSound.currentTime = 0;
-            }
-            callEndSound.play().catch(e => console.log('لا يمكن تشغيل الصوت'));
-        }
-
-        function startCallTimer() {
-            callStartTime = Date.now();
-            callTimer.style.display = 'block';
-            callTimerInterval = setInterval(() => {
-                const elapsed = Math.floor((Date.now() - callStartTime) / 1000);
-                const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
-                const secs = (elapsed % 60).toString().padStart(2, '0');
-                callTimer.textContent = `${mins}:${secs}`;
-            }, 1000);
-        }
-
-        function stopCallTimer() {
-            if (callTimerInterval) {
-                clearInterval(callTimerInterval);
-                callTimerInterval = null;
-            }
-        }
-
-        function toggleMute() {
-            if (!localStream) return;
-            const audioTrack = localStream.getAudioTracks()[0];
-            if (audioTrack) {
-                isMuted = !isMuted;
-                audioTrack.enabled = !isMuted;
-                callMuteBtn.innerHTML = isMuted ? '<i class="fas fa-microphone-slash"></i>' : '<i class="fas fa-microphone"></i>';
-                callMuteBtn.classList.toggle('muted', isMuted);
-                showNotification(isMuted ? 'تم كتم الميكروفون' : 'تم إلغاء الكتم');
-            }
         }
 
         // مراقبة المكالمات الواردة - محسنة
@@ -1110,82 +957,63 @@
             if (!currentRoom) return;
             
             // الاستماع للعروض (offers)
-            const offersRef = ref(db, `calls/${currentRoom}/offer`);
-            onValue(offersRef, (snap) => {
+            const offersRef = ref(db, `calls/${currentRoom}/offers`);
+            onChildAdded(offersRef, (snap) => {
                 const offerData = snap.val();
-                if (!offerData) {
-                    incomingCall.style.display = 'none';
-                    ringSound.pause();
-                    ringSound.currentTime = 0;
-                    return;
+                const callerId = snap.key;
+                console.log('عرض وارد من:', callerId, offerData);
+                
+                // التأكد أن العرض موجه إلينا وأنا لست المتصل
+                if (offerData.callee === currentUser && callerId !== userId && !peerConnection) {
+                    console.log('عرض مناسب لي، عرض الإشعار');
+                    
+                    // عرض إشعار بالمكالمة الواردة
+                    callAvatar.innerHTML = `<i class="fas fa-phone"></i>`;
+                    callInfo.textContent = `مكالمة واردة من ${offerData.caller}`;
+                    callAnswerBtn.style.display = 'flex';
+                    callContainer.classList.add('active');
+                    
+                    // تخزين بيانات العرض للرد
+                    callTargetUserId = callerId;
+                    
+                    callAnswerBtn.onclick = () => {
+                        answerCall(offerData, callerId);
+                    };
+                    
+                    // مهلة 30 ثانية
+                    callTimeout = setTimeout(() => {
+                        callContainer.classList.remove('active');
+                        showNotification('لم يتم الرد على المكالمة', 'danger');
+                    }, 30000);
                 }
-                
-                // إذا العرض من نفس المستخدم فتجاهل
-                if (offerData.from === userId) return;
-                
-                // إذا كنا في مكالمة بالفعل، تجاهل العرض الجديد
-                if (peerConnection) return;
-                
-                console.log('عرض وارد من:', offerData.from);
-                
-                // عرض لوحة المكالمة الواردة فوراً
-                callerName.textContent = offerData.name || 'مستخدم';
-                incomingCall.style.display = 'block';
-                
-                // تشغيل الرنة المحسنة
-                ringSound.play().catch(e => console.log('لا يمكن تشغيل الرنة تلقائياً'));
             });
             
             // الاستماع للإجابات (answers) - للمتصل
-            const answersRef = ref(db, `calls/${currentRoom}/answer`);
-            onValue(answersRef, async (snap) => {
+            const answersRef = ref(db, `calls/${currentRoom}/answers`);
+            onChildAdded(answersRef, async (snap) => {
                 const answerData = snap.val();
-                if (!answerData) return;
+                const answererId = snap.key;
+                console.log('إجابة واردة من:', answererId, answerData);
                 
-                if (callType === 'offer' && answerData.from !== userId && peerConnection && peerConnection.signalingState === 'have-local-offer') {
-                    console.log('تم استقبال الإجابة');
+                if (callType === 'offer' && answererId === callTargetUserId && peerConnection && peerConnection.signalingState === 'have-local-offer') {
+                    console.log('تم استقبال الإجابة، تعيين الوصف البعيد');
                     clearTimeout(callTimeout);
-                    await peerConnection.setRemoteDescription(new RTCSessionDescription(answerData));
-                    callAvatar.classList.remove('pulsing');
-                    callTimer.style.display = 'block';
-                    callMuteBtn.style.display = 'flex';
-                    callStartSound.play().catch(e => console.log('لا يمكن تشغيل الصوت'));
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(answerData.answer));
                 }
             });
             
-            // الاستماع للمرشحين (candidates) - للمتصل
-            const calleeCandidatesRef = ref(db, `calls/${currentRoom}/calleeCandidates`);
-            onChildAdded(calleeCandidatesRef, (snap) => {
+            // الاستماع للمرشحين (candidates) - لكلا الطرفين
+            const candidatesRef = ref(db, `calls/${currentRoom}/candidates`);
+            onChildAdded(candidatesRef, (snap) => {
                 const candidateData = snap.val();
-                if (!peerConnection || callType !== 'offer') return;
-                const candidate = new RTCIceCandidate(candidateData);
-                peerConnection.addIceCandidate(candidate).catch(e => console.log('خطأ في إضافة مرشح:', e));
-            });
-            
-            // الاستماع للمرشحين (candidates) - للمجيب
-            const callerCandidatesRef = ref(db, `calls/${currentRoom}/callerCandidates`);
-            onChildAdded(callerCandidatesRef, (snap) => {
-                const candidateData = snap.val();
-                if (!peerConnection || callType !== 'answer') return;
+                const candidateUserId = snap.key;
+                if (!peerConnection || candidateUserId === userId) return;
+                
+                console.log('مرشح وارد من:', candidateUserId);
                 const candidate = new RTCIceCandidate(candidateData);
                 peerConnection.addIceCandidate(candidate).catch(e => console.log('خطأ في إضافة مرشح:', e));
             });
         }
-
-        acceptCall.addEventListener('click', async () => {
-            const snap = await get(ref(db, `calls/${currentRoom}/offer`));
-            if (snap.exists()) {
-                await answerCall(snap.val());
-            }
-        });
-
-        rejectCall.addEventListener('click', () => {
-            incomingCall.style.display = 'none';
-            ringSound.pause();
-            ringSound.currentTime = 0;
-        });
-
-        callMuteBtn.addEventListener('click', toggleMute);
 
         function displayMessage(msg, isOwn, isSystem, msgId) {
             if (displayedMessages.has(msgId)) return;
@@ -1261,44 +1089,34 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
-        // تحسين تحديث قائمة المستخدمين
         function updateUsersLists(users) {
-            const newUsersMap = {};
-            const usersListHtml = [];
-            
-            Object.keys(users).forEach(key => {
-                const user = users[key];
-                newUsersMap[key] = user.name;
-                usersListHtml.push(`
-                    <div class="user-item" data-user-id="${key}">
+            usersMap = {};
+            Object.keys(users).forEach(key => usersMap[key] = users[key].name);
+            userCountSpan.textContent = `(${Object.keys(users).length})`;
+            if (popupUsersList) {
+                popupUsersList.innerHTML = '';
+                Object.keys(users).forEach(key => {
+                    const user = users[key];
+                    const item = document.createElement('div');
+                    item.className = 'user-item';
+                    item.innerHTML = `
                         <div class="user-avatar">${user.name.charAt(0)}</div>
                         <span class="user-name">${user.name === ADMIN_LOGIN ? ADMIN_DISPLAY : user.name}</span>
                         ${user.name === ADMIN_LOGIN ? '<i class="fas fa-crown" style="color:#fbbf24;"></i>' : ''}
-                    </div>
-                `);
-            });
-            
-            usersMap = newUsersMap;
-            userCountSpan.textContent = `(${Object.keys(users).length})`;
-            
-            if (popupUsersList) {
-                popupUsersList.innerHTML = usersListHtml.join('');
+                    `;
+                    popupUsersList.appendChild(item);
+                });
             }
-            
             const roomList = document.getElementById('room-users-list');
             if (roomList) {
-                const roomUsersHtml = [];
+                roomList.innerHTML = '';
                 Object.keys(users).forEach(key => {
                     const user = users[key];
-                    const displayName = user.name === ADMIN_LOGIN ? ADMIN_DISPLAY : user.name;
-                    roomUsersHtml.push(`
-                        <span>
-                            ${displayName}
-                            ${user.name === ADMIN_LOGIN ? '<i class="fas fa-crown" style="color:#fbbf24;"></i>' : ''}
-                        </span>
-                    `);
+                    const span = document.createElement('span');
+                    span.textContent = user.name === ADMIN_LOGIN ? ADMIN_DISPLAY : user.name;
+                    if (user.name === ADMIN_LOGIN) span.innerHTML += ' <i class="fas fa-crown" style="color:#fbbf24;"></i>';
+                    roomList.appendChild(span);
                 });
-                roomList.innerHTML = roomUsersHtml.join('');
                 document.getElementById('room-detail-users').textContent = Object.keys(users).length;
             }
         }
@@ -1379,7 +1197,7 @@
         }
 
         function leaveRoom() {
-            endCall();
+            endCall(); // إنهاء أي مكالمة نشطة
             if (currentRoom && userId) {
                 push(ref(db, `rooms/${currentRoom}/messages`), { sender: 'نظام', text: `${currentUser} غادر الغرفة`, timestamp: Date.now() });
                 remove(ref(db, `rooms/${currentRoom}/users/${userId}`));
@@ -1621,9 +1439,11 @@
         // زر الاتصال الصوتي
         document.getElementById('call-user-btn').addEventListener('click', () => {
             if (!currentRoom) return;
+            // عرض قائمة المستخدمين للاتصال
             usersPopup.classList.toggle('show');
             popupOverlay.classList.toggle('show');
             
+            // تحويل كل user-item ليصبح قابل للنقر لبدء مكالمة
             document.querySelectorAll('#popup-users-list .user-item').forEach(item => {
                 const userName = item.querySelector('.user-name').textContent;
                 const targetId = Object.keys(usersMap).find(id => {
@@ -1645,6 +1465,7 @@
 
         callEndBtn.addEventListener('click', endCall);
 
+        // إغلاق نافذة المستخدمين
         function closeUsersPopup() {
             usersPopup.classList.remove('show');
             popupOverlay.classList.remove('show');
