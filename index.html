@@ -481,13 +481,12 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, push, onChildAdded, onDisconnect, get, remove, onValue, query, limitToLast, orderByChild, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, push, onChildAdded, onDisconnect, get, remove, onValue, query, limitToLast, orderByChild } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const { createFFmpeg, fetchFile } = window.FFmpeg;
         const ffmpeg = createFFmpeg({ 
             log: false,
-            corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
-            mainName: 'main' 
+            corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js'
         });
 
         const firebaseConfig = {
@@ -592,8 +591,9 @@
         // متغيرات WebRTC
         let peerConnection = null;
         let localStream = null;
-        let remoteStream = null;
         let callTimeout = null;
+        let callTargetUserId = null;
+        let callType = null; // 'offer' or 'answer'
         const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
         // مراقبة حالة الاتصال
@@ -817,25 +817,33 @@
             });
         }
 
-        // دوال WebRTC
+        // دوال WebRTC - محسنة
         async function startCall(targetUserId) {
             try {
+                console.log('بدء مكالمة إلى:', targetUserId);
+                callTargetUserId = targetUserId;
+                callType = 'offer';
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 peerConnection = new RTCPeerConnection(configuration);
                 
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
                 
                 peerConnection.ontrack = (event) => {
-                    remoteStream = event.streams[0];
-                    // تم استقبال الصوت البعيد
+                    console.log('تم استقبال الصوت البعيد');
+                    callInfo.textContent = `تتحدث مع ${usersMap[callTargetUserId] || 'المستخدم'}`;
                 };
                 
                 peerConnection.onicecandidate = (event) => {
                     if (event.candidate) {
-                        // إرسال المرشح إلى الطرف الآخر عبر Firebase
-                        update(ref(db, `calls/${currentRoom}/candidates/${userId}`), {
-                            [Date.now()]: event.candidate.toJSON()
-                        });
+                        console.log('إرسال مرشح ICE');
+                        push(ref(db, `calls/${currentRoom}/candidates/${userId}`), event.candidate.toJSON());
+                    }
+                };
+                
+                peerConnection.oniceconnectionstatechange = () => {
+                    console.log('حالة ICE:', peerConnection.iceConnectionState);
+                    if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'failed') {
+                        endCall();
                     }
                 };
                 
@@ -862,50 +870,65 @@
                 }, 30000);
                 
             } catch (err) {
+                console.error('خطأ في بدء المكالمة:', err);
                 showNotification('تعذر الوصول إلى الميكروفون', 'danger');
+                endCall();
             }
         }
         
-        async function answerCall(callData) {
+        async function answerCall(offerData, callerId) {
             try {
+                console.log('الرد على مكالمة من:', callerId);
+                callTargetUserId = callerId;
+                callType = 'answer';
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 peerConnection = new RTCPeerConnection(configuration);
                 
                 localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
                 
                 peerConnection.ontrack = (event) => {
-                    remoteStream = event.streams[0];
+                    console.log('تم استقبال الصوت البعيد');
+                    callInfo.textContent = `تتحدث مع ${offerData.caller}`;
                 };
                 
                 peerConnection.onicecandidate = (event) => {
                     if (event.candidate) {
-                        update(ref(db, `calls/${currentRoom}/candidates/${userId}`), {
-                            [Date.now()]: event.candidate.toJSON()
-                        });
+                        console.log('إرسال مرشح ICE');
+                        push(ref(db, `calls/${currentRoom}/candidates/${userId}`), event.candidate.toJSON());
                     }
                 };
                 
-                await peerConnection.setRemoteDescription(new RTCSessionDescription(callData.offer));
+                peerConnection.oniceconnectionstatechange = () => {
+                    console.log('حالة ICE:', peerConnection.iceConnectionState);
+                    if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'failed') {
+                        endCall();
+                    }
+                };
+                
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(offerData.offer));
                 const answer = await peerConnection.createAnswer();
                 await peerConnection.setLocalDescription(answer);
                 
                 await set(ref(db, `calls/${currentRoom}/answers/${userId}`), {
                     answer: answer,
-                    caller: callData.caller,
+                    caller: offerData.caller,
                     callee: currentUser
                 });
                 
                 callAvatar.innerHTML = `<i class="fas fa-user"></i>`;
-                callInfo.textContent = `تتحدث مع ${callData.caller}`;
+                callInfo.textContent = `تتحدث مع ${offerData.caller}`;
                 callAnswerBtn.style.display = 'none';
                 callContainer.classList.add('active');
                 
             } catch (err) {
+                console.error('خطأ في الرد على المكالمة:', err);
                 showNotification('فشل الرد على المكالمة', 'danger');
+                endCall();
             }
         }
         
         function endCall() {
+            console.log('إنهاء المكالمة');
             if (callTimeout) clearTimeout(callTimeout);
             
             if (peerConnection) {
@@ -918,31 +941,43 @@
             }
             
             // حذف بيانات المكالمة من Firebase
-            if (currentRoom) {
+            if (currentRoom && userId) {
                 remove(ref(db, `calls/${currentRoom}/offers/${userId}`));
                 remove(ref(db, `calls/${currentRoom}/answers/${userId}`));
                 remove(ref(db, `calls/${currentRoom}/candidates/${userId}`));
             }
             
             callContainer.classList.remove('active');
+            callTargetUserId = null;
+            callType = null;
         }
 
-        // مراقبة المكالمات الواردة
+        // مراقبة المكالمات الواردة - محسنة
         function listenForCalls() {
             if (!currentRoom) return;
             
+            // الاستماع للعروض (offers)
             const offersRef = ref(db, `calls/${currentRoom}/offers`);
             onChildAdded(offersRef, (snap) => {
-                const callData = snap.val();
-                if (callData.callee === currentUser && callData.caller !== currentUser) {
+                const offerData = snap.val();
+                const callerId = snap.key;
+                console.log('عرض وارد من:', callerId, offerData);
+                
+                // التأكد أن العرض موجه إلينا وأنا لست المتصل
+                if (offerData.callee === currentUser && callerId !== userId && !peerConnection) {
+                    console.log('عرض مناسب لي، عرض الإشعار');
+                    
                     // عرض إشعار بالمكالمة الواردة
                     callAvatar.innerHTML = `<i class="fas fa-phone"></i>`;
-                    callInfo.textContent = `مكالمة واردة من ${callData.caller}`;
+                    callInfo.textContent = `مكالمة واردة من ${offerData.caller}`;
                     callAnswerBtn.style.display = 'flex';
                     callContainer.classList.add('active');
                     
+                    // تخزين بيانات العرض للرد
+                    callTargetUserId = callerId;
+                    
                     callAnswerBtn.onclick = () => {
-                        answerCall(callData);
+                        answerCall(offerData, callerId);
                     };
                     
                     // مهلة 30 ثانية
@@ -953,26 +988,30 @@
                 }
             });
             
-            // مراقبة الإجابات (للمتصل)
+            // الاستماع للإجابات (answers) - للمتصل
             const answersRef = ref(db, `calls/${currentRoom}/answers`);
             onChildAdded(answersRef, async (snap) => {
                 const answerData = snap.val();
-                if (answerData.callee === currentUser) {
+                const answererId = snap.key;
+                console.log('إجابة واردة من:', answererId, answerData);
+                
+                if (callType === 'offer' && answererId === callTargetUserId && peerConnection && peerConnection.signalingState === 'have-local-offer') {
+                    console.log('تم استقبال الإجابة، تعيين الوصف البعيد');
                     clearTimeout(callTimeout);
                     await peerConnection.setRemoteDescription(new RTCSessionDescription(answerData.answer));
-                    callInfo.textContent = `تتحدث مع ${answerData.caller}`;
                 }
             });
             
-            // مراقبة المرشحين (ICE candidates)
+            // الاستماع للمرشحين (candidates) - لكلا الطرفين
             const candidatesRef = ref(db, `calls/${currentRoom}/candidates`);
             onChildAdded(candidatesRef, (snap) => {
-                if (!peerConnection) return;
                 const candidateData = snap.val();
-                for (let key in candidateData) {
-                    const candidate = new RTCIceCandidate(candidateData[key]);
-                    peerConnection.addIceCandidate(candidate);
-                }
+                const candidateUserId = snap.key;
+                if (!peerConnection || candidateUserId === userId) return;
+                
+                console.log('مرشح وارد من:', candidateUserId);
+                const candidate = new RTCIceCandidate(candidateData);
+                peerConnection.addIceCandidate(candidate).catch(e => console.log('خطأ في إضافة مرشح:', e));
             });
         }
 
@@ -1158,6 +1197,7 @@
         }
 
         function leaveRoom() {
+            endCall(); // إنهاء أي مكالمة نشطة
             if (currentRoom && userId) {
                 push(ref(db, `rooms/${currentRoom}/messages`), { sender: 'نظام', text: `${currentUser} غادر الغرفة`, timestamp: Date.now() });
                 remove(ref(db, `rooms/${currentRoom}/users/${userId}`));
@@ -1399,20 +1439,26 @@
         // زر الاتصال الصوتي
         document.getElementById('call-user-btn').addEventListener('click', () => {
             if (!currentRoom) return;
-            // عرض قائمة المستخدمين للاتصال (نستخدم popup الموجود)
+            // عرض قائمة المستخدمين للاتصال
             usersPopup.classList.toggle('show');
             popupOverlay.classList.toggle('show');
             
             // تحويل كل user-item ليصبح قابل للنقر لبدء مكالمة
             document.querySelectorAll('#popup-users-list .user-item').forEach(item => {
                 const userName = item.querySelector('.user-name').textContent;
-                const targetId = Object.keys(usersMap).find(id => usersMap[id] === userName || (userName === ADMIN_DISPLAY && usersMap[id] === ADMIN_LOGIN));
+                const targetId = Object.keys(usersMap).find(id => {
+                    const mapName = usersMap[id] === ADMIN_LOGIN ? ADMIN_DISPLAY : usersMap[id];
+                    return mapName === userName;
+                });
                 if (targetId && targetId !== userId) {
                     item.style.cursor = 'pointer';
                     item.onclick = () => {
                         closeUsersPopup();
                         startCall(targetId);
                     };
+                } else {
+                    item.style.cursor = 'default';
+                    item.onclick = null;
                 }
             });
         });
