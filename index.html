@@ -10,9 +10,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- ffmpeg.wasm -->
+    <!-- ffmpeg.wasm (اختياري، للفيديو) -->
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
     <style>
+        /* نفس التصميم السابق مع إضافة تحسينات بسيطة */
         :root {
             --primary: #4361ee;
             --primary-dark: #3a56d4;
@@ -302,7 +303,7 @@
         let usersMap = {}; // userId -> displayName
         let heartbeatInterval = null;
 
-        // WebRTC متغيرات
+        // WebRTC متغيرات (مبسطة وموثوقة)
         let localStream = null;
         let peerConnection = null;
         let callTimeout = null;
@@ -387,7 +388,7 @@
         }
 
         // ========== ضغط الصورة وتحويل الفيديو (اختصاراً) ==========
-        async function compressImage(file) { /* نفس الكود السابق - يمكن تركه */ return file; }
+        async function compressImage(file) { return file; }
         async function convertVideoTo720p(file) { return file; }
         async function processVideo(file) { return file; }
 
@@ -498,7 +499,7 @@
             });
         }
 
-        // ========== دوال WebRTC الموثوقة (مأخوذة من الكود البسيط) ==========
+        // ========== دوال WebRTC الموثوقة (مع التأكيد على تشغيل الصوت) ==========
         async function setupLocalStream() {
             if (localStream) return localStream;
             try {
@@ -513,20 +514,33 @@
 
         function createPeerConnection() {
             const pc = new RTCPeerConnection(configuration);
+            
+            // عند استقبال مسار صوتي، نقوم بتشغيله
             pc.addEventListener('track', event => {
-                // إضافة الصوت البعيد
-                const audio = document.createElement('audio');
-                audio.autoplay = true;
-                audio.srcObject = event.streams[0];
-                document.body.appendChild(audio); // يمكن إخفاؤه
-                callInfo.textContent = 'جاري التحدث...';
+                console.log('تم استقبال track', event);
+                if (event.streams && event.streams[0]) {
+                    // إنشاء عنصر audio لتشغيل الصوت البعيد
+                    const audioElement = document.createElement('audio');
+                    audioElement.srcObject = event.streams[0];
+                    audioElement.autoplay = true;
+                    audioElement.controls = false; // إخفاء عناصر التحكم
+                    audioElement.style.display = 'none'; // إخفاء العنصر
+                    document.body.appendChild(audioElement);
+                    
+                    // يمكنك إضافة مؤشر صوتي (اختياري)
+                    callInfo.textContent = 'جاري التحدث...';
+                }
             });
+            
             pc.addEventListener('icecandidate', event => {
                 if (!event.candidate || !currentRoom) return;
+                // إرسال المرشح عبر Firebase
                 const candidateRef = ref(db, `${callBasePath()}/candidates/${userId}`);
                 push(candidateRef, event.candidate.toJSON());
             });
+            
             pc.addEventListener('connectionstatechange', () => {
+                console.log('حالة الاتصال:', pc.connectionState);
                 if (pc.connectionState === 'connected') {
                     callContainer.classList.add('active');
                     incomingPanel.classList.remove('active');
@@ -534,6 +548,7 @@
                     endCall();
                 }
             });
+            
             return pc;
         }
 
@@ -544,9 +559,13 @@
                 return;
             }
             try {
-                await setupLocalStream();
+                await setupLocalStream(); // تأكد من وجود الميكروفون
                 peerConnection = createPeerConnection();
-                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+                
+                // إضافة المسار المحلي إلى peer connection
+                localStream.getTracks().forEach(track => {
+                    peerConnection.addTrack(track, localStream);
+                });
 
                 // إنشاء offer
                 const offer = await peerConnection.createOffer();
@@ -562,7 +581,7 @@
                     timestamp: Date.now()
                 });
 
-                // حذف المرشحين السابقين
+                // حذف المرشحين السابقين (اختياري)
                 await remove(ref(db, `${callBasePath()}/candidates`));
 
                 currentCallTarget = targetUserId;
@@ -594,9 +613,13 @@
                 return;
             }
             try {
-                await setupLocalStream();
+                await setupLocalStream(); // تأكد من وجود الميكروفون
                 peerConnection = createPeerConnection();
-                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+                
+                // إضافة المسار المحلي
+                localStream.getTracks().forEach(track => {
+                    peerConnection.addTrack(track, localStream);
+                });
 
                 // تعيين الوصف البعيد من العرض
                 await peerConnection.setRemoteDescription(new RTCSessionDescription(incomingOffer));
@@ -605,7 +628,7 @@
                 const answer = await peerConnection.createAnswer();
                 await peerConnection.setLocalDescription(answer);
 
-                // حفظ answer
+                // حفظ answer في Firebase
                 await set(ref(db, `${callBasePath()}/answer`), {
                     type: answer.type,
                     sdp: answer.sdp,
@@ -634,9 +657,9 @@
                 peerConnection.close();
                 peerConnection = null;
             }
-            // لا نغلق localStream هنا حتى يمكن إعادة استخدامه
+            // لا نغلق localStream هنا حتى يمكن إعادة استخدامه (لكن يمكن إغلاقه إذا أردنا)
 
-            // حذف بيانات signaling
+            // حذف بيانات signaling (اختياري)
             if (currentRoom) {
                 remove(ref(db, `${callBasePath()}/offer`));
                 remove(ref(db, `${callBasePath()}/answer`));
@@ -646,6 +669,7 @@
             incomingOffer = null;
             callContainer.classList.remove('active');
             incomingPanel.classList.remove('active');
+            callInfo.textContent = '...';
         }
 
         function toggleMute() {
@@ -654,6 +678,7 @@
             if (track) {
                 track.enabled = !track.enabled;
                 muteCallBtn.innerHTML = track.enabled ? '<i class="fas fa-microphone"></i>' : '<i class="fas fa-microphone-slash"></i>';
+                showNotification(track.enabled ? 'إلغاء كتم' : 'تم الكتم');
             }
         }
 
@@ -677,7 +702,7 @@
                 incomingOffer = offer;
                 incomingCallerName.textContent = offer.fromName || 'مستخدم';
                 incomingPanel.classList.add('active');
-                // إصدار صوت رنة (اختياري)
+                // يمكن إصدار صوت رنة هنا (اختياري)
             });
 
             // مراقبة الإجابة (للمتصل)
@@ -695,12 +720,12 @@
                 }
             });
 
-            // مراقبة المرشحين
+            // مراقبة المرشحين (لإضافة ICE candidates)
             const candidatesRef = ref(db, `${callBasePath()}/candidates`);
             onChildAdded(candidatesRef, (snap) => {
                 const candidate = snap.val();
                 if (!peerConnection || snap.key === userId) return;
-                peerConnection.addIceCandidate(new RTCIceCandidate(candidate)).catch(e => console.log);
+                peerConnection.addIceCandidate(new RTCIceCandidate(candidate)).catch(e => console.log('addIceCandidate error', e));
             });
         }
 
