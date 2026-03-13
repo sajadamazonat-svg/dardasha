@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>اسهل حل | دردشة متطورة - تصميم فاتح</title>
+    <title>اسهل حل | الدردشة النهائية</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts (Cairo) -->
@@ -486,6 +486,7 @@
     </div>
 
     <script type="module">
+        // ========================== الإعدادات الأساسية ==========================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, push, onChildAdded, onDisconnect, get, remove, onValue, query, limitToLast, orderByChild, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
@@ -607,7 +608,7 @@
         let answersUnsubscribe = null;
         let candidatesUnsubscribe = null;
 
-        // دوال مساعدة
+        // ========================== دوال مساعدة ==========================
         function showScreen(screenId) {
             screens.forEach(s => s.classList.remove('active'));
             const target = document.getElementById(screenId + '-screen');
@@ -645,6 +646,7 @@
             return name.replace(/[^a-zA-Z0-9\u0600-\u06FF\s\-_]/g, '').trim().replace(/\s+/g, '_');
         }
 
+        // ========================== GitHub ==========================
         async function getGitHubToken() {
             const tokenRef = ref(db, GITHUB_TOKEN_PATH);
             const snapshot = await get(tokenRef);
@@ -698,6 +700,7 @@
             });
         }
 
+        // ========================== معالجة الملفات ==========================
         async function compressImage(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -814,7 +817,7 @@
             });
         }
 
-        // دوال WebRTC
+        // ========================== WebRTC ==========================
         async function startCall(targetUserId) {
             try {
                 if (peerConnection) endCall();
@@ -942,7 +945,7 @@
             callType = null;
         }
 
-        // مراقبة المكالمات الواردة
+        // ========================== مراقبة المكالمات ==========================
         function listenForCalls() {
             if (!currentRoom) return;
             
@@ -1002,7 +1005,7 @@
             });
         }
 
-        // تحديث قائمة المستخدمين مع مؤشرات الحالة
+        // ========================== إدارة المستخدمين ==========================
         function updateUsersLists(users) {
             usersMap = {};
             const onlineUsers = {};
@@ -1024,12 +1027,10 @@
             const onlineCount = Object.keys(onlineUsers).length;
             userCountSpan.textContent = `(${onlineCount})`;
             
-            // تحديث popup المستخدمين
             if (popupUsersList) {
                 popupUsersList.innerHTML = '';
                 Object.keys(onlineUsers).forEach(key => {
                     const user = onlineUsers[key];
-                    const isOnline = true;
                     const statusClass = 'online';
                     const item = document.createElement('div');
                     item.className = 'user-item';
@@ -1043,7 +1044,6 @@
                 });
             }
             
-            // تحديث قائمة المستخدمين في شاشة الغرفة
             const roomList = document.getElementById('room-users-list');
             if (roomList) {
                 roomList.innerHTML = '';
@@ -1061,7 +1061,6 @@
             }
         }
 
-        // نبضات القلب
         function startHeartbeat() {
             if (heartbeatInterval) clearInterval(heartbeatInterval);
             heartbeatInterval = setInterval(() => {
@@ -1109,19 +1108,7 @@
             });
         }
 
-        async function setupMessageListener() {
-            if (messagesUnsubscribe) messagesUnsubscribe();
-            messagesRef = ref(db, `rooms/${currentRoom}/messages`);
-            const recentQuery = query(messagesRef, orderByChild('timestamp'), limitToLast(MAX_MSGS));
-            messagesContainer.innerHTML = ''; messagesContainer.appendChild(typingIndicator);
-            messagesUnsubscribe = onChildAdded(recentQuery, async (snap) => {
-                const msg = snap.val();
-                if (!msg) return;
-                const isOwn = (msg.sender === (currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser)) && msg.sender !== 'نظام';
-                displayMessage(msg, isOwn, msg.sender === 'نظام', snap.key);
-            });
-        }
-
+        // ========================== عرض الرسائل ==========================
         function displayMessage(msg, isOwn, isSystem, msgId) {
             if (displayedMessages.has(msgId)) return;
             displayedMessages.add(msgId);
@@ -1186,7 +1173,6 @@
                 audio.addEventListener('ended', () => { playBtn.innerHTML = '<i class="fas fa-play"></i>'; progressFilled.style.width = '0%'; });
                 div.appendChild(audioDiv);
             } else {
-                // رسالة نصية
                 div.appendChild(document.createTextNode(msg.text));
             }
             const timeSpan = document.createElement('div');
@@ -1197,6 +1183,20 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
+        async function setupMessageListener() {
+            if (messagesUnsubscribe) messagesUnsubscribe();
+            messagesRef = ref(db, `rooms/${currentRoom}/messages`);
+            const recentQuery = query(messagesRef, orderByChild('timestamp'), limitToLast(MAX_MSGS));
+            messagesContainer.innerHTML = ''; messagesContainer.appendChild(typingIndicator);
+            messagesUnsubscribe = onChildAdded(recentQuery, async (snap) => {
+                const msg = snap.val();
+                if (!msg) return;
+                const isOwn = (msg.sender === (currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser)) && msg.sender !== 'نظام';
+                displayMessage(msg, isOwn, msg.sender === 'نظام', snap.key);
+            });
+        }
+
+        // ========================== الدخول والخروج ==========================
         async function enterChat(room, name) {
             if (messagesUnsubscribe) messagesUnsubscribe(); 
             if (usersUnsubscribe) usersUnsubscribe();
@@ -1275,6 +1275,7 @@
             confirmDialog.classList.remove('active');
         });
 
+        // ========================== رفع الملفات ==========================
         async function handleFileUpload(file, type) {
             if (!currentRoom) return;
             try {
@@ -1332,6 +1333,7 @@
             }
         }
 
+        // ========================== التسجيل الصوتي ==========================
         async function startRecording() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -1398,7 +1400,7 @@
             }
         }
 
-        // أحداث الأزرار
+        // ========================== أحداث الأزرار ==========================
         manualCheckbox.addEventListener('change', () => customContainer.style.display = manualCheckbox.checked ? 'block' : 'none');
         createBtn.addEventListener('click', async (e) => {
             e.preventDefault();
