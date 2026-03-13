@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>اسهل حل | الدردشة النهائية</title>
+    <title>اسهل حل | الدردشة النهائية المصححة</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts (Cairo) -->
@@ -592,7 +592,8 @@
         let audioContext = null;
         let analyser = null;
         let visualizerAnimation = null;
-        let usersMap = {};
+        let usersMap = {}; // userId -> name
+        let usersOnline = {}; // userId -> true/false (حسب آخر نشاط)
         let heartbeatInterval = null;
 
         // متغيرات WebRTC
@@ -848,10 +849,11 @@
                 const offer = await peerConnection.createOffer();
                 await peerConnection.setLocalDescription(offer);
                 
+                // نرسل العرض مع معرف المستخدم المستهدف (targetUserId) بدلاً من الاسم
                 await set(ref(db, `calls/${currentRoom}/offers/${userId}`), {
                     offer: offer,
-                    caller: currentUser,
-                    callee: targetUserId,
+                    caller: currentUser, // للعرض فقط
+                    calleeId: targetUserId, // المفتاح: نستخدم userId
                     timestamp: Date.now()
                 });
                 
@@ -906,7 +908,7 @@
                 await set(ref(db, `calls/${currentRoom}/answers/${userId}`), {
                     answer: answer,
                     caller: offerData.caller,
-                    callee: currentUser,
+                    calleeId: currentUser, // ليس ضرورياً
                     timestamp: Date.now()
                 });
                 
@@ -960,7 +962,8 @@
                 
                 if (callerId === userId || peerConnection) return;
                 
-                if (offerData.callee === currentUser) {
+                // نتحقق من أن العرض موجه إلينا عبر calleeId
+                if (offerData.calleeId === userId) {
                     callAvatar.innerHTML = `<i class="fas fa-phone"></i>`;
                     callInfo.textContent = `مكالمة واردة من ${offerData.caller}`;
                     callAnswerBtn.style.display = 'flex';
@@ -1010,7 +1013,7 @@
             usersMap = {};
             const onlineUsers = {};
             const now = Date.now();
-            const maxAge = 45000;
+            const maxAge = 45000; // 45 ثانية
             
             Object.keys(users).forEach(key => {
                 const user = users[key];
@@ -1027,6 +1030,7 @@
             const onlineCount = Object.keys(onlineUsers).length;
             userCountSpan.textContent = `(${onlineCount})`;
             
+            // تحديث popup المستخدمين
             if (popupUsersList) {
                 popupUsersList.innerHTML = '';
                 Object.keys(onlineUsers).forEach(key => {
@@ -1044,6 +1048,7 @@
                 });
             }
             
+            // تحديث قائمة المستخدمين في شاشة الغرفة
             const roomList = document.getElementById('room-users-list');
             if (roomList) {
                 roomList.innerHTML = '';
@@ -1173,6 +1178,7 @@
                 audio.addEventListener('ended', () => { playBtn.innerHTML = '<i class="fas fa-play"></i>'; progressFilled.style.width = '0%'; });
                 div.appendChild(audioDiv);
             } else {
+                // رسالة نصية
                 div.appendChild(document.createTextNode(msg.text));
             }
             const timeSpan = document.createElement('div');
@@ -1219,7 +1225,7 @@
                 lastActive: Date.now()
             });
             
-            onDisconnect(userRef).update({ lastActive: Date.now() - 60000 });
+            onDisconnect(userRef).update({ lastActive: Date.now() - 60000 }); // ينتهي بعد دقيقة
             onDisconnect(ref(db, `rooms/${room}/typing/${userId}`)).remove();
             
             await push(ref(db, `rooms/${room}/messages`), { sender: 'نظام', text: `${currentUser} دخل الغرفة`, timestamp: Date.now() });
