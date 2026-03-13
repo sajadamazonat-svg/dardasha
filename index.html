@@ -3,68 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>اسهل حل | الدردشة النهائية (كامل)</title>
+    <title>اسهل حل | دردشة متطورة مع اتصال صوتي</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts (Cairo) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- ffmpeg.wasm (لتحويل الفيديو) -->
+    <!-- ffmpeg.wasm -->
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --primary-light: #6c7ffa;
-            --secondary: #06d6a0;
-            --success: #06d6a0;
-            --warning: #ffb703;
-            --danger: #ef476f;
-            --dark: #2b2d42;
-            --light: #f8f9fa;
-            --gray: #8d99ae;
-            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --primary-light: #818cf8;
+            --secondary: #10b981;
+            --success: #059669;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --card-bg: rgba(255, 255, 255, 0.95);
-            --border: #dee2e6;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            --border: #e5e7eb;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            
             --base-font: 16px;
-            --btn-size: 48px;
+            --btn-size: 52px;
             --border-radius-lg: 36px;
-            --transition: all 0.2s ease;
+            --transition: all 0.25s ease;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        body { background: var(--bg-gradient); color: var(--dark); height: 100vh; overflow: hidden; font-size: var(--base-font); line-height: 1.5; }
+        body { background: var(--bg-gradient); color: var(--dark); height: 100vh; overflow: hidden; font-size: var(--base-font); line-height: 1.6; }
         #app { max-width: 550px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; background: transparent; }
+
         .screen { display: none; flex: 1; flex-direction: column; overflow-y: auto; padding: 12px; }
         .screen.active { display: flex; }
+
         .card { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: var(--border-radius-lg); padding: 24px 20px; box-shadow: var(--shadow); border: 1px solid rgba(255, 255, 255, 0.7); display: flex; flex-direction: column; }
         .logo { text-align: center; margin-bottom: 24px; }
         .logo h1 { font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .logo p { color: var(--gray); border-bottom: 2px solid var(--primary-light); padding-bottom: 12px; }
-        .input-field { width: 100%; padding: 12px 20px; margin: 8px 0; border: 2px solid rgba(67, 97, 238, 0.2); border-radius: 60px; background: white; transition: var(--transition); }
-        .input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1); }
-        .btn { width: 100%; padding: 12px 20px; border: none; border-radius: 60px; font-weight: 700; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; cursor: pointer; transition: var(--transition); margin: 8px 0; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 6px 20px rgba(67, 97, 238, 0.2); }
+
+        .input-field { width: 100%; padding: 12px 20px; margin: 8px 0; border: 2px solid rgba(79, 70, 229, 0.2); border-radius: 60px; background: white; transition: var(--transition); }
+        .input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15); }
+
+        .btn { width: 100%; padding: 12px 20px; border: none; border-radius: 60px; font-weight: 700; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; cursor: pointer; transition: var(--transition); margin: 8px 0; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 6px 20px rgba(79, 70, 229, 0.25); }
         .btn i { font-size: 1.2rem; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(67, 97, 238, 0.3); }
-        .btn-success { background: linear-gradient(135deg, var(--secondary), #05b386); }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(79, 70, 229, 0.35); }
+        .btn-success { background: linear-gradient(135deg, var(--secondary), #0e9f6e); }
         .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none; }
         .btn-outline:hover { background: var(--primary); color: white; }
-        .btn-danger { background: linear-gradient(135deg, var(--danger), #d64161); }
+        .btn-danger { background: linear-gradient(135deg, var(--danger), #b91c1c); }
+
         .top-bar { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.8); border-radius: 70px; padding: 8px 16px; margin: 8px 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); }
         .brand { font-weight: 800; font-size: 1.4rem; display: flex; align-items: center; gap: 8px; color: var(--primary); }
         .menu-btn { background: white; border: 1px solid var(--border); color: var(--primary); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; transition: var(--transition); }
+
+        .connection-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #fbbf24;
+            margin-left: 8px;
+            box-shadow: 0 0 5px currentColor;
+        }
+        .connection-status.connected { background: #10b981; box-shadow: 0 0 8px #10b981; }
+        .connection-status.disconnected { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+
         .sidebar { position: fixed; top: 0; right: -320px; width: 280px; height: 100vh; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px); border-left: 1px solid rgba(0,0,0,0.05); box-shadow: -15px 0 40px rgba(0,0,0,0.1); z-index: 1000; transition: right 0.3s ease; padding: 24px 0; border-radius: 0 40px 40px 0; }
         .sidebar.open { right: 0; }
         .sidebar-header { display: flex; align-items: center; justify-content: space-between; padding: 0 20px 20px; border-bottom: 2px solid var(--border); }
         .close-btn { background: white; border: 1px solid var(--border); color: var(--primary); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; }
         .sidebar-nav { display: flex; flex-direction: column; gap: 6px; padding: 0 16px; }
         .sidebar-nav .nav-btn { background: transparent; border: none; color: var(--dark); padding: 12px 16px; border-radius: 50px; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: var(--transition); width: 100%; border: 1px solid transparent; }
-        .sidebar-nav .nav-btn:hover { background: rgba(67, 97, 238, 0.05); color: var(--primary); border-color: var(--primary-light); }
+        .sidebar-nav .nav-btn:hover { background: rgba(79, 70, 229, 0.05); color: var(--primary); border-color: var(--primary-light); }
         .sidebar-nav .nav-btn i { font-size: 1.3rem; color: var(--primary); }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); backdrop-filter: blur(4px); z-index: 999; display: none; }
         .sidebar-overlay.active { display: block; }
-        .chat-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 10px 16px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-radius: 60px 60px 20px 20px; margin-bottom: 12px; box-shadow: 0 6px 20px rgba(67, 97, 238, 0.2); gap: 8px; }
+
+        .chat-header { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            color: white; 
+            padding: 10px 16px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-radius: 60px 60px 20px 20px; 
+            margin-bottom: 12px; 
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.25); 
+            gap: 8px;
+        }
         .header-info h2 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
         .user-count { font-size: 0.85rem; background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 40px; }
         .user-info { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -74,13 +107,14 @@
         .action-btn.secondary { background: white; color: var(--primary); border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
         .messages-container { flex: 1; padding: 16px; background: rgba(255,255,255,0.6); backdrop-filter: blur(12px); border-radius: 36px; margin-bottom: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; border: 1px solid rgba(255,255,255,0.9); }
-        .message { max-width: 80%; padding: 12px 16px; border-radius: 28px 28px 28px 8px; align-self: flex-start; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.02); position: relative; word-break: break-word; font-size: 1rem; }
+        .message { max-width: 80%; padding: 12px 16px; border-radius: 28px 28px 28px 8px; align-self: flex-start; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.02); position: relative; word-break: break-word; }
         .message.own { align-self: flex-end; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-radius: 28px 28px 8px 28px; }
-        .message.system { align-self: center; background: rgba(141, 153, 174, 0.7); color: white; border-radius: 50px; font-size: 0.85rem; padding: 4px 20px; }
+        .message.system { align-self: center; background: rgba(107, 114, 128, 0.7); color: white; border-radius: 50px; font-size: 0.85rem; padding: 4px 20px; }
         .message .username { font-size: 0.7rem; font-weight: 700; margin-bottom: 6px; color: var(--primary-dark); display: flex; align-items: center; gap: 4px; opacity: 0.8; }
         .message.own .username { color: rgba(255,255,255,0.9); }
         .message .time { font-size: 0.55rem; opacity: 0.6; margin-top: 6px; text-align: left; }
         .message-image { max-width: 100%; max-height: 180px; border-radius: 16px; cursor: pointer; margin-top: 6px; border: 2px solid white; }
+
         .typing-indicator { font-size: 0.85rem; color: var(--gray); padding: 6px 16px; background: rgba(255,255,255,0.8); backdrop-filter: blur(12px); border-radius: 40px; align-self: flex-start; display: none; border: 1px solid rgba(255,255,255,0.8); }
 
         .input-area { display: flex; gap: 8px; align-items: center; background: white; border-radius: 60px; padding: 6px 6px 6px 18px; border: 1px solid rgba(0,0,0,0.03); box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
@@ -93,7 +127,7 @@
         .media-popup.show { display: flex; }
         .media-popup .action-btn { width: auto; height: auto; padding: 10px 20px; border-radius: 40px; background: var(--primary); color: white; gap: 8px; font-size: 0.9rem; }
 
-        .voice-recording-bar { display: none; align-items: center; gap: 16px; background: white; padding: 10px 20px; border-radius: 60px; margin-top: 8px; border: 2px solid var(--primary); box-shadow: 0 4px 16px rgba(67,97,238,0.2); }
+        .voice-recording-bar { display: none; align-items: center; gap: 16px; background: white; padding: 10px 20px; border-radius: 60px; margin-top: 8px; border: 2px solid var(--primary); box-shadow: 0 4px 16px rgba(79,70,229,0.2); }
         .voice-recording-bar.active { display: flex; }
         .voice-timer { font-size: 1.2rem; font-weight: 700; color: var(--danger); direction: ltr; }
         .voice-visualizer { flex: 1; display: flex; align-items: center; justify-content: center; gap: 3px; height: 36px; }
@@ -107,31 +141,70 @@
         .user-item { display: flex; align-items: center; gap: 14px; padding: 10px; border-bottom: 1px solid var(--border); }
         .user-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; }
         .user-name { flex: 1; font-weight: 600; font-size: 0.95rem; }
-        .user-status-indicator { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; box-shadow: 0 0 5px currentColor; }
-        .user-status-indicator.online { background: #10b981; box-shadow: 0 0 8px #10b981; }
-        .user-status-indicator.offline { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
 
-        /* نافذة المكالمة */
-        .call-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px); z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; }
+        /* نافذة المكالمة الصوتية */
+        .call-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
         .call-container.active { display: flex; }
-        .call-avatar { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white; margin-bottom: 20px; border: 4px solid white; }
-        .call-info { font-size: 1.5rem; margin-bottom: 30px; }
-        .call-actions { display: flex; gap: 30px; }
-        .call-btn { width: 70px; height: 70px; border-radius: 50%; background: var(--danger); color: white; border: none; font-size: 2rem; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; }
-        .call-btn.answer { background: var(--success); }
+        .call-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            margin-bottom: 20px;
+            border: 4px solid white;
+        }
+        .call-info {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+        .call-actions {
+            display: flex;
+            gap: 30px;
+        }
+        .call-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--danger);
+            color: white;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .call-btn.answer {
+            background: var(--success);
+        }
         .call-btn:hover { transform: scale(1.1); }
-
-        .incoming-panel { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: white; padding: 20px; border-radius: 50px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 10001; display: none; flex-direction: column; align-items: center; gap: 10px; border: 2px solid var(--primary); width: 90%; max-width: 400px; }
-        .incoming-panel.active { display: flex; }
-        .incoming-panel .caller-name { font-size: 1.3rem; font-weight: bold; color: var(--primary); }
-        .incoming-actions { display: flex; gap: 20px; }
 
         .room-code-large { font-size: 3rem; font-weight: 800; color: var(--primary); text-align: center; direction: ltr; letter-spacing: 6px; background: white; padding: 8px 16px; border-radius: 60px; margin: 16px auto; border: 3px solid var(--primary); box-shadow: var(--shadow); }
         .room-detail { background: rgba(255,255,255,0.6); backdrop-filter: blur(12px); border-radius: 36px; padding: 16px; margin: 12px 0; border: 1px solid white; }
         .room-detail .row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.95rem; }
         .room-users { background: rgba(255,255,255,0.6); backdrop-filter: blur(12px); border-radius: 36px; padding: 16px; max-height: 160px; overflow-y: auto; }
         .room-users-list { display: flex; flex-wrap: wrap; gap: 8px; }
-        .room-users-list span { background: white; padding: 6px 16px; border-radius: 40px; border: 1px solid var(--border); display: inline-flex; align-items: center; gap: 5px; }
+        .room-users-list span { background: white; padding: 6px 16px; border-radius: 40px; border: 1px solid var(--border); }
 
         .back-btn-container { margin-top: 20px; text-align: center; }
         .back-btn { background: var(--light); color: var(--primary); border: 2px solid var(--primary); border-radius: 60px; padding: 12px 30px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 10px; }
@@ -142,61 +215,279 @@
         .media-modal.active { display: flex; }
         .modal-media { max-width: 95%; max-height: 80vh; border-radius: 30px; border: 4px solid white; }
 
-        .confirm-dialog { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 24px; border-radius: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.3); z-index: 10001; display: none; flex-direction: column; align-items: center; gap: 16px; width: 280px; text-align: center; border: 2px solid var(--primary); }
+        .confirm-dialog {
+            position: fixed;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: white; padding: 24px; border-radius: 40px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3); z-index: 10001;
+            display: none; flex-direction: column; align-items: center;
+            gap: 16px; width: 280px; text-align: center;
+            border: 2px solid var(--primary);
+        }
         .confirm-dialog.active { display: flex; }
         .confirm-dialog .btn-group { display: flex; gap: 10px; width: 100%; }
         .confirm-dialog .btn { margin: 0; padding: 10px; }
 
-        #upload-progress { display: none; padding: 6px; background: white; border-radius: 50px; margin-bottom: 6px; }
-        #upload-progress .progress-text { font-size: 0.85rem; display: flex; justify-content: space-between; }
-        #upload-progress .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
-        #upload-progress .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.2s; }
+        #upload-progress {
+            display: none;
+            padding: 6px;
+            background: white;
+            border-radius: 50px;
+            margin-bottom: 6px;
+        }
+        #upload-progress .progress-text {
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        #upload-progress .progress-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        #upload-progress .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.2s;
+        }
     </style>
 </head>
 <body>
     <div id="app">
-        <div class="top-bar"><span class="brand"><i class="fas fa-comments"></i> اسهل حل</span><button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button></div>
-        <div class="sidebar" id="sidebar"><div class="sidebar-header"><span class="brand">اسهل حل</span><button class="close-btn" id="closeSidebar"><i class="fas fa-times"></i></button></div><div class="sidebar-nav"><button class="nav-btn" data-screen="welcome"><i class="fas fa-home"></i> الرئيسية</button><button class="nav-btn" data-screen="login"><i class="fas fa-sign-in-alt"></i> دخول</button><button class="nav-btn" data-screen="chat" id="nav-chat" style="display:none;"><i class="fas fa-comment"></i> الدردشة</button><button class="nav-btn" data-screen="room" id="nav-room" style="display:none;"><i class="fas fa-door-open"></i> الغرفة</button><button class="nav-btn" data-screen="help"><i class="fas fa-question-circle"></i> مساعدة</button><button class="nav-btn" data-screen="about"><i class="fas fa-info-circle"></i> حول</button><button class="nav-btn" data-screen="privacy"><i class="fas fa-lock"></i> خصوصية</button><button class="nav-btn" data-screen="terms"><i class="fas fa-file-alt"></i> شروط</button></div></div>
+        <div class="top-bar">
+            <span class="brand">
+                <i class="fas fa-comments"></i> اسهل حل
+                <span id="connection-indicator" class="connection-status" title="حالة الاتصال"></span>
+            </span>
+            <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+        </div>
+
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span class="brand">اسهل حل</span>
+                <button class="close-btn" id="closeSidebar"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="sidebar-nav">
+                <button class="nav-btn" data-screen="welcome"><i class="fas fa-home"></i> الرئيسية</button>
+                <button class="nav-btn" data-screen="login"><i class="fas fa-sign-in-alt"></i> دخول</button>
+                <button class="nav-btn" data-screen="chat" id="nav-chat" style="display:none;"><i class="fas fa-comment"></i> الدردشة</button>
+                <button class="nav-btn" data-screen="room" id="nav-room" style="display:none;"><i class="fas fa-door-open"></i> الغرفة</button>
+                <button class="nav-btn" data-screen="help"><i class="fas fa-question-circle"></i> مساعدة</button>
+                <button class="nav-btn" data-screen="about"><i class="fas fa-info-circle"></i> حول</button>
+                <button class="nav-btn" data-screen="privacy"><i class="fas fa-lock"></i> خصوصية</button>
+                <button class="nav-btn" data-screen="terms"><i class="fas fa-file-alt"></i> شروط</button>
+            </div>
+        </div>
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-        <!-- screens -->
-        <div id="welcome-screen" class="screen active"><div class="card"><div class="logo"><h1>اسهل حل</h1><p>دردشة فورية متطورة</p></div><button id="start-chat-btn" class="btn btn-success"><i class="fas fa-comment-dots"></i> ابدأ المحادثة</button><div style="display:flex;justify-content:center;gap:20px;margin-top:20px"><a href="#" data-screen="help" style="color:var(--primary)"><i class="fas fa-question-circle"></i> مساعدة</a><a href="#" data-screen="about" style="color:var(--primary)"><i class="fas fa-info-circle"></i> حول</a></div></div></div>
-        <div id="login-screen" class="screen"><div class="card"><div class="logo"><h1>اسهل حل</h1><p>دخول إلى المحادثة</p></div><input type="text" id="username-input" class="input-field" placeholder="اسمك (اتركه فارغاً لاسم عشوائي)" maxlength="20"><div style="display:flex;align-items:center;gap:8px;margin:6px 0"><input type="checkbox" id="manual-code-checkbox" style="width:20px;height:20px"><label for="manual-code-checkbox">استخدام مفتاح مخصص</label></div><div id="custom-key-container" style="display:none"><input type="text" id="custom-room-input" class="input-field" placeholder="المفتاح (أرقام)" maxlength="6"></div><button id="create-room-btn" class="btn"><i class="fas fa-plus-circle"></i> إنشاء غرفة جديدة</button><div style="position:relative;margin:16px 0;text-align:center;color:var(--gray)">أو</div><div style="display:flex;gap:8px"><input type="text" id="room-code-input" class="input-field" placeholder="مفتاح الغرفة" maxlength="6" style="flex:2"><button id="join-room-btn" class="btn btn-outline" style="flex:1"><i class="fas fa-door-open"></i> انضمام</button></div><button id="public-room-btn" class="btn btn-success"><i class="fas fa-users"></i> غرفة للجميع (عامة)</button><div id="error-message" style="color:var(--danger);font-size:0.85rem;text-align:center"></div></div></div>
-        <div id="chat-screen" class="screen"><div style="display:flex;flex-direction:column;height:100%"><div class="chat-header"><div class="header-info"><h2><i class="fas fa-comment"></i> <span id="room-name-display">غرفة 1000</span> <span class="user-count" id="user-count">(0)</span></h2></div><div class="user-info"><span class="user-badge" id="user-status"><i class="fas fa-user"></i> <span id="current-user-name"></span></span><button class="action-btn secondary" id="toggle-users-btn" title="المتصلون"><i class="fas fa-users"></i></button><button class="action-btn secondary" id="call-user-btn" title="اتصال صوتي"><i class="fas fa-phone"></i></button><button class="action-btn secondary" id="leave-room-btn" style="background:var(--danger);color:white" title="خروج"><i class="fas fa-sign-out-alt"></i></button></div></div><div id="users-popup" class="users-popup"><div class="users-popup-header"><h4><i class="fas fa-users"></i> المتصلون الآن</h4><button class="close-popup-btn" id="close-popup-btn"><i class="fas fa-times"></i></button></div><div id="popup-users-list"></div></div><div id="popup-overlay" class="sidebar-overlay"></div><div id="messages-container" class="messages-container"><div class="typing-indicator" id="typing-indicator"></div></div><div id="upload-progress"><div class="progress-text"><span id="progress-message">جاري الرفع...</span><span id="progress-percent">0%</span></div><div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div></div><div id="voice-recording-bar" class="voice-recording-bar"><span class="voice-timer" id="voice-timer">00:00</span><div class="voice-visualizer" id="voice-visualizer"></div><button id="stop-recording-btn" class="action-btn" style="background:var(--danger)"><i class="fas fa-stop"></i></button><button id="send-voice-btn" class="action-btn" style="background:var(--success)"><i class="fas fa-paper-plane"></i></button></div><div class="input-area"><textarea id="message-input" placeholder="اكتب رسالتك..." rows="1"></textarea><button id="media-btn" class="action-btn secondary"><i class="fas fa-paperclip"></i></button><div id="media-popup" class="media-popup"><button id="attach-btn" class="action-btn"><i class="fas fa-cloud-upload-alt"></i> رفع</button><button id="camera-btn" class="action-btn"><i class="fas fa-camera"></i> كاميرا</button><button id="voice-record-btn" class="action-btn"><i class="fas fa-microphone"></i> تسجيل</button></div><button id="send-message-btn" class="action-btn"><i class="fas fa-paper-plane"></i></button></div><input type="file" id="file-input" accept="image/*,video/*" style="display:none"><input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none"></div></div>
-        <div id="room-screen" class="screen"><div class="card"><div class="logo"><h1>معلومات الغرفة</h1></div><div id="room-detail-code" class="room-code-large">123456</div><div class="room-detail"><div class="row"><span><i class="fas fa-users"></i> عدد المتصلين</span><span id="room-detail-users">0</span></div><div class="row"><span><i class="fas fa-calendar-alt"></i> تاريخ الإنشاء</span><span id="room-detail-created">-</span></div></div><div class="room-users"><h4 style="margin-bottom:10px"><i class="fas fa-users"></i> المتصلون الآن</h4><div id="room-users-list" class="room-users-list"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button id="room-enter-chat-btn" class="btn btn-success"><i class="fas fa-comment"></i> دخول</button><button id="room-copy-code-btn" class="btn btn-outline"><i class="fas fa-copy"></i> نسخ</button><button id="room-share-btn" class="btn btn-outline" style="grid-column:span 2"><i class="fas fa-share-alt"></i> مشاركة</button></div><div class="back-btn-container"><button class="back-btn" data-screen="chat"><i class="fas fa-arrow-right"></i> العودة للدردشة</button></div></div></div>
-        <div id="help-screen" class="screen"><div class="card"><h2 style="color:var(--primary)">مساعدة</h2><p>تطبيق دردشة متطور مع تحويل الفيديو تلقائياً إلى 720p إذا لزم الأمر.</p><div class="back-btn-container"><button class="back-btn" data-screen="login"><i class="fas fa-arrow-right"></i> العودة</button></div></div></div>
-        <div id="about-screen" class="screen"><div class="card"><h2 style="color:var(--primary)">حول</h2><p>الإصدار 4.0 - مع اتصال صوتي مباشر</p><div class="back-btn-container"><button class="back-btn" data-screen="login"><i class="fas fa-arrow-right"></i> العودة</button></div></div></div>
-        <div id="privacy-screen" class="screen"><div class="card"><h2 style="color:var(--primary)">الخصوصية</h2><p>المحادثات مؤقتة، الملفات تُرفع إلى GitHub، والمكالمات مشفرة.</p><div class="back-btn-container"><button class="back-btn" data-screen="login"><i class="fas fa-arrow-right"></i> العودة</button></div></div></div>
-        <div id="terms-screen" class="screen"><div class="card"><h2 style="color:var(--primary)">الشروط</h2><p>الاستخدام مسؤول، ممنوع المحتوى المسيء.</p><div class="back-btn-container"><button class="back-btn" data-screen="login"><i class="fas fa-arrow-right"></i> العودة</button></div></div></div>
-    </div>
-    <!-- modals -->
-    <div id="mediaModal" class="media-modal"><button class="close-modal" id="closeModalBtn" style="background:white;border:none;border-radius:50%;width:48px;height:48px;font-size:1.4rem"><i class="fas fa-times"></i></button><div id="modalMediaContainer"></div><button class="btn" id="modalBackBtn" style="width:auto;margin-top:20px;padding:10px 30px">رجوع</button></div>
-    <div id="notification" class="toast"></div>
-    <div id="confirm-dialog" class="confirm-dialog"><p>هل أنت متأكد من الخروج من الغرفة؟</p><div class="btn-group"><button id="confirm-yes" class="btn btn-danger" style="flex:1">نعم</button><button id="confirm-no" class="btn btn-outline" style="flex:1">لا</button></div></div>
+        <!-- شاشة الترحيب -->
+        <div id="welcome-screen" class="screen active">
+            <div class="card">
+                <div class="logo">
+                    <h1>اسهل حل</h1>
+                    <p>دردشة فورية متطورة</p>
+                </div>
+                <button id="start-chat-btn" class="btn btn-success"><i class="fas fa-comment-dots"></i> ابدأ المحادثة</button>
+                <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
+                    <a href="#" data-screen="help" style="color: var(--primary);"><i class="fas fa-question-circle"></i> مساعدة</a>
+                    <a href="#" data-screen="about" style="color: var(--primary);"><i class="fas fa-info-circle"></i> حول</a>
+                </div>
+            </div>
+        </div>
 
-    <!-- لوحة المكالمة الواردة -->
-    <div id="incoming-panel" class="incoming-panel">
-        <div class="caller-name" id="incoming-caller-name">...</div>
-        <div class="incoming-actions">
-            <button class="btn btn-success" id="accept-incoming"><i class="fas fa-phone"></i> قبول</button>
-            <button class="btn btn-danger" id="reject-incoming"><i class="fas fa-phone-slash"></i> رفض</button>
+        <!-- شاشة الدخول -->
+        <div id="login-screen" class="screen">
+            <div class="card">
+                <div class="logo">
+                    <h1>اسهل حل</h1>
+                    <p>دخول إلى المحادثة</p>
+                </div>
+                <input type="text" id="username-input" class="input-field" placeholder="اسمك (اتركه فارغاً لاسم عشوائي)" maxlength="20">
+                <div style="display: flex; align-items: center; gap: 8px; margin: 6px 0;">
+                    <input type="checkbox" id="manual-code-checkbox" style="width: 20px; height: 20px;">
+                    <label for="manual-code-checkbox">استخدام مفتاح مخصص</label>
+                </div>
+                <div id="custom-key-container" style="display: none;">
+                    <input type="text" id="custom-room-input" class="input-field" placeholder="المفتاح (أرقام)" maxlength="6">
+                </div>
+                <button id="create-room-btn" class="btn"><i class="fas fa-plus-circle"></i> إنشاء غرفة جديدة</button>
+                <div style="position: relative; margin: 16px 0; text-align: center; color: var(--gray);">أو</div>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="room-code-input" class="input-field" placeholder="مفتاح الغرفة" maxlength="6" style="flex:2;">
+                    <button id="join-room-btn" class="btn btn-outline" style="flex:1;"><i class="fas fa-door-open"></i> انضمام</button>
+                </div>
+                <button id="public-room-btn" class="btn btn-success"><i class="fas fa-users"></i> غرفة للجميع (عامة)</button>
+                <div id="error-message" style="color: var(--danger); font-size:0.85rem; text-align:center;"></div>
+            </div>
+        </div>
+
+        <!-- شاشة الدردشة -->
+        <div id="chat-screen" class="screen">
+            <div style="display: flex; flex-direction: column; height: 100%;">
+                <div class="chat-header">
+                    <div class="header-info">
+                        <h2><i class="fas fa-comment"></i> <span id="room-name-display">غرفة 1000</span> <span class="user-count" id="user-count">(0)</span></h2>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-badge" id="user-status"><i class="fas fa-user"></i> <span id="current-user-name"></span></span>
+                        <button class="action-btn secondary" id="toggle-users-btn" title="المتصلون"><i class="fas fa-users"></i></button>
+                        <button class="action-btn secondary" id="call-user-btn" title="اتصال صوتي"><i class="fas fa-phone"></i></button>
+                        <button class="action-btn secondary" id="leave-room-btn" style="background:var(--danger); color:white;" title="خروج"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+                </div>
+
+                <!-- نافذة المستخدمين -->
+                <div id="users-popup" class="users-popup">
+                    <div class="users-popup-header">
+                        <h4><i class="fas fa-users"></i> المتصلون الآن</h4>
+                        <button class="close-popup-btn" id="close-popup-btn"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div id="popup-users-list"></div>
+                </div>
+                <div id="popup-overlay" class="sidebar-overlay"></div>
+
+                <div id="messages-container" class="messages-container">
+                    <div class="typing-indicator" id="typing-indicator"></div>
+                </div>
+
+                <!-- شريط التقدم -->
+                <div id="upload-progress">
+                    <div class="progress-text">
+                        <span id="progress-message">جاري الرفع...</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                </div>
+
+                <!-- شريط التسجيل الصوتي -->
+                <div id="voice-recording-bar" class="voice-recording-bar">
+                    <span class="voice-timer" id="voice-timer">00:00</span>
+                    <div class="voice-visualizer" id="voice-visualizer"></div>
+                    <button id="stop-recording-btn" class="action-btn" style="background:var(--danger);"><i class="fas fa-stop"></i></button>
+                    <button id="send-voice-btn" class="action-btn" style="background:var(--success);"><i class="fas fa-paper-plane"></i></button>
+                </div>
+
+                <!-- منطقة الإدخال -->
+                <div class="input-area">
+                    <textarea id="message-input" placeholder="اكتب رسالتك..." rows="1"></textarea>
+                    <button id="media-btn" class="action-btn secondary"><i class="fas fa-paperclip"></i></button>
+                    <div id="media-popup" class="media-popup">
+                        <button id="attach-btn" class="action-btn"><i class="fas fa-cloud-upload-alt"></i> رفع</button>
+                        <button id="camera-btn" class="action-btn"><i class="fas fa-camera"></i> كاميرا</button>
+                        <button id="voice-record-btn" class="action-btn"><i class="fas fa-microphone"></i> تسجيل</button>
+                    </div>
+                    <button id="send-message-btn" class="action-btn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+                <input type="file" id="file-input" accept="image/*,video/*" style="display:none;">
+                <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none;">
+            </div>
+        </div>
+
+        <!-- شاشة الغرفة -->
+        <div id="room-screen" class="screen">
+            <div class="card">
+                <div class="logo"><h1>معلومات الغرفة</h1></div>
+                <div id="room-detail-code" class="room-code-large">123456</div>
+                <div class="room-detail">
+                    <div class="row"><span><i class="fas fa-users"></i> عدد المتصلين</span> <span id="room-detail-users">0</span></div>
+                    <div class="row"><span><i class="fas fa-calendar-alt"></i> تاريخ الإنشاء</span> <span id="room-detail-created">-</span></div>
+                </div>
+                <div class="room-users">
+                    <h4 style="margin-bottom: 10px;"><i class="fas fa-users"></i> المتصلون الآن</h4>
+                    <div id="room-users-list" class="room-users-list"></div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button id="room-enter-chat-btn" class="btn btn-success"><i class="fas fa-comment"></i> دخول</button>
+                    <button id="room-copy-code-btn" class="btn btn-outline"><i class="fas fa-copy"></i> نسخ</button>
+                    <button id="room-share-btn" class="btn btn-outline" style="grid-column: span 2;"><i class="fas fa-share-alt"></i> مشاركة</button>
+                </div>
+                <div class="back-btn-container">
+                    <button class="back-btn" data-screen="chat"><i class="fas fa-arrow-right"></i> العودة للدردشة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- شاشات المساعدة -->
+        <div id="help-screen" class="screen">
+            <div class="card">
+                <h2 style="color: var(--primary);">مساعدة</h2>
+                <p>تطبيق دردشة متطور مع تحويل الفيديو تلقائياً إلى 720p إذا لزم الأمر.</p>
+                <div class="back-btn-container">
+                    <button class="back-btn" data-screen="login"><i class="fas fa-arrow-right"></i> العودة</button>
+                </div>
+            </div>
+        </div>
+        <div id="about-screen" class="screen">
+            <div class="card">
+                <h2 style="color: var(--primary);">حول</h2>
+                <p>الإصدار 4.0 - مع اتصال صوتي مباشر</p>
+                <div class="back-btn-container">
+                    <button class="back-btn" data-screen="login"><i class="fas fa-arrow-right"></i> العودة</button>
+                </div>
+            </div>
+        </div>
+        <div id="privacy-screen" class="screen">
+            <div class="card">
+                <h2 style="color: var(--primary);">الخصوصية</h2>
+                <p>المحادثات مؤقتة، الملفات تُرفع إلى GitHub، والمكالمات مشفرة.</p>
+                <div class="back-btn-container">
+                    <button class="back-btn" data-screen="login"><i class="fas fa-arrow-right"></i> العودة</button>
+                </div>
+            </div>
+        </div>
+        <div id="terms-screen" class="screen">
+            <div class="card">
+                <h2 style="color: var(--primary);">الشروط</h2>
+                <p>الاستخدام مسؤول، ممنوع المحتوى المسيء.</p>
+                <div class="back-btn-container">
+                    <button class="back-btn" data-screen="login"><i class="fas fa-arrow-right"></i> العودة</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- نافذة المكالمة النشطة -->
+    <!-- نافذة عرض الوسائط -->
+    <div id="mediaModal" class="media-modal">
+        <button class="close-modal" id="closeModalBtn" style="background:white; border:none; border-radius:50%; width:48px; height:48px; font-size:1.4rem;"><i class="fas fa-times"></i></button>
+        <div id="modalMediaContainer"></div>
+        <button class="btn" id="modalBackBtn" style="width:auto; margin-top:20px; padding:10px 30px;">رجوع</button>
+    </div>
+    <div id="notification" class="toast"></div>
+
+    <!-- مربع تأكيد الخروج -->
+    <div id="confirm-dialog" class="confirm-dialog">
+        <p>هل أنت متأكد من الخروج من الغرفة؟</p>
+        <div class="btn-group">
+            <button id="confirm-yes" class="btn btn-danger" style="flex:1;">نعم</button>
+            <button id="confirm-no" class="btn btn-outline" style="flex:1;">لا</button>
+        </div>
+    </div>
+
+    <!-- نافذة المكالمة الصوتية -->
     <div id="call-container" class="call-container">
-        <div class="call-avatar" id="call-avatar"><i class="fas fa-user"></i></div>
-        <div class="call-info" id="call-info">...</div>
+        <div class="call-avatar" id="call-avatar">
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="call-info" id="call-info">جاري الاتصال...</div>
         <div class="call-actions">
-            <button class="call-btn" id="mute-call-btn"><i class="fas fa-microphone"></i></button>
-            <button class="call-btn" id="end-call-btn"><i class="fas fa-phone-slash"></i></button>
+            <button class="call-btn" id="call-end-btn"><i class="fas fa-phone-slash"></i></button>
+            <button class="call-btn answer" id="call-answer-btn" style="display: none;"><i class="fas fa-phone"></i></button>
         </div>
     </div>
 
     <script type="module">
-        // ========== Firebase Config ==========
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, push, onChildAdded, onDisconnect, get, remove, onValue, query, limitToLast, orderByChild, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, push, onChildAdded, onDisconnect, get, remove, onValue, query, limitToLast, orderByChild } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const { createFFmpeg, fetchFile } = window.FFmpeg;
+        const ffmpeg = createFFmpeg({ 
+            log: false,
+            corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js'
+        });
 
         const firebaseConfig = {
             apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
@@ -208,16 +499,15 @@
             appId: "1:560939348415:web:c854e9e214e498ad2d310a",
             measurementId: "G-CVN2B2D0RD"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // ========== إعدادات GitHub ==========
+        // إعدادات GitHub
         const GITHUB_USERNAME = "ashlhl";
         const GITHUB_REPO = "ashlhl";
         const GITHUB_TOKEN_PATH = "2026";
 
-        // ========== عناصر DOM ==========
+        // عناصر DOM
         const screens = document.querySelectorAll('.screen');
         const navButtons = document.querySelectorAll('[data-screen]');
         const startChatBtn = document.getElementById('start-chat-btn');
@@ -270,20 +560,16 @@
         const confirmDialog = document.getElementById('confirm-dialog');
         const confirmYes = document.getElementById('confirm-yes');
         const confirmNo = document.getElementById('confirm-no');
+        const connectionIndicator = document.getElementById('connection-indicator');
         
         // عناصر المكالمة
-        const incomingPanel = document.getElementById('incoming-panel');
-        const incomingCallerName = document.getElementById('incoming-caller-name');
-        const acceptIncoming = document.getElementById('accept-incoming');
-        const rejectIncoming = document.getElementById('reject-incoming');
         const callContainer = document.getElementById('call-container');
         const callAvatar = document.getElementById('call-avatar');
         const callInfo = document.getElementById('call-info');
-        const muteCallBtn = document.getElementById('mute-call-btn');
-        const endCallBtn = document.getElementById('end-call-btn');
-        const callUserBtn = document.getElementById('call-user-btn');
+        const callEndBtn = document.getElementById('call-end-btn');
+        const callAnswerBtn = document.getElementById('call-answer-btn');
 
-        // ========== متغيرات الحالة ==========
+        // متغيرات الحالة
         let currentRoom = null, currentUser = null, userId = null, messagesRef = null, typingTimeout = null;
         let messagesUnsubscribe = null, usersUnsubscribe = null;
         let displayedMessages = new Set();
@@ -292,6 +578,7 @@
         const ADMIN_LOGIN = "ashlhlsgadalyasiri";
         const ADMIN_DISPLAY = "سجاد";
 
+        // متغيرات التسجيل الصوتي
         let mediaRecorder = null;
         let audioChunks = [];
         let recordingStartTime = 0;
@@ -299,40 +586,39 @@
         let audioContext = null;
         let analyser = null;
         let visualizerAnimation = null;
-        let usersMap = {}; // userId -> displayName
-        let heartbeatInterval = null;
+        let usersMap = {};
 
-        // WebRTC متغيرات (مبسطة وموثوقة)
-        let localStream = null;
+        // متغيرات WebRTC
         let peerConnection = null;
+        let localStream = null;
         let callTimeout = null;
-        let currentCallTarget = null; // userId للمتصل به
-        let incomingOffer = null; // تخزين العرض الوارد مؤقتاً
-        const callBasePath = () => `calls/${currentRoom}`;
+        let callTargetUserId = null;
+        let callType = null; // 'offer' or 'answer'
+        const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
-        // STUN servers
-        const configuration = {
-            iceServers: [
-                { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' },
-                { urls: 'stun:stun2.l.google.com:19302' },
-                { urls: 'stun:stun3.l.google.com:19302' },
-                { urls: 'stun:stun4.l.google.com:19302' }
-            ]
-        };
+        // مراقبة حالة الاتصال
+        const connectedRef = ref(db, ".info/connected");
+        onValue(connectedRef, (snap) => {
+            if (snap.val() === true) {
+                connectionIndicator.className = "connection-status connected";
+                connectionIndicator.title = "متصل بقاعدة البيانات";
+            } else {
+                connectionIndicator.className = "connection-status disconnected";
+                connectionIndicator.title = "غير متصل بقاعدة البيانات";
+            }
+        });
 
-        // ========== دوال مساعدة ==========
+        // دوال مساعدة
         function showScreen(screenId) {
             screens.forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId + '-screen')?.classList.add('active');
+            const target = document.getElementById(screenId + '-screen');
+            if (target) target.classList.add('active');
             navChat.style.display = screenId === 'chat' ? 'block' : 'none';
             navRoom.style.display = screenId === 'room' ? 'block' : 'none';
             closeSidebarFunc();
         }
-
         function openSidebar() { sidebar.classList.add('open'); sidebarOverlay.classList.add('active'); }
         function closeSidebarFunc() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); }
-
         menuBtn.addEventListener('click', openSidebar);
         closeSidebar.addEventListener('click', closeSidebarFunc);
         sidebarOverlay.addEventListener('click', closeSidebarFunc);
@@ -351,7 +637,8 @@
         function generateUserId() { return 'user_' + Math.random().toString(36).substr(2, 9); }
         function generateRandomName() {
             const prefixes = ['guest', 'user', 'member', 'visitor', 'player', 'coder', 'geek'];
-            return prefixes[Math.floor(Math.random() * prefixes.length)] + Math.floor(Math.random() * 10000);
+            const randomNum = Math.floor(Math.random() * 10000);
+            return prefixes[Math.floor(Math.random() * prefixes.length)] + randomNum;
         }
 
         function sanitizeFolderName(name) {
@@ -359,83 +646,485 @@
             return name.replace(/[^a-zA-Z0-9\u0600-\u06FF\s\-_]/g, '').trim().replace(/\s+/g, '_');
         }
 
-        // ========== GitHub functions ==========
         async function getGitHubToken() {
-            const snapshot = await get(ref(db, GITHUB_TOKEN_PATH));
-            if (!snapshot.exists()) throw new Error('لم يتم العثور على التوكن');
+            const tokenRef = ref(db, GITHUB_TOKEN_PATH);
+            const snapshot = await get(tokenRef);
+            if (!snapshot.exists()) throw new Error('لم يتم العثور على التوكن في Firebase (المسار: 2026)');
             return snapshot.val();
         }
 
         async function uploadToGitHub(file, fileName, fileType) {
             const token = await getGitHubToken();
-            let typeFolder = { image: 'صور', video: 'فيديو', audio: 'تسجيل_صوتي' }[fileType] || 'اخرى';
-            const githubPath = `chat/${typeFolder}/${sanitizeFolderName(currentRoom)}/${sanitizeFolderName(currentUser)}/${fileName}`;
+            let typeFolder = '';
+            if (fileType === 'image') typeFolder = 'صور';
+            else if (fileType === 'video') typeFolder = 'فيديو';
+            else if (fileType === 'audio') typeFolder = 'تسجيل_صوتي';
+            else typeFolder = 'اخرى';
+
+            const safeRoom = sanitizeFolderName(currentRoom);
+            const safeUser = sanitizeFolderName(currentUser);
+            const githubPath = `chat/${typeFolder}/${safeRoom}/${safeUser}/${fileName}`;
+
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = async (e) => {
+                    const base64Content = e.target.result.split(',')[1];
+                    const url = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${githubPath}`;
                     try {
-                        const response = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${githubPath}`, {
+                        const response = await fetch(url, {
                             method: 'PUT',
-                            headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ message: `رفع ${fileType} من ${currentUser} في غرفة ${currentRoom}`, content: e.target.result.split(',')[1], branch: 'main' })
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                message: `رفع ${fileType} من ${currentUser} في غرفة ${currentRoom}`,
+                                content: base64Content,
+                                branch: 'main'
+                            })
                         });
-                        if (!response.ok) { const err = await response.json(); throw new Error(err.message); }
-                        resolve(`https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPO}/main/${githubPath}`);
-                    } catch (err) { reject(new Error('فشل الرفع')); }
-                }; reader.onerror = () => reject(new Error('فشل قراءة الملف')); reader.readAsDataURL(file);
+                        if (!response.ok) {
+                            const errData = await response.json();
+                            reject(new Error(errData.message || 'فشل الرفع إلى GitHub'));
+                        }
+                        const data = await response.json();
+                        const rawUrl = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPO}/main/${githubPath}`;
+                        resolve(rawUrl);
+                    } catch (err) {
+                        reject(new Error('فشل الاتصال بـ GitHub'));
+                    }
+                };
+                reader.onerror = () => reject(new Error('فشل قراءة الملف'));
+                reader.readAsDataURL(file);
             });
         }
 
-        // ========== معالجة الصور والفيديو (اختصاراً) ==========
-        async function compressImage(file) { return file; }
-        async function convertVideoTo720p(file) { return file; }
-        async function processVideo(file) { return file; }
+        async function compressImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        let width = img.width;
+                        let height = img.height;
+                        const maxSize = 1024;
+                        if (width > height && width > maxSize) {
+                            height = Math.round((height * maxSize) / width);
+                            width = maxSize;
+                        } else if (height > maxSize) {
+                            width = Math.round((width * maxSize) / height);
+                            height = maxSize;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        canvas.toBlob((blob) => {
+                            const newFile = new File([blob], file.name, { type: 'image/jpeg' });
+                            resolve(newFile);
+                        }, 'image/jpeg', 0.7);
+                    };
+                };
+            });
+        }
 
-        // ========== إدارة المستخدمين الحقيقيين (عبر lastActive) ==========
-        function updateUsersLists(users) {
-            usersMap = {};
-            const online = {};
-            const now = Date.now();
-            Object.keys(users).forEach(key => {
-                const u = users[key];
-                if (u?.name && (now - (u.lastActive || u.joinedAt || 0) < 45000)) {
-                    usersMap[key] = u.name;
-                    online[key] = u;
+        // تحويل أي فيديو إلى MP4 أولاً ثم تطبيق التحجيم إلى 720p
+        async function convertVideoTo720p(file) {
+            try {
+                progressMessage.textContent = 'جاري تحميل محول الفيديو...';
+                progressDiv.style.display = 'block';
+                
+                if (!ffmpeg.isLoaded()) {
+                    await Promise.race([
+                        ffmpeg.load(),
+                        new Promise((_, reject) => setTimeout(() => reject('انتهت مهلة تحميل المحول'), 30000))
+                    ]);
+                }
+                
+                progressMessage.textContent = 'جاري تحويل الفيديو إلى MP4 بدقة 720p...';
+                
+                const inputFileName = 'input_' + Date.now() + '.mp4';
+                const outputFileName = 'output_' + Date.now() + '.mp4';
+                
+                ffmpeg.FS('writeFile', inputFileName, await fetchFile(file));
+                
+                await ffmpeg.run(
+                    '-i', inputFileName,
+                    '-c:v', 'libx264',
+                    '-crf', '28',
+                    '-preset', 'fast',
+                    '-vf', 'scale=-2:720',
+                    '-c:a', 'aac',
+                    '-b:a', '128k',
+                    '-movflags', '+faststart',
+                    outputFileName
+                );
+                
+                const data = ffmpeg.FS('readFile', outputFileName);
+                const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+                const convertedFile = new File([videoBlob], file.name.replace(/\.[^/.]+$/, "") + "_720p.mp4", { type: 'video/mp4' });
+                
+                ffmpeg.FS('unlink', inputFileName);
+                ffmpeg.FS('unlink', outputFileName);
+                
+                progressMessage.textContent = 'تم التحويل بنجاح';
+                return convertedFile;
+            } catch (error) {
+                console.error('خطأ في تحويل الفيديو:', error);
+                throw new Error('تعذر تحويل الفيديو. قد يكون الملف تالفاً أو غير مدعوم. يرجى استخدام صيغة MP4 قياسية.');
+            }
+        }
+
+        // معالجة الفيديو: فحص الدقة والمدة، وتحويلها إذا لزم الأمر
+        async function processVideo(file) {
+            return new Promise((resolve, reject) => {
+                const video = document.createElement('video');
+                video.preload = 'metadata';
+                
+                const timeout = setTimeout(() => {
+                    window.URL.revokeObjectURL(video.src);
+                    reject('تعذر قراءة معلومات الفيديو. قد يكون الملف تالفاً.');
+                }, 10000);
+                
+                video.onloadedmetadata = async () => {
+                    clearTimeout(timeout);
+                    window.URL.revokeObjectURL(video.src);
+                    
+                    const needConvert = (video.videoHeight > 720) || (video.duration > 60);
+                    
+                    if (needConvert) {
+                        try {
+                            const convertedFile = await convertVideoTo720p(file);
+                            resolve(convertedFile);
+                        } catch (err) {
+                            reject(err);
+                        }
+                    } else {
+                        resolve(file);
+                    }
+                };
+                
+                video.onerror = () => {
+                    clearTimeout(timeout);
+                    window.URL.revokeObjectURL(video.src);
+                    reject('تعذر قراءة ملف الفيديو. قد يكون تالفاً أو غير مدعوم.');
+                };
+                
+                video.src = URL.createObjectURL(file);
+            });
+        }
+
+        // دوال WebRTC - محسنة
+        async function startCall(targetUserId) {
+            try {
+                console.log('بدء مكالمة إلى:', targetUserId);
+                callTargetUserId = targetUserId;
+                callType = 'offer';
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                peerConnection = new RTCPeerConnection(configuration);
+                
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+                
+                peerConnection.ontrack = (event) => {
+                    console.log('تم استقبال الصوت البعيد');
+                    callInfo.textContent = `تتحدث مع ${usersMap[callTargetUserId] || 'المستخدم'}`;
+                };
+                
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        console.log('إرسال مرشح ICE');
+                        push(ref(db, `calls/${currentRoom}/candidates/${userId}`), event.candidate.toJSON());
+                    }
+                };
+                
+                peerConnection.oniceconnectionstatechange = () => {
+                    console.log('حالة ICE:', peerConnection.iceConnectionState);
+                    if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'failed') {
+                        endCall();
+                    }
+                };
+                
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+                
+                // إرسال العرض إلى Firebase
+                await set(ref(db, `calls/${currentRoom}/offers/${userId}`), {
+                    offer: offer,
+                    caller: currentUser,
+                    callee: targetUserId
+                });
+                
+                // عرض واجهة المكالمة
+                callAvatar.innerHTML = `<i class="fas fa-phone"></i>`;
+                callInfo.textContent = `جارٍ الاتصال بـ ${usersMap[targetUserId] || 'المستخدم'}...`;
+                callAnswerBtn.style.display = 'none';
+                callContainer.classList.add('active');
+                
+                // مهلة 30 ثانية
+                callTimeout = setTimeout(() => {
+                    endCall();
+                    showNotification('لم يجب الطرف الآخر', 'danger');
+                }, 30000);
+                
+            } catch (err) {
+                console.error('خطأ في بدء المكالمة:', err);
+                showNotification('تعذر الوصول إلى الميكروفون', 'danger');
+                endCall();
+            }
+        }
+        
+        async function answerCall(offerData, callerId) {
+            try {
+                console.log('الرد على مكالمة من:', callerId);
+                callTargetUserId = callerId;
+                callType = 'answer';
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                peerConnection = new RTCPeerConnection(configuration);
+                
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+                
+                peerConnection.ontrack = (event) => {
+                    console.log('تم استقبال الصوت البعيد');
+                    callInfo.textContent = `تتحدث مع ${offerData.caller}`;
+                };
+                
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        console.log('إرسال مرشح ICE');
+                        push(ref(db, `calls/${currentRoom}/candidates/${userId}`), event.candidate.toJSON());
+                    }
+                };
+                
+                peerConnection.oniceconnectionstatechange = () => {
+                    console.log('حالة ICE:', peerConnection.iceConnectionState);
+                    if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'failed') {
+                        endCall();
+                    }
+                };
+                
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(offerData.offer));
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+                
+                await set(ref(db, `calls/${currentRoom}/answers/${userId}`), {
+                    answer: answer,
+                    caller: offerData.caller,
+                    callee: currentUser
+                });
+                
+                callAvatar.innerHTML = `<i class="fas fa-user"></i>`;
+                callInfo.textContent = `تتحدث مع ${offerData.caller}`;
+                callAnswerBtn.style.display = 'none';
+                callContainer.classList.add('active');
+                
+            } catch (err) {
+                console.error('خطأ في الرد على المكالمة:', err);
+                showNotification('فشل الرد على المكالمة', 'danger');
+                endCall();
+            }
+        }
+        
+        function endCall() {
+            console.log('إنهاء المكالمة');
+            if (callTimeout) clearTimeout(callTimeout);
+            
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            
+            // حذف بيانات المكالمة من Firebase
+            if (currentRoom && userId) {
+                remove(ref(db, `calls/${currentRoom}/offers/${userId}`));
+                remove(ref(db, `calls/${currentRoom}/answers/${userId}`));
+                remove(ref(db, `calls/${currentRoom}/candidates/${userId}`));
+            }
+            
+            callContainer.classList.remove('active');
+            callTargetUserId = null;
+            callType = null;
+        }
+
+        // مراقبة المكالمات الواردة - محسنة
+        function listenForCalls() {
+            if (!currentRoom) return;
+            
+            // الاستماع للعروض (offers)
+            const offersRef = ref(db, `calls/${currentRoom}/offers`);
+            onChildAdded(offersRef, (snap) => {
+                const offerData = snap.val();
+                const callerId = snap.key;
+                console.log('عرض وارد من:', callerId, offerData);
+                
+                // التأكد أن العرض موجه إلينا وأنا لست المتصل
+                if (offerData.callee === currentUser && callerId !== userId && !peerConnection) {
+                    console.log('عرض مناسب لي، عرض الإشعار');
+                    
+                    // عرض إشعار بالمكالمة الواردة
+                    callAvatar.innerHTML = `<i class="fas fa-phone"></i>`;
+                    callInfo.textContent = `مكالمة واردة من ${offerData.caller}`;
+                    callAnswerBtn.style.display = 'flex';
+                    callContainer.classList.add('active');
+                    
+                    // تخزين بيانات العرض للرد
+                    callTargetUserId = callerId;
+                    
+                    callAnswerBtn.onclick = () => {
+                        answerCall(offerData, callerId);
+                    };
+                    
+                    // مهلة 30 ثانية
+                    callTimeout = setTimeout(() => {
+                        callContainer.classList.remove('active');
+                        showNotification('لم يتم الرد على المكالمة', 'danger');
+                    }, 30000);
                 }
             });
-            userCountSpan.textContent = `(${Object.keys(online).length})`;
+            
+            // الاستماع للإجابات (answers) - للمتصل
+            const answersRef = ref(db, `calls/${currentRoom}/answers`);
+            onChildAdded(answersRef, async (snap) => {
+                const answerData = snap.val();
+                const answererId = snap.key;
+                console.log('إجابة واردة من:', answererId, answerData);
+                
+                if (callType === 'offer' && answererId === callTargetUserId && peerConnection && peerConnection.signalingState === 'have-local-offer') {
+                    console.log('تم استقبال الإجابة، تعيين الوصف البعيد');
+                    clearTimeout(callTimeout);
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(answerData.answer));
+                }
+            });
+            
+            // الاستماع للمرشحين (candidates) - لكلا الطرفين
+            const candidatesRef = ref(db, `calls/${currentRoom}/candidates`);
+            onChildAdded(candidatesRef, (snap) => {
+                const candidateData = snap.val();
+                const candidateUserId = snap.key;
+                if (!peerConnection || candidateUserId === userId) return;
+                
+                console.log('مرشح وارد من:', candidateUserId);
+                const candidate = new RTCIceCandidate(candidateData);
+                peerConnection.addIceCandidate(candidate).catch(e => console.log('خطأ في إضافة مرشح:', e));
+            });
+        }
+
+        function displayMessage(msg, isOwn, isSystem, msgId) {
+            if (displayedMessages.has(msgId)) return;
+            displayedMessages.add(msgId);
+            const div = document.createElement('div');
+            div.className = `message ${isOwn ? 'own' : ''} ${isSystem ? 'system' : ''}`;
+            if (!isSystem) {
+                const nameSpan = document.createElement('div');
+                nameSpan.className = 'username';
+                nameSpan.textContent = msg.sender === ADMIN_LOGIN ? ADMIN_DISPLAY : msg.sender;
+                if (msg.sender === ADMIN_LOGIN) {
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-crown';
+                    icon.style.fontSize = '0.7rem';
+                    icon.style.color = '#fbbf24';
+                    nameSpan.appendChild(icon);
+                }
+                div.appendChild(nameSpan);
+            }
+            if (msg.type === 'image') {
+                const img = document.createElement('img');
+                img.src = msg.text;
+                img.className = 'message-image';
+                img.addEventListener('click', () => {
+                    document.getElementById('modalMediaContainer').innerHTML = `<img src="${msg.text}" class="modal-media">`;
+                    document.getElementById('mediaModal').classList.add('active');
+                });
+                div.appendChild(img);
+            } else if (msg.type === 'video') {
+                const video = document.createElement('video');
+                video.src = msg.text;
+                video.controls = true;
+                video.className = 'message-image';
+                video.addEventListener('click', () => {
+                    document.getElementById('modalMediaContainer').innerHTML = `<video src="${msg.text}" controls class="modal-media"></video>`;
+                    document.getElementById('mediaModal').classList.add('active');
+                });
+                div.appendChild(video);
+            } else if (msg.type === 'audio') {
+                const audioDiv = document.createElement('div');
+                audioDiv.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px; width:100%;">
+                        <button class="audio-play-btn" style="width:40px;height:40px;border-radius:50%;background:var(--primary);color:white;border:none;"><i class="fas fa-play"></i></button>
+                        <div style="flex:1;height:4px;background:rgba(255,255,255,0.3);border-radius:2px;"><div class="audio-progress-filled" style="width:0%;height:100%;background:white;border-radius:2px;"></div></div>
+                        <span class="audio-duration" style="font-size:0.75rem;">00:00</span>
+                    </div>
+                `;
+                const audio = new Audio(msg.text);
+                const playBtn = audioDiv.querySelector('.audio-play-btn');
+                const progressFilled = audioDiv.querySelector('.audio-progress-filled');
+                const durationSpan = audioDiv.querySelector('.audio-duration');
+                playBtn.addEventListener('click', () => {
+                    if (audio.paused) { audio.play(); playBtn.innerHTML = '<i class="fas fa-pause"></i>'; }
+                    else { audio.pause(); playBtn.innerHTML = '<i class="fas fa-play"></i>'; }
+                });
+                audio.addEventListener('timeupdate', () => {
+                    const percent = (audio.currentTime / audio.duration) * 100;
+                    progressFilled.style.width = percent + '%';
+                    const mins = Math.floor(audio.currentTime / 60);
+                    const secs = Math.floor(audio.currentTime % 60);
+                    durationSpan.textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+                });
+                audio.addEventListener('ended', () => { playBtn.innerHTML = '<i class="fas fa-play"></i>'; progressFilled.style.width = '0%'; });
+                div.appendChild(audioDiv);
+            } else {
+                div.appendChild(document.createTextNode(msg.text));
+            }
+            const timeSpan = document.createElement('div');
+            timeSpan.className = 'time';
+            timeSpan.textContent = new Date(msg.timestamp).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+            div.appendChild(timeSpan);
+            messagesContainer.appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function updateUsersLists(users) {
+            usersMap = {};
+            Object.keys(users).forEach(key => usersMap[key] = users[key].name);
+            userCountSpan.textContent = `(${Object.keys(users).length})`;
             if (popupUsersList) {
                 popupUsersList.innerHTML = '';
-                Object.keys(online).forEach(key => {
-                    const u = online[key];
-                    popupUsersList.innerHTML += `<div class="user-item"><div class="user-avatar">${u.name.charAt(0)}</div><span class="user-name">${u.name === ADMIN_LOGIN ? ADMIN_DISPLAY : u.name}</span><span class="user-status-indicator online" title="متصل"></span>${u.name === ADMIN_LOGIN ? '<i class="fas fa-crown" style="color:#fbbf24;"></i>' : ''}</div>`;
+                Object.keys(users).forEach(key => {
+                    const user = users[key];
+                    const item = document.createElement('div');
+                    item.className = 'user-item';
+                    item.innerHTML = `
+                        <div class="user-avatar">${user.name.charAt(0)}</div>
+                        <span class="user-name">${user.name === ADMIN_LOGIN ? ADMIN_DISPLAY : user.name}</span>
+                        ${user.name === ADMIN_LOGIN ? '<i class="fas fa-crown" style="color:#fbbf24;"></i>' : ''}
+                    `;
+                    popupUsersList.appendChild(item);
                 });
             }
             const roomList = document.getElementById('room-users-list');
             if (roomList) {
                 roomList.innerHTML = '';
-                Object.keys(online).forEach(key => {
-                    const u = online[key];
-                    roomList.innerHTML += `<span>${u.name === ADMIN_LOGIN ? ADMIN_DISPLAY : u.name}<span class="user-status-indicator online" title="متصل"></span>${u.name === ADMIN_LOGIN ? '<i class="fas fa-crown" style="color:#fbbf24;"></i>' : ''}</span>`;
+                Object.keys(users).forEach(key => {
+                    const user = users[key];
+                    const span = document.createElement('span');
+                    span.textContent = user.name === ADMIN_LOGIN ? ADMIN_DISPLAY : user.name;
+                    if (user.name === ADMIN_LOGIN) span.innerHTML += ' <i class="fas fa-crown" style="color:#fbbf24;"></i>';
+                    roomList.appendChild(span);
                 });
-                document.getElementById('room-detail-users').textContent = Object.keys(online).length;
+                document.getElementById('room-detail-users').textContent = Object.keys(users).length;
             }
         }
 
-        function startHeartbeat() {
-            if (heartbeatInterval) clearInterval(heartbeatInterval);
-            heartbeatInterval = setInterval(() => {
-                if (currentRoom && userId) update(ref(db, `rooms/${currentRoom}/users/${userId}`), { lastActive: Date.now() });
-            }, 20000);
-        }
-
-        function stopHeartbeat() {
-            if (heartbeatInterval) { clearInterval(heartbeatInterval); heartbeatInterval = null; }
-        }
-
         function monitorRoomUsers(room) {
+            const usersRef = ref(db, `rooms/${room}/users`);
             if (usersUnsubscribe) usersUnsubscribe();
-            usersUnsubscribe = onValue(ref(db, `rooms/${room}/users`), snap => updateUsersLists(snap.val() || {}));
+            usersUnsubscribe = onValue(usersRef, snap => updateUsersLists(snap.val() || {}));
         }
 
         function setupTyping(room, uid) {
@@ -451,257 +1140,32 @@
 
         function listenTyping(room) {
             onValue(ref(db, `rooms/${room}/typing`), snap => {
-                const data = snap.val() || {}, typing = Object.keys(data).filter(k => data[k] === true && k !== userId);
-                if (typing.length === 0) typingIndicator.style.display = 'none';
+                const data = snap.val() || {};
+                const typingUsers = Object.keys(data).filter(k => data[k] === true && k !== userId);
+                if (typingUsers.length === 0) typingIndicator.style.display = 'none';
                 else {
-                    typingIndicator.textContent = typing.length === 1 ? `${usersMap[typing[0]] || 'شخص'} يكتب...` : `${typing.length} أشخاص يكتبون...`;
+                    const names = typingUsers.map(id => usersMap[id] || 'شخص');
+                    typingIndicator.textContent = names.length === 1 ? `${names[0]} يكتب...` : `${names.length} أشخاص يكتبون...`;
                     typingIndicator.style.display = 'block';
                 }
             });
         }
 
-        // ========== عرض الرسائل ==========
-        function displayMessage(msg, isOwn, isSystem, msgId) {
-            if (displayedMessages.has(msgId)) return; displayedMessages.add(msgId);
-            const div = document.createElement('div'); div.className = `message ${isOwn ? 'own' : ''} ${isSystem ? 'system' : ''}`;
-            if (!isSystem) {
-                const ns = document.createElement('div'); ns.className = 'username'; ns.textContent = msg.sender === ADMIN_LOGIN ? ADMIN_DISPLAY : msg.sender;
-                if (msg.sender === ADMIN_LOGIN) ns.innerHTML += '<i class="fas fa-crown" style="font-size:0.7rem;color:#fbbf24;"></i>';
-                div.appendChild(ns);
-            }
-            if (msg.type === 'image') {
-                const img = document.createElement('img'); img.src = msg.text; img.className = 'message-image';
-                img.onclick = () => { document.getElementById('modalMediaContainer').innerHTML = `<img src="${msg.text}" class="modal-media">`; document.getElementById('mediaModal').classList.add('active'); };
-                div.appendChild(img);
-            } else if (msg.type === 'video') {
-                const vid = document.createElement('video'); vid.src = msg.text; vid.controls = true; vid.className = 'message-image';
-                vid.onclick = () => { document.getElementById('modalMediaContainer').innerHTML = `<video src="${msg.text}" controls class="modal-media"></video>`; document.getElementById('mediaModal').classList.add('active'); };
-                div.appendChild(vid);
-            } else if (msg.type === 'audio') {
-                const ad = document.createElement('div'); ad.innerHTML = `<div style="display:flex;align-items:center;gap:10px"><button class="audio-play-btn" style="width:40px;height:40px;border-radius:50%;background:var(--primary);color:white;border:none"><i class="fas fa-play"></i></button><div style="flex:1;height:4px;background:rgba(255,255,255,0.3);border-radius:2px"><div class="audio-progress-filled" style="width:0%;height:100%;background:white;border-radius:2px"></div></div><span class="audio-duration" style="font-size:0.75rem">00:00</span></div>`;
-                const audio = new Audio(msg.text), btn = ad.querySelector('.audio-play-btn'), prog = ad.querySelector('.audio-progress-filled'), dur = ad.querySelector('.audio-duration');
-                btn.onclick = () => { if (audio.paused) { audio.play(); btn.innerHTML = '<i class="fas fa-pause"></i>'; } else { audio.pause(); btn.innerHTML = '<i class="fas fa-play"></i>'; } };
-                audio.ontimeupdate = () => { prog.style.width = (audio.currentTime / audio.duration) * 100 + '%'; dur.textContent = new Date(audio.currentTime * 1000).toISOString().substr(14, 5); };
-                audio.onended = () => { btn.innerHTML = '<i class="fas fa-play"></i>'; prog.style.width = '0%'; };
-                div.appendChild(ad);
-            } else { div.appendChild(document.createTextNode(msg.text)); }
-            const ts = document.createElement('div'); ts.className = 'time'; ts.textContent = new Date(msg.timestamp).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }); div.appendChild(ts);
-            messagesContainer.appendChild(div); messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
         async function setupMessageListener() {
             if (messagesUnsubscribe) messagesUnsubscribe();
             messagesRef = ref(db, `rooms/${currentRoom}/messages`);
-            messagesUnsubscribe = onChildAdded(query(messagesRef, orderByChild('timestamp'), limitToLast(MAX_MSGS)), (snap) => {
-                const msg = snap.val(); if (!msg) return;
-                displayMessage(msg, (msg.sender === (currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser)) && msg.sender !== 'نظام', msg.sender === 'نظام', snap.key);
+            const recentQuery = query(messagesRef, orderByChild('timestamp'), limitToLast(MAX_MSGS));
+            messagesContainer.innerHTML = ''; messagesContainer.appendChild(typingIndicator);
+            messagesUnsubscribe = onChildAdded(recentQuery, async (snap) => {
+                const msg = snap.val();
+                if (!msg) return;
+                const isOwn = (msg.sender === (currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser)) && msg.sender !== 'نظام';
+                displayMessage(msg, isOwn, msg.sender === 'نظام', snap.key);
             });
         }
 
-        // ========== دوال WebRTC الموثوقة ==========
-        async function setupLocalStream() {
-            if (localStream) return localStream;
-            try {
-                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                showNotification('الميكروفون جاهز');
-                return localStream;
-            } catch (err) {
-                showNotification('تعذر الوصول إلى الميكروفون', 'danger');
-                throw err;
-            }
-        }
-
-        function createPeerConnection() {
-            const pc = new RTCPeerConnection(configuration);
-            
-            pc.addEventListener('track', event => {
-                if (event.streams && event.streams[0]) {
-                    const audioElement = document.createElement('audio');
-                    audioElement.srcObject = event.streams[0];
-                    audioElement.autoplay = true;
-                    audioElement.style.display = 'none';
-                    document.body.appendChild(audioElement);
-                    callInfo.textContent = 'جاري التحدث...';
-                }
-            });
-            
-            pc.addEventListener('icecandidate', event => {
-                if (!event.candidate || !currentRoom) return;
-                const candidateRef = ref(db, `${callBasePath()}/candidates/${userId}`);
-                push(candidateRef, event.candidate.toJSON());
-            });
-            
-            pc.addEventListener('connectionstatechange', () => {
-                if (pc.connectionState === 'connected') {
-                    callContainer.classList.add('active');
-                    incomingPanel.classList.remove('active');
-                } else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed' || pc.connectionState === 'closed') {
-                    endCall();
-                }
-            });
-            
-            return pc;
-        }
-
-        async function startCall(targetUserId) {
-            if (!currentRoom || !userId) return;
-            if (peerConnection) {
-                showNotification('هناك مكالمة قائمة حالياً', 'warning');
-                return;
-            }
-            try {
-                await setupLocalStream();
-                peerConnection = createPeerConnection();
-                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-                const offer = await peerConnection.createOffer();
-                await peerConnection.setLocalDescription(offer);
-
-                await set(ref(db, `${callBasePath()}/offer`), {
-                    type: offer.type,
-                    sdp: offer.sdp,
-                    fromId: userId,
-                    fromName: currentUser,
-                    targetId: targetUserId,
-                    timestamp: Date.now()
-                });
-
-                await remove(ref(db, `${callBasePath()}/candidates`));
-
-                currentCallTarget = targetUserId;
-                callInfo.textContent = `الاتصال بـ ${usersMap[targetUserId] || 'المستخدم'}...`;
-                callContainer.classList.add('active');
-                callAvatar.innerHTML = '<i class="fas fa-phone"></i>';
-                muteCallBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-                incomingPanel.classList.remove('active');
-
-                callTimeout = setTimeout(() => {
-                    if (peerConnection && peerConnection.connectionState !== 'connected') {
-                        endCall();
-                        showNotification('لم يجب الطرف الآخر', 'danger');
-                    }
-                }, 30000);
-
-            } catch (err) {
-                console.error('startCall error', err);
-                showNotification('فشل بدء المكالمة', 'danger');
-                endCall();
-            }
-        }
-
-        async function acceptCall() {
-            if (!incomingOffer || !currentRoom || !userId) return;
-            if (peerConnection) {
-                showNotification('هناك مكالمة قائمة', 'warning');
-                return;
-            }
-            try {
-                await setupLocalStream();
-                peerConnection = createPeerConnection();
-                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-                await peerConnection.setRemoteDescription(new RTCSessionDescription(incomingOffer));
-
-                const answer = await peerConnection.createAnswer();
-                await peerConnection.setLocalDescription(answer);
-
-                await set(ref(db, `${callBasePath()}/answer`), {
-                    type: answer.type,
-                    sdp: answer.sdp,
-                    fromId: userId,
-                    fromName: currentUser,
-                    timestamp: Date.now()
-                });
-
-                currentCallTarget = incomingOffer.fromId;
-                callInfo.textContent = `تتحدث مع ${incomingOffer.fromName}`;
-                callContainer.classList.add('active');
-                callAvatar.innerHTML = '<i class="fas fa-user"></i>';
-                incomingPanel.classList.remove('active');
-                if (callTimeout) clearTimeout(callTimeout);
-
-            } catch (err) {
-                console.error('acceptCall error', err);
-                showNotification('فشل قبول المكالمة', 'danger');
-                endCall();
-            }
-        }
-
-        function endCall() {
-            if (callTimeout) clearTimeout(callTimeout);
-            if (peerConnection) {
-                peerConnection.close();
-                peerConnection = null;
-            }
-            if (currentRoom) {
-                remove(ref(db, `${callBasePath()}/offer`));
-                remove(ref(db, `${callBasePath()}/answer`));
-                remove(ref(db, `${callBasePath()}/candidates`));
-            }
-            currentCallTarget = null;
-            incomingOffer = null;
-            callContainer.classList.remove('active');
-            incomingPanel.classList.remove('active');
-            callInfo.textContent = '...';
-        }
-
-        function toggleMute() {
-            if (!localStream) return;
-            const track = localStream.getAudioTracks()[0];
-            if (track) {
-                track.enabled = !track.enabled;
-                muteCallBtn.innerHTML = track.enabled ? '<i class="fas fa-microphone"></i>' : '<i class="fas fa-microphone-slash"></i>';
-                showNotification(track.enabled ? 'إلغاء كتم' : 'تم الكتم');
-            }
-        }
-
-        // ========== مراقبة المكالمات الواردة ==========
-        function listenForCalls() {
-            if (!currentRoom) return;
-
-            const offerRef = ref(db, `${callBasePath()}/offer`);
-            onValue(offerRef, (snap) => {
-                const offer = snap.val();
-                if (!offer) {
-                    incomingPanel.classList.remove('active');
-                    return;
-                }
-                if (offer.fromId === userId) return;
-                if (offer.targetId && offer.targetId !== userId) return;
-
-                incomingOffer = offer;
-                incomingCallerName.textContent = offer.fromName || 'مستخدم';
-                incomingPanel.classList.add('active');
-            });
-
-            const answerRef = ref(db, `${callBasePath()}/answer`);
-            onValue(answerRef, async (snap) => {
-                const answer = snap.val();
-                if (!answer || !peerConnection) return;
-                if (answer.fromId === userId) return;
-                if (peerConnection.signalingState === 'have-local-offer') {
-                    try {
-                        await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-                        if (callTimeout) clearTimeout(callTimeout);
-                        callInfo.textContent = `تتحدث مع ${answer.fromName}`;
-                    } catch (e) { console.error(e); }
-                }
-            });
-
-            const candidatesRef = ref(db, `${callBasePath()}/candidates`);
-            onChildAdded(candidatesRef, (snap) => {
-                const candidate = snap.val();
-                if (!peerConnection || snap.key === userId) return;
-                peerConnection.addIceCandidate(new RTCIceCandidate(candidate)).catch(e => console.log);
-            });
-        }
-
-        // ========== الدخول إلى الغرفة ==========
         async function enterChat(room, name) {
-            if (messagesUnsubscribe) messagesUnsubscribe(); 
-            if (usersUnsubscribe) usersUnsubscribe();
-            endCall();
-
+            if (messagesUnsubscribe) messagesUnsubscribe(); if (usersUnsubscribe) usersUnsubscribe();
             displayedMessages.clear();
             currentRoom = room;
             const isAdmin = (name === ADMIN_LOGIN);
@@ -712,25 +1176,19 @@
             userStatus.innerHTML = isAdmin ? `<i class="fas fa-crown"></i> ${currentUser}` : `<i class="fas fa-user"></i> ${currentUser}`;
 
             const userRef = ref(db, `rooms/${room}/users/${userId}`);
-            await set(userRef, { 
-                name: isAdmin ? ADMIN_LOGIN : currentUser, 
-                joinedAt: Date.now(),
-                lastActive: Date.now()
-            });
-
-            onDisconnect(userRef).update({ lastActive: Date.now() - 60000 });
-            onDisconnect(ref(db, `rooms/${room}/typing/${userId}`)).remove();
-
+            await set(userRef, { name: isAdmin ? ADMIN_LOGIN : currentUser, joinedAt: Date.now() });
+            onDisconnect(userRef).remove();
             await push(ref(db, `rooms/${room}/messages`), { sender: 'نظام', text: `${currentUser} دخل الغرفة`, timestamp: Date.now() });
-
             monitorRoomUsers(room);
             setupTyping(room, userId);
             listenTyping(room);
             setupMessageListener();
+            
+            // الاستماع للمكالمات
             listenForCalls();
-            startHeartbeat();
 
-            const roomInfoSnap = await get(ref(db, `rooms/${room}/info`));
+            const roomInfoRef = ref(db, `rooms/${room}/info`);
+            const roomInfoSnap = await get(roomInfoRef);
             if (roomInfoSnap.exists()) document.getElementById('room-detail-created').textContent = new Date(roomInfoSnap.val().createdAt).toLocaleDateString('ar-EG');
             document.getElementById('room-detail-code').textContent = room;
 
@@ -739,16 +1197,13 @@
         }
 
         function leaveRoom() {
-            stopHeartbeat();
-            endCall();
+            endCall(); // إنهاء أي مكالمة نشطة
             if (currentRoom && userId) {
                 push(ref(db, `rooms/${currentRoom}/messages`), { sender: 'نظام', text: `${currentUser} غادر الغرفة`, timestamp: Date.now() });
                 remove(ref(db, `rooms/${currentRoom}/users/${userId}`));
                 remove(ref(db, `rooms/${currentRoom}/typing/${userId}`));
             }
-            if (messagesUnsubscribe) messagesUnsubscribe(); 
-            if (usersUnsubscribe) usersUnsubscribe();
-
+            if (messagesUnsubscribe) messagesUnsubscribe(); if (usersUnsubscribe) usersUnsubscribe();
             displayedMessages.clear();
             currentRoom = currentUser = userId = messagesRef = null;
             messagesContainer.innerHTML = '';
@@ -756,55 +1211,225 @@
             typingIndicator.style.display = 'none';
         }
 
-        function confirmLeave() { confirmDialog.classList.add('active'); }
-        confirmYes.addEventListener('click', () => { confirmDialog.classList.remove('active'); leaveRoom(); });
-        confirmNo.addEventListener('click', () => { confirmDialog.classList.remove('active'); });
+        function confirmLeave() {
+            confirmDialog.classList.add('active');
+        }
+        confirmYes.addEventListener('click', () => {
+            confirmDialog.classList.remove('active');
+            leaveRoom();
+        });
+        confirmNo.addEventListener('click', () => {
+            confirmDialog.classList.remove('active');
+        });
 
-        // ========== رفع الملفات ==========
         async function handleFileUpload(file, type) {
             if (!currentRoom) return;
             try {
-                progressDiv.style.display = 'block'; progressFill.style.width = '0%'; progressPercent.textContent = '0%';
-                const fname = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '.' + (file.name.split('.').pop() || (type === 'image' ? 'jpg' : type === 'video' ? 'mp4' : 'webm'));
-                let prog = 0; const int = setInterval(() => { prog += 5; if (prog <= 90) { progressFill.style.width = prog + '%'; progressPercent.textContent = prog + '%'; } }, 200);
-                const url = await uploadToGitHub(file, fname, type);
-                clearInterval(int); progressFill.style.width = '100%'; progressPercent.textContent = '100%'; setTimeout(() => { progressDiv.style.display = 'none'; progressFill.style.width = '0%'; }, 500);
-                await push(messagesRef, { sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser, text: url, type, timestamp: Date.now() }); showNotification('تم الإرسال');
-            } catch (e) { progressDiv.style.display = 'none'; showNotification(e.toString(), 'danger'); }
+                let processedFile = file;
+                progressDiv.style.display = 'block';
+                progressFill.style.width = '0%';
+                progressPercent.textContent = '0%';
+                
+                if (type === 'image') {
+                    progressMessage.textContent = 'جاري ضغط الصورة...';
+                    processedFile = await compressImage(file);
+                    progressMessage.textContent = 'جاري رفع الصورة...';
+                } else if (type === 'video') {
+                    progressMessage.textContent = 'جاري معالجة الفيديو...';
+                    processedFile = await processVideo(file);
+                    progressMessage.textContent = 'جاري رفع الفيديو...';
+                } else if (type === 'audio') {
+                    progressMessage.textContent = 'جاري رفع التسجيل الصوتي...';
+                }
+
+                const timestamp = Date.now();
+                const random = Math.random().toString(36).substring(2, 8);
+                const extension = processedFile.name.split('.').pop() || (type === 'image' ? 'jpg' : type === 'video' ? 'mp4' : 'webm');
+                const fileName = `${timestamp}_${random}.${extension}`;
+
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 5;
+                    if (progress <= 90) {
+                        progressFill.style.width = progress + '%';
+                        progressPercent.textContent = progress + '%';
+                    }
+                }, 200);
+
+                const rawUrl = await uploadToGitHub(processedFile, fileName, type);
+
+                clearInterval(interval);
+                progressFill.style.width = '100%';
+                progressPercent.textContent = '100%';
+                setTimeout(() => {
+                    progressDiv.style.display = 'none';
+                    progressFill.style.width = '0%';
+                }, 500);
+
+                await push(messagesRef, {
+                    sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser,
+                    text: rawUrl,
+                    type: type,
+                    timestamp: Date.now()
+                });
+                showNotification('تم الإرسال');
+            } catch (error) {
+                progressDiv.style.display = 'none';
+                showNotification(error.toString(), 'danger');
+            }
         }
 
-        // ========== تسجيل الصوت ==========
         async function startRecording() {
-            try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); mediaRecorder = new MediaRecorder(stream); audioChunks = [];
-                audioContext = new AudioContext(); analyser = audioContext.createAnalyser(); analyser.fftSize = 32; audioContext.createMediaStreamSource(stream).connect(analyser);
-                voiceVisualizer.innerHTML = ''; for (let i = 0; i < 16; i++) voiceVisualizer.innerHTML += '<div class="voice-bar"></div>';
-                mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
-                mediaRecorder.start(); recordingStartTime = Date.now(); recordingTimerInterval = setInterval(() => { let e = Math.floor((Date.now() - recordingStartTime) / 1000); voiceTimer.textContent = `${Math.floor(e / 60).toString().padStart(2,'0')}:${(e % 60).toString().padStart(2,'0')}`; }, 1000); voiceRecordingBar.classList.add('active');
-                const updateVis = () => { if (!analyser || !voiceRecordingBar.classList.contains('active')) return; const data = new Uint8Array(analyser.frequencyBinCount); analyser.getByteFrequencyData(data); voiceVisualizer.querySelectorAll('.voice-bar').forEach((b, i) => { b.style.height = (10 + (data[i] / 255) * 32) + 'px'; }); visualizerAnimation = requestAnimationFrame(updateVis); }; updateVis(); showNotification('بدأ التسجيل');
-            } catch { showNotification('تعذر الوصول إلى الميكروفون', 'danger'); }
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                audioContext = new AudioContext();
+                const source = audioContext.createMediaStreamSource(stream);
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 32;
+                source.connect(analyser);
+
+                voiceVisualizer.innerHTML = '';
+                for (let i = 0; i < 16; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'voice-bar';
+                    voiceVisualizer.appendChild(bar);
+                }
+
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) audioChunks.push(event.data);
+                };
+
+                mediaRecorder.start();
+                recordingStartTime = Date.now();
+                recordingTimerInterval = setInterval(updateRecordingTimer, 1000);
+                voiceRecordingBar.classList.add('active');
+
+                const updateVisualizer = () => {
+                    if (!analyser || !voiceRecordingBar.classList.contains('active')) return;
+                    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+                    analyser.getByteFrequencyData(dataArray);
+                    const bars = voiceVisualizer.querySelectorAll('.voice-bar');
+                    bars.forEach((bar, index) => {
+                        const value = dataArray[index] || 0;
+                        bar.style.height = (10 + (value / 255) * 32) + 'px';
+                    });
+                    visualizerAnimation = requestAnimationFrame(updateVisualizer);
+                };
+                updateVisualizer();
+
+                showNotification('بدأ التسجيل الصوتي');
+            } catch (err) {
+                showNotification('تعذر الوصول إلى الميكروفون', 'danger');
+            }
+        }
+
+        function updateRecordingTimer() {
+            const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+            const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const secs = (elapsed % 60).toString().padStart(2, '0');
+            voiceTimer.textContent = `${mins}:${secs}`;
         }
 
         function stopRecording() {
-            if (mediaRecorder?.state !== 'inactive') { mediaRecorder?.stop(); mediaRecorder?.stream.getTracks().forEach(t => t.stop()); clearInterval(recordingTimerInterval); audioContext?.close(); if (visualizerAnimation) cancelAnimationFrame(visualizerAnimation); voiceRecordingBar.classList.remove('active'); showNotification('تم إيقاف التسجيل'); }
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                clearInterval(recordingTimerInterval);
+                if (audioContext) audioContext.close();
+                if (visualizerAnimation) cancelAnimationFrame(visualizerAnimation);
+                voiceRecordingBar.classList.remove('active');
+                showNotification('تم إيقاف التسجيل');
+            }
         }
 
-        // ========== أحداث الأزرار ==========
+        // أحداث الأزرار
         manualCheckbox.addEventListener('change', () => customContainer.style.display = manualCheckbox.checked ? 'block' : 'none');
-        createBtn.addEventListener('click', async (e) => { e.preventDefault(); let name = usernameInput.value.trim() || generateRandomName(); let code; if (manualCheckbox.checked) { code = customRoomInput.value.trim(); if (!code || !isValidRoomCode(code)) { errorDiv.textContent = 'المفتاح 3-6 أرقام'; return; } } else code = generateRandomCode(); errorDiv.textContent = ''; try { if (!(await get(ref(db, `rooms/${code}/info`))).exists()) await set(ref(db, `rooms/${code}/info`), { createdAt: Date.now(), createdBy: name }); await enterChat(code, name); showNotification('تم الدخول'); } catch (err) { errorDiv.textContent = 'خطأ: ' + err.message; } });
-        joinBtn.addEventListener('click', async () => { let name = usernameInput.value.trim() || generateRandomName(); const code = roomCodeInput.value.trim(); if (!code || !isValidRoomCode(code)) { errorDiv.textContent = 'المفتاح 3-6 أرقام'; return; } errorDiv.textContent = ''; if (!(await get(ref(db, `rooms/${code}/info`))).exists()) { errorDiv.textContent = 'المفتاح غير صحيح'; return; } await enterChat(code, name); showNotification('تم الانضمام'); });
-        publicBtn.addEventListener('click', async () => { let name = usernameInput.value.trim() || generateRandomName(); errorDiv.textContent = ''; if (!(await get(ref(db, `rooms/${PUBLIC_ROOM_CODE}/info`))).exists()) await set(ref(db, `rooms/${PUBLIC_ROOM_CODE}/info`), { createdAt: Date.now(), createdBy: 'system' }); await enterChat(PUBLIC_ROOM_CODE, name); showNotification('مرحباً بك'); });
+        createBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            let name = usernameInput.value.trim() || generateRandomName();
+            let code;
+            if (manualCheckbox.checked) {
+                code = customRoomInput.value.trim();
+                if (!code || !isValidRoomCode(code)) { errorDiv.textContent = 'المفتاح 3-6 أرقام'; return; }
+            } else code = generateRandomCode();
+            errorDiv.textContent = '';
+            const roomRef = ref(db, `rooms/${code}/info`);
+            try {
+                if (!(await get(roomRef)).exists()) await set(roomRef, { createdAt: Date.now(), createdBy: name });
+                await enterChat(code, name);
+                showNotification('تم الدخول');
+            } catch (err) { errorDiv.textContent = 'خطأ: ' + err.message; }
+        });
+        joinBtn.addEventListener('click', async () => {
+            let name = usernameInput.value.trim() || generateRandomName();
+            const code = roomCodeInput.value.trim();
+            if (!code || !isValidRoomCode(code)) { errorDiv.textContent = 'المفتاح 3-6 أرقام'; return; }
+            errorDiv.textContent = '';
+            const roomRef = ref(db, `rooms/${code}/info`);
+            if (!(await get(roomRef)).exists()) { errorDiv.textContent = 'المفتاح غير صحيح'; return; }
+            await enterChat(code, name);
+            showNotification('تم الانضمام');
+        });
+        publicBtn.addEventListener('click', async () => {
+            let name = usernameInput.value.trim() || generateRandomName();
+            errorDiv.textContent = '';
+            const roomRef = ref(db, `rooms/${PUBLIC_ROOM_CODE}/info`);
+            if (!(await get(roomRef)).exists()) await set(roomRef, { createdAt: Date.now(), createdBy: 'system' });
+            await enterChat(PUBLIC_ROOM_CODE, name);
+            showNotification('مرحباً بك');
+        });
 
-        sendBtn.addEventListener('click', async () => { const text = messageInput.value.trim(); if (!text || !currentRoom) return; await push(messagesRef, { sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser, text, timestamp: Date.now() }); messageInput.value = ''; if (currentRoom && userId) set(ref(db, `rooms/${currentRoom}/typing/${userId}`), false); });
+        sendBtn.addEventListener('click', async () => {
+            const text = messageInput.value.trim();
+            if (!text || !currentRoom) return;
+            await push(messagesRef, {
+                sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser,
+                text,
+                timestamp: Date.now()
+            });
+            messageInput.value = '';
+            if (currentRoom && userId) set(ref(db, `rooms/${currentRoom}/typing/${userId}`), false);
+        });
         messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendBtn.click(); } });
 
         attachBtn.addEventListener('click', () => { fileInput.click(); mediaPopup.classList.remove('show'); });
         cameraBtn.addEventListener('click', () => { cameraInput.click(); mediaPopup.classList.remove('show'); });
-        fileInput.addEventListener('change', (e) => { const f = e.target.files[0]; if (!f) return; if (f.type.startsWith('image/')) handleFileUpload(f, 'image'); else if (f.type.startsWith('video/')) handleFileUpload(f, 'video'); else showNotification('نوع غير مدعوم', 'danger'); fileInput.value = ''; });
-        cameraInput.addEventListener('change', (e) => { const f = e.target.files[0]; if (f?.type.startsWith('image/')) handleFileUpload(f, 'image'); cameraInput.value = ''; });
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (file.type.startsWith('image/')) handleFileUpload(file, 'image');
+            else if (file.type.startsWith('video/')) handleFileUpload(file, 'video');
+            else showNotification('نوع الملف غير مدعوم', 'danger');
+            fileInput.value = '';
+        });
+        cameraInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) handleFileUpload(file, 'image');
+            cameraInput.value = '';
+        });
 
-        voiceRecordBtn.addEventListener('click', () => { mediaPopup.classList.remove('show'); startRecording(); });
+        voiceRecordBtn.addEventListener('click', () => {
+            mediaPopup.classList.remove('show');
+            startRecording();
+        });
         stopRecordingBtn.addEventListener('click', stopRecording);
-        sendVoiceBtn.addEventListener('click', async () => { stopRecording(); setTimeout(async () => { if (audioChunks.length === 0) { showNotification('لا يوجد تسجيل', 'danger'); return; } await handleFileUpload(new File([new Blob(audioChunks, { type: 'audio/webm' })], 'audio_' + Date.now() + '.webm', { type: 'audio/webm' }), 'audio'); audioChunks = []; }, 300); });
+        sendVoiceBtn.addEventListener('click', async () => {
+            stopRecording();
+            setTimeout(async () => {
+                if (audioChunks.length === 0) {
+                    showNotification('لا يوجد تسجيل لإرساله', 'danger');
+                    return;
+                }
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                const fileName = `audio_${Date.now()}.webm`;
+                const audioFile = new File([audioBlob], fileName, { type: 'audio/webm' });
+                await handleFileUpload(audioFile, 'audio');
+                audioChunks = [];
+            }, 300);
+        });
 
         mediaBtn.addEventListener('click', () => mediaPopup.classList.toggle('show'));
         document.addEventListener('click', (e) => { if (!mediaBtn?.contains(e.target) && !mediaPopup?.contains(e.target)) mediaPopup?.classList.remove('show'); });
@@ -812,18 +1437,24 @@
         leaveBtn.addEventListener('click', confirmLeave);
 
         // زر الاتصال الصوتي
-        callUserBtn.addEventListener('click', () => {
+        document.getElementById('call-user-btn').addEventListener('click', () => {
             if (!currentRoom) return;
+            // عرض قائمة المستخدمين للاتصال
             usersPopup.classList.toggle('show');
             popupOverlay.classList.toggle('show');
+            
+            // تحويل كل user-item ليصبح قابل للنقر لبدء مكالمة
             document.querySelectorAll('#popup-users-list .user-item').forEach(item => {
-                const uname = item.querySelector('.user-name').textContent;
-                const tid = Object.keys(usersMap).find(id => (usersMap[id] === ADMIN_LOGIN ? ADMIN_DISPLAY : usersMap[id]) === uname);
-                if (tid && tid !== userId) {
+                const userName = item.querySelector('.user-name').textContent;
+                const targetId = Object.keys(usersMap).find(id => {
+                    const mapName = usersMap[id] === ADMIN_LOGIN ? ADMIN_DISPLAY : usersMap[id];
+                    return mapName === userName;
+                });
+                if (targetId && targetId !== userId) {
                     item.style.cursor = 'pointer';
                     item.onclick = () => {
                         closeUsersPopup();
-                        startCall(tid);
+                        startCall(targetId);
                     };
                 } else {
                     item.style.cursor = 'default';
@@ -832,31 +1463,41 @@
             });
         });
 
-        // أزرار المكالمة
-        acceptIncoming.addEventListener('click', acceptCall);
-        rejectIncoming.addEventListener('click', () => {
-            incomingPanel.classList.remove('active');
-            incomingOffer = null;
-        });
-        muteCallBtn.addEventListener('click', toggleMute);
-        endCallBtn.addEventListener('click', endCall);
+        callEndBtn.addEventListener('click', endCall);
 
         // إغلاق نافذة المستخدمين
-        function closeUsersPopup() { usersPopup.classList.remove('show'); popupOverlay.classList.remove('show'); }
-        toggleUsersBtn.addEventListener('click', () => { usersPopup.classList.toggle('show'); popupOverlay.classList.toggle('show'); });
+        function closeUsersPopup() {
+            usersPopup.classList.remove('show');
+            popupOverlay.classList.remove('show');
+        }
+        toggleUsersBtn.addEventListener('click', () => {
+            usersPopup.classList.toggle('show');
+            popupOverlay.classList.toggle('show');
+        });
         popupOverlay.addEventListener('click', closeUsersPopup);
         closePopupBtn.addEventListener('click', closeUsersPopup);
 
-        document.querySelectorAll('.back-btn[data-screen]').forEach(btn => btn.addEventListener('click', () => showScreen(btn.dataset.screen)));
+        document.querySelectorAll('.back-btn[data-screen]').forEach(btn => {
+            btn.addEventListener('click', () => showScreen(btn.dataset.screen));
+        });
+
         document.getElementById('room-enter-chat-btn')?.addEventListener('click', () => { if (currentRoom) showScreen('chat'); });
         document.getElementById('room-copy-code-btn')?.addEventListener('click', () => { if (currentRoom) { navigator.clipboard.writeText(currentRoom); showNotification('تم النسخ'); } });
-        document.getElementById('room-share-btn')?.addEventListener('click', () => { if (currentRoom) { const url = `${location.origin}${location.pathname}?room=${currentRoom}`; if (navigator.share) navigator.share({ title: 'اسهل حل', text: `انضم إلى غرفتي برمز: ${currentRoom}`, url }); else navigator.clipboard.writeText(url).then(() => showNotification('تم نسخ الرابط')); } });
+        document.getElementById('room-share-btn')?.addEventListener('click', () => {
+            if (currentRoom) {
+                const url = `${window.location.origin}${window.location.pathname}?room=${currentRoom}`;
+                if (navigator.share) navigator.share({ title: 'اسهل حل', text: `انضم إلى غرفتي برمز: ${currentRoom}`, url });
+                else navigator.clipboard.writeText(url).then(() => showNotification('تم نسخ الرابط'));
+            }
+        });
 
         document.getElementById('closeModalBtn').addEventListener('click', () => document.getElementById('mediaModal').classList.remove('active'));
         document.getElementById('modalBackBtn').addEventListener('click', () => document.getElementById('mediaModal').classList.remove('active'));
 
         [customRoomInput, roomCodeInput].forEach(i => i.addEventListener('input', function() { this.value = this.value.replace(/\D/g, ''); }));
-        navChat.style.display = navRoom.style.display = 'none'; typingIndicator.style.display = 'none';
+
+        navChat.style.display = navRoom.style.display = 'none';
+        typingIndicator.style.display = 'none';
     </script>
 </body>
 </html>
