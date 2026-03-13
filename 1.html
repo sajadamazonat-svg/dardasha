@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>غرفة صوتية متطورة</title>
+<style>
+  body{font-family:Arial, sans-serif; max-width:760px; margin:20px auto; background:#f6f8fa; color:#222; padding:12px;}
+  h1{text-align:center}
+  .controls{display:flex; gap:8px; justify-content:center; margin:12px 0; flex-wrap:wrap}
+  button{padding:10px 14px; font-size:15px; cursor:pointer}
+  .status{text-align:center; margin:8px 0}
+  .users{background:#fff; padding:10px; border-radius:6px; border:1px solid #ddd; max-height:220px; overflow:auto;}
+  .users h3{margin:0 0 8px 0}
+  .user-item{padding:8px 6px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;}
+  .log{background:#fff; border:1px solid #ddd; padding:8px; margin-top:12px; height:140px; overflow:auto; font-size:13px;}
+  .incoming { background:#ffe9b3; padding:12px; border-radius:6px; margin:8px 0; display:none; align-items:center; justify-content:space-between;}
+  .muted { opacity:0.5 }
+</style>
+</head>
+<body>
+  <h1>الغرفة الصوتية (نسخة متطورة)</h1>
+
+  <div class="controls">
+    <button id="startAudioBtn">تشغيل الميكروفون</button>
+    <button id="callBtn">اتصال</button>
+    <button id="answerBtn" disabled>رد</button>
+    <button id="muteBtn" disabled>كتم</button>
+    <button id="hangupBtn" disabled>إنهاء</button>
+  </div>
+
+  <div class="status">
+    اسمك: <strong id="myName">—</strong> |
+    الحالة: <span id="status">غير متصل</span> |
+    متصلون الآن: <span id="count">0</span>
+  </div>
+
+  <div class="incoming" id="incomingPanel">
+    <div>مكالمة واردة من: <strong id="callerName">—</strong></div>
+    <div>
+      <button id="acceptIncoming">قبول</button>
+      <button id="rejectIncoming">رفض</button>
+    </div>
+  </div>
+
+  <div class="users">
+    <h3>المستخدمون النشطون</h3>
+    <div id="usersList">لا يوجد مستخدمون</div>
+  </div>
+
+  <h3>سجل الأحداث</h3>
+  <div class="log" id="log"></div>
+
+  <!-- أصوات -->
+  <audio id="ring" src="https://actions.google.com/sounds/v1/alarms/phone_alerts_and_rings.ogg" preload="auto"></audio>
+
+<script type="module">
+/* ===== إعداد Firebase (ضع إعدادات مشروعك) ===== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getDatabase, ref, set, onValue, push, remove, onDisconnect,
+  onChildAdded, onChildRemoved, get, child
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+  authDomain: "zio3-8ffdd.firebaseapp.com",
+  databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+  projectId: "zio3-8ffdd",
+  storageBucket: "zio3-8ffdd.firebasestorage.app",
+  messagingSenderId: "560939348415",
+  appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+  measurementId: "G-CVN2B2D0RD"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+/* ===== عناصر الواجهة ===== */
+const startAudioBtn = document.getElementById('startAudioBtn');
+const callBtn = document.getElementById('callBtn');
+const answerBtn = document.getElementById('answerBtn');
+const muteBtn = document.getElementById('muteBtn');
+const hangupBtn = document.getElementById('hangupBtn');
+const usersList = document.getElementById('usersList');
+const myNameEl = document.getElementById('myName');
+const statusEl = document.getElementById('status');
+const logEl = document.getElementById('log');
+const countEl = document.getElementById('count');
+const incomingPanel = document.getElementById('incomingPanel');
+const callerNameEl = document.getElementById('callerName');
+const acceptIncoming = document.getElementById('acceptIncoming');
+const rejectIncoming = document.getElementById('rejectIncoming');
+const ring = document.getElementById('ring');
+
+/* ===== متغيرات الحالة ===== */
+const ROOM = 'voiceRoom'; // غرفة واحدة ثابتة
+let myId = null;
+let myName = null;
+let localStream = null;
+let pc = null;
+let connected = false;
+
+let callerCandidatesRef = null;
+let calleeCandidatesRef = null;
+
+/* ===== دوال مساعدة ===== */
+function log(msg){
+  const t = new Date().toLocaleTimeString();
+  logEl.innerHTML = `<div>[${t}] ${msg}</div>` + logEl.innerHTML;
+}
+function randomName(){ return `مستخدم-${Math.floor(1000+Math.random()*9000)}`; }
+
+/* ===== وجود المستخدم (presence) ===== */
+const usersRef = ref(db, `rooms/${ROOM}/users`);
+onValue(usersRef, snapshot => {
+  const val = snapshot.val() || {};
+  const keys = Object.keys(val);
+  countEl.textContent = keys.length;
+  if (keys.length === 0) {
+    usersList.innerHTML = '<div>لا يوجد مستخدمون</div>';
+    return;
+  }
+  usersList.innerHTML = '';
+  keys.forEach(k => {
+    const u = val[k];
+    const el = document.createElement('div');
+    el.className = 'user-item' + (k === myId ? ' muted' : '');
+    el.innerHTML = `<div>${u.name || 'مستخدم'}</div><div style="font-size:12px;color:#666">${k === myId ? 'أنت' : 'متصل'}</div>`;
+    usersList.appendChild(el);
+  });
+});
+
+/* ===== تفعيل المايكروفون وسجل الحضور ===== */
+startAudioBtn.onclick = async () => {
+  try {
+    localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    log('الميكروفون مفعّل');
+    statusEl.textContent = 'الميكروفون جاهز';
+    muteBtn.disabled = false;
+
+    // تسجيل المستخدم
+    if (!myId) {
+      const newRef = push(ref(db, `rooms/${ROOM}/users`));
+      myId = newRef.key;
+      myName = randomName();
+      myNameEl.textContent = myName;
+      await set(newRef, { name: myName, ts: Date.now() });
+      onDisconnect(newRef).remove();
+      log('سجلت حضورك باسم: ' + myName);
+    }
+  } catch (err) {
+    console.error(err);
+    log('خطأ بتشغيل الميكروفون: ' + (err.message || err));
+  }
+};
+
+/* ===== إنشاء PeerConnection وإدارة ICE ===== */
+function createPeerConnection() {
+  pc = new RTCPeerConnection({
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' }
+      // لإنتاج حقيقي، ضع TURN servers هنا
+      // { urls: 'turn:your.turn.server:3478', username: 'user', credential: 'pass' }
+    ]
+  });
+
+  pc.addEventListener('track', event => {
+    log('استلمت مسار صوتي');
+    const audio = document.createElement('audio');
+    audio.autoplay = true;
+    audio.srcObject = event.streams[0];
+    document.body.appendChild(audio); // لو أردت يمكنك إخفاء العنصر
+  });
+
+  pc.addEventListener('icecandidate', event => {
+    if (!event.candidate) return;
+    const c = event.candidate.toJSON();
+    if (callerCandidatesRef) push(callerCandidatesRef, c);
+    else if (calleeCandidatesRef) push(calleeCandidatesRef, c);
+    log('تم إنشاء ICE candidate محلي');
+  });
+
+  pc.addEventListener('connectionstatechange', () => {
+    log('حالة الاتصال: ' + pc.connectionState);
+    if (pc.connectionState === 'connected') {
+      connected = true;
+      statusEl.textContent = 'متصل';
+      hangupBtn.disabled = false;
+    } else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed' || pc.connectionState === 'closed') {
+      connected = false;
+      statusEl.textContent = 'غير متصل';
+    }
+  });
+
+  return pc;
+}
+
+/* ===== زر الاتصال (Caller) ===== */
+callBtn.onclick = async () => {
+  if (!localStream) { log('شغّل الميكروفون أولاً'); return; }
+  if (pc) { log('هناك جلسة قائمة — أنهِها أولاً'); return; }
+
+  pc = createPeerConnection();
+  localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+  // مراجع المرشحين
+  callerCandidatesRef = ref(db, `rooms/${ROOM}/callerCandidates`);
+  calleeCandidatesRef = ref(db, `rooms/${ROOM}/calleeCandidates`);
+
+  // إنشاء offer
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+
+  // احفظ العرض مع بيانات المرسل
+  await set(ref(db, `rooms/${ROOM}/offer`), {
+    type: offer.type, sdp: offer.sdp, from: myId, name: myName, ts: Date.now()
+  });
+  log('أرسلت offer إلى DB — في انتظار answer');
+
+  // استمع للإجابة
+  onValue(ref(db, `rooms/${ROOM}/answer`), async snap => {
+    const ans = snap.val();
+    if (!ans) return;
+    if (!pc.currentRemoteDescription) {
+      await pc.setRemoteDescription(ans);
+      log('تم استلام answer');
+    }
+  });
+
+  // استمع لمرشحي callee
+  onChildAdded(calleeCandidatesRef, snapshot => {
+    const data = snapshot.val();
+    if (data) pc.addIceCandidate(data).catch(e => console.error('addIceCandidate', e));
+    log('أضيف candidate وارد من المجيب');
+  });
+
+  // تفعيل زر الرد للمستمعين يظهر تلقائياً عبر مراقبة offer (انظر أدناه)
+};
+
+/* ===== مراقبة offer الوارد لإظهار رنة والمطالبة بالرد ===== */
+onValue(ref(db, `rooms/${ROOM}/offer`), async snap => {
+  const offer = snap.val();
+  if (!offer) {
+    // إن لم يعد هناك offer (انتهت) أغلق لوحة الرنين
+    incomingPanel.style.display = 'none';
+    try { ring.pause(); ring.currentTime = 0; } catch(e){}
+    return;
+  }
+  // إذا العرض من نفس المستخدم فتجاهل
+  if (offer.from === myId) return;
+
+  // هناك عرض وارد
+  callerNameEl.textContent = offer.name || 'مستخدم';
+  incomingPanel.style.display = 'flex';
+  ring.play().catch(()=>{ /* autoplay may be blocked; user must interact */ });
+
+  // تفعيل زر الرد العام في الواجهة
+  answerBtn.disabled = false;
+});
+
+/* ===== قبول المكالمة (من واجهة الرنين أو زر الرد) ===== */
+async function acceptOfferFlow(offer) {
+  if (!localStream) { log('شغّل الميكروفون أولاً'); return; }
+  if (!offer) {
+    // اقرأ العرض من DB
+    const snap = await get(ref(db, `rooms/${ROOM}/offer`));
+    if (!snap.exists()) { log('لا يوجد عرض للرد'); return; }
+    offer = snap.val();
+  }
+
+  // تجنب الرد على عرض صنعته أنت
+  if (offer.from === myId) { log('العرض من نفس المستخدم'); return; }
+
+  pc = createPeerConnection();
+  localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+  callerCandidatesRef = ref(db, `rooms/${ROOM}/callerCandidates`);
+  calleeCandidatesRef = ref(db, `rooms/${ROOM}/calleeCandidates`);
+
+  // استماع لمرشحي الـ caller
+  onChildAdded(callerCandidatesRef, snapshot => {
+    const data = snapshot.val();
+    if (data) pc.addIceCandidate(data).catch(e => console.error('addIceCandidate', e));
+    log('أضيف candidate وارد من المتصل');
+  });
+
+  // اضبط remote description من offer
+  await pc.setRemoteDescription(new RTCSessionDescription({ type: offer.type, sdp: offer.sdp }));
+  const answer = await pc.createAnswer();
+  await pc.setLocalDescription(answer);
+
+  // حفظ الـ answer مع من هو المجيب
+  await set(ref(db, `rooms/${ROOM}/answer`), { type: answer.type, sdp: answer.sdp, from: myId, name: myName, ts: Date.now() });
+  log('أنشأت answer وحفظتها في DB');
+
+  // استماع لمرشحي الـ callee (الذي أرسلتهم)
+  onChildAdded(calleeCandidatesRef, snapshot => {
+    const data = snapshot.val();
+    if (data) pc.addIceCandidate(data).catch(e => console.error('addIceCandidate', e));
+    log('أضيف candidate من المجيب');
+  });
+
+  incomingPanel.style.display = 'none';
+  try { ring.pause(); ring.currentTime = 0; } catch(e){}
+  answerBtn.disabled = true;
+  hangupBtn.disabled = false;
+  statusEl.textContent = 'متصل';
+}
+
+/* ربط أزرار القبول/الرفض */
+acceptIncoming.onclick = async () => {
+  const snap = await get(ref(db, `rooms/${ROOM}/offer`));
+  if (!snap.exists()) { log('لا يوجد offer'); return; }
+  await acceptOfferFlow(snap.val());
+};
+rejectIncoming.onclick = async () => {
+  incomingPanel.style.display = 'none';
+  try { ring.pause(); ring.currentTime = 0; } catch(e){}
+  log('رفضت المكالمة الواردة');
+};
+
+/* زر الرد العام */
+answerBtn.onclick = async () => {
+  const snap = await get(ref(db, `rooms/${ROOM}/offer`));
+  if (!snap.exists()) { log('لا يوجد offer للرد عليه'); return; }
+  await acceptOfferFlow(snap.val());
+};
+
+/* زر الكتم / إلغاء الكتم */
+muteBtn.onclick = () => {
+  if (!localStream) return;
+  const track = localStream.getAudioTracks()[0];
+  if (!track) return;
+  track.enabled = !track.enabled;
+  muteBtn.textContent = track.enabled ? 'كتم' : 'إلغاء الكتم';
+  log(track.enabled ? 'إلغاء كتم' : 'تم الكتم');
+};
+
+/* زر إنهاء المكالمة وتنظيف الموارد */
+hangupBtn.onclick = async () => {
+  log('إنهاء المكالمة...');
+  if (pc) {
+    pc.close();
+    pc = null;
+  }
+  if (localStream) {
+    localStream.getTracks().forEach(t => t.stop());
+    localStream = null;
+  }
+  // إزالة حضور المستخدم
+  if (myId) {
+    try { await remove(ref(db, `rooms/${ROOM}/users/${myId}`)); log('حذفت حضورك'); } catch(e){ console.warn(e); }
+    myId = null; myName = null; myNameEl.textContent = '—';
+  }
+  // حذف signaling (عرض/جواب وcandidates) عند الإنتهاء من المكالمة
+  try {
+    await remove(ref(db, `rooms/${ROOM}/offer`));
+    await remove(ref(db, `rooms/${ROOM}/answer`));
+    await remove(ref(db, `rooms/${ROOM}/callerCandidates`));
+    await remove(ref(db, `rooms/${ROOM}/calleeCandidates`));
+    log('نظفت بيانات الـ signaling من DB');
+  } catch(e){ console.warn(e); }
+  statusEl.textContent = 'مغلق';
+  hangupBtn.disabled = true;
+  muteBtn.disabled = true;
+  answerBtn.disabled = true;
+  incomingPanel.style.display = 'none';
+  try { ring.pause(); ring.currentTime = 0; } catch(e){}
+};
+
+/* تنظيف تلقائي عند إغلاق الصفحة */
+window.addEventListener('beforeunload', async () => {
+  if (myId) {
+    try { await remove(ref(db, `rooms/${ROOM}/users/${myId}`)); } catch(e){}
+  }
+});
+</script>
+</body>
+</html>
