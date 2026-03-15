@@ -7,8 +7,6 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts (Cairo) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -310,8 +308,13 @@
             background: #e0e7ff;
         }
 
-        .divider::before { left: 0; }
-        .divider::after { right: 0; }
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
 
         .join-row {
             display: flex;
@@ -349,15 +352,33 @@
         .back-link i {
             margin-left: 4px;
         }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2b2d42;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
+    <div class="toast" id="toast"></div>
     <div class="app-container">
+        <!-- الشريط العلوي -->
         <div class="top-bar">
             <span class="brand"><i class="fas fa-comments"></i> اسهل حل</span>
             <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
         </div>
 
+        <!-- القائمة الجانبية -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <span class="brand">اسهل حل</span>
@@ -374,6 +395,7 @@
         </div>
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+        <!-- المحتوى الرئيسي -->
         <div class="content">
             <div class="logo">
                 <h1>اسهل حل</h1>
@@ -418,28 +440,9 @@
         </div>
     </div>
 
+    <!-- جافا سكريبت خاص بالصفحة -->
     <script type="module">
-        // ==================== Firebase Config ====================
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, get, onDisconnect } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
-            authDomain: "zio3-8ffdd.firebaseapp.com",
-            databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
-            projectId: "zio3-8ffdd",
-            storageBucket: "zio3-8ffdd.firebasestorage.app",
-            messagingSenderId: "560939348415",
-            appId: "1:560939348415:web:c854e9e214e498ad2d310a"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        // ==================== GitHub Token (مخزن في قاعدة البيانات) ====================
-        const GITHUB_TOKEN_PATH = "2026";
-
-        // ==================== وظائف القائمة الجانبية ====================
+        // ========== وظائف القائمة الجانبية ==========
         const menuBtn = document.getElementById('menuBtn');
         const closeBtn = document.getElementById('closeSidebar');
         const sidebar = document.getElementById('sidebar');
@@ -459,12 +462,16 @@
         closeBtn.addEventListener('click', closeSidebar);
         overlay.addEventListener('click', closeSidebar);
 
-        // ==================== دوال مساعدة ====================
+        // ========== دالة الإشعارات ==========
+        const toast = document.getElementById('toast');
         function showNotification(msg, type = 'success') {
-            // يمكن توسيعها لاحقاً
-            alert(msg);
+            toast.textContent = msg;
+            toast.style.background = type === 'success' ? '#06d6a0' : '#ef476f';
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 2000);
         }
 
+        // ========== دوال مساعدة ==========
         function isValidRoomCode(code) {
             return /^\d{3,6}$/.test(code);
         }
@@ -478,58 +485,29 @@
         }
 
         function generateRandomName() {
-            const prefixes = ['guest','user','member','visitor'];
-            return prefixes[Math.floor(Math.random()*prefixes.length)] + Math.floor(Math.random()*10000);
+            const prefixes = ['guest','user','member','visitor','player','coder','geek'];
+            return prefixes[Math.floor(Math.random() * prefixes.length)] + Math.floor(Math.random() * 10000);
         }
 
-        // ==================== دخول إلى الغرفة ====================
-        async function enterChat(room, name) {
-            const userId = generateUserId();
-            // تخزين بيانات المستخدم في sessionStorage للوصول إليها في صفحة chat
-            sessionStorage.setItem('currentRoom', room);
-            sessionStorage.setItem('currentUser', name);
-            sessionStorage.setItem('userId', userId);
-
-            // تسجيل المستخدم في قاعدة البيانات
-            const userRef = ref(db, `rooms/${room}/users/${userId}`);
-            await set(userRef, {
-                name: name,
-                joinedAt: Date.now(),
-                lastActive: Date.now()
-            });
-
-            // إعداد onDisconnect لحذف المستخدم تلقائياً عند قطع الاتصال
-            onDisconnect(userRef).remove();
-
-            // إرسال رسالة نظام
-            const systemMsgKey = `${Date.now()}_system_${userId}`;
-            await set(ref(db, `rooms/${room}/messages/${systemMsgKey}`), {
-                sender: 'نظام',
-                text: `${name} دخل الغرفة`,
-                timestamp: Date.now()
-            });
-
-            // التوجيه إلى صفحة الدردشة
-            window.location.href = `chat.html?room=${room}`;
-        }
-
-        // ==================== معالجة رابط الدعوة ====================
+        // ========== معالجة رابط الدعوة ==========
         function handleInviteLink() {
             const urlParams = new URLSearchParams(window.location.search);
             const roomCode = urlParams.get('room');
             if (roomCode && isValidRoomCode(roomCode)) {
                 document.getElementById('room-code-input').value = roomCode;
+                showNotification('تم استلام دعوة غرفة: ' + roomCode, 'success');
             }
         }
         handleInviteLink();
 
-        // ==================== أحداث النموذج ====================
+        // ========== التحكم في إظهار حقل المفتاح المخصص ==========
         const manualCheckbox = document.getElementById('manual-code-checkbox');
         const customContainer = document.getElementById('custom-key-container');
         manualCheckbox.addEventListener('change', function() {
             customContainer.style.display = this.checked ? 'block' : 'none';
         });
 
+        // ========== منع إدخال غير الأرقام في حقول المفاتيح ==========
         const roomCodeInput = document.getElementById('room-code-input');
         const customRoomInput = document.getElementById('custom-room-input');
         [roomCodeInput, customRoomInput].forEach(input => {
@@ -538,12 +516,21 @@
             });
         });
 
-        // إنشاء غرفة جديدة
-        document.getElementById('create-room-btn').addEventListener('click', async (e) => {
+        // ========== محاكاة الدخول إلى الغرفة (سيتم ربطها مع Firebase لاحقاً) ==========
+        function enterChat(room, name) {
+            // تخزين بيانات الجلسة
+            sessionStorage.setItem('currentRoom', room);
+            sessionStorage.setItem('currentUser', name);
+            sessionStorage.setItem('userId', generateUserId());
+            // التوجيه إلى صفحة الدردشة
+            window.location.href = `chat.html?room=${room}`;
+        }
+
+        // ========== أحداث الأزرار ==========
+        document.getElementById('create-room-btn').addEventListener('click', (e) => {
             e.preventDefault();
             let name = document.getElementById('username-input').value.trim() || generateRandomName();
             let code;
-
             if (manualCheckbox.checked) {
                 code = customRoomInput.value.trim();
                 if (!code || !isValidRoomCode(code)) {
@@ -553,66 +540,28 @@
             } else {
                 code = generateRandomCode();
             }
-
             document.getElementById('error-message').textContent = '';
-
-            try {
-                // التحقق من وجود الغرفة
-                const roomInfo = await get(ref(db, `rooms/${code}/info`));
-                if (!roomInfo.exists()) {
-                    await set(ref(db, `rooms/${code}/info`), {
-                        createdAt: Date.now(),
-                        createdBy: name
-                    });
-                }
-                await enterChat(code, name);
-            } catch (err) {
-                document.getElementById('error-message').textContent = 'خطأ: ' + err.message;
-            }
+            // محاكاة إنشاء غرفة جديدة
+            enterChat(code, name);
         });
 
-        // انضمام إلى غرفة موجودة
-        document.getElementById('join-room-btn').addEventListener('click', async () => {
+        document.getElementById('join-room-btn').addEventListener('click', () => {
             let name = document.getElementById('username-input').value.trim() || generateRandomName();
             const code = roomCodeInput.value.trim();
-
             if (!code || !isValidRoomCode(code)) {
                 document.getElementById('error-message').textContent = 'المفتاح يجب أن يكون 3-6 أرقام';
                 return;
             }
-
             document.getElementById('error-message').textContent = '';
-
-            try {
-                const roomInfo = await get(ref(db, `rooms/${code}/info`));
-                if (!roomInfo.exists()) {
-                    document.getElementById('error-message').textContent = 'المفتاح غير صحيح';
-                    return;
-                }
-                await enterChat(code, name);
-            } catch (err) {
-                document.getElementById('error-message').textContent = 'خطأ: ' + err.message;
-            }
+            // محاكاة الانضمام إلى غرفة موجودة
+            enterChat(code, name);
         });
 
-        // غرفة عامة
-        document.getElementById('public-room-btn').addEventListener('click', async () => {
+        document.getElementById('public-room-btn').addEventListener('click', () => {
             let name = document.getElementById('username-input').value.trim() || generateRandomName();
-            const code = "1000";
+            const code = "1000"; // الغرفة العامة
             document.getElementById('error-message').textContent = '';
-
-            try {
-                const roomInfo = await get(ref(db, `rooms/${code}/info`));
-                if (!roomInfo.exists()) {
-                    await set(ref(db, `rooms/${code}/info`), {
-                        createdAt: Date.now(),
-                        createdBy: 'system'
-                    });
-                }
-                await enterChat(code, name);
-            } catch (err) {
-                document.getElementById('error-message').textContent = 'خطأ: ' + err.message;
-            }
+            enterChat(code, name);
         });
     </script>
 </body>
