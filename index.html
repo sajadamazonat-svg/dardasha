@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>اسهل حل | الدردشة المتكاملة (نسخة نهائية مع تحميل)</title>
+    <title>اسهل حل | الدردشة المتكاملة</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,7 +46,7 @@
         #app { max-width: 500px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; background: transparent; }
         .screen { display: none; flex: 1; flex-direction: column; overflow-y: auto; padding: 8px; }
         .screen.active { display: flex; }
-        .card { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: var(--border-radius-lg); padding: 16px 14px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; position: relative; }
+        .card { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: var(--border-radius-lg); padding: 16px 14px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; }
         .logo { text-align: center; margin-bottom: 16px; }
         .logo h1 { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .logo p { color: var(--gray); border-bottom: 1px solid var(--primary-light); padding-bottom: 8px; font-size: 1rem; }
@@ -422,6 +422,19 @@
 
         if (darkMode) document.documentElement.setAttribute('data-theme', 'dark');
 
+        // ========== معالجة رابط الدعوة ==========
+        function handleInviteLink() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const roomCode = urlParams.get('room');
+            if (roomCode && /^\d{3,6}$/.test(roomCode)) {
+                const roomInput = document.getElementById('room-code-input');
+                if (roomInput) {
+                    roomInput.value = roomCode;
+                    showNotification('تم استلام دعوة غرفة: ' + roomCode, 'info');
+                }
+            }
+        }
+
         function showScreen(screenId) {
             screens.forEach(s => s.classList.remove('active'));
             const target = document.getElementById(screenId + '-screen');
@@ -447,13 +460,11 @@
             setTimeout(() => notification.style.display = 'none', 2000);
         }
 
-        // دالة نسخ محسنة
         async function copyToClipboard(text) {
             try {
                 await navigator.clipboard.writeText(text);
                 return true;
             } catch (err) {
-                // Fallback
                 const textarea = document.createElement('textarea');
                 textarea.value = text;
                 textarea.style.position = 'fixed';
@@ -736,6 +747,9 @@
         navChat.style.display = navRoom.style.display = 'none'; typingIndicator.style.display = 'none';
         window.addEventListener('online', () => showNotification('تم استعادة الاتصال بالإنترنت'));
         window.addEventListener('offline', () => showNotification('انقطع الاتصال بالإنترنت', 'danger'));
+
+        // تنفيذ معالجة رابط الدعوة عند التحميل
+        handleInviteLink();
     </script>
 </body>
 </html>
