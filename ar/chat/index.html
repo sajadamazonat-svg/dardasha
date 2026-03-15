@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>اسهل حل | الدردشة المتكاملة</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Cairo) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .landing-container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .landing-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 48px;
+            padding: 40px 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            text-align: center;
+        }
+
+        .logo h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4361ee, #06d6a0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .logo p {
+            color: #5a6a7a;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #e0e7ff;
+            padding-bottom: 20px;
+            margin-bottom: 28px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 60px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            margin: 8px 0;
+        }
+
+        .btn i {
+            font-size: 1.5rem;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #06d6a0, #05b386);
+            color: white;
+            box-shadow: 0 8px 20px rgba(6, 214, 160, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(6, 214, 160, 0.4);
+        }
+
+        .btn-large {
+            padding: 18px 28px;
+            font-size: 1.5rem;
+        }
+
+        .links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 28px;
+        }
+
+        .links a {
+            color: #4361ee;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .links a:hover {
+            color: #06d6a0;
+        }
+
+        .footer-note {
+            margin-top: 32px;
+            color: #7c8b9c;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="landing-container">
+        <div class="landing-card">
+            <div class="logo">
+                <h1>اسهل حل</h1>
+                <p>دردشة فورية متطورة مع مكالمات صوتية ورفع ملفات</p>
+            </div>
+
+            <a href="welcome.html" class="btn btn-success btn-large">
+                <i class="fas fa-comment-dots"></i> ابدأ المحادثة
+            </a>
+
+            <div class="links">
+                <a href="help.html"><i class="fas fa-question-circle"></i> مساعدة</a>
+                <a href="about.html"><i class="fas fa-info-circle"></i> حول</a>
+            </div>
+
+            <div class="footer-note">
+                <i class="fas fa-shield-alt"></i> محادثاتك آمنة ومشفرة
+            </div>
+        </div>
+    </div>
+</body>
+</html>
