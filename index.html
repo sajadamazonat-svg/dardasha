@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>اسهل حل | الدردشة المتكاملة</title>
+    <title>اسهل حل | الدردشة المتكاملة (نسخة نهائية)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -168,7 +168,6 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         #upload-progress .progress-text { font-size: 0.8rem; display: flex; justify-content: space-between; color: var(--dark); }
 
-        /* مؤشر تحميل عام */
         #global-loader {
             display: none;
             position: fixed;
@@ -190,7 +189,6 @@
     </style>
 </head>
 <body>
-    <!-- مؤشر تحميل عام -->
     <div id="global-loader">
         <div class="loader-spinner"></div>
         <div class="loader-text" id="loader-text">جاري التحميل...</div>
@@ -373,7 +371,6 @@
         const emojiPanel = document.getElementById('emoji-panel');
         const darkModeToggle = document.getElementById('dark-mode-toggle');
 
-        // عنصر التحميل العام
         const globalLoader = document.getElementById('global-loader');
         const loaderText = document.getElementById('loader-text');
 
@@ -422,15 +419,20 @@
 
         if (darkMode) document.documentElement.setAttribute('data-theme', 'dark');
 
-        // ========== معالجة رابط الدعوة ==========
         function handleInviteLink() {
             const urlParams = new URLSearchParams(window.location.search);
             const roomCode = urlParams.get('room');
             if (roomCode && /^\d{3,6}$/.test(roomCode)) {
+                showScreen('login');
                 const roomInput = document.getElementById('room-code-input');
                 if (roomInput) {
                     roomInput.value = roomCode;
-                    showNotification('تم استلام دعوة غرفة: ' + roomCode, 'info');
+                    setTimeout(() => {
+                        const joinButton = document.getElementById('join-room-btn');
+                        if (joinButton) {
+                            joinButton.click();
+                        }
+                    }, 500);
                 }
             }
         }
@@ -748,7 +750,6 @@
         window.addEventListener('online', () => showNotification('تم استعادة الاتصال بالإنترنت'));
         window.addEventListener('offline', () => showNotification('انقطع الاتصال بالإنترنت', 'danger'));
 
-        // تنفيذ معالجة رابط الدعوة عند التحميل
         handleInviteLink();
     </script>
 </body>
