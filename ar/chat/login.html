@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* أنماط عامة (نفس الأنماط السابقة مع حذف ما يخص الدردشة) */
+        /* نفس الأنماط السابقة */
         :root {
             --primary: #4361ee;
             --primary-dark: #3a56d4;
@@ -72,7 +72,6 @@
     </div>
 
     <script type="module">
-        // استيراد Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
@@ -89,7 +88,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // عناصر الصفحة
         const usernameInput = document.getElementById('username');
         const roomCodeInput = document.getElementById('roomCode');
         const customRoomInput = document.getElementById('customRoom');
@@ -101,12 +99,10 @@
         const errorDiv = document.getElementById('error-message');
         const darkToggle = document.getElementById('darkModeToggle');
 
-        // دوال مساعدة
         const isValidRoomCode = (code) => /^\d{3,6}$/.test(code);
         const generateRandomCode = () => Math.floor(1000 + Math.random() * 9000).toString();
         const generateRandomName = () => 'guest' + Math.floor(Math.random() * 10000);
 
-        // الوضع الليلي
         if (localStorage.getItem('darkMode') === 'true') {
             document.documentElement.setAttribute('data-theme', 'dark');
             darkToggle.innerHTML = '<i class="fas fa-sun"></i>';
@@ -124,26 +120,20 @@
             }
         });
 
-        // إظهار/إخفاء حقل المفتاح المخصص
         manualCheckbox.addEventListener('change', () => {
             customContainer.style.display = manualCheckbox.checked ? 'block' : 'none';
         });
 
-        // منع إدخال غير الأرقام في حقول المفاتيح
         [customRoomInput, roomCodeInput].forEach(i => {
             i.addEventListener('input', function() { this.value = this.value.replace(/\D/g, ''); });
         });
 
-        // دالة الانتقال إلى صفحة الدردشة
         function goToChat(room, username) {
-            // تخزين البيانات في localStorage
             localStorage.setItem('chatRoom', room);
             localStorage.setItem('chatUser', username);
-            // التوجيه إلى صفحة الدردشة
             window.location.href = 'chat.html';
         }
 
-        // إنشاء غرفة جديدة
         createBtn.addEventListener('click', async (e) => {
             e.preventDefault();
             const name = usernameInput.value.trim() || generateRandomName();
@@ -159,7 +149,6 @@
             }
             errorDiv.textContent = '';
             try {
-                // التأكد من وجود معلومات الغرفة (إن لم توجد ننشئها)
                 const roomRef = ref(db, `rooms/${code}/info`);
                 const snap = await get(roomRef);
                 if (!snap.exists()) {
@@ -171,7 +160,6 @@
             }
         });
 
-        // الانضمام إلى غرفة موجودة
         joinBtn.addEventListener('click', async () => {
             const name = usernameInput.value.trim() || generateRandomName();
             const code = roomCodeInput.value.trim();
@@ -193,7 +181,6 @@
             }
         });
 
-        // الغرفة العامة (الكود 1000)
         publicBtn.addEventListener('click', async () => {
             const name = usernameInput.value.trim() || generateRandomName();
             const code = '1000';
@@ -209,13 +196,11 @@
             }
         });
 
-        // معالجة رابط الدعوة (إذا وُجد ?room=xxx)
         (function handleInvite() {
             const params = new URLSearchParams(window.location.search);
             const room = params.get('room');
             if (room && isValidRoomCode(room)) {
                 roomCodeInput.value = room;
-                // يمكن تلقائياً توجيه المستخدم بعد ثانية؟ نفضل ترك الأمر له.
             }
         })();
     </script>
