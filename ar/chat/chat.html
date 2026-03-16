@@ -732,8 +732,8 @@
             <button id="send-message-btn" class="action-btn"><i class="fas fa-paper-plane"></i></button>
         </div>
 
-        <!-- مدخلات الملفات المخفية -->
-        <input type="file" id="file-input" accept="image/*,video/*" style="display:none">
+        <!-- مدخلات الملفات المخفية - تم إضافة multiple والحد الأقصى 5 -->
+        <input type="file" id="file-input" accept="image/*,video/*" multiple style="display:none">
         <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none">
     </div>
 
@@ -794,6 +794,7 @@
         const ADMIN_DISPLAY = "سجاد";
         const ONE_HOUR = 60 * 60 * 1000;
         const MAX_MSGS = 20;
+        const MAX_FILES = 5; // أقصى عدد للملفات في الرفع المتعدد
 
         // ================== عناصر DOM ==================
         const roomNameSpan = document.getElementById('room-name-display');
@@ -950,17 +951,15 @@
             });
         }
 
-        // ضغط الفيديو باستخدام FFmpeg إلى 720p (مع تحسينات كبيرة)
+        // ضغط الفيديو باستخدام FFmpeg إلى 720p (محسّن للتوافق مع معظم الصيغ)
         async function compressVideo(file) {
             return new Promise(async (resolve, reject) => {
                 let ffmpeg = null;
                 try {
-                    // التحقق من أن FFmpeg متاح
                     if (typeof FFmpeg === 'undefined') {
                         throw new Error('مكتبة FFmpeg غير متوفرة');
                     }
 
-                    // إظهار رسالة للمستخدم
                     progressMessage.textContent = 'جاري تحضير ضغط الفيديو...';
                     progressFill.style.width = '0%';
                     progressPercent.textContent = '0%';
@@ -978,15 +977,17 @@
                     });
 
                     await ffmpeg.load();
-                    
-                    // كتابة الملف الأصلي
-                    ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(file));
 
-                    // محاولة أولى: ضغط إلى 720p مع إعدادات متوافقة
+                    // تحديد امتداد الإدخال بناءً على نوع الملف
+                    const inputExt = file.name.split('.').pop().toLowerCase();
+                    const inputName = `input.${inputExt}`;
+                    ffmpeg.FS('writeFile', inputName, await fetchFile(file));
+
+                    // محاولة أولى: تحويل إلى 720p مع إعدادات متوافقة
                     progressMessage.textContent = 'جاري ضغط الفيديو (المحاولة الأولى)...';
                     try {
                         await ffmpeg.run(
-                            '-i', 'input.mp4',
+                            '-i', inputName,
                             '-vf', 'scale=1280:-2',
                             '-c:v', 'libx264',
                             '-preset', 'fast',
@@ -998,11 +999,11 @@
                             'output.mp4'
                         );
                     } catch (firstError) {
-                        console.warn('فشلت المحاولة الأولى للضغط، جاري محاولة ثانية بإعدادات مختلفة', firstError);
+                        console.warn('فشلت المحاولة الأولى، جاري محاولة ثانية', firstError);
                         progressMessage.textContent = 'جاري ضغط الفيديو (المحاولة الثانية)...';
-                        // محاولة ثانية: استخدام preset أبطأ وجودة أقل قليلاً لزيادة فرص النجاح
+                        // محاولة ثانية: استخدام preset أبطأ وجودة أقل قليلاً
                         await ffmpeg.run(
-                            '-i', 'input.mp4',
+                            '-i', inputName,
                             '-vf', 'scale=1280:-2',
                             '-c:v', 'libx264',
                             '-preset', 'medium',
@@ -1015,19 +1016,11 @@
                         );
                     }
 
-                    // قراءة الملف الناتج
                     const data = ffmpeg.FS('readFile', 'output.mp4');
-                    
-                    // التأكد من أن الملف الناتج ليس فارغاً
-                    if (data.length === 0) {
-                        throw new Error('الملف الناتج فارغ');
-                    }
+                    if (data.length === 0) throw new Error('الملف الناتج فارغ');
 
-                    // التحقق من أن حجم الملف المضغوط أصغر من الأصلي (أو على الأقل ليس أكبر بكثير)
-                    const compressedSize = data.length;
-                    const originalSize = file.size;
-                    if (compressedSize > originalSize * 1.5) {
-                        console.warn('الملف المضغوط أكبر من الأصلي، سيتم رفضه');
+                    // إذا كان الملف المضغوط أكبر من الأصلي بنسبة 50%، نرفضه
+                    if (data.length > file.size * 1.5) {
                         throw new Error('الملف المضغوط أكبر من الأصلي');
                     }
 
@@ -1043,10 +1036,9 @@
                     console.error('فشل ضغط الفيديو:', error);
                     reject(error);
                 } finally {
-                    // تنظيف الملفات المؤقتة
                     try {
                         if (ffmpeg) {
-                            ffmpeg.FS('unlink', 'input.mp4');
+                            ffmpeg.FS('unlink', inputName);
                             ffmpeg.FS('unlink', 'output.mp4');
                         }
                     } catch (e) {}
@@ -1099,6 +1091,82 @@
                 reader.onerror = () => reject(new Error('فشل قراءة الملف'));
                 reader.readAsDataURL(file);
             });
+        }
+
+        // ================== دالة لرفع عدة ملفات ==================
+        async function handleMultipleFilesUpload(files, baseType) {
+            if (!currentRoom) { showNotification('أنت لست في غرفة', 'danger'); return; }
+            if (files.length > MAX_FILES) {
+                showNotification(`يمكنك رفع ${MAX_FILES} ملفات كحد أقصى`, 'warning');
+                return;
+            }
+
+            progressDiv.style.display = 'block';
+            let completed = 0;
+            const total = files.length;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                let type = baseType; // قد يكون mix من صور وفيديو، لكننا نحدد النوع من الملف
+                if (file.type.startsWith('image/')) type = 'image';
+                else if (file.type.startsWith('video/')) type = 'video';
+                else {
+                    showNotification(`نوع الملف غير مدعوم: ${file.name}`, 'danger');
+                    continue;
+                }
+
+                try {
+                    progressMessage.textContent = `جاري رفع الملف ${i+1}/${total}: ${file.name}`;
+                    progressFill.style.width = '0%';
+                    progressPercent.textContent = '0%';
+
+                    // ضغط حسب النوع
+                    if (type === 'image') {
+                        try {
+                            file = await compressImage(file);
+                        } catch (e) {
+                            console.warn('فشل ضغط الصورة، سيتم رفع الأصل', e);
+                        }
+                    } else if (type === 'video') {
+                        if (file.size > 100 * 1024 * 1024) {
+                            showNotification(`الفيديو ${file.name} كبير جداً (أكثر من 100MB) ولن يتم رفعه`, 'danger');
+                            continue;
+                        }
+                        try {
+                            file = await compressVideo(file);
+                        } catch (e) {
+                            console.warn('فشل ضغط الفيديو، سيتم رفع الأصل', e);
+                            showNotification(`تعذر ضغط ${file.name}، سيتم رفعه بدون ضغط`, 'warning');
+                        }
+                    }
+
+                    const fname = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '.' + (file.name.split('.').pop() || (type === 'image' ? 'jpg' : 'mp4'));
+                    const url = await uploadToGitHubWithProgress(file, fname, type, (percent) => {
+                        progressFill.style.width = percent + '%';
+                        progressPercent.textContent = percent + '%';
+                    });
+
+                    // إرسال رسالة بعد نجاح الرفع
+                    if (currentRoom && messagesRef) {
+                        const msgKey = `${Date.now()}_${userId}`;
+                        await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), {
+                            sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser,
+                            text: url,
+                            type,
+                            timestamp: Date.now()
+                        });
+                    }
+
+                    completed++;
+                } catch (e) {
+                    showNotification(`فشل رفع ${file.name}: ${e.message}`, 'danger');
+                }
+            }
+
+            progressDiv.style.display = 'none';
+            if (completed > 0) {
+                showNotification(`تم رفع ${completed} ملف بنجاح`, 'success');
+            }
         }
 
         // ================== تحديث قوائم المستخدمين ==================
@@ -1681,69 +1749,9 @@
         confirmYes.addEventListener('click', () => { confirmDialog.classList.remove('active'); leaveRoom(); });
         confirmNo.addEventListener('click', () => { confirmDialog.classList.remove('active'); });
 
-        // ================== رفع الملفات مع شريط التقدم ==================
+        // ================== رفع الملفات (تعديل لاستخدام الدالة الجديدة) ==================
         async function handleFileUpload(file, type) {
-            if (!currentRoom) { showNotification('أنت لست في غرفة', 'danger'); return; }
-            try {
-                progressDiv.style.display = 'block';
-                progressFill.style.width = '0%';
-                progressPercent.textContent = '0%';
-                progressMessage.textContent = `جاري رفع ${type}...`;
-
-                // ضغط الصورة إذا كان النوع image
-                if (type === 'image') {
-                    try {
-                        file = await compressImage(file);
-                        progressMessage.textContent = 'تم ضغط الصورة، جاري الرفع...';
-                    } catch (e) {
-                        console.warn('فشل ضغط الصورة، سيتم رفع الأصل', e);
-                        progressMessage.textContent = 'فشل الضغط، جاري رفع الصورة الأصلية...';
-                    }
-                }
-                // ضغط الفيديو إذا كان النوع video
-                else if (type === 'video') {
-                    if (file.size > 100 * 1024 * 1024) {
-                        showNotification('الفيديو كبير جداً (أكثر من 100MB) ولن يتم رفعه', 'danger');
-                        progressDiv.style.display = 'none';
-                        return;
-                    }
-                    try {
-                        progressMessage.textContent = 'جاري ضغط الفيديو...';
-                        file = await compressVideo(file);
-                        progressMessage.textContent = 'تم ضغط الفيديو، جاري الرفع...';
-                    } catch (e) {
-                        console.warn('فشل ضغط الفيديو، سيتم رفع الأصل', e);
-                        progressMessage.textContent = 'فشل الضغط، جاري رفع الفيديو الأصلي...';
-                        // نعرض رسالة للمستخدم ولكننا نكمل برفع الأصل
-                        showNotification('تعذر ضغط الفيديو، سيتم رفعه بدون ضغط', 'warning');
-                    }
-                }
-
-                const fname = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '.' + (file.name.split('.').pop() || (type === 'image' ? 'jpg' : type === 'video' ? 'mp4' : 'webm'));
-
-                // استخدام دالة الرفع مع التقدم
-                const url = await uploadToGitHubWithProgress(file, fname, type, (percent) => {
-                    progressFill.style.width = percent + '%';
-                    progressPercent.textContent = percent + '%';
-                });
-
-                progressDiv.style.display = 'none';
-                if (currentRoom && messagesRef) {
-                    const msgKey = `${Date.now()}_${userId}`;
-                    await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), {
-                        sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser,
-                        text: url,
-                        type,
-                        timestamp: Date.now()
-                    });
-                    showNotification('تم الإرسال');
-                } else {
-                    showNotification('تم الرفع ولكنك غادرت الغرفة', 'warning');
-                }
-            } catch (e) {
-                progressDiv.style.display = 'none';
-                showNotification(e.toString(), 'danger');
-            }
+            await handleMultipleFilesUpload([file], type);
         }
 
         // ================== التسجيل الصوتي ==================
@@ -1822,12 +1830,25 @@
         attachBtn.addEventListener('click', () => { fileInput.click(); mediaPopup.classList.remove('show'); });
         cameraBtn.addEventListener('click', () => { cameraInput.click(); mediaPopup.classList.remove('show'); });
         fileInput.addEventListener('change', (e) => {
-            const f = e.target.files[0];
-            if (!f) return;
-            if (f.type.startsWith('image/')) handleFileUpload(f, 'image');
-            else if (f.type.startsWith('video/')) handleFileUpload(f, 'video');
-            else showNotification('نوع غير مدعوم', 'danger');
-            fileInput.value = '';
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+            
+            // فصل الصور عن الفيديو (يمكن رفعها معاً)
+            const imageFiles = files.filter(f => f.type.startsWith('image/'));
+            const videoFiles = files.filter(f => f.type.startsWith('video/'));
+            const otherFiles = files.filter(f => !f.type.startsWith('image/') && !f.type.startsWith('video/'));
+            
+            if (otherFiles.length > 0) {
+                showNotification('بعض الملفات غير مدعومة (يُقبل فقط صور وفيديو)', 'warning');
+            }
+            
+            // رفع الصور أولاً ثم الفيديو (أو يمكن دمجهما في قائمة واحدة)
+            const allFiles = [...imageFiles, ...videoFiles];
+            if (allFiles.length > 0) {
+                handleMultipleFilesUpload(allFiles, 'mix');
+            }
+            
+            fileInput.value = ''; // إعادة تعيين
         });
         cameraInput.addEventListener('change', (e) => {
             const f = e.target.files[0];
