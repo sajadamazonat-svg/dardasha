@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
     <style>
-        /* ========== الأنماط العامة ========== */
+        /* جميع الأنماط كما هي (بدون تغيير) */
         :root {
             --primary: #4361ee;
             --primary-dark: #3a56d4;
@@ -157,7 +157,7 @@
         /* منطقة الرسائل (تأخذ المساحة المتبقية) */
         .messages-container {
             flex: 1;
-            min-height: 0; /* مهم لمنع التمدد الزائد */
+            min-height: 0;
             padding: 12px;
             background: var(--card-bg);
             backdrop-filter: blur(12px);
@@ -1046,7 +1046,7 @@
             await Promise.all(promises);
         }
 
-        // ================== إنشاء عنصر الرسالة ==================
+        // ================== إنشاء عنصر الرسالة (مع تحسينات الصوت) ==================
         function createMessageElement(msg, isOwn, isSystem, msgId) {
             const div = document.createElement('div');
             div.className = `message ${isOwn ? 'own' : ''} ${isSystem ? 'system' : ''}`;
@@ -1080,39 +1080,113 @@
                 };
                 div.appendChild(vid);
             } else if (msg.type === 'audio') {
-                div.innerHTML = `<div style="display:flex;align-items:center;gap:8px">
-                    <button class="audio-play-btn" data-audio="${msg.text}" style="width:36px;height:36px;border-radius:50%;background:var(--primary);color:white;border:none"><i class="fas fa-play"></i></button>
-                    <div style="flex:1;height:4px;background:rgba(255,255,255,0.3);border-radius:2px"><div class="audio-progress-filled" style="width:0%;height:100%;background:white;border-radius:2px"></div></div>
-                    <span class="audio-duration" style="font-size:0.7rem">00:00</span>
-                </div>`;
-                const btn = div.querySelector('.audio-play-btn');
-                const prog = div.querySelector('.audio-progress-filled');
-                const dur = div.querySelector('.audio-duration');
-                const audioSrc = btn.dataset.audio;
+                // إنشاء عناصر التحكم بالصوت
+                const audioContainer = document.createElement('div');
+                audioContainer.style.display = 'flex';
+                audioContainer.style.alignItems = 'center';
+                audioContainer.style.gap = '8px';
+                audioContainer.style.direction = 'ltr'; // للتوقيت
+
+                const playBtn = document.createElement('button');
+                playBtn.className = 'audio-play-btn';
+                playBtn.setAttribute('data-audio', msg.text);
+                playBtn.style.width = '36px';
+                playBtn.style.height = '36px';
+                playBtn.style.borderRadius = '50%';
+                playBtn.style.background = 'var(--primary)';
+                playBtn.style.color = 'white';
+                playBtn.style.border = 'none';
+                playBtn.style.cursor = 'pointer';
+                playBtn.style.display = 'flex';
+                playBtn.style.alignItems = 'center';
+                playBtn.style.justifyContent = 'center';
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+
+                const progressContainer = document.createElement('div');
+                progressContainer.style.flex = '1';
+                progressContainer.style.height = '4px';
+                progressContainer.style.background = 'rgba(255,255,255,0.3)';
+                progressContainer.style.borderRadius = '2px';
+                progressContainer.style.position = 'relative';
+
+                const progressFilled = document.createElement('div');
+                progressFilled.className = 'audio-progress-filled';
+                progressFilled.style.width = '0%';
+                progressFilled.style.height = '100%';
+                progressFilled.style.background = 'white';
+                progressFilled.style.borderRadius = '2px';
+                progressContainer.appendChild(progressFilled);
+
+                const durationSpan = document.createElement('span');
+                durationSpan.className = 'audio-duration';
+                durationSpan.style.fontSize = '0.7rem';
+                durationSpan.style.minWidth = '40px';
+                durationSpan.textContent = '00:00';
+
+                audioContainer.appendChild(playBtn);
+                audioContainer.appendChild(progressContainer);
+                audioContainer.appendChild(durationSpan);
+                div.appendChild(audioContainer);
+
+                // إعداد كائن الصوت
+                const audioSrc = msg.text;
                 let audio = window.audioPlayers.get(audioSrc);
                 if (!audio) {
                     audio = new Audio(audioSrc);
+                    audio.preload = 'auto';
+                    audio.load(); // بدء التحميل
                     window.audioPlayers.set(audioSrc, audio);
                 }
-                btn.onclick = () => {
-                    if (audio.paused) {
-                        window.audioPlayers.forEach(a => { if (!a.paused) a.pause(); });
-                        audio.play();
-                        btn.innerHTML = '<i class="fas fa-pause"></i>';
-                    } else {
-                        audio.pause();
-                        btn.innerHTML = '<i class="fas fa-play"></i>';
+
+                // معالجة الأخطاء
+                audio.onerror = () => {
+                    console.error('فشل تحميل الصوت:', audioSrc);
+                    playBtn.disabled = true;
+                    playBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                    showNotification('تعذر تحميل الصوت', 'danger');
+                };
+
+                // عند اكتمال التحميل
+                audio.oncanplaythrough = () => {
+                    playBtn.disabled = false;
+                };
+
+                // تحديث شريط التprogress والوقت
+                audio.ontimeupdate = () => {
+                    if (audio.duration) {
+                        const percent = (audio.currentTime / audio.duration) * 100;
+                        progressFilled.style.width = percent + '%';
+                        const mins = Math.floor(audio.currentTime / 60);
+                        const secs = Math.floor(audio.currentTime % 60);
+                        durationSpan.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
                     }
                 };
-                audio.ontimeupdate = () => {
-                    prog.style.width = (audio.currentTime / audio.duration) * 100 + '%';
-                    dur.textContent = new Date(audio.currentTime * 1000).toISOString().substr(14,5);
-                };
+
                 audio.onended = () => {
-                    btn.innerHTML = '<i class="fas fa-play"></i>';
-                    prog.style.width = '0%';
+                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    progressFilled.style.width = '0%';
+                    durationSpan.textContent = '00:00';
+                };
+
+                // حدث النقر على زر التشغيل
+                playBtn.onclick = () => {
+                    if (audio.paused) {
+                        // إيقاف أي صوت آخر
+                        window.audioPlayers.forEach(a => {
+                            if (!a.paused && a !== audio) a.pause();
+                        });
+                        audio.play().catch(e => {
+                            console.error('فشل تشغيل الصوت:', e);
+                            showNotification('تعذر تشغيل الصوت', 'danger');
+                        });
+                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    } else {
+                        audio.pause();
+                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    }
                 };
             } else {
+                // رسالة نصية
                 div.appendChild(document.createTextNode(msg.text));
             }
 
