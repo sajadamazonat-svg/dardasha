@@ -754,7 +754,8 @@
             <button class="call-btn" id="end-call-btn"><i class="fas fa-phone-slash"></i></button>
         </div>
     </div>
-    <audio id="ring" src="https://actions.google.com/sounds/v1/alarms/phone_alerts_and_rings.ogg" preload="auto"></audio>
+    <!-- نغمة رنين جديدة -->
+    <audio id="ring" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto" loop></audio>
 
     <script type="module">
         // ================== استيراد Firebase ==================
@@ -1085,7 +1086,7 @@
                 audioContainer.style.display = 'flex';
                 audioContainer.style.alignItems = 'center';
                 audioContainer.style.gap = '8px';
-                audioContainer.style.direction = 'ltr'; // للتوقيت
+                audioContainer.style.direction = 'ltr';
 
                 const playBtn = document.createElement('button');
                 playBtn.className = 'audio-play-btn';
@@ -1134,11 +1135,10 @@
                 if (!audio) {
                     audio = new Audio(audioSrc);
                     audio.preload = 'auto';
-                    audio.load(); // بدء التحميل
+                    audio.load();
                     window.audioPlayers.set(audioSrc, audio);
                 }
 
-                // معالجة الأخطاء
                 audio.onerror = () => {
                     console.error('فشل تحميل الصوت:', audioSrc);
                     playBtn.disabled = true;
@@ -1146,12 +1146,10 @@
                     showNotification('تعذر تحميل الصوت', 'danger');
                 };
 
-                // عند اكتمال التحميل
                 audio.oncanplaythrough = () => {
                     playBtn.disabled = false;
                 };
 
-                // تحديث شريط التprogress والوقت
                 audio.ontimeupdate = () => {
                     if (audio.duration) {
                         const percent = (audio.currentTime / audio.duration) * 100;
@@ -1168,10 +1166,8 @@
                     durationSpan.textContent = '00:00';
                 };
 
-                // حدث النقر على زر التشغيل
                 playBtn.onclick = () => {
                     if (audio.paused) {
-                        // إيقاف أي صوت آخر
                         window.audioPlayers.forEach(a => {
                             if (!a.paused && a !== audio) a.pause();
                         });
@@ -1186,13 +1182,12 @@
                     }
                 };
             } else {
-                // رسالة نصية
                 div.appendChild(document.createTextNode(msg.text));
             }
 
             const ts = document.createElement('div');
             ts.className = 'time';
-            ts.textContent = new Date(msg.timestamp).toLocaleTimeString('ar-EG', { hour:'2-digit', minute:'2-digit' });
+            ts.textContent = new Date(msg.timestamp).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
             div.appendChild(ts);
             return div;
         }
@@ -1266,21 +1261,31 @@
             });
         }
 
-        // ================== دوال المكالمات الصوتية ==================
+        // ================== دوال المكالمات الصوتية (مع تحسينات الصوت) ==================
         async function setupLocalStream() {
             if (localStream) return localStream;
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 showNotification('الميكروفون جاهز');
                 return localStream;
-            } catch {
+            } catch (err) {
                 showNotification('تعذر الوصول إلى الميكروفون', 'danger');
-                throw new Error('No microphone');
+                throw err;
             }
         }
+
         function createPeerConnection() {
             const pc = new RTCPeerConnection(configuration);
-            pc.addEventListener('track', event => {
+
+            // إضافة المسارات المحلية إلى peer connection
+            if (localStream) {
+                localStream.getTracks().forEach(track => {
+                    pc.addTrack(track, localStream);
+                });
+            }
+
+            // استقبال المسارات البعيدة
+            pc.ontrack = (event) => {
                 if (event.streams && event.streams[0]) {
                     if (remoteAudioElement) remoteAudioElement.remove();
                     remoteAudioElement = document.createElement('audio');
@@ -1289,15 +1294,18 @@
                     remoteAudioElement.style.display = 'none';
                     document.body.appendChild(remoteAudioElement);
                     callInfo.textContent = 'جاري التحدث...';
+                    console.log('تم استقبال الصوت البعيد');
                 }
-            });
-            pc.addEventListener('icecandidate', event => {
+            };
+
+            pc.onicecandidate = (event) => {
                 if (!event.candidate || !currentRoom) return;
                 const c = event.candidate.toJSON();
                 if (callerCandidatesRef) push(callerCandidatesRef, c);
                 else if (calleeCandidatesRef) push(calleeCandidatesRef, c);
-            });
-            pc.addEventListener('connectionstatechange', () => {
+            };
+
+            pc.onconnectionstatechange = () => {
                 if (pc.connectionState === 'connected') {
                     connected = true;
                     callContainer.classList.add('active');
@@ -1306,22 +1314,31 @@
                     connected = false;
                     endCall();
                 }
-            });
+            };
+
             return pc;
         }
+
         async function startCall(targetUserId) {
             if (!currentRoom || !userId) return;
             if (pc) { showNotification('هناك مكالمة قائمة حالياً', 'warning'); return; }
             try {
                 await setupLocalStream();
                 pc = createPeerConnection();
-                localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+                // تمت إضافة المسارات داخل createPeerConnection
+
                 callerCandidatesRef = ref(db, `${callBasePath()}/callerCandidates`);
                 calleeCandidatesRef = ref(db, `${callBasePath()}/calleeCandidates`);
+
                 const offer = await pc.createOffer();
                 await pc.setLocalDescription(offer);
                 await set(ref(db, `${callBasePath()}/offer`), {
-                    type: offer.type, sdp: offer.sdp, from: userId, name: currentUser, targetId: targetUserId, ts: Date.now()
+                    type: offer.type,
+                    sdp: offer.sdp,
+                    from: userId,
+                    name: currentUser,
+                    targetId: targetUserId,
+                    ts: Date.now()
                 });
                 currentCallTarget = targetUserId;
                 callInfo.textContent = `الاتصال بـ ${usersMap[targetUserId] || 'المستخدم'}...`;
@@ -1341,20 +1358,26 @@
                 endCall();
             }
         }
+
         async function acceptCall() {
             if (!incomingOffer || !currentRoom || !userId) return;
             if (pc) { showNotification('هناك مكالمة قائمة', 'warning'); return; }
             try {
                 await setupLocalStream();
                 pc = createPeerConnection();
-                localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
                 callerCandidatesRef = ref(db, `${callBasePath()}/callerCandidates`);
                 calleeCandidatesRef = ref(db, `${callBasePath()}/calleeCandidates`);
+
                 await pc.setRemoteDescription(new RTCSessionDescription({ type: incomingOffer.type, sdp: incomingOffer.sdp }));
                 const answer = await pc.createAnswer();
                 await pc.setLocalDescription(answer);
                 await set(ref(db, `${callBasePath()}/answer`), {
-                    type: answer.type, sdp: answer.sdp, from: userId, name: currentUser, ts: Date.now()
+                    type: answer.type,
+                    sdp: answer.sdp,
+                    from: userId,
+                    name: currentUser,
+                    ts: Date.now()
                 });
                 currentCallTarget = incomingOffer.from;
                 callInfo.textContent = `تتحدث مع ${incomingOffer.name}`;
@@ -1368,9 +1391,13 @@
                 endCall();
             }
         }
+
         function endCall() {
             if (callTimeout) clearTimeout(callTimeout);
-            if (pc) { pc.close(); pc = null; }
+            if (pc) {
+                pc.close();
+                pc = null;
+            }
             if (currentRoom) {
                 remove(ref(db, `${callBasePath()}/offer`));
                 remove(ref(db, `${callBasePath()}/answer`));
@@ -1384,13 +1411,17 @@
             callContainer.classList.remove('active');
             incomingPanel.classList.remove('active');
             callInfo.textContent = '...';
-            if (remoteAudioElement) { remoteAudioElement.remove(); remoteAudioElement = null; }
+            if (remoteAudioElement) {
+                remoteAudioElement.remove();
+                remoteAudioElement = null;
+            }
             if (firebaseListeners.offer) off(ref(db, `${callBasePath()}/offer`), firebaseListeners.offer);
             if (firebaseListeners.answer) off(ref(db, `${callBasePath()}/answer`), firebaseListeners.answer);
             if (firebaseListeners.callerCandidates) off(ref(db, `${callBasePath()}/callerCandidates`), firebaseListeners.callerCandidates);
             if (firebaseListeners.calleeCandidates) off(ref(db, `${callBasePath()}/calleeCandidates`), firebaseListeners.calleeCandidates);
             firebaseListeners.offer = firebaseListeners.answer = firebaseListeners.callerCandidates = firebaseListeners.calleeCandidates = null;
         }
+
         function toggleMute() {
             if (!localStream) return;
             const track = localStream.getAudioTracks()[0];
@@ -1400,6 +1431,7 @@
                 showNotification(track.enabled ? 'إلغاء كتم' : 'تم الكتم');
             }
         }
+
         function listenForCalls() {
             if (!currentRoom) return;
             if (firebaseListeners.offer) off(ref(db, `${callBasePath()}/offer`), firebaseListeners.offer);
@@ -1411,7 +1443,7 @@
                 const offer = snap.val();
                 if (!offer) {
                     incomingPanel.classList.remove('active');
-                    try { ring.pause(); ring.currentTime = 0; } catch(e) {}
+                    try { ring.pause(); ring.currentTime = 0; } catch (e) { }
                     return;
                 }
                 if (offer.from === userId) return;
@@ -1419,7 +1451,10 @@
                 incomingOffer = offer;
                 incomingCallerName.textContent = offer.name || 'مستخدم';
                 incomingPanel.classList.add('active');
-                ring.play().catch(()=>{});
+                // تشغيل نغمة الرنين الجديدة
+                ring.loop = true;
+                ring.volume = 0.5;
+                ring.play().catch(e => console.log('تعذر تشغيل الرنين', e));
             });
 
             firebaseListeners.answer = onValue(ref(db, `${callBasePath()}/answer`), async (snap) => {
@@ -1503,7 +1538,7 @@
                     else if (key === 'usersAdded' && currentRoom) off(ref(db, `rooms/${currentRoom}/users`), listener);
                     else if (key === 'usersRemoved' && currentRoom) off(ref(db, `rooms/${currentRoom}/users`), listener);
                     else if (key === 'typing' && currentRoom) off(ref(db, `rooms/${currentRoom}/typing`), listener);
-                    else if (key.includes('call') && currentRoom) off(ref(db, `${callBasePath()}/${key.replace('call','')}`), listener);
+                    else if (key.includes('call') && currentRoom) off(ref(db, `${callBasePath()}/${key.replace('call', '')}`), listener);
                     firebaseListeners[key] = null;
                 }
             });
@@ -1535,7 +1570,7 @@
                         return;
                     }
                 }
-                const fname = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '.' + (file.name.split('.').pop() || (type==='image'?'jpg':type==='video'?'mp4':'webm'));
+                const fname = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '.' + (file.name.split('.').pop() || (type === 'image' ? 'jpg' : type === 'video' ? 'mp4' : 'webm'));
                 const url = await uploadToGitHub(file, fname, type);
                 progressDiv.style.display = 'none';
                 if (currentRoom && messagesRef) {
@@ -1676,7 +1711,7 @@
         acceptIncoming.addEventListener('click', acceptCall);
         rejectIncoming.addEventListener('click', () => {
             incomingPanel.classList.remove('active');
-            try { ring.pause(); ring.currentTime = 0; } catch(e) {}
+            try { ring.pause(); ring.currentTime = 0; } catch (e) { }
             incomingOffer = null;
         });
         muteCallBtn.addEventListener('click', toggleMute);
@@ -1703,7 +1738,7 @@
         shareRoomBtn.addEventListener('click', () => {
             if (currentRoom) {
                 const shareText = `انضم إلي في غرفة ${currentRoom} على تطبيق اسهل حل`;
-                const shareUrl = `${location.origin}${location.pathname.replace('chat.html','login.html')}?room=${currentRoom}`;
+                const shareUrl = `${location.origin}${location.pathname.replace('chat.html', 'login.html')}?room=${currentRoom}`;
                 if (navigator.share) {
                     navigator.share({ title: 'اسهل حل', text: shareText, url: shareUrl }).catch(() => {
                         copyToClipboard(shareUrl).then(success => {
