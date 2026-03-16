@@ -950,9 +950,10 @@
             });
         }
 
-        // ضغط الفيديو باستخدام FFmpeg إلى 720p (مع تحسين معالجة الأخطاء)
+        // ضغط الفيديو باستخدام FFmpeg إلى 720p (مع تحسينات كبيرة)
         async function compressVideo(file) {
             return new Promise(async (resolve, reject) => {
+                let ffmpeg = null;
                 try {
                     // التحقق من أن FFmpeg متاح
                     if (typeof FFmpeg === 'undefined') {
@@ -960,13 +961,13 @@
                     }
 
                     // إظهار رسالة للمستخدم
-                    progressMessage.textContent = 'جاري ضغط الفيديو...';
+                    progressMessage.textContent = 'جاري تحضير ضغط الفيديو...';
                     progressFill.style.width = '0%';
                     progressPercent.textContent = '0%';
 
                     const { createFFmpeg, fetchFile } = FFmpeg;
-                    const ffmpeg = createFFmpeg({ 
-                        log: false, 
+                    ffmpeg = createFFmpeg({ 
+                        log: false,
                         progress: (p) => {
                             if (p.ratio) {
                                 const percent = Math.round(p.ratio * 100);
@@ -981,17 +982,38 @@
                     // كتابة الملف الأصلي
                     ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(file));
 
-                    // تشغيل أمر التحويل إلى 720p مع الحفاظ على نسبة العرض
-                    await ffmpeg.run(
-                        '-i', 'input.mp4',
-                        '-vf', 'scale=1280:-2',
-                        '-c:v', 'libx264',
-                        '-preset', 'fast',
-                        '-crf', '28',
-                        '-c:a', 'aac',
-                        '-b:a', '128k',
-                        'output.mp4'
-                    );
+                    // محاولة أولى: ضغط إلى 720p مع إعدادات متوافقة
+                    progressMessage.textContent = 'جاري ضغط الفيديو (المحاولة الأولى)...';
+                    try {
+                        await ffmpeg.run(
+                            '-i', 'input.mp4',
+                            '-vf', 'scale=1280:-2',
+                            '-c:v', 'libx264',
+                            '-preset', 'fast',
+                            '-crf', '28',
+                            '-pix_fmt', 'yuv420p',
+                            '-c:a', 'aac',
+                            '-b:a', '128k',
+                            '-movflags', '+faststart',
+                            'output.mp4'
+                        );
+                    } catch (firstError) {
+                        console.warn('فشلت المحاولة الأولى للضغط، جاري محاولة ثانية بإعدادات مختلفة', firstError);
+                        progressMessage.textContent = 'جاري ضغط الفيديو (المحاولة الثانية)...';
+                        // محاولة ثانية: استخدام preset أبطأ وجودة أقل قليلاً لزيادة فرص النجاح
+                        await ffmpeg.run(
+                            '-i', 'input.mp4',
+                            '-vf', 'scale=1280:-2',
+                            '-c:v', 'libx264',
+                            '-preset', 'medium',
+                            '-crf', '30',
+                            '-pix_fmt', 'yuv420p',
+                            '-c:a', 'aac',
+                            '-b:a', '96k',
+                            '-movflags', '+faststart',
+                            'output.mp4'
+                        );
+                    }
 
                     // قراءة الملف الناتج
                     const data = ffmpeg.FS('readFile', 'output.mp4');
@@ -1001,30 +1023,33 @@
                         throw new Error('الملف الناتج فارغ');
                     }
 
+                    // التحقق من أن حجم الملف المضغوط أصغر من الأصلي (أو على الأقل ليس أكبر بكثير)
+                    const compressedSize = data.length;
+                    const originalSize = file.size;
+                    if (compressedSize > originalSize * 1.5) {
+                        console.warn('الملف المضغوط أكبر من الأصلي، سيتم رفضه');
+                        throw new Error('الملف المضغوط أكبر من الأصلي');
+                    }
+
                     const compressedFile = new File(
                         [data.buffer], 
                         file.name.replace(/\.[^/.]+$/, '') + '_720p.mp4', 
                         { type: 'video/mp4' }
                     );
 
-                    // تنظيف
-                    ffmpeg.FS('unlink', 'input.mp4');
-                    ffmpeg.FS('unlink', 'output.mp4');
-
                     console.log('تم ضغط الفيديو بنجاح، الحجم الأصلي:', file.size, 'الحجم بعد الضغط:', compressedFile.size);
                     resolve(compressedFile);
                 } catch (error) {
                     console.error('فشل ضغط الفيديو:', error);
-                    // محاولة تنظيف الملفات إذا كانت موجودة
+                    reject(error);
+                } finally {
+                    // تنظيف الملفات المؤقتة
                     try {
                         if (ffmpeg) {
                             ffmpeg.FS('unlink', 'input.mp4');
                             ffmpeg.FS('unlink', 'output.mp4');
                         }
                     } catch (e) {}
-                    
-                    // إعادة رفض الوعد مع الخطأ
-                    reject(error);
                 }
             });
         }
