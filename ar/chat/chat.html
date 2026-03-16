@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
     <style>
-        /* جميع الأنماط كما في الكود السابق (مع الإصلاحات) */
+        /* ========== الأنماط العامة ========== */
         :root {
             --primary: #4361ee;
             --primary-dark: #3a56d4;
@@ -48,7 +48,7 @@
         }
 
         html, body {
-            height: 100vh;
+            height: 100%;
             overflow: hidden;
         }
 
@@ -63,14 +63,14 @@
         #app {
             max-width: 500px;
             margin: 0 auto;
-            height: 100vh;
+            height: 100%;
             display: flex;
             flex-direction: column;
             background: transparent;
             padding: 8px;
         }
 
-        /* رأس الدردشة */
+        /* رأس الدردشة (ثابت) */
         .chat-header {
             flex-shrink: 0;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -154,10 +154,10 @@
             color: var(--primary);
         }
 
-        /* منطقة الرسائل */
+        /* منطقة الرسائل (تأخذ المساحة المتبقية) */
         .messages-container {
-            flex: 1 1 auto;
-            min-height: 0;
+            flex: 1;
+            min-height: 0; /* مهم لمنع التمدد الزائد */
             padding: 12px;
             background: var(--card-bg);
             backdrop-filter: blur(12px);
@@ -170,6 +170,7 @@
             border: 1px solid var(--border);
         }
 
+        /* أنماط الرسائل */
         .message {
             max-width: 80%;
             padding: 10px 14px;
@@ -247,7 +248,7 @@
             border: 1px solid var(--border);
         }
 
-        /* منطقة الإدخال */
+        /* منطقة الإدخال (ثابتة) */
         .input-area {
             flex-shrink: 0;
             display: flex;
@@ -258,7 +259,6 @@
             padding: 4px 4px 4px 14px;
             border: 1px solid var(--border);
             box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            margin-top: auto;
         }
 
         .input-area textarea {
@@ -297,7 +297,7 @@
             color: var(--dark);
         }
 
-        /* باقي الأنماط */
+        /* باقي الأنماط (النوافذ المنبثقة، شريط التسجيل، إلخ) */
         .media-popup {
             position: absolute;
             bottom: 70px;
@@ -650,11 +650,13 @@
     </style>
 </head>
 <body>
+    <!-- مؤشر التحميل -->
     <div id="global-loader">
         <div class="loader-spinner"></div>
         <div class="loader-text" id="loader-text">جاري التحميل...</div>
     </div>
 
+    <!-- التطبيق الرئيسي -->
     <div id="app">
         <!-- رأس الدردشة -->
         <div class="chat-header">
@@ -724,7 +726,7 @@
         <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none">
     </div>
 
-    <!-- العناصر المشتركة -->
+    <!-- العناصر المشتركة (مودال الصور، التأكيد، المكالمات) -->
     <div id="mediaModal" class="media-modal">
         <button id="closeModalBtn" style="background:white;border:none;border-radius:50%;width:40px;height:40px;font-size:1.2rem;margin-bottom:10px;"><i class="fas fa-times"></i></button>
         <div id="modalMediaContainer"></div>
