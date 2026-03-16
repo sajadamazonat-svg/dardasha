@@ -950,10 +950,15 @@
             });
         }
 
-        // ضغط الفيديو باستخدام FFmpeg إلى 720p
+        // ضغط الفيديو باستخدام FFmpeg إلى 720p (مع تحسين معالجة الأخطاء)
         async function compressVideo(file) {
             return new Promise(async (resolve, reject) => {
                 try {
+                    // التحقق من أن FFmpeg متاح
+                    if (typeof FFmpeg === 'undefined') {
+                        throw new Error('مكتبة FFmpeg غير متوفرة');
+                    }
+
                     // إظهار رسالة للمستخدم
                     progressMessage.textContent = 'جاري ضغط الفيديو...';
                     progressFill.style.width = '0%';
@@ -990,6 +995,12 @@
 
                     // قراءة الملف الناتج
                     const data = ffmpeg.FS('readFile', 'output.mp4');
+                    
+                    // التأكد من أن الملف الناتج ليس فارغاً
+                    if (data.length === 0) {
+                        throw new Error('الملف الناتج فارغ');
+                    }
+
                     const compressedFile = new File(
                         [data.buffer], 
                         file.name.replace(/\.[^/.]+$/, '') + '_720p.mp4', 
@@ -1000,9 +1011,19 @@
                     ffmpeg.FS('unlink', 'input.mp4');
                     ffmpeg.FS('unlink', 'output.mp4');
 
+                    console.log('تم ضغط الفيديو بنجاح، الحجم الأصلي:', file.size, 'الحجم بعد الضغط:', compressedFile.size);
                     resolve(compressedFile);
                 } catch (error) {
                     console.error('فشل ضغط الفيديو:', error);
+                    // محاولة تنظيف الملفات إذا كانت موجودة
+                    try {
+                        if (ffmpeg) {
+                            ffmpeg.FS('unlink', 'input.mp4');
+                            ffmpeg.FS('unlink', 'output.mp4');
+                        }
+                    } catch (e) {}
+                    
+                    // إعادة رفض الوعد مع الخطأ
                     reject(error);
                 }
             });
@@ -1651,6 +1672,7 @@
                         progressMessage.textContent = 'تم ضغط الصورة، جاري الرفع...';
                     } catch (e) {
                         console.warn('فشل ضغط الصورة، سيتم رفع الأصل', e);
+                        progressMessage.textContent = 'فشل الضغط، جاري رفع الصورة الأصلية...';
                     }
                 }
                 // ضغط الفيديو إذا كان النوع video
@@ -1667,6 +1689,8 @@
                     } catch (e) {
                         console.warn('فشل ضغط الفيديو، سيتم رفع الأصل', e);
                         progressMessage.textContent = 'فشل الضغط، جاري رفع الفيديو الأصلي...';
+                        // نعرض رسالة للمستخدم ولكننا نكمل برفع الأصل
+                        showNotification('تعذر ضغط الفيديو، سيتم رفعه بدون ضغط', 'warning');
                     }
                 }
 
