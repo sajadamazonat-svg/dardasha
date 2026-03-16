@@ -2,19 +2,16 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>اسهل حل | الدردشة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اسهل حل | دخول</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
     <style>
-        /* جميع الأنماط الخاصة بالدردشة (كما في الملف الأصلي مع حذف ما يخص login) */
+        /* نفس الأنماط السابقة (لم يتم تغييرها) */
         :root {
             --primary: #4361ee;
             --primary-dark: #3a56d4;
-            --primary-light: #6c7ffa;
             --secondary: #06d6a0;
-            --success: #06d6a0;
             --danger: #ef476f;
             --dark: #2b2d42;
             --light: #f8f9fa;
@@ -22,8 +19,6 @@
             --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             --card-bg: rgba(255, 255, 255, 0.95);
             --border: #dee2e6;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            --base-font: 14px;
             --border-radius-lg: 28px;
             --transition: all 0.2s ease;
         }
@@ -32,219 +27,53 @@
             --card-bg: rgba(22, 22, 40, 0.98);
             --dark: #f0f0fa;
             --light: #2a2a3c;
-            --gray: #c0c0d0;
             --border: #44445a;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        body { background: var(--bg-gradient); color: var(--dark); height: 100vh; overflow: hidden; font-size: var(--base-font); transition: background 0.3s; }
-        #app { max-width: 500px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; background: transparent; padding: 8px; }
-        .chat-header {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            padding: 8px 12px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 40px 40px 12px 12px;
-            margin-bottom: 8px;
-            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
-        }
-        .header-info h2 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 4px; }
-        .user-count { font-size: 0.8rem; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 30px; }
-        .user-info { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-        .user-badge { background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 30px; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; border: 1px solid rgba(255,255,255,0.2); }
-        .action-btn {
-            width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.15); color: white;
-            border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: var(--transition); font-size: 1.2rem; flex-shrink: 0;
-        }
-        .action-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
-        .action-btn.secondary { background: var(--light); color: var(--primary); border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-        [data-theme="dark"] .action-btn.secondary { background: #2a2a3c; color: var(--primary); }
-        .messages-container {
-            flex: 1; padding: 12px; background: var(--card-bg); backdrop-filter: blur(12px); border-radius: 28px;
-            margin-bottom: 8px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border);
-        }
-        .message { max-width: 80%; padding: 10px 14px; border-radius: 24px 24px 24px 6px; align-self: flex-start; background: white; color: #000; box-shadow: 0 2px 6px rgba(0,0,0,0.02); word-break: break-word; }
-        [data-theme="dark"] .message { background: #2a2a3c; color: #f0f0fa; }
-        .message.own { align-self: flex-end; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-radius: 24px 24px 6px 24px; }
-        .message.system { align-self: center; background: rgba(141, 153, 174, 0.8); color: white; border-radius: 30px; font-size: 0.8rem; padding: 4px 16px; }
-        .message .username { font-size: 0.7rem; font-weight: 700; margin-bottom: 4px; color: var(--primary-dark); display: flex; align-items: center; gap: 4px; opacity: 0.8; }
-        .message.own .username { color: rgba(255,255,255,0.9); }
-        .message .time { font-size: 0.55rem; opacity: 0.6; margin-top: 4px; text-align: left; }
-        .message-image { max-width: 100%; max-height: 150px; border-radius: 14px; cursor: pointer; margin-top: 4px; border: 2px solid white; }
-        .typing-indicator { font-size: 0.8rem; color: var(--gray); padding: 6px 14px; background: var(--card-bg); border-radius: 30px; align-self: flex-start; display: none; border: 1px solid var(--border); }
-        .input-area {
-            display: flex; gap: 4px; align-items: center; background: var(--card-bg); border-radius: 40px;
-            padding: 4px 4px 4px 14px; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
-        .input-area textarea { flex: 1; border: none; padding: 8px 0; background: transparent; color: var(--dark); font-size: 0.95rem; resize: none; max-height: 80px; min-height: 20px; font-family: 'Cairo', sans-serif; }
-        .input-area textarea:focus { outline: none; }
-        .input-area .action-btn { width: 42px; height: 42px; background: var(--primary); color: white; border: none; }
-        .input-area .action-btn.secondary { background: var(--light); color: var(--dark); }
-        [data-theme="dark"] .input-area .action-btn.secondary { background: #2a2a3c; color: var(--dark); }
-        .media-popup {
-            position: absolute; bottom: 70px; left: 8px; background: var(--card-bg); border-radius: 40px; padding: 10px;
-            display: none; gap: 10px; box-shadow: 0 15px 30px rgba(0,0,0,0.15); border: 1px solid var(--border); z-index: 100;
-        }
-        .media-popup.show { display: flex; }
-        .media-popup .action-btn { width: auto; height: auto; padding: 8px 16px; border-radius: 30px; background: var(--primary); color: white; gap: 6px; font-size: 0.9rem; }
-        #emoji-panel { bottom: 120px; flex-wrap: wrap; width: 260px; gap: 6px; justify-content: center; }
-        .emoji-btn { font-size: 1.8rem; padding: 6px; background: none; border: none; cursor: pointer; transition: transform 0.1s; color: var(--dark); }
-        .emoji-btn:hover { transform: scale(1.2); }
-        .voice-recording-bar {
-            display: none; align-items: center; gap: 10px; background: var(--card-bg); padding: 8px 16px;
-            border-radius: 40px; margin-top: 6px; border: 2px solid var(--primary);
-        }
-        .voice-recording-bar.active { display: flex; }
-        .voice-timer { font-size: 1.1rem; font-weight: 700; color: var(--danger); direction: ltr; }
-        .voice-visualizer { flex: 1; display: flex; align-items: center; justify-content: center; gap: 3px; height: 30px; }
-        .voice-bar { width: 4px; background: var(--primary); border-radius: 2px; transition: height 0.1s; }
-        .users-popup {
-            position: absolute; top: 70px; left: 8px; right: 8px; background: var(--card-bg); border-radius: 28px;
-            padding: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid var(--border); z-index: 2000;
-            display: none; max-height: 350px; overflow-y: auto;
-        }
-        .users-popup.show { display: block; }
-        .users-popup-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--border); padding-bottom: 8px; margin-bottom: 8px; }
-        .users-popup-header h4 { color: var(--primary); font-size: 1.1rem; display: flex; align-items: center; gap: 6px; }
-        .close-popup-btn { background: var(--light); border: none; color: var(--primary); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; }
-        .user-item { display: flex; align-items: center; gap: 10px; padding: 8px; border-bottom: 1px solid var(--border); }
-        .user-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .user-name { flex: 1; font-weight: 600; color: var(--dark); }
-        .user-status-indicator { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; }
-        .user-status-indicator.online { background: #10b981; box-shadow: 0 0 8px #10b981; }
-        .call-container { /* نمط نافذة المكالمة */ position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; }
-        .call-container.active { display: flex; }
-        .call-avatar { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 3rem; margin-bottom: 16px; border: 3px solid white; }
-        .call-info { font-size: 1.3rem; margin-bottom: 20px; }
-        .call-actions { display: flex; gap: 20px; }
-        .call-btn { width: 56px; height: 56px; border-radius: 50%; background: var(--danger); color: white; border: none; font-size: 1.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .incoming-panel { /* لوحة المكالمة الواردة */ position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--card-bg); padding: 14px; border-radius: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 10001; display: none; flex-direction: column; align-items: center; gap: 8px; border: 2px solid var(--primary); width: 90%; max-width: 320px; }
-        .incoming-panel.active { display: flex; }
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--dark); color: white; padding: 8px 20px; border-radius: 40px; z-index: 9999; display: none; }
-        .confirm-dialog { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card-bg); padding: 18px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); z-index: 10001; display: none; flex-direction: column; align-items: center; gap: 12px; width: 260px; border: 2px solid var(--primary); }
-        .confirm-dialog.active { display: flex; }
-        .confirm-dialog .btn-group { display: flex; gap: 8px; width: 100%; }
-        #upload-progress { display: none; padding: 6px; background: var(--card-bg); border-radius: 40px; margin-bottom: 4px; }
-        .progress-indeterminate { display: flex; align-items: center; gap: 6px; color: var(--dark); font-size: 0.85rem; }
-        .spinner { width: 18px; height: 18px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        #global-loader { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); z-index: 20000; align-items: center; justify-content: center; flex-direction: column; color: white; }
-        #global-loader.active { display: flex; }
-        .loader-spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.3); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
+        body { background: var(--bg-gradient); color: var(--dark); height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: background 0.3s; }
+        .card { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: var(--border-radius-lg); padding: 20px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--border); }
+        .logo { text-align: center; margin-bottom: 20px; }
+        .logo h1 { font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .logo p { color: var(--gray); font-size: 1rem; }
+        .input-field { width: 100%; padding: 12px 16px; margin: 8px 0; border: 2px solid rgba(67, 97, 238, 0.2); border-radius: 40px; background: white; color: #000; font-size: 1rem; transition: var(--transition); }
+        [data-theme="dark"] .input-field { background: #2a2a3c; color: #f0f0fa; border-color: #44445a; }
+        .input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1); }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 40px; font-weight: 600; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; cursor: pointer; transition: var(--transition); margin: 6px 0; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; }
+        .btn-success { background: linear-gradient(135deg, var(--secondary), #05b386); }
+        .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none; }
+        .btn-outline:hover { background: var(--primary); color: white; }
+        .dark-toggle { position: fixed; top: 20px; left: 20px; background: var(--card-bg); border: 1px solid var(--border); color: var(--primary); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; z-index: 100; }
+        #error-message { color: var(--danger); font-size: 0.85rem; text-align: center; margin-top: 8px; }
     </style>
 </head>
 <body>
-    <div id="global-loader">
-        <div class="loader-spinner"></div>
-        <div class="loader-text" id="loaderText">جاري التحميل...</div>
+    <button class="dark-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
+    <div class="card">
+        <div class="logo">
+            <h1>اسهل حل</h1>
+            <p>دخول إلى المحادثة</p>
+        </div>
+        <input type="text" id="username" class="input-field" placeholder="اسمك (اتركه فارغاً لاسم عشوائي)" maxlength="20">
+        <div style="display:flex; align-items:center; gap:6px; margin:4px 0">
+            <input type="checkbox" id="manualCodeCheckbox" style="width:18px; height:18px">
+            <label for="manualCodeCheckbox">استخدام مفتاح مخصص</label>
+        </div>
+        <div id="customKeyContainer" style="display:none">
+            <input type="text" id="customRoom" class="input-field" placeholder="المفتاح (أرقام فقط)" maxlength="6">
+        </div>
+        <button id="createRoomBtn" class="btn"><i class="fas fa-plus-circle"></i> إنشاء غرفة جديدة</button>
+        <div style="margin:8px 0; text-align:center; color:var(--gray);">أو</div>
+        <div style="display:flex; gap:6px">
+            <input type="text" id="roomCode" class="input-field" placeholder="مفتاح الغرفة" maxlength="6" style="flex:2">
+            <button id="joinRoomBtn" class="btn btn-outline" style="flex:1"><i class="fas fa-door-open"></i> انضمام</button>
+        </div>
+        <button id="publicRoomBtn" class="btn btn-success"><i class="fas fa-users"></i> غرفة عامة</button>
+        <div id="error-message"></div>
     </div>
-
-    <div id="app">
-        <!-- رأس الدردشة -->
-        <div class="chat-header">
-            <div class="header-info">
-                <h2><i class="fas fa-comment"></i> <span id="roomNameDisplay">غرفة</span> <span class="user-count" id="userCount">(0)</span></h2>
-            </div>
-            <div class="user-info">
-                <span class="user-badge" id="userStatus"><i class="fas fa-user"></i> <span id="currentUserName"></span></span>
-                <button class="action-btn secondary" id="toggleUsersBtn" title="المتصلون"><i class="fas fa-users"></i></button>
-                <button class="action-btn secondary" id="callUserBtn" title="اتصال صوتي"><i class="fas fa-phone"></i></button>
-                <button class="action-btn secondary" id="copyRoomBtn" title="نسخ رقم الغرفة"><i class="fas fa-copy"></i></button>
-                <button class="action-btn secondary" id="shareRoomBtn" title="مشاركة الغرفة"><i class="fas fa-share-alt"></i></button>
-                <button class="action-btn secondary" id="leaveRoomBtn" style="background:var(--danger);color:white" title="خروج"><i class="fas fa-sign-out-alt"></i></button>
-            </div>
-        </div>
-
-        <!-- قائمة المستخدمين المنبثقة -->
-        <div id="usersPopup" class="users-popup">
-            <div class="users-popup-header">
-                <h4><i class="fas fa-users"></i> المتصلون الآن</h4>
-                <button class="close-popup-btn" id="closePopupBtn"><i class="fas fa-times"></i></button>
-            </div>
-            <div id="popupUsersList"></div>
-        </div>
-        <div id="popupOverlay" class="sidebar-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.2); z-index:1999;"></div>
-
-        <!-- منطقة الرسائل -->
-        <div id="messagesContainer" class="messages-container">
-            <div class="typing-indicator" id="typingIndicator"></div>
-        </div>
-
-        <!-- شريط تقدم الرفع -->
-        <div id="uploadProgress">
-            <div class="progress-text"><span id="progressMessage">جاري الرفع...</span><span id="progressPercent"></span></div>
-            <div class="progress-indeterminate" id="progressIndicator"><div class="spinner"></div><span>جاري المعالجة...</span></div>
-        </div>
-
-        <!-- شريط التسجيل الصوتي -->
-        <div id="voiceRecordingBar" class="voice-recording-bar">
-            <span class="voice-timer" id="voiceTimer">00:00</span>
-            <div class="voice-visualizer" id="voiceVisualizer"></div>
-            <button id="stopRecordingBtn" class="action-btn" style="background:var(--danger)"><i class="fas fa-stop"></i></button>
-            <button id="sendVoiceBtn" class="action-btn" style="background:var(--success)"><i class="fas fa-paper-plane"></i></button>
-        </div>
-
-        <!-- منطقة الإدخال -->
-        <div class="input-area">
-            <textarea id="messageInput" placeholder="اكتب رسالتك..." rows="1"></textarea>
-            <button class="action-btn secondary" id="emojiBtn"><i class="far fa-smile"></i></button>
-            <button id="mediaBtn" class="action-btn secondary"><i class="fas fa-paperclip"></i></button>
-            <div id="mediaPopup" class="media-popup">
-                <button id="attachBtn" class="action-btn"><i class="fas fa-cloud-upload-alt"></i> رفع</button>
-                <button id="cameraBtn" class="action-btn"><i class="fas fa-camera"></i> كاميرا</button>
-                <button id="voiceRecordBtn" class="action-btn"><i class="fas fa-microphone"></i> تسجيل</button>
-            </div>
-            <div id="emojiPanel" class="media-popup">
-                <button class="emoji-btn">😊</button><button class="emoji-btn">😂</button><button class="emoji-btn">❤️</button>
-                <button class="emoji-btn">👍</button><button class="emoji-btn">🔥</button><button class="emoji-btn">🎉</button>
-                <button class="emoji-btn">😢</button><button class="emoji-btn">😡</button><button class="emoji-btn">👋</button>
-                <button class="emoji-btn">🤔</button><button class="emoji-btn">😎</button><button class="emoji-btn">🥳</button>
-            </div>
-            <button id="sendMessageBtn" class="action-btn"><i class="fas fa-paper-plane"></i></button>
-        </div>
-
-        <!-- مدخلات الملفات المخفية -->
-        <input type="file" id="fileInput" accept="image/*,video/*" style="display:none">
-        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
-    </div>
-
-    <!-- عناصر مشتركة (مودال الصور، التأكيد، المكالمات) -->
-    <div id="mediaModal" class="media-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:10000; justify-content:center; align-items:center; flex-direction:column;">
-        <button id="closeModalBtn" style="background:white; border:none; border-radius:50%; width:40px; height:40px; font-size:1.2rem; margin-bottom:10px;"><i class="fas fa-times"></i></button>
-        <div id="modalMediaContainer"></div>
-    </div>
-    <div id="notification" class="toast"></div>
-    <div id="confirmDialog" class="confirm-dialog">
-        <p>هل أنت متأكد من الخروج من الغرفة؟</p>
-        <div class="btn-group">
-            <button id="confirmYes" class="btn btn-danger" style="flex:1">نعم</button>
-            <button id="confirmNo" class="btn btn-outline" style="flex:1">لا</button>
-        </div>
-    </div>
-    <div id="incomingPanel" class="incoming-panel">
-        <div class="caller-name" id="incomingCallerName">...</div>
-        <div class="incoming-actions">
-            <button class="btn btn-success" id="acceptIncoming"><i class="fas fa-phone"></i> قبول</button>
-            <button class="btn btn-danger" id="rejectIncoming"><i class="fas fa-phone-slash"></i> رفض</button>
-        </div>
-    </div>
-    <div id="callContainer" class="call-container">
-        <div class="call-avatar" id="callAvatar"><i class="fas fa-user"></i></div>
-        <div class="call-info" id="callInfo">...</div>
-        <div class="call-actions">
-            <button class="call-btn" id="muteCallBtn"><i class="fas fa-microphone"></i></button>
-            <button class="call-btn" id="endCallBtn"><i class="fas fa-phone-slash"></i></button>
-        </div>
-    </div>
-    <audio id="ring" src="https://actions.google.com/sounds/v1/alarms/phone_alerts_and_rings.ogg" preload="auto"></audio>
 
     <script type="module">
-        // استيراد Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, push, onChildAdded, onChildRemoved, onDisconnect, get, remove, onValue, query, limitToLast, orderByKey, update, off, endAt } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
@@ -255,384 +84,126 @@
             messagingSenderId: "560939348415",
             appId: "1:560939348415:web:c854e9e214e498ad2d310a"
         };
+
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // ثوابت
-        const GITHUB_USERNAME = "ashlhl";
-        const GITHUB_REPO = "ashlhl";
-        const GITHUB_TOKEN_PATH = "2026";
-        const ADMIN_LOGIN = "ashlhlsgadalyasiri";
-        const ADMIN_DISPLAY = "سجاد";
-        const ONE_HOUR = 60 * 60 * 1000;
-        const MAX_MSGS = 20;
+        const usernameInput = document.getElementById('username');
+        const roomCodeInput = document.getElementById('roomCode');
+        const customRoomInput = document.getElementById('customRoom');
+        const manualCheckbox = document.getElementById('manualCodeCheckbox');
+        const customContainer = document.getElementById('customKeyContainer');
+        const createBtn = document.getElementById('createRoomBtn');
+        const joinBtn = document.getElementById('joinRoomBtn');
+        const publicBtn = document.getElementById('publicRoomBtn');
+        const errorDiv = document.getElementById('error-message');
+        const darkToggle = document.getElementById('darkModeToggle');
 
-        // عناصر DOM
-        const roomNameSpan = document.getElementById('roomNameDisplay');
-        const userCountSpan = document.getElementById('userCount');
-        const currentUserNameSpan = document.getElementById('currentUserName');
-        const userStatusSpan = document.getElementById('userStatus');
-        const messagesContainer = document.getElementById('messagesContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendMessageBtn');
-        const leaveBtn = document.getElementById('leaveRoomBtn');
-        const toggleUsersBtn = document.getElementById('toggleUsersBtn');
-        const usersPopup = document.getElementById('usersPopup');
-        const popupOverlay = document.getElementById('popupOverlay');
-        const popupUsersList = document.getElementById('popupUsersList');
-        const closePopupBtn = document.getElementById('closePopupBtn');
-        const mediaBtn = document.getElementById('mediaBtn');
-        const mediaPopup = document.getElementById('mediaPopup');
-        const attachBtn = document.getElementById('attachBtn');
-        const fileInput = document.getElementById('fileInput');
-        const cameraBtn = document.getElementById('cameraBtn');
-        const cameraInput = document.getElementById('cameraInput');
-        const voiceRecordBtn = document.getElementById('voiceRecordBtn');
-        const voiceRecordingBar = document.getElementById('voiceRecordingBar');
-        const voiceTimer = document.getElementById('voiceTimer');
-        const voiceVisualizer = document.getElementById('voiceVisualizer');
-        const stopRecordingBtn = document.getElementById('stopRecordingBtn');
-        const sendVoiceBtn = document.getElementById('sendVoiceBtn');
-        const typingIndicator = document.getElementById('typingIndicator');
-        const progressDiv = document.getElementById('uploadProgress');
-        const progressMessage = document.getElementById('progressMessage');
-        const progressIndicator = document.getElementById('progressIndicator');
-        const notification = document.getElementById('notification');
-        const confirmDialog = document.getElementById('confirmDialog');
-        const confirmYes = document.getElementById('confirmYes');
-        const confirmNo = document.getElementById('confirmNo');
-        const incomingPanel = document.getElementById('incomingPanel');
-        const incomingCallerName = document.getElementById('incomingCallerName');
-        const acceptIncoming = document.getElementById('acceptIncoming');
-        const rejectIncoming = document.getElementById('rejectIncoming');
-        const callContainer = document.getElementById('callContainer');
-        const callAvatar = document.getElementById('callAvatar');
-        const callInfo = document.getElementById('callInfo');
-        const muteCallBtn = document.getElementById('muteCallBtn');
-        const endCallBtn = document.getElementById('endCallBtn');
-        const callUserBtn = document.getElementById('callUserBtn');
-        const ring = document.getElementById('ring');
-        const copyRoomBtn = document.getElementById('copyRoomBtn');
-        const shareRoomBtn = document.getElementById('shareRoomBtn');
-        const emojiBtn = document.getElementById('emojiBtn');
-        const emojiPanel = document.getElementById('emojiPanel');
-        const globalLoader = document.getElementById('global-loader');
-        const loaderText = document.getElementById('loaderText');
+        const isValidRoomCode = (code) => /^\d{3,6}$/.test(code);
+        const generateRandomCode = () => Math.floor(1000 + Math.random() * 9000).toString();
+        const generateRandomName = () => 'guest' + Math.floor(Math.random() * 10000);
 
-        // متغيرات الحالة
-        let currentRoom = null, currentUser = null, userId = null, messagesRef = null, typingTimeout = null;
-        let displayedMessages = new Set();
-        let oldestMessageKey = null, allMessagesLoaded = false, loadingMore = false;
-        let usersMap = {};
-        let mediaRecorder = null, audioChunks = [], recordingStartTime = 0, recordingTimerInterval = null;
-        let audioContext = null, analyser = null, visualizerAnimation = null;
-        let localStream = null, pc = null, connected = false, callerCandidatesRef = null, calleeCandidatesRef = null;
-        let callTimeout = null, currentCallTarget = null, incomingOffer = null, remoteAudioElement = null;
-        window.audioPlayers = new Map();
-
-        const firebaseListeners = {
-            messages: null, usersAdded: null, usersRemoved: null, typing: null,
-            offer: null, answer: null, callerCandidates: null, calleeCandidates: null
-        };
-
-        // دوال مساعدة
-        const showLoading = (text = 'جاري التحميل...') => { loaderText.textContent = text; globalLoader.classList.add('active'); };
-        const hideLoading = () => globalLoader.classList.remove('active');
-        const showNotification = (msg, type = 'success') => {
-            notification.textContent = msg;
-            notification.style.background = type === 'success' ? 'var(--success)' : 'var(--danger)';
-            notification.style.display = 'block';
-            setTimeout(() => notification.style.display = 'none', 2000);
-        };
-        const copyToClipboard = async (text) => {
-            try { await navigator.clipboard.writeText(text); return true; } catch { return false; }
-        };
-        const generateUserId = () => 'user_' + Math.random().toString(36).substr(2, 9);
-        const sanitizeFolderName = (name) => name === ADMIN_LOGIN ? ADMIN_DISPLAY : name.replace(/[^a-zA-Z0-9\u0600-\u06FF\s\-_]/g, '').trim().replace(/\s+/g, '_');
-        const getGitHubToken = async () => {
-            const snap = await get(ref(db, GITHUB_TOKEN_PATH));
-            if (!snap.exists()) throw new Error('لم يتم العثور على التوكن');
-            return snap.val();
-        };
-
-        // دوال الرفع والضغط (مختصرة)
-        async function compressImage(file) { /* نفس الدالة السابقة */ return file; }  // للاختصار نعيد الملف كما هو، لكن يمكنك نسخ الدالة الكاملة من الكود الأصلي
-        async function uploadToGitHub(file, fileName, fileType) {
-            const token = await getGitHubToken();
-            const typeFolder = { image: 'صور', video: 'فيديو', audio: 'تسجيل_صوتي' }[fileType] || 'اخرى';
-            const githubPath = `chat/${typeFolder}/${sanitizeFolderName(currentRoom)}/${sanitizeFolderName(currentUser)}/${fileName}`;
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = async (e) => {
-                    try {
-                        const res = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${githubPath}`, {
-                            method: 'PUT',
-                            headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ message: `رفع ${fileType}`, content: e.target.result.split(',')[1], branch: 'main' })
-                        });
-                        if (!res.ok) throw new Error();
-                        resolve(`https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPO}/main/${githubPath}`);
-                    } catch { reject(new Error('فشل الرفع')); }
-                }; reader.readAsDataURL(file);
-            });
+        // الوضع الليلي
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            darkToggle.innerHTML = '<i class="fas fa-sun"></i>';
         }
-
-        // تحديث قوائم المستخدمين
-        function updateUsersLists() {
-            const online = usersMap;
-            userCountSpan.textContent = `(${Object.keys(online).length})`;
-            if (popupUsersList) {
-                popupUsersList.innerHTML = '';
-                Object.keys(online).forEach(key => {
-                    const name = online[key];
-                    popupUsersList.innerHTML += `<div class="user-item"><div class="user-avatar">${name.charAt(0)}</div><div class="user-name">${name === ADMIN_LOGIN ? ADMIN_DISPLAY : name} <span class="user-status-indicator online"></span></div></div>`;
-                });
-            }
-        }
-
-        // مستمعي Firebase
-        function monitorRoomUsers(room) {
-            if (firebaseListeners.usersAdded) off(ref(db, `rooms/${room}/users`), firebaseListeners.usersAdded);
-            if (firebaseListeners.usersRemoved) off(ref(db, `rooms/${room}/users`), firebaseListeners.usersRemoved);
-            firebaseListeners.usersAdded = onChildAdded(ref(db, `rooms/${room}/users`), (snap) => {
-                const user = snap.val();
-                if (!user?.name) return;
-                usersMap[snap.key] = user.name;
-                updateUsersLists();
-            });
-            firebaseListeners.usersRemoved = onChildRemoved(ref(db, `rooms/${room}/users`), (snap) => {
-                delete usersMap[snap.key];
-                updateUsersLists();
-            });
-        }
-
-        function setupTyping(room, uid) {
-            const typingRef = ref(db, `rooms/${room}/typing/${uid}`);
-            messageInput.addEventListener('input', () => {
-                if (messageInput.value.trim()) {
-                    set(typingRef, true);
-                    if (typingTimeout) clearTimeout(typingTimeout);
-                    typingTimeout = setTimeout(() => set(typingRef, false), 2000);
-                } else set(typingRef, false);
-            });
-        }
-
-        function listenTyping(room) {
-            if (firebaseListeners.typing) off(ref(db, `rooms/${room}/typing`), firebaseListeners.typing);
-            firebaseListeners.typing = onValue(ref(db, `rooms/${room}/typing`), snap => {
-                const data = snap.val() || {}, typing = Object.keys(data).filter(k => data[k] === true && k !== userId);
-                if (typing.length === 0) typingIndicator.style.display = 'none';
-                else {
-                    typingIndicator.textContent = typing.length === 1 ? `${usersMap[typing[0]] || 'شخص'} يكتب...` : `${typing.length} أشخاص يكتبون...`;
-                    typingIndicator.style.display = 'block';
-                }
-            });
-        }
-
-        // دالة إنشاء عنصر الرسالة (نفس السابقة ولكن مختصرة)
-        function createMessageElement(msg, isOwn, isSystem, msgId) {
-            const div = document.createElement('div'); div.className = `message ${isOwn ? 'own' : ''} ${isSystem ? 'system' : ''}`;
-            if (!isSystem) {
-                const ns = document.createElement('div'); ns.className = 'username';
-                ns.textContent = msg.sender === ADMIN_LOGIN ? ADMIN_DISPLAY : msg.sender;
-                div.appendChild(ns);
-            }
-            if (msg.type === 'image') {
-                const img = document.createElement('img'); img.src = msg.text; img.className = 'message-image';
-                img.onclick = () => { document.getElementById('modalMediaContainer').innerHTML = `<img src="${msg.text}" class="modal-media">`; document.getElementById('mediaModal').style.display = 'flex'; };
-                div.appendChild(img);
-            } else if (msg.type === 'video') {
-                const vid = document.createElement('video'); vid.src = msg.text; vid.controls = true; vid.className = 'message-image';
-                vid.onclick = () => { document.getElementById('modalMediaContainer').innerHTML = `<video src="${msg.text}" controls class="modal-media"></video>`; document.getElementById('mediaModal').style.display = 'flex'; };
-                div.appendChild(vid);
-            } else if (msg.type === 'audio') {
-                // يمكن إضافة مشغل صوتي مبسط
-                div.innerHTML = `<audio controls src="${msg.text}" style="max-width:200px;"></audio>`;
+        darkToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.hasAttribute('data-theme');
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('darkMode', 'false');
+                darkToggle.innerHTML = '<i class="fas fa-moon"></i>';
             } else {
-                div.appendChild(document.createTextNode(msg.text));
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('darkMode', 'true');
+                darkToggle.innerHTML = '<i class="fas fa-sun"></i>';
             }
-            const ts = document.createElement('div'); ts.className = 'time';
-            ts.textContent = new Date(msg.timestamp).toLocaleTimeString('ar-EG', { hour:'2-digit', minute:'2-digit' });
-            div.appendChild(ts);
-            return div;
+        });
+
+        manualCheckbox.addEventListener('change', () => {
+            customContainer.style.display = manualCheckbox.checked ? 'block' : 'none';
+        });
+
+        [customRoomInput, roomCodeInput].forEach(i => {
+            i.addEventListener('input', function() { this.value = this.value.replace(/\D/g, ''); });
+        });
+
+        function goToChat(room, username) {
+            localStorage.setItem('chatRoom', room);
+            localStorage.setItem('chatUser', username);
+            window.location.href = 'chat.html';
         }
 
-        function displayMessage(msg, isOwn, isSystem, msgId) {
-            if (displayedMessages.has(msgId)) return;
-            displayedMessages.add(msgId);
-            const div = createMessageElement(msg, isOwn, isSystem, msgId);
-            messagesContainer.appendChild(div);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        async function setupMessageListener() {
-            if (firebaseListeners.messages) off(messagesRef, firebaseListeners.messages);
-            messagesRef = ref(db, `rooms/${currentRoom}/messages`);
-            const now = Date.now();
-            firebaseListeners.messages = onChildAdded(query(messagesRef, orderByKey(), limitToLast(1)), async (snap) => {
-                const msg = snap.val();
-                if (!msg) return;
-                const keyTimestamp = parseInt(snap.key.split('_')[0]);
-                if (keyTimestamp && keyTimestamp < now - ONE_HOUR) {
-                    await remove(ref(db, `rooms/${currentRoom}/messages/${snap.key}`));
+        createBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const name = usernameInput.value.trim() || generateRandomName();
+            let code;
+            if (manualCheckbox.checked) {
+                code = customRoomInput.value.trim();
+                if (!code || !isValidRoomCode(code)) {
+                    errorDiv.textContent = 'المفتاح يجب أن يكون 3-6 أرقام';
                     return;
                 }
-                displayMessage(msg, (msg.sender === (currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser)) && msg.sender !== 'نظام', msg.sender === 'نظام', snap.key);
-            });
-        }
-
-        // دوال المكالمات (مختصرة جداً، يمكنك نسخها كاملة من الكود الأصلي)
-        async function setupLocalStream() { /* ... */ }
-        function createPeerConnection() { /* ... */ }
-        async function startCall(targetUserId) { /* ... */ }
-        async function acceptCall() { /* ... */ }
-        function endCall() { /* ... */ }
-        function toggleMute() { /* ... */ }
-        function listenForCalls() { /* ... */ }
-
-        // دالة الدخول إلى الغرفة
-        async function enterChat(room, name) {
-            showLoading('جاري الدخول...');
-            try {
-                if (currentRoom) leaveRoom();
-                displayedMessages.clear();
-                oldestMessageKey = null;
-                allMessagesLoaded = false;
-                currentRoom = room;
-                const isAdmin = (name === ADMIN_LOGIN);
-                currentUser = isAdmin ? ADMIN_DISPLAY : name;
-                userId = generateUserId();
-                roomNameSpan.textContent = `غرفة ${room}`;
-                currentUserNameSpan.textContent = currentUser;
-                userStatusSpan.innerHTML = isAdmin ? `<i class="fas fa-crown"></i> ${currentUser}` : `<i class="fas fa-user"></i> ${currentUser}`;
-                const userRef = ref(db, `rooms/${room}/users/${userId}`);
-                await set(userRef, { name: isAdmin ? ADMIN_LOGIN : currentUser, joinedAt: Date.now() });
-                onDisconnect(userRef).remove();
-                onDisconnect(ref(db, `rooms/${room}/typing/${userId}`)).remove();
-                const systemMsgKey = `${Date.now()}_system_${userId}`;
-                await set(ref(db, `rooms/${room}/messages/${systemMsgKey}`), { sender: 'نظام', text: `${currentUser} دخل الغرفة`, timestamp: Date.now() });
-                monitorRoomUsers(room);
-                setupTyping(room, userId);
-                listenTyping(room);
-                setupMessageListener();
-                listenForCalls();
-                hideLoading();
-            } catch (err) {
-                hideLoading();
-                showNotification('خطأ: ' + err.message, 'danger');
-            }
-        }
-
-        function leaveRoom() {
-            endCall();
-            if (currentRoom && userId) {
-                set(ref(db, `rooms/${currentRoom}/messages/${Date.now()}_system_${userId}`), { sender: 'نظام', text: `${currentUser} غادر الغرفة`, timestamp: Date.now() });
-                remove(ref(db, `rooms/${currentRoom}/users/${userId}`));
-                remove(ref(db, `rooms/${currentRoom}/typing/${userId}`));
-            }
-            Object.keys(firebaseListeners).forEach(key => {
-                if (firebaseListeners[key]) off(ref(db, `rooms/${currentRoom}/${key}`), firebaseListeners[key]);
-                firebaseListeners[key] = null;
-            });
-            displayedMessages.clear();
-            messagesContainer.innerHTML = '';
-            usersMap = {};
-            currentRoom = currentUser = userId = messagesRef = null;
-            // العودة إلى صفحة الدخول
-            window.location.href = 'login.html';
-        }
-
-        function confirmLeave() { confirmDialog.classList.add('active'); }
-        confirmYes.addEventListener('click', () => { confirmDialog.classList.remove('active'); leaveRoom(); });
-        confirmNo.addEventListener('click', () => { confirmDialog.classList.remove('active'); });
-
-        // أحداث الإدخال والإرسال
-        sendBtn.addEventListener('click', async () => {
-            const text = messageInput.value.trim();
-            if (!text || !currentRoom) return;
-            const msgKey = `${Date.now()}_${userId}`;
-            await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), { sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser, text, timestamp: Date.now() });
-            messageInput.value = '';
-            set(ref(db, `rooms/${currentRoom}/typing/${userId}`), false);
-        });
-        messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendBtn.click(); } });
-
-        // رفع الملفات
-        attachBtn.addEventListener('click', () => { fileInput.click(); mediaPopup.classList.remove('show'); });
-        cameraBtn.addEventListener('click', () => { cameraInput.click(); mediaPopup.classList.remove('show'); });
-        fileInput.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
-                const type = file.type.startsWith('image/') ? 'image' : 'video';
-                try {
-                    progressDiv.style.display = 'block';
-                    progressIndicator.style.display = 'flex';
-                    const fname = Date.now() + '_' + Math.random().toString(36).substring(2,8) + '.' + file.name.split('.').pop();
-                    const url = await uploadToGitHub(file, fname, type);
-                    progressDiv.style.display = 'none';
-                    const msgKey = `${Date.now()}_${userId}`;
-                    await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), { sender: currentUser, text: url, type, timestamp: Date.now() });
-                } catch (e) { showNotification(e.message, 'danger'); progressDiv.style.display = 'none'; }
-            } else showNotification('نوع غير مدعوم', 'danger');
-            fileInput.value = '';
-        });
-        cameraInput.addEventListener('change', (e) => { /* مشابه */ });
-
-        // التسجيل الصوتي (مختصر)
-        voiceRecordBtn.addEventListener('click', () => {
-            mediaPopup.classList.remove('show');
-            // بدء التسجيل (يمكنك نسخ الدوال الكاملة من الكود الأصلي)
-            showNotification('تم تفعيل التسجيل الصوتي (نموذج مبسط)', 'success');
-        });
-
-        // قائمة المستخدمين
-        toggleUsersBtn.addEventListener('click', () => { usersPopup.classList.toggle('show'); popupOverlay.style.display = usersPopup.classList.contains('show') ? 'block' : 'none'; });
-        popupOverlay.addEventListener('click', () => { usersPopup.classList.remove('show'); popupOverlay.style.display = 'none'; });
-        closePopupBtn.addEventListener('click', () => { usersPopup.classList.remove('show'); popupOverlay.style.display = 'none'; });
-
-        // نسخ ومشاركة
-        copyRoomBtn.addEventListener('click', async () => {
-            if (currentRoom) {
-                const ok = await copyToClipboard(currentRoom);
-                showNotification(ok ? 'تم النسخ' : 'فشل النسخ', ok ? 'success' : 'danger');
-            }
-        });
-        shareRoomBtn.addEventListener('click', () => {
-            if (currentRoom) {
-                const url = `${location.origin}${location.pathname.replace('chat.html','login.html')}?room=${currentRoom}`;
-                if (navigator.share) navigator.share({ title: 'اسهل حل', text: `انضم إلى غرفتي برمز: ${currentRoom}`, url });
-                else copyToClipboard(url).then(ok => showNotification(ok ? 'تم نسخ الرابط' : 'فشل النسخ', ok ? 'success' : 'danger'));
-            }
-        });
-
-        // الإيموجي
-        emojiBtn.addEventListener('click', (e) => { e.stopPropagation(); emojiPanel.style.display = emojiPanel.style.display === 'flex' ? 'none' : 'flex'; });
-        document.querySelectorAll('.emoji-btn').forEach(btn => {
-            btn.addEventListener('click', () => { messageInput.value += btn.textContent; messageInput.focus(); emojiPanel.style.display = 'none'; });
-        });
-        document.addEventListener('click', (e) => { if (!emojiBtn.contains(e.target) && !emojiPanel.contains(e.target)) emojiPanel.style.display = 'none'; });
-
-        // الخروج
-        leaveBtn.addEventListener('click', confirmLeave);
-
-        // تحميل بيانات الغرفة من localStorage عند بدء الصفحة
-        (async function init() {
-            const room = localStorage.getItem('chatRoom');
-            const user = localStorage.getItem('chatUser');
-            if (room && user) {
-                // تنظيف localStorage بعد القراءة (اختياري)
-                localStorage.removeItem('chatRoom');
-                localStorage.removeItem('chatUser');
-                await enterChat(room, user);
             } else {
-                // لا توجد بيانات، نعيد التوجيه إلى صفحة الدخول
-                window.location.href = 'login.html';
+                code = generateRandomCode();
+            }
+            errorDiv.textContent = '';
+            try {
+                const roomRef = ref(db, `rooms/${code}/info`);
+                const snap = await get(roomRef);
+                if (!snap.exists()) {
+                    await set(roomRef, { createdAt: Date.now(), createdBy: name });
+                }
+                goToChat(code, name);
+            } catch (err) {
+                errorDiv.textContent = 'خطأ: ' + err.message;
+            }
+        });
+
+        joinBtn.addEventListener('click', async () => {
+            const name = usernameInput.value.trim() || generateRandomName();
+            const code = roomCodeInput.value.trim();
+            if (!code || !isValidRoomCode(code)) {
+                errorDiv.textContent = 'المفتاح يجب أن يكون 3-6 أرقام';
+                return;
+            }
+            errorDiv.textContent = '';
+            try {
+                const roomRef = ref(db, `rooms/${code}/info`);
+                const snap = await get(roomRef);
+                if (!snap.exists()) {
+                    errorDiv.textContent = 'المفتاح غير صحيح';
+                    return;
+                }
+                goToChat(code, name);
+            } catch (err) {
+                errorDiv.textContent = 'خطأ: ' + err.message;
+            }
+        });
+
+        publicBtn.addEventListener('click', async () => {
+            const name = usernameInput.value.trim() || generateRandomName();
+            const code = '1000';
+            try {
+                const roomRef = ref(db, `rooms/${code}/info`);
+                const snap = await get(roomRef);
+                if (!snap.exists()) {
+                    await set(roomRef, { createdAt: Date.now(), createdBy: 'system' });
+                }
+                goToChat(code, name);
+            } catch (err) {
+                errorDiv.textContent = 'خطأ: ' + err.message;
+            }
+        });
+
+        (function handleInvite() {
+            const params = new URLSearchParams(window.location.search);
+            const room = params.get('room');
+            if (room && isValidRoomCode(room)) {
+                roomCodeInput.value = room;
             }
         })();
-
-        // إغلاق المودال
-        document.getElementById('closeModalBtn').addEventListener('click', () => document.getElementById('mediaModal').style.display = 'none');
     </script>
 </body>
 </html>
