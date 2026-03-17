@@ -217,8 +217,8 @@
             padding: 10px 14px;
             border-radius: 24px 24px 24px 6px;
             align-self: flex-start;
-            background: white;
-            color: #111;
+            background: #f0f4fa;
+            color: #1a1a2c;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             position: relative;
             word-break: break-word;
@@ -228,20 +228,20 @@
         }
 
         [data-theme="dark"] .message {
-            background: #2a2a3c;
+            background: #2f2f45;
             color: #f0f0fa;
         }
 
         .message.own {
             align-self: flex-end;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: linear-gradient(135deg, #5f7df2, #4054b2);
             color: white;
             border-radius: 24px 24px 6px 24px;
         }
 
         .message.system {
             align-self: center;
-            background: rgba(100, 110, 140, 0.9);
+            background: #8892b0;
             color: white;
             border-radius: 30px;
             font-size: 0.8rem;
@@ -257,7 +257,7 @@
             font-size: 0.7rem;
             font-weight: 700;
             margin-bottom: 4px;
-            color: var(--primary-dark);
+            color: #2c3e9e;
             display: flex;
             align-items: center;
             gap: 4px;
@@ -293,20 +293,25 @@
         }
 
         .message-actions button {
-            background: none;
+            background: rgba(255,255,255,0.8);
             border: none;
-            color: var(--gray);
+            color: #1a1a2c;
             cursor: pointer;
             font-size: 0.8rem;
             padding: 4px 8px;
             border-radius: 30px;
             transition: var(--transition);
-            background: rgba(0,0,0,0.03);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .message.own .message-actions button {
+            background: rgba(255,255,255,0.2);
+            color: white;
         }
 
         .message-actions button:hover {
-            background: rgba(0,0,0,0.1);
-            color: var(--primary);
+            background: var(--primary);
+            color: white;
         }
 
         .typing-indicator {
@@ -364,7 +369,7 @@
             border: 1px solid var(--border);
         }
 
-        .media-popup, .emoji-panel, .sticker-panel {
+        .media-popup, .emoji-panel {
             position: absolute;
             bottom: 70px;
             left: 8px;
@@ -380,8 +385,7 @@
         }
 
         .media-popup.show { display: flex; flex-wrap: wrap; }
-        .emoji-panel.show { display: flex; flex-wrap: wrap; width: 260px; justify-content: center; }
-        .sticker-panel.show { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; width: 200px; }
+        .emoji-panel.show { display: flex; flex-wrap: wrap; width: 280px; justify-content: center; }
 
         .media-popup .action-btn {
             width: auto;
@@ -394,29 +398,21 @@
             font-size: 0.9rem;
         }
 
-        .emoji-btn {
+        .emoji-btn, .sticker-btn {
             font-size: 2rem;
-            padding: 8px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.1s;
-            color: var(--dark);
-        }
-
-        .emoji-btn:hover { transform: scale(1.2); }
-
-        .sticker-btn {
-            font-size: 2.2rem;
             padding: 8px;
             background: var(--light);
             border: 1px solid var(--border);
             border-radius: 16px;
             cursor: pointer;
             transition: transform 0.1s;
+            color: var(--dark);
         }
 
-        .sticker-btn:hover { transform: scale(1.1); background: var(--primary-light); }
+        .emoji-btn:hover, .sticker-btn:hover {
+            transform: scale(1.2);
+            background: var(--primary-light);
+        }
 
         .voice-recording-bar {
             flex-shrink: 0;
@@ -963,23 +959,22 @@
                 <button id="attach-btn" class="action-btn"><i class="fas fa-cloud-upload-alt"></i> رفع ملفات</button>
                 <button id="camera-btn" class="action-btn"><i class="fas fa-camera"></i> كاميرا</button>
                 <button id="voice-record-btn" class="action-btn"><i class="fas fa-microphone"></i> تسجيل</button>
-                <button id="sticker-btn" class="action-btn"><i class="fas fa-smile-wink"></i> ملصقات</button>
             </div>
             <div id="emoji-panel" class="emoji-panel">
+                <!-- الإيموجي -->
                 <button class="emoji-btn">😊</button><button class="emoji-btn">😂</button><button class="emoji-btn">❤️</button>
                 <button class="emoji-btn">👍</button><button class="emoji-btn">🔥</button><button class="emoji-btn">🎉</button>
                 <button class="emoji-btn">😢</button><button class="emoji-btn">😡</button><button class="emoji-btn">👋</button>
                 <button class="emoji-btn">🤔</button><button class="emoji-btn">😎</button><button class="emoji-btn">🥳</button>
-            </div>
-            <div id="sticker-panel" class="sticker-panel">
-                <button class="sticker-btn">👍</button>
-                <button class="sticker-btn">❤️</button>
-                <button class="sticker-btn">😂</button>
-                <button class="sticker-btn">😮</button>
-                <button class="sticker-btn">😢</button>
-                <button class="sticker-btn">🔥</button>
-                <button class="sticker-btn">🎉</button>
-                <button class="sticker-btn">👌</button>
+                <!-- الملصقات (نفس التنسيق ولكن بحجم أكبر قليلاً) -->
+                <button class="sticker-btn" style="font-size:2.2rem;">👍</button>
+                <button class="sticker-btn" style="font-size:2.2rem;">❤️</button>
+                <button class="sticker-btn" style="font-size:2.2rem;">😂</button>
+                <button class="sticker-btn" style="font-size:2.2rem;">😮</button>
+                <button class="sticker-btn" style="font-size:2.2rem;">😢</button>
+                <button class="sticker-btn" style="font-size:2.2rem;">🔥</button>
+                <button class="sticker-btn" style="font-size:2.2rem;">🎉</button>
+                <button class="sticker-btn" style="font-size:2.2rem;">👌</button>
             </div>
             <button id="send-message-btn" class="action-btn"><i class="fas fa-paper-plane"></i></button>
         </div>
@@ -1100,8 +1095,6 @@
         const emojiPanel = document.getElementById('emoji-panel');
         const globalLoader = document.getElementById('global-loader');
         const loaderText = document.getElementById('loader-text');
-        const stickerBtn = document.getElementById('sticker-btn');
-        const stickerPanel = document.getElementById('sticker-panel');
         const mentionPopup = document.getElementById('mention-popup');
         const statsBtn = document.getElementById('stats-btn');
         const statsPanel = document.getElementById('stats-panel');
@@ -1757,13 +1750,19 @@
         voiceRecordBtn.addEventListener('click', () => { mediaPopup.classList.remove('show'); startRecording(); });
         stopRecordingBtn.addEventListener('click', stopRecording);
         sendVoiceBtn.addEventListener('click', stopRecording);
-        stickerBtn.addEventListener('click', () => { stickerPanel.classList.toggle('show'); mediaPopup.classList.remove('show'); });
-        document.querySelectorAll('.sticker-btn').forEach(btn => {
+        emojiBtn.addEventListener('click', (e) => { e.stopPropagation(); emojiPanel.classList.toggle('show'); });
+        document.querySelectorAll('.emoji-btn, .sticker-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
-                const sticker = btn.textContent;
+                const content = btn.textContent;
+                const isSticker = btn.classList.contains('sticker-btn');
                 const msgKey = `${Date.now()}_${userId}`;
-                await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), { sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser, text: sticker, type: 'sticker', timestamp: Date.now() });
-                stickerPanel.classList.remove('show');
+                await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), {
+                    sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser,
+                    text: content,
+                    type: isSticker ? 'sticker' : undefined,
+                    timestamp: Date.now()
+                });
+                emojiPanel.classList.remove('show');
             });
         });
         mediaBtn.addEventListener('click', () => mediaPopup.classList.toggle('show'));
@@ -1796,9 +1795,6 @@
                 sideMenu.classList.remove('show');
             }
         });
-        emojiBtn.addEventListener('click', (e) => { e.stopPropagation(); emojiPanel.classList.toggle('show'); });
-        document.querySelectorAll('.emoji-btn').forEach(btn => { btn.addEventListener('click', () => { messageInput.value += btn.textContent; messageInput.focus(); emojiPanel.classList.remove('show'); }); });
-        document.addEventListener('click', (e) => { if (!emojiBtn.contains(e.target) && !emojiPanel.contains(e.target)) emojiPanel.classList.remove('show'); });
         statsBtn.addEventListener('click', () => { statsPanel.classList.toggle('show'); updateStats(); sideMenu.classList.remove('show'); });
         searchBtn.addEventListener('click', () => { searchBox.classList.toggle('active'); if (searchBox.classList.contains('active')) searchInput.focus(); sideMenu.classList.remove('show'); });
         searchClose.addEventListener('click', () => searchBox.classList.remove('active'));
