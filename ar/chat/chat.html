@@ -4,40 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
     <title>اسهل حل | الدردشة الحقيقية</title>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* ========== المتغيرات العامة ========== */
         :root {
             --primary: #4361ee;
-            --primary-dark: #3a56d4;
+            --primary-dark: #2c3e9e;
             --primary-light: #6c7ffa;
             --secondary: #06d6a0;
             --success: #06d6a0;
             --warning: #ffb703;
-            --danger: #ef476f;
-            --dark: #2b2d42;
-            --light: #f8f9fa;
-            --gray: #8d99ae;
-            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --border: #dee2e6;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --danger: #d9042b;
+            --dark: #1e1e2f;
+            --light: #f4f7fb;
+            --gray: #6b7280;
+            --bg-gradient: linear-gradient(145deg, #ffffff 0%, #f0f4fa 100%);
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --border: #d1d5db;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
             --font-base: 14px;
             --transition: all 0.2s ease;
+            --contrast: 1.2;
         }
 
-        /* الوضع الليلي */
         [data-theme="dark"] {
-            --bg-gradient: linear-gradient(135deg, #0a0a14 0%, #14142b 100%);
-            --card-bg: rgba(22, 22, 40, 0.98);
+            --bg-gradient: linear-gradient(145deg, #12121c 0%, #1e1e2e 100%);
+            --card-bg: rgba(28, 28, 42, 0.98);
             --dark: #f0f0fa;
             --light: #2a2a3c;
-            --gray: #c0c0d0;
-            --border: #44445a;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --gray: #a0a0b0;
+            --border: #4a4a60;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
         }
 
         * {
@@ -56,11 +53,11 @@
             background: var(--bg-gradient);
             color: var(--dark);
             font-size: var(--font-base);
-            line-height: 1.4;
+            line-height: 1.5;
             transition: background 0.3s, color 0.3s;
+            filter: contrast(var(--contrast));
         }
 
-        /* الحاوية الرئيسية */
         #app {
             max-width: 500px;
             margin: 0 auto;
@@ -72,7 +69,6 @@
             position: relative;
         }
 
-        /* ========== رأس الدردشة ========== */
         .chat-header {
             flex-shrink: 0;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -84,7 +80,7 @@
             align-items: center;
             border-radius: 40px 40px 12px 12px;
             margin-bottom: 8px;
-            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             gap: 6px;
         }
 
@@ -94,12 +90,11 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            flex-wrap: wrap;
         }
 
         .user-count {
             font-size: 0.8rem;
-            background: rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.2);
             padding: 2px 8px;
             border-radius: 30px;
         }
@@ -108,11 +103,10 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            flex-wrap: wrap;
         }
 
         .user-badge {
-            background: rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.2);
             padding: 4px 10px;
             border-radius: 30px;
             font-size: 0.85rem;
@@ -123,14 +117,13 @@
             white-space: nowrap;
         }
 
-        /* الأزرار العامة */
         .action-btn {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.2);
             color: white;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -138,40 +131,41 @@
             transition: var(--transition);
             font-size: 1.2rem;
             flex-shrink: 0;
+            backdrop-filter: blur(4px);
         }
 
         .action-btn:hover {
-            background: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.4);
             transform: scale(1.05);
         }
 
         .action-btn.secondary {
             background: var(--light);
             color: var(--primary);
-            border: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
         }
 
         [data-theme="dark"] .action-btn.secondary {
             background: #2a2a3c;
-            color: var(--primary);
+            color: var(--primary-light);
         }
 
-        /* ========== القائمة الجانبية ========== */
         .side-menu {
             position: absolute;
             top: 70px;
             left: 8px;
             right: 8px;
             background: var(--card-bg);
-            border-radius: 28px;
+            border-radius: 32px;
             padding: 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
             border: 1px solid var(--border);
             z-index: 2000;
             display: none;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
+            backdrop-filter: blur(20px);
         }
 
         .side-menu.show {
@@ -182,16 +176,18 @@
             width: 100%;
             border-radius: 40px;
             justify-content: flex-start;
-            gap: 10px;
+            gap: 12px;
             padding: 0 16px;
             background: var(--light);
             color: var(--dark);
             border: 1px solid var(--border);
+            height: 48px;
         }
 
         .side-menu .action-btn i {
             width: 24px;
             text-align: center;
+            font-size: 1.1rem;
         }
 
         .side-menu .action-btn#leave-room-btn {
@@ -200,7 +196,6 @@
             border: none;
         }
 
-        /* ========== منطقة الرسائل ========== */
         .messages-container {
             flex: 1;
             min-height: 0;
@@ -217,19 +212,19 @@
             scroll-behavior: smooth;
         }
 
-        /* فقاعة الرسالة */
         .message {
             max-width: 80%;
             padding: 10px 14px;
             border-radius: 24px 24px 24px 6px;
             align-self: flex-start;
             background: white;
-            color: #000;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            color: #111;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             position: relative;
             word-break: break-word;
             font-size: 0.95rem;
             transition: var(--transition);
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
         [data-theme="dark"] .message {
@@ -246,7 +241,7 @@
 
         .message.system {
             align-self: center;
-            background: rgba(141, 153, 174, 0.8);
+            background: rgba(100, 110, 140, 0.9);
             color: white;
             border-radius: 30px;
             font-size: 0.8rem;
@@ -255,7 +250,7 @@
 
         .message.pinned {
             border: 2px solid var(--warning);
-            box-shadow: 0 0 10px rgba(255, 183, 3, 0.3);
+            box-shadow: 0 0 12px rgba(255, 183, 3, 0.5);
         }
 
         .message .username {
@@ -266,7 +261,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
         .message.own .username {
@@ -275,18 +270,19 @@
 
         .message .time {
             font-size: 0.55rem;
-            opacity: 0.6;
+            opacity: 0.7;
             margin-top: 4px;
             text-align: left;
         }
 
         .message-image {
             max-width: 100%;
-            max-height: 150px;
-            border-radius: 14px;
+            max-height: 200px;
+            border-radius: 16px;
             cursor: pointer;
             margin-top: 4px;
             border: 2px solid white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .message-actions {
@@ -302,17 +298,17 @@
             color: var(--gray);
             cursor: pointer;
             font-size: 0.8rem;
-            padding: 2px 6px;
+            padding: 4px 8px;
             border-radius: 30px;
             transition: var(--transition);
+            background: rgba(0,0,0,0.03);
         }
 
         .message-actions button:hover {
-            background: rgba(0,0,0,0.05);
+            background: rgba(0,0,0,0.1);
             color: var(--primary);
         }
 
-        /* مؤشر الكتابة */
         .typing-indicator {
             font-size: 0.8rem;
             color: var(--gray);
@@ -325,7 +321,6 @@
             border: 1px solid var(--border);
         }
 
-        /* ========== منطقة الإدخال ========== */
         .input-area {
             flex-shrink: 0;
             display: flex;
@@ -335,7 +330,7 @@
             border-radius: 40px;
             padding: 4px 4px 4px 14px;
             border: 1px solid var(--border);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
         }
 
         .input-area textarea {
@@ -348,7 +343,6 @@
             resize: none;
             max-height: 80px;
             min-height: 20px;
-            font-family: 'Cairo', sans-serif;
         }
 
         .input-area textarea:focus {
@@ -367,14 +361,9 @@
         .input-area .action-btn.secondary {
             background: var(--light);
             color: var(--dark);
+            border: 1px solid var(--border);
         }
 
-        [data-theme="dark"] .input-area .action-btn.secondary {
-            background: #2a2a3c;
-            color: var(--dark);
-        }
-
-        /* ========== النوافذ المنبثقة ========== */
         .media-popup, .emoji-panel, .sticker-panel {
             position: absolute;
             bottom: 70px;
@@ -384,9 +373,10 @@
             padding: 10px;
             display: none;
             gap: 10px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             border: 1px solid var(--border);
             z-index: 100;
+            backdrop-filter: blur(16px);
         }
 
         .media-popup.show { display: flex; flex-wrap: wrap; }
@@ -405,8 +395,8 @@
         }
 
         .emoji-btn {
-            font-size: 1.8rem;
-            padding: 6px;
+            font-size: 2rem;
+            padding: 8px;
             background: none;
             border: none;
             cursor: pointer;
@@ -417,18 +407,17 @@
         .emoji-btn:hover { transform: scale(1.2); }
 
         .sticker-btn {
-            font-size: 2rem;
-            padding: 5px;
+            font-size: 2.2rem;
+            padding: 8px;
             background: var(--light);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 16px;
             cursor: pointer;
             transition: transform 0.1s;
         }
 
         .sticker-btn:hover { transform: scale(1.1); background: var(--primary-light); }
 
-        /* شريط التسجيل الصوتي */
         .voice-recording-bar {
             flex-shrink: 0;
             display: none;
@@ -439,7 +428,7 @@
             border-radius: 40px;
             margin-top: 6px;
             border: 2px solid var(--primary);
-            box-shadow: 0 4px 12px rgba(67,97,238,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         .voice-recording-bar.active { display: flex; }
@@ -461,27 +450,73 @@
         }
 
         .voice-bar {
-            width: 4px;
+            width: 5px;
             background: var(--primary);
-            border-radius: 2px;
+            border-radius: 3px;
             transition: height 0.1s;
         }
 
-        /* قائمة المستخدمين */
+        .audio-player {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0,0,0,0.05);
+            padding: 8px 12px;
+            border-radius: 40px;
+            margin-top: 4px;
+        }
+
+        .audio-play-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .audio-progress {
+            flex: 1;
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .audio-progress-fill {
+            height: 100%;
+            background: white;
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        .audio-duration {
+            font-size: 0.7rem;
+            min-width: 40px;
+            color: var(--gray);
+        }
+
         .users-popup {
             position: absolute;
             top: 70px;
             left: 8px;
             right: 8px;
             background: var(--card-bg);
-            border-radius: 28px;
+            border-radius: 32px;
             padding: 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
             border: 1px solid var(--border);
             z-index: 2000;
             display: none;
             max-height: 350px;
             overflow-y: auto;
+            backdrop-filter: blur(16px);
         }
 
         .users-popup.show { display: block; }
@@ -526,7 +561,7 @@
             cursor: pointer;
         }
 
-        .user-item:hover { background: var(--light); }
+        .user-item:hover { background: var(--light); border-radius: 30px; }
 
         .user-avatar {
             width: 38px;
@@ -548,18 +583,12 @@
             color: var(--dark);
         }
 
-        .user-status-indicator {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 4px;
-            box-shadow: 0 0 5px currentColor;
+        .user-status-indicator.online {
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            width: 10px; height: 10px; border-radius: 50%; display: inline-block;
         }
 
-        .user-status-indicator.online { background: #10b981; box-shadow: 0 0 8px #10b981; }
-
-        /* نافذة المكالمة */
         .call-container {
             position: fixed;
             top: 0;
@@ -613,7 +642,6 @@
 
         .call-btn:hover { transform: scale(1.1); }
 
-        /* لوحة المكالمة الواردة */
         .incoming-panel {
             position: fixed;
             bottom: 20px;
@@ -635,15 +663,6 @@
 
         .incoming-panel.active { display: flex; }
 
-        .incoming-panel .caller-name {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .incoming-actions { display: flex; gap: 15px; }
-
-        /* الإشعارات */
         .toast {
             position: fixed;
             top: 20px;
@@ -659,7 +678,6 @@
             box-shadow: 0 6px 16px rgba(0,0,0,0.2);
         }
 
-        /* معرض الوسائط */
         .media-modal {
             display: none;
             position: fixed;
@@ -681,7 +699,6 @@
             border: 3px solid white;
         }
 
-        /* مربع حوار التأكيد */
         .confirm-dialog {
             position: fixed;
             top: 50%;
@@ -702,10 +719,7 @@
         }
 
         .confirm-dialog.active { display: flex; }
-        .confirm-dialog .btn-group { display: flex; gap: 8px; width: 100%; }
-        .confirm-dialog .btn { margin: 0; padding: 8px; font-size: 0.9rem; }
 
-        /* شريط تقدم الرفع */
         #upload-progress {
             flex-shrink: 0;
             display: none;
@@ -739,7 +753,6 @@
             transition: width 0.2s;
         }
 
-        /* مؤشر التحميل العام */
         #global-loader {
             display: none;
             position: fixed;
@@ -777,10 +790,6 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* نغمة الرنين */
-        #ring { display: none; }
-
-        /* قائمة الإشارات */
         .mention-popup {
             position: absolute;
             bottom: 80px;
@@ -795,6 +804,7 @@
             overflow-y: auto;
             border: 1px solid var(--border);
             z-index: 150;
+            backdrop-filter: blur(16px);
         }
 
         .mention-item {
@@ -808,7 +818,6 @@
 
         .mention-item:hover { background: var(--light); }
 
-        /* إحصائيات الغرفة */
         .stats-panel {
             background: var(--card-bg);
             border-radius: 30px;
@@ -826,7 +835,6 @@
             margin: 5px 0;
         }
 
-        /* مربع البحث */
         .search-box {
             position: absolute;
             top: 70px;
@@ -838,6 +846,7 @@
             display: none;
             border: 2px solid var(--primary);
             z-index: 150;
+            backdrop-filter: blur(16px);
         }
 
         .search-box.active { display: flex; }
@@ -860,27 +869,15 @@
             cursor: pointer;
         }
 
-        /* ردود الفعل */
-        .reaction-buttons {
-            display: flex;
-            gap: 4px;
-            margin-top: 4px;
-        }
-
-        .reaction-btn {
-            background: none;
-            border: 1px solid var(--border);
+        .pinned-badge {
+            background: var(--warning);
+            color: black;
+            font-size: 0.6rem;
+            padding: 2px 6px;
             border-radius: 30px;
-            padding: 2px 8px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            color: var(--dark);
+            margin-right: 6px;
         }
 
-        .reaction-btn:hover { background: var(--light); }
-        .reaction-count { margin-left: 4px; font-size: 0.6rem; }
-
-        /* أزرار المشرف */
         .admin-controls {
             display: flex;
             gap: 5px;
@@ -897,18 +894,13 @@
         }
 
         .admin-controls button:hover { color: var(--danger); }
+
+        #ring { display: none; }
     </style>
 </head>
 <body>
-    <!-- مؤشر التحميل -->
-    <div id="global-loader">
-        <div class="loader-spinner"></div>
-        <div class="loader-text" id="loader-text">جاري التحميل...</div>
-    </div>
-
-    <!-- التطبيق الرئيسي -->
+    <div id="global-loader"><div class="loader-spinner"></div><div class="loader-text" id="loader-text">جاري التحميل...</div></div>
     <div id="app">
-        <!-- رأس الدردشة -->
         <div class="chat-header">
             <div class="header-info">
                 <h2><i class="fas fa-comment"></i> <span id="room-name-display">غرفة</span> <span class="user-count" id="user-count">(0)</span></h2>
@@ -919,7 +911,6 @@
             </div>
         </div>
 
-        <!-- القائمة الجانبية (الأزرار الدائرية) -->
         <div id="side-menu" class="side-menu">
             <button class="action-btn secondary" id="toggle-users-btn"><i class="fas fa-users"></i> المتصلون</button>
             <button class="action-btn secondary" id="call-user-btn"><i class="fas fa-phone"></i> اتصال</button>
@@ -930,7 +921,6 @@
             <button class="action-btn secondary" id="leave-room-btn" style="background:var(--danger);color:white"><i class="fas fa-sign-out-alt"></i> خروج</button>
         </div>
 
-        <!-- قائمة المستخدمين المنبثقة -->
         <div id="users-popup" class="users-popup">
             <div class="users-popup-header">
                 <h4><i class="fas fa-users"></i> المتصلون الآن</h4>
@@ -940,7 +930,6 @@
         </div>
         <div id="popup-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.2); z-index:1999;"></div>
 
-        <!-- لوحة الإحصائيات -->
         <div id="stats-panel" class="stats-panel">
             <h4 style="margin-bottom:10px;"><i class="fas fa-chart-bar"></i> إحصائيات الغرفة</h4>
             <div class="stats-item"><span>عدد الرسائل:</span> <span id="stats-messages">0</span></div>
@@ -948,21 +937,17 @@
             <div class="stats-item"><span>أكثر عضو تفاعلاً:</span> <span id="stats-top-user">-</span></div>
         </div>
 
-        <!-- مربع البحث -->
         <div id="search-box" class="search-box">
             <input type="text" id="search-input" placeholder="ابحث في الرسائل...">
             <button id="search-close"><i class="fas fa-times"></i></button>
         </div>
 
-        <!-- منطقة الرسائل -->
         <div id="messages-container" class="messages-container">
             <div class="typing-indicator" id="typing-indicator"></div>
         </div>
 
-        <!-- شريط تقدم الرفع -->
         <div id="upload-progress" class="progress-container"></div>
 
-        <!-- شريط التسجيل الصوتي -->
         <div id="voice-recording-bar" class="voice-recording-bar">
             <span class="voice-timer" id="voice-timer">00:00</span>
             <div class="voice-visualizer" id="voice-visualizer"></div>
@@ -970,7 +955,6 @@
             <button id="send-voice-btn" class="action-btn" style="background:var(--success)"><i class="fas fa-paper-plane"></i></button>
         </div>
 
-        <!-- منطقة الإدخال -->
         <div class="input-area">
             <textarea id="message-input" placeholder="اكتب رسالتك..." rows="1"></textarea>
             <button class="action-btn secondary" id="emoji-btn"><i class="far fa-smile"></i></button>
@@ -1000,24 +984,19 @@
             <button id="send-message-btn" class="action-btn"><i class="fas fa-paper-plane"></i></button>
         </div>
 
-        <!-- مدخلات الملفات المخفية -->
         <input type="file" id="file-input" accept="image/*,video/*" multiple style="display:none">
         <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none">
 
-        <!-- قائمة الإشارات -->
         <div id="mention-popup" class="mention-popup"></div>
     </div>
 
-    <!-- معرض الوسائط -->
     <div id="mediaModal" class="media-modal">
         <button id="closeModalBtn" style="background:white;border:none;border-radius:50%;width:40px;height:40px;font-size:1.2rem;margin-bottom:10px;"><i class="fas fa-times"></i></button>
         <div id="modalMediaContainer"></div>
     </div>
 
-    <!-- الإشعارات -->
     <div id="notification" class="toast"></div>
 
-    <!-- مربع حوار التأكيد -->
     <div id="confirm-dialog" class="confirm-dialog">
         <p>هل أنت متأكد من الخروج من الغرفة؟</p>
         <div class="btn-group">
@@ -1026,7 +1005,6 @@
         </div>
     </div>
 
-    <!-- لوحة المكالمة الواردة -->
     <div id="incoming-panel" class="incoming-panel">
         <div class="caller-name" id="incoming-caller-name">...</div>
         <div class="incoming-actions">
@@ -1035,7 +1013,6 @@
         </div>
     </div>
 
-    <!-- نافذة المكالمة -->
     <div id="call-container" class="call-container">
         <div class="call-avatar" id="call-avatar"><i class="fas fa-user"></i></div>
         <div class="call-info" id="call-info">...</div>
@@ -1046,15 +1023,12 @@
         </div>
     </div>
 
-    <!-- نغمة الرنين -->
     <audio id="ring" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto" loop></audio>
 
     <script type="module">
-        // ================== استيراد Firebase ==================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, push, onChildAdded, onChildRemoved, onDisconnect, get, remove, onValue, query, limitToLast, orderByKey, off, endAt } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // تكوين Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
             authDomain: "zio3-8ffdd.firebaseapp.com",
@@ -1068,17 +1042,15 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // ================== الثوابت ==================
         const GITHUB_USERNAME = "ashlhl";
         const GITHUB_REPO = "ashlhl";
         const GITHUB_TOKEN_PATH = "2026";
         const ADMIN_LOGIN = "ashlhlsgadalyasiri";
         const ADMIN_DISPLAY = "سجاد";
-        const ONE_HOUR = 60 * 60 * 1000; // ساعة واحدة
-        const MAX_MSGS = 20; // عدد الرسائل المحملة في كل مرة
-        const INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 دقيقة
+        const ONE_HOUR = 60 * 60 * 1000;
+        const MAX_MSGS = 20;
+        const INACTIVITY_TIMEOUT = 30 * 60 * 1000;
 
-        // ================== عناصر DOM ==================
         const roomNameSpan = document.getElementById('room-name-display');
         const userCountSpan = document.getElementById('user-count');
         const currentUserNameSpan = document.getElementById('current-user-name');
@@ -1140,121 +1112,44 @@
         const menuBtn = document.getElementById('menu-btn');
         const sideMenu = document.getElementById('side-menu');
 
-        // ================== متغيرات الحالة ==================
-        let currentRoom = null;
-        let currentUser = null;
-        let userId = null;
-        let messagesRef = null;
-        let typingTimeout = null;
-        let displayedMessages = new Set(); // للتحقق من عرض الرسالة مسبقاً
-        let oldestMessageKey = null;
-        let allMessagesLoaded = false;
-        let loadingMore = false;
-        let usersMap = {}; // معرف المستخدم -> اسم المستخدم
-
-        // التسجيل الصوتي
-        let mediaRecorder = null;
-        let audioChunks = [];
-        let recordingStartTime = 0;
-        let recordingTimerInterval = null;
-        let audioContext = null;
-        let analyser = null;
-        let visualizerAnimation = null;
-
-        // المكالمات
-        let localStream = null;
-        let pc = null;
-        let connected = false;
-        let currentCallId = null;
-        let callTimeout = null;
-        let incomingOffer = null;
-        let remoteAudioElement = null;
-        let screenShareStream = null;
-
-        // مؤقت عدم النشاط
+        let currentRoom = null, currentUser = null, userId = null, messagesRef = null, typingTimeout = null;
+        let displayedMessages = new Set();
+        let oldestMessageKey = null, allMessagesLoaded = false, loadingMore = false;
+        let usersMap = {};
+        let mediaRecorder = null, audioChunks = [], recordingStartTime = 0, recordingTimerInterval = null;
+        let audioContext = null, analyser = null, visualizerAnimation = null;
+        let localStream = null, pc = null, connected = false;
+        let currentCallId = null, callTimeout = null, incomingOffer = null, remoteAudioElement = null, screenShareStream = null;
         let inactivityTimer = null;
-
-        // الرسائل المثبتة والتفاعلات
         let pinnedMessages = new Set();
-        let reactionsMap = new Map();
-
-        // بوت الغرفة
         let botEnabled = true;
-
-        // مخزن مؤقت لمشغلات الصوت
         window.audioPlayers = new Map();
 
-        // مستمعي Firebase
-        const firebaseListeners = {
-            messages: null,
-            usersAdded: null,
-            usersRemoved: null,
-            typing: null
-        };
+        const firebaseListeners = { messages: null, usersAdded: null, usersRemoved: null, typing: null };
+        const configuration = { iceServers: [ { urls: 'stun:stun.l.google.com:19302' } ] };
 
-        // إعدادات WebRTC
-        const configuration = {
-            iceServers: [
-                { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' }
-            ]
-        };
-
-        // ================== دوال مساعدة ==================
-        function showLoading(text = 'جاري التحميل...') {
-            loaderText.textContent = text;
-            globalLoader.classList.add('active');
-        }
-
-        function hideLoading() {
-            globalLoader.classList.remove('active');
-        }
-
+        function showLoading(text) { loaderText.textContent = text; globalLoader.classList.add('active'); }
+        function hideLoading() { globalLoader.classList.remove('active'); }
         function showNotification(msg, type = 'success') {
             notification.textContent = msg;
             notification.style.background = type === 'success' ? 'var(--success)' : 'var(--danger)';
             notification.style.display = 'block';
             setTimeout(() => notification.style.display = 'none', 2000);
         }
-
         async function copyToClipboard(text) {
-            try {
-                await navigator.clipboard.writeText(text);
-                return true;
-            } catch {
-                const textarea = document.createElement('textarea');
-                textarea.value = text;
-                textarea.style.position = 'fixed';
-                textarea.style.opacity = '0';
-                document.body.appendChild(textarea);
-                textarea.select();
-                try {
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    return true;
-                } catch {
-                    document.body.removeChild(textarea);
-                    return false;
-                }
+            try { await navigator.clipboard.writeText(text); return true; } catch {
+                const ta = document.createElement('textarea');
+                ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta); ta.select();
+                try { document.execCommand('copy'); document.body.removeChild(ta); return true; } catch { document.body.removeChild(ta); return false; }
             }
         }
-
-        function generateUserId() {
-            return 'user_' + Math.random().toString(36).substr(2, 9);
-        }
-
+        function generateUserId() { return 'user_' + Math.random().toString(36).substr(2, 9); }
         function sanitizeFolderName(name) {
             if (name === ADMIN_LOGIN) return ADMIN_DISPLAY;
             return name.replace(/[^a-zA-Z0-9\u0600-\u06FF\s\-_]/g, '').trim().replace(/\s+/g, '_');
         }
-
-        // ================== دوال GitHub والرفع ==================
-        async function getGitHubToken() {
-            const snap = await get(ref(db, GITHUB_TOKEN_PATH));
-            if (!snap.exists()) throw new Error('لم يتم العثور على التوكن');
-            return snap.val();
-        }
-
+        async function getGitHubToken() { const snap = await get(ref(db, GITHUB_TOKEN_PATH)); if (!snap.exists()) throw new Error('لم يتم العثور على التوكن'); return snap.val(); }
         async function compressImage(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -1265,22 +1160,13 @@
                         let width = img.width, height = img.height;
                         const maxSize = 1920;
                         if (width > maxSize || height > maxSize) {
-                            if (width > height) {
-                                height = Math.round((height * maxSize) / width);
-                                width = maxSize;
-                            } else {
-                                width = Math.round((width * maxSize) / height);
-                                height = maxSize;
-                            }
+                            if (width > height) { height = Math.round((height * maxSize) / width); width = maxSize; }
+                            else { width = Math.round((width * maxSize) / height); height = maxSize; }
                         }
-                        canvas.width = width;
-                        canvas.height = height;
+                        canvas.width = width; canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        canvas.toBlob((blob) => {
-                            if (blob) resolve(new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() }));
-                            else reject(new Error('فشل ضغط الصورة'));
-                        }, 'image/jpeg', 0.8);
+                        canvas.toBlob((blob) => { if (blob) resolve(new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() })); else reject(new Error('فشل ضغط الصورة')); }, 'image/jpeg', 0.8);
                     };
                     img.onerror = reject;
                     img.src = e.target.result;
@@ -1289,7 +1175,6 @@
                 reader.readAsDataURL(file);
             });
         }
-
         async function uploadToGitHubWithProgress(file, fileName, fileType, onProgress) {
             const token = await getGitHubToken();
             let typeFolder = { image: 'صور', video: 'فيديو', audio: 'تسجيل_صوتي' }[fileType] || 'اخرى';
@@ -1303,34 +1188,19 @@
                         xhr.open('PUT', `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${githubPath}`, true);
                         xhr.setRequestHeader('Authorization', `token ${token}`);
                         xhr.setRequestHeader('Content-Type', 'application/json');
-                        xhr.upload.onprogress = (event) => {
-                            if (event.lengthComputable && onProgress) {
-                                onProgress(event.loaded / event.total);
-                            }
-                        };
+                        xhr.upload.onprogress = (event) => { if (event.lengthComputable && onProgress) onProgress(event.loaded / event.total); };
                         xhr.onload = () => {
-                            if (xhr.status === 201 || xhr.status === 200) {
-                                resolve(`https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPO}/main/${githubPath}`);
-                            } else {
-                                reject(new Error('فشل الرفع'));
-                            }
+                            if (xhr.status === 201 || xhr.status === 200) resolve(`https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPO}/main/${githubPath}`);
+                            else reject(new Error('فشل الرفع'));
                         };
                         xhr.onerror = () => reject(new Error('شبكة خطأ'));
-                        xhr.send(JSON.stringify({
-                            message: `رفع ${fileType} من ${currentUser} في غرفة ${currentRoom}`,
-                            content,
-                            branch: 'main'
-                        }));
-                    } catch (err) {
-                        reject(err);
-                    }
+                        xhr.send(JSON.stringify({ message: `رفع ${fileType} من ${currentUser} في غرفة ${currentRoom}`, content, branch: 'main' }));
+                    } catch (err) { reject(err); }
                 };
                 reader.onerror = () => reject(new Error('فشل قراءة الملف'));
                 reader.readAsDataURL(file);
             });
         }
-
-        // ================== تحديث قوائم المستخدمين ==================
         function updateUsersLists() {
             const online = usersMap;
             userCountSpan.textContent = `(${Object.keys(online).length})`;
@@ -1338,70 +1208,35 @@
                 popupUsersList.innerHTML = '';
                 Object.keys(online).forEach(key => {
                     const name = online[key];
-                    popupUsersList.innerHTML += `
-                        <div class="user-item" data-user-id="${key}">
-                            <div class="user-avatar">${name.charAt(0)}</div>
-                            <div style="flex:1">
-                                <div style="display:flex; align-items:center; gap:6px;">
-                                    <span class="user-name">${name === ADMIN_LOGIN ? ADMIN_DISPLAY : name}</span>
-                                    <span class="user-status-indicator online" title="متصل"></span>
-                                    ${name === ADMIN_LOGIN ? '<i class="fas fa-crown" style="color:#fbbf24;"></i>' : ''}
-                                </div>
-                                <div style="font-size:0.7rem; color:var(--gray);">متصل الآن</div>
-                            </div>
-                        </div>`;
+                    popupUsersList.innerHTML += `<div class="user-item" data-user-id="${key}"><div class="user-avatar">${name.charAt(0)}</div><div style="flex:1"><div style="display:flex; align-items:center; gap:6px;"><span class="user-name">${name === ADMIN_LOGIN ? ADMIN_DISPLAY : name}</span><span class="user-status-indicator online"></span>${name === ADMIN_LOGIN ? '<i class="fas fa-crown" style="color:#fbbf24;"></i>' : ''}</div><div style="font-size:0.7rem; color:var(--gray);">متصل الآن</div></div></div>`;
                 });
             }
         }
-
-        // ================== مراقبة المستخدمين ==================
         function monitorRoomUsers(room) {
             if (firebaseListeners.usersAdded) off(ref(db, `rooms/${room}/users`), firebaseListeners.usersAdded);
             if (firebaseListeners.usersRemoved) off(ref(db, `rooms/${room}/users`), firebaseListeners.usersRemoved);
-            firebaseListeners.usersAdded = onChildAdded(ref(db, `rooms/${room}/users`), (snap) => {
-                const user = snap.val();
-                if (!user?.name) return;
-                usersMap[snap.key] = user.name;
-                updateUsersLists();
-            });
-            firebaseListeners.usersRemoved = onChildRemoved(ref(db, `rooms/${room}/users`), (snap) => {
-                delete usersMap[snap.key];
-                updateUsersLists();
-            });
+            firebaseListeners.usersAdded = onChildAdded(ref(db, `rooms/${room}/users`), (snap) => { const user = snap.val(); if (!user?.name) return; usersMap[snap.key] = user.name; updateUsersLists(); });
+            firebaseListeners.usersRemoved = onChildRemoved(ref(db, `rooms/${room}/users`), (snap) => { delete usersMap[snap.key]; updateUsersLists(); });
         }
-
-        // ================== الكتابة (typing) ==================
         function setupTyping(room, uid) {
             const typingRef = ref(db, `rooms/${room}/typing/${uid}`);
             messageInput.addEventListener('input', () => {
-                if (messageInput.value.trim()) {
-                    set(typingRef, true);
-                    if (typingTimeout) clearTimeout(typingTimeout);
-                    typingTimeout = setTimeout(() => set(typingRef, false), 2000);
-                } else {
-                    set(typingRef, false);
-                }
+                if (messageInput.value.trim()) { set(typingRef, true); if (typingTimeout) clearTimeout(typingTimeout); typingTimeout = setTimeout(() => set(typingRef, false), 2000); }
+                else set(typingRef, false);
             });
         }
-
         function listenTyping(room) {
             if (firebaseListeners.typing) off(ref(db, `rooms/${room}/typing`), firebaseListeners.typing);
             firebaseListeners.typing = onValue(ref(db, `rooms/${room}/typing`), snap => {
-                const data = snap.val() || {};
-                const typing = Object.keys(data).filter(k => data[k] === true && k !== userId);
-                if (typing.length === 0) {
-                    typingIndicator.style.display = 'none';
-                } else {
+                const data = snap.val() || {}, typing = Object.keys(data).filter(k => data[k] === true && k !== userId);
+                if (typing.length === 0) typingIndicator.style.display = 'none';
+                else {
                     const names = typing.map(id => usersMap[id] || 'شخص');
-                    typingIndicator.innerHTML = names.map(name =>
-                        `<span style="display:inline-block; width:24px; height:24px; border-radius:50%; background:var(--primary); color:white; text-align:center; line-height:24px; margin-left:4px;">${name.charAt(0)}</span>`
-                    ).join('') + ' يكتبون...';
+                    typingIndicator.innerHTML = names.map(name => `<span style="display:inline-block; width:24px; height:24px; border-radius:50%; background:var(--primary); color:white; text-align:center; line-height:24px; margin-left:4px;">${name.charAt(0)}</span>`).join('') + ' يكتبون...';
                     typingIndicator.style.display = 'block';
                 }
             });
         }
-
-        // ================== تنظيف الرسائل القديمة ==================
         async function cleanOldMessages(room) {
             if (!room) return;
             const messagesRefDb = ref(db, `rooms/${room}/messages`);
@@ -1411,16 +1246,9 @@
             const msgs = snapshot.val();
             if (!msgs) return;
             const promises = [];
-            Object.entries(msgs).forEach(([key, msg]) => {
-                const keyTimestamp = parseInt(key.split('_')[0]);
-                if (keyTimestamp && keyTimestamp < cutoff) {
-                    promises.push(remove(ref(db, `rooms/${room}/messages/${key}`)));
-                }
-            });
+            Object.entries(msgs).forEach(([key, msg]) => { const keyTimestamp = parseInt(key.split('_')[0]); if (keyTimestamp && keyTimestamp < cutoff) promises.push(remove(ref(db, `rooms/${room}/messages/${key}`))); });
             await Promise.all(promises);
         }
-
-        // ================== تحديث الإحصائيات ==================
         async function updateStats() {
             if (!currentRoom) return;
             const msgsSnap = await get(query(ref(db, `rooms/${currentRoom}/messages`), limitToLast(1000)));
@@ -1429,29 +1257,10 @@
             document.getElementById('stats-messages').textContent = msgCount;
             document.getElementById('stats-users').textContent = Object.keys(usersMap).length;
             const userMsgCount = {};
-            Object.values(msgs).forEach(msg => {
-                if (msg.sender && msg.sender !== 'نظام') {
-                    userMsgCount[msg.sender] = (userMsgCount[msg.sender] || 0) + 1;
-                }
-            });
-            let topUser = Object.entries(userMsgCount).sort((a, b) => b[1] - a[1])[0];
-            document.getElementById('stats-top-user').textContent = topUser ?
-                (topUser[0] === ADMIN_LOGIN ? ADMIN_DISPLAY : topUser[0]) + ` (${topUser[1]})` : '-';
+            Object.values(msgs).forEach(msg => { if (msg.sender && msg.sender !== 'نظام') userMsgCount[msg.sender] = (userMsgCount[msg.sender] || 0) + 1; });
+            let topUser = Object.entries(userMsgCount).sort((a,b) => b[1] - a[1])[0];
+            document.getElementById('stats-top-user').textContent = topUser ? (topUser[0] === ADMIN_LOGIN ? ADMIN_DISPLAY : topUser[0]) + ` (${topUser[1]})` : '-';
         }
-
-        // ================== إضافة تفاعل ==================
-        async function addReaction(msgId, emoji) {
-            if (!currentRoom || !userId) return;
-            const reactRef = ref(db, `rooms/${currentRoom}/reactions/${msgId}/${emoji}/${userId}`);
-            const snap = await get(reactRef);
-            if (snap.exists()) {
-                await remove(reactRef);
-            } else {
-                await set(reactRef, true);
-            }
-        }
-
-        // ================== إنشاء عنصر الرسالة ==================
         function createMessageElement(msg, isOwn, isSystem, msgId) {
             const div = document.createElement('div');
             div.className = `message ${isOwn ? 'own' : ''} ${isSystem ? 'system' : ''}`;
@@ -1480,64 +1289,29 @@
                 const img = document.createElement('img');
                 img.src = msg.text;
                 img.className = 'message-image';
-                img.onclick = () => {
-                    document.getElementById('modalMediaContainer').innerHTML = `<img src="${msg.text}" class="modal-media">`;
-                    document.getElementById('mediaModal').classList.add('active');
-                };
+                img.onclick = () => { document.getElementById('modalMediaContainer').innerHTML = `<img src="${msg.text}" class="modal-media">`; document.getElementById('mediaModal').classList.add('active'); };
                 div.appendChild(img);
             } else if (msg.type === 'video') {
                 const vid = document.createElement('video');
                 vid.src = msg.text;
                 vid.controls = true;
                 vid.className = 'message-image';
-                vid.onclick = () => {
-                    document.getElementById('modalMediaContainer').innerHTML = `<video src="${msg.text}" controls class="modal-media"></video>`;
-                    document.getElementById('mediaModal').classList.add('active');
-                };
+                vid.onclick = () => { document.getElementById('modalMediaContainer').innerHTML = `<video src="${msg.text}" controls class="modal-media"></video>`; document.getElementById('mediaModal').classList.add('active'); };
                 div.appendChild(vid);
             } else if (msg.type === 'audio') {
                 const audioContainer = document.createElement('div');
-                audioContainer.style.display = 'flex';
-                audioContainer.style.alignItems = 'center';
-                audioContainer.style.gap = '8px';
-                audioContainer.style.direction = 'ltr';
-
+                audioContainer.className = 'audio-player';
                 const playBtn = document.createElement('button');
                 playBtn.className = 'audio-play-btn';
-                playBtn.setAttribute('data-audio', msg.text);
-                playBtn.style.width = '36px';
-                playBtn.style.height = '36px';
-                playBtn.style.borderRadius = '50%';
-                playBtn.style.background = 'var(--primary)';
-                playBtn.style.color = 'white';
-                playBtn.style.border = 'none';
-                playBtn.style.cursor = 'pointer';
-                playBtn.style.display = 'flex';
-                playBtn.style.alignItems = 'center';
-                playBtn.style.justifyContent = 'center';
                 playBtn.innerHTML = '<i class="fas fa-play"></i>';
-
                 const progressContainer = document.createElement('div');
-                progressContainer.style.flex = '1';
-                progressContainer.style.height = '4px';
-                progressContainer.style.background = 'rgba(255,255,255,0.3)';
-                progressContainer.style.borderRadius = '2px';
-                progressContainer.style.position = 'relative';
-
+                progressContainer.className = 'audio-progress';
                 const progressFilled = document.createElement('div');
-                progressFilled.className = 'audio-progress-filled';
-                progressFilled.style.width = '0%';
-                progressFilled.style.height = '100%';
-                progressFilled.style.background = 'white';
-                progressFilled.style.borderRadius = '2px';
+                progressFilled.className = 'audio-progress-fill';
                 progressContainer.appendChild(progressFilled);
-
                 const durationSpan = document.createElement('span');
                 durationSpan.className = 'audio-duration';
-                durationSpan.style.fontSize = '0.7rem';
-                durationSpan.style.minWidth = '40px';
                 durationSpan.textContent = '00:00';
-
                 audioContainer.appendChild(playBtn);
                 audioContainer.appendChild(progressContainer);
                 audioContainer.appendChild(durationSpan);
@@ -1545,18 +1319,8 @@
 
                 const audioSrc = msg.text;
                 let audio = window.audioPlayers.get(audioSrc);
-                if (!audio) {
-                    audio = new Audio(audioSrc);
-                    audio.preload = 'auto';
-                    audio.load();
-                    window.audioPlayers.set(audioSrc, audio);
-                }
-
-                audio.onerror = () => {
-                    playBtn.disabled = true;
-                    playBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
-                    showNotification('تعذر تحميل الصوت', 'danger');
-                };
+                if (!audio) { audio = new Audio(audioSrc); audio.preload = 'auto'; audio.load(); window.audioPlayers.set(audioSrc, audio); }
+                audio.onerror = () => { playBtn.disabled = true; playBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i>'; };
                 audio.oncanplaythrough = () => { playBtn.disabled = false; };
                 audio.ontimeupdate = () => {
                     if (audio.duration) {
@@ -1567,20 +1331,13 @@
                         durationSpan.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
                     }
                 };
-                audio.onended = () => {
-                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    progressFilled.style.width = '0%';
-                    durationSpan.textContent = '00:00';
-                };
+                audio.onended = () => { playBtn.innerHTML = '<i class="fas fa-play"></i>'; progressFilled.style.width = '0%'; durationSpan.textContent = '00:00'; };
                 playBtn.onclick = () => {
                     if (audio.paused) {
                         window.audioPlayers.forEach(a => { if (!a.paused && a !== audio) a.pause(); });
-                        audio.play().catch(e => showNotification('تعذر تشغيل الصوت', 'danger'));
+                        audio.play().catch(() => {});
                         playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    } else {
-                        audio.pause();
-                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    }
+                    } else { audio.pause(); playBtn.innerHTML = '<i class="fas fa-play"></i>'; }
                 };
             } else if (msg.type === 'sticker') {
                 const stickerDiv = document.createElement('div');
@@ -1593,39 +1350,16 @@
                 div.appendChild(textSpan);
             }
 
-            // عرض التفاعلات
-            const reactions = reactionsMap.get(msgId);
-            if (reactions && Object.keys(reactions).length > 0) {
-                const reactDiv = document.createElement('div');
-                reactDiv.className = 'reaction-buttons';
-                Object.entries(reactions).forEach(([emoji, users]) => {
-                    const btn = document.createElement('span');
-                    btn.className = 'reaction-btn';
-                    btn.innerHTML = `${emoji} <span class="reaction-count">${users.length}</span>`;
-                    btn.onclick = () => addReaction(msgId, emoji);
-                    reactDiv.appendChild(btn);
-                });
-                div.appendChild(reactDiv);
-            }
-
-            // أزرار الإجراءات
             const actionsDiv = document.createElement('div');
             actionsDiv.className = 'message-actions';
-
             const copyBtn = document.createElement('button');
-            copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
-            copyBtn.title = 'نسخ النص';
-            copyBtn.onclick = () => {
-                let textToCopy = msg.text || '';
-                copyToClipboard(textToCopy);
-                showNotification('تم النسخ');
-            };
+            copyBtn.innerHTML = '<i class="fas fa-copy"></i>'; copyBtn.title = 'نسخ النص';
+            copyBtn.onclick = () => { copyToClipboard(msg.text || ''); showNotification('تم النسخ'); };
             actionsDiv.appendChild(copyBtn);
 
             if (!isOwn && !isSystem) {
                 const replyBtn = document.createElement('button');
-                replyBtn.innerHTML = '<i class="fas fa-reply"></i>';
-                replyBtn.title = 'رد';
+                replyBtn.innerHTML = '<i class="fas fa-reply"></i>'; replyBtn.title = 'رد';
                 replyBtn.onclick = () => {
                     messageInput.dataset.replyTo = msgId;
                     messageInput.placeholder = `رد على ${msg.sender === ADMIN_LOGIN ? ADMIN_DISPLAY : msg.sender}...`;
@@ -1636,65 +1370,31 @@
 
             if (isOwn && !isSystem && Date.now() - msg.timestamp < 5 * 60 * 1000) {
                 const deleteBtn = document.createElement('button');
-                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                deleteBtn.title = 'حذف (5 دقائق فقط)';
-                deleteBtn.onclick = async () => {
-                    if (confirm('حذف هذه الرسالة؟')) {
-                        await remove(ref(db, `rooms/${currentRoom}/messages/${msgId}`));
-                        div.remove();
-                    }
-                };
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>'; deleteBtn.title = 'حذف';
+                deleteBtn.onclick = async () => { if (confirm('حذف؟')) { await remove(ref(db, `rooms/${currentRoom}/messages/${msgId}`)); div.remove(); } };
                 actionsDiv.appendChild(deleteBtn);
-            }
-
-            if (!isSystem) {
-                const reactBtn = document.createElement('button');
-                reactBtn.innerHTML = '<i class="fas fa-smile"></i>';
-                reactBtn.title = 'تفاعل';
-                reactBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    const emoji = prompt('أدخل الإيموجي (مثل ❤️)');
-                    if (emoji) addReaction(msgId, emoji);
-                };
-                actionsDiv.appendChild(reactBtn);
             }
 
             div.appendChild(actionsDiv);
 
-            // أزرار المشرف
             if (currentUser === ADMIN_DISPLAY && !isSystem) {
                 const adminDiv = document.createElement('div');
                 adminDiv.className = 'admin-controls';
-
                 const pinBtn = document.createElement('button');
                 pinBtn.innerHTML = '<i class="fas fa-thumbtack"></i>';
-                pinBtn.title = 'تثبيت الرسالة';
                 pinBtn.onclick = async () => {
-                    if (pinnedMessages.has(msgId)) {
-                        pinnedMessages.delete(msgId);
-                        await set(ref(db, `rooms/${currentRoom}/pinned/${msgId}`), null);
-                    } else {
-                        pinnedMessages.add(msgId);
-                        await set(ref(db, `rooms/${currentRoom}/pinned/${msgId}`), true);
-                    }
+                    if (pinnedMessages.has(msgId)) { pinnedMessages.delete(msgId); await set(ref(db, `rooms/${currentRoom}/pinned/${msgId}`), null); }
+                    else { pinnedMessages.add(msgId); await set(ref(db, `rooms/${currentRoom}/pinned/${msgId}`), true); }
                     div.classList.toggle('pinned');
                 };
                 adminDiv.appendChild(pinBtn);
-
                 const deleteBtn = document.createElement('button');
                 deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                deleteBtn.title = 'حذف الرسالة (كمسؤول)';
-                deleteBtn.onclick = async () => {
-                    if (confirm('حذف هذه الرسالة؟')) {
-                        await remove(ref(db, `rooms/${currentRoom}/messages/${msgId}`));
-                        div.remove();
-                    }
-                };
+                deleteBtn.onclick = async () => { if (confirm('حذف?')) { await remove(ref(db, `rooms/${currentRoom}/messages/${msgId}`)); div.remove(); } };
                 adminDiv.appendChild(deleteBtn);
                 div.appendChild(adminDiv);
             }
 
-            // وقت الرسالة
             const ts = document.createElement('div');
             ts.className = 'time';
             const msgDate = new Date(msg.timestamp);
@@ -1702,73 +1402,35 @@
             if (msgDate.toDateString() === today.toDateString()) {
                 ts.textContent = msgDate.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
             } else {
-                ts.textContent = msgDate.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' }) +
-                    ' ' + msgDate.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+                ts.textContent = msgDate.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' }) + ' ' + msgDate.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
             }
             div.appendChild(ts);
-
             return div;
         }
-
-        // ================== عرض الرسالة ==================
         function displayMessage(msg, isOwn, isSystem, msgId) {
             if (displayedMessages.has(msgId)) return;
             displayedMessages.add(msgId);
             const div = createMessageElement(msg, isOwn, isSystem, msgId);
             messagesContainer.appendChild(div);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-            // منع التراكم
-            if (displayedMessages.size > 200) {
-                const firstKey = displayedMessages.values().next().value;
-                displayedMessages.delete(firstKey);
-            }
-
-            // إشعار إذا كان التطبيق في الخلفية
+            if (displayedMessages.size > 200) { const firstKey = displayedMessages.values().next().value; displayedMessages.delete(firstKey); }
             if (document.visibilityState === 'hidden' && Notification.permission === 'granted' && !isOwn && !isSystem) {
-                new Notification('رسالة جديدة في اسهل حل', {
-                    body: `${msg.sender === ADMIN_LOGIN ? ADMIN_DISPLAY : msg.sender}: ${msg.text?.substring(0, 50)}`,
-                    icon: '/icon.png'
-                });
+                new Notification('رسالة جديدة', { body: `${msg.sender === ADMIN_LOGIN ? ADMIN_DISPLAY : msg.sender}: ${msg.text?.substring(0,50)}`, icon: '/icon.png' });
             }
-
-            // رد البوت إذا كانت الرسالة تحتوي على "بوت"
             if (botEnabled && !isOwn && !isSystem && msg.text && msg.text.includes('بوت')) {
-                setTimeout(() => {
-                    const botMsgKey = `${Date.now()}_bot`;
-                    set(ref(db, `rooms/${currentRoom}/messages/${botMsgKey}`), {
-                        sender: 'بوت',
-                        text: 'مرحباً! أنا بوت الغرفة. كيف يمكنني مساعدتك؟',
-                        timestamp: Date.now()
-                    });
-                }, 1000);
+                setTimeout(() => { const botMsgKey = `${Date.now()}_bot`; set(ref(db, `rooms/${currentRoom}/messages/${botMsgKey}`), { sender: 'بوت', text: 'مرحباً! أنا بوت الغرفة.', timestamp: Date.now() }); }, 1000);
             }
         }
-
-        // ================== تحميل المزيد من الرسائل ==================
         async function loadMoreMessages() {
             if (loadingMore || allMessagesLoaded || !currentRoom) return;
             loadingMore = true;
             const messagesRefDb = ref(db, `rooms/${currentRoom}/messages`);
-            let q;
-            if (oldestMessageKey) {
-                q = query(messagesRefDb, orderByKey(), endAt(oldestMessageKey), limitToLast(MAX_MSGS + 1));
-            } else {
-                q = query(messagesRefDb, orderByKey(), limitToLast(MAX_MSGS));
-            }
+            let q = oldestMessageKey ? query(messagesRefDb, orderByKey(), endAt(oldestMessageKey), limitToLast(MAX_MSGS + 1)) : query(messagesRefDb, orderByKey(), limitToLast(MAX_MSGS));
             const snapshot = await get(q);
             const msgs = snapshot.val();
-            if (!msgs || Object.keys(msgs).length === 0) {
-                allMessagesLoaded = true;
-                loadingMore = false;
-                return;
-            }
+            if (!msgs || Object.keys(msgs).length === 0) { allMessagesLoaded = true; loadingMore = false; return; }
             const entries = Object.entries(msgs).sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
-            if (entries.length <= (oldestMessageKey ? 1 : 0)) {
-                allMessagesLoaded = true;
-                loadingMore = false;
-                return;
-            }
+            if (entries.length <= (oldestMessageKey ? 1 : 0)) { allMessagesLoaded = true; loadingMore = false; return; }
             const fragment = document.createDocumentFragment();
             let newOldestKey = null;
             entries.forEach(([key, msg]) => {
@@ -1785,12 +1447,7 @@
             messagesContainer.insertBefore(fragment, messagesContainer.firstChild);
             loadingMore = false;
         }
-
-        messagesContainer.addEventListener('scroll', () => {
-            if (messagesContainer.scrollTop === 0) loadMoreMessages();
-        });
-
-        // ================== مستمع الرسائل الجديدة ==================
+        messagesContainer.addEventListener('scroll', () => { if (messagesContainer.scrollTop === 0) loadMoreMessages(); });
         async function setupMessageListener() {
             if (firebaseListeners.messages) off(messagesRef, firebaseListeners.messages);
             messagesRef = ref(db, `rooms/${currentRoom}/messages`);
@@ -1799,66 +1456,17 @@
                 const msg = snap.val();
                 if (!msg) return;
                 const keyTimestamp = parseInt(snap.key.split('_')[0]);
-                if (keyTimestamp && keyTimestamp < now - ONE_HOUR) {
-                    await remove(ref(db, `rooms/${currentRoom}/messages/${snap.key}`));
-                    return;
-                }
-                displayMessage(
-                    msg,
-                    (msg.sender === (currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser)) && msg.sender !== 'نظام',
-                    msg.sender === 'نظام',
-                    snap.key
-                );
+                if (keyTimestamp && keyTimestamp < now - ONE_HOUR) { await remove(ref(db, `rooms/${currentRoom}/messages/${snap.key}`)); return; }
+                displayMessage(msg, (msg.sender === (currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser)) && msg.sender !== 'نظام', msg.sender === 'نظام', snap.key);
                 updateStats();
             });
-
-            // الاستماع للرسائل المثبتة
-            onValue(ref(db, `rooms/${currentRoom}/pinned`), (snap) => {
-                const pinned = snap.val() || {};
-                pinnedMessages.clear();
-                Object.keys(pinned).forEach(key => pinnedMessages.add(key));
-            });
-
-            // الاستماع للتفاعلات
-            onValue(ref(db, `rooms/${currentRoom}/reactions`), (snap) => {
-                reactionsMap.clear();
-                const reacts = snap.val() || {};
-                Object.entries(reacts).forEach(([msgId, emojis]) => {
-                    Object.entries(emojis).forEach(([emoji, users]) => {
-                        if (!reactionsMap.has(msgId)) reactionsMap.set(msgId, {});
-                        reactionsMap.get(msgId)[emoji] = Object.keys(users);
-                    });
-                });
-            });
+            onValue(ref(db, `rooms/${currentRoom}/pinned`), (snap) => { const pinned = snap.val() || {}; pinnedMessages.clear(); Object.keys(pinned).forEach(key => pinnedMessages.add(key)); });
         }
-
-        // ================== دوال المكالمات الصوتية ==================
-        async function setupLocalStream() {
-            if (localStream) return localStream;
-            try {
-                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                showNotification('الميكروفون جاهز');
-                return localStream;
-            } catch (err) {
-                showNotification('تعذر الوصول إلى الميكروفون', 'danger');
-                throw err;
-            }
-        }
-
-        function closeLocalStream() {
-            if (localStream) {
-                localStream.getTracks().forEach(track => track.stop());
-                localStream = null;
-            }
-        }
-
+        async function setupLocalStream() { if (localStream) return localStream; try { localStream = await navigator.mediaDevices.getUserMedia({ audio: true }); showNotification('الميكروفون جاهز'); return localStream; } catch (err) { showNotification('تعذر الوصول إلى الميكروفون', 'danger'); throw err; } }
+        function closeLocalStream() { if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; } }
         function createPeerConnection() {
             const pc = new RTCPeerConnection(configuration);
-            if (localStream) {
-                localStream.getTracks().forEach(track => {
-                    pc.addTrack(track, localStream);
-                });
-            }
+            if (localStream) { localStream.getTracks().forEach(track => { pc.addTrack(track, localStream); }); }
             pc.ontrack = (event) => {
                 if (event.streams && event.streams[0]) {
                     if (remoteAudioElement) remoteAudioElement.remove();
@@ -1870,135 +1478,66 @@
                     callInfo.textContent = 'جاري التحدث...';
                 }
             };
-            pc.onicecandidate = (event) => {
-                if (!event.candidate || !currentRoom || !currentCallId) return;
-                const c = event.candidate.toJSON();
-                push(ref(db, `calls/${currentRoom}/${currentCallId}/callerCandidates`), c);
-            };
+            pc.onicecandidate = (event) => { if (!event.candidate || !currentRoom || !currentCallId) return; const c = event.candidate.toJSON(); push(ref(db, `calls/${currentRoom}/${currentCallId}/callerCandidates`), c); };
             pc.onconnectionstatechange = () => {
-                if (pc.connectionState === 'connected') {
-                    connected = true;
-                    callContainer.classList.add('active');
-                    incomingPanel.classList.remove('active');
-                    if (callTimeout) clearTimeout(callTimeout);
-                } else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed' || pc.connectionState === 'closed') {
-                    connected = false;
-                    endCall();
-                }
+                if (pc.connectionState === 'connected') { connected = true; callContainer.classList.add('active'); incomingPanel.classList.remove('active'); if (callTimeout) clearTimeout(callTimeout); }
+                else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed' || pc.connectionState === 'closed') { connected = false; endCall(); }
             };
             return pc;
         }
-
         async function startCall(targetUserId) {
             if (!currentRoom || !userId) return;
-            if (pc) {
-                showNotification('هناك مكالمة قائمة حالياً', 'warning');
-                return;
-            }
+            if (pc) { showNotification('هناك مكالمة قائمة', 'warning'); return; }
             try {
                 await setupLocalStream();
                 pc = createPeerConnection();
                 currentCallId = 'call_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
                 const offer = await pc.createOffer();
                 await pc.setLocalDescription(offer);
-                await set(ref(db, `calls/${currentRoom}/${currentCallId}/offer`), {
-                    type: offer.type,
-                    sdp: offer.sdp,
-                    from: userId,
-                    name: currentUser,
-                    targetId: targetUserId,
-                    ts: Date.now()
-                });
+                await set(ref(db, `calls/${currentRoom}/${currentCallId}/offer`), { type: offer.type, sdp: offer.sdp, from: userId, name: currentUser, targetId: targetUserId, ts: Date.now() });
                 callInfo.textContent = `الاتصال بـ ${usersMap[targetUserId] || 'المستخدم'}...`;
                 callContainer.classList.add('active');
                 callAvatar.innerHTML = '<i class="fas fa-phone"></i>';
                 muteCallBtn.innerHTML = '<i class="fas fa-microphone"></i>';
                 incomingPanel.classList.remove('active');
-                callTimeout = setTimeout(() => {
-                    if (pc && pc.connectionState !== 'connected') {
-                        endCall();
-                        showNotification('لم يجب الطرف الآخر', 'danger');
-                    }
-                }, 30000);
-            } catch (err) {
-                console.error(err);
-                showNotification('فشل بدء المكالمة', 'danger');
-                endCall();
-            }
+                callTimeout = setTimeout(() => { if (pc && pc.connectionState !== 'connected') { endCall(); showNotification('لم يجب الطرف الآخر', 'danger'); } }, 30000);
+            } catch (err) { console.error(err); showNotification('فشل بدء المكالمة', 'danger'); endCall(); }
         }
-
         async function acceptCall() {
             if (!incomingOffer || !currentRoom || !userId || !currentCallId) return;
-            if (pc) {
-                showNotification('هناك مكالمة قائمة', 'warning');
-                return;
-            }
+            if (pc) { showNotification('هناك مكالمة قائمة', 'warning'); return; }
             try {
                 await setupLocalStream();
                 pc = createPeerConnection();
                 await pc.setRemoteDescription(new RTCSessionDescription({ type: incomingOffer.type, sdp: incomingOffer.sdp }));
                 const answer = await pc.createAnswer();
                 await pc.setLocalDescription(answer);
-                await set(ref(db, `calls/${currentRoom}/${currentCallId}/answer`), {
-                    type: answer.type,
-                    sdp: answer.sdp,
-                    from: userId,
-                    name: currentUser,
-                    ts: Date.now()
-                });
+                await set(ref(db, `calls/${currentRoom}/${currentCallId}/answer`), { type: answer.type, sdp: answer.sdp, from: userId, name: currentUser, ts: Date.now() });
                 callInfo.textContent = `تتحدث مع ${incomingOffer.name}`;
                 callContainer.classList.add('active');
                 callAvatar.innerHTML = '<i class="fas fa-user"></i>';
                 incomingPanel.classList.remove('active');
                 if (callTimeout) clearTimeout(callTimeout);
-                ring.pause();
-                ring.currentTime = 0;
-            } catch (err) {
-                console.error(err);
-                showNotification('فشل قبول المكالمة', 'danger');
-                endCall();
-            }
+                ring.pause(); ring.currentTime = 0;
+            } catch (err) { console.error(err); showNotification('فشل قبول المكالمة', 'danger'); endCall(); }
         }
-
         function endCall() {
             if (callTimeout) clearTimeout(callTimeout);
-            if (pc) {
-                pc.close();
-                pc = null;
-            }
-            if (screenShareStream) {
-                screenShareStream.getTracks().forEach(t => t.stop());
-                screenShareStream = null;
-            }
-            if (currentRoom && currentCallId) {
-                remove(ref(db, `calls/${currentRoom}/${currentCallId}`));
-            }
-            currentCallId = null;
-            incomingOffer = null;
-            callContainer.classList.remove('active');
-            incomingPanel.classList.remove('active');
+            if (pc) { pc.close(); pc = null; }
+            if (screenShareStream) { screenShareStream.getTracks().forEach(t => t.stop()); screenShareStream = null; }
+            if (currentRoom && currentCallId) { remove(ref(db, `calls/${currentRoom}/${currentCallId}`)); }
+            currentCallId = null; incomingOffer = null;
+            callContainer.classList.remove('active'); incomingPanel.classList.remove('active');
             callInfo.textContent = '...';
-            if (remoteAudioElement) {
-                remoteAudioElement.remove();
-                remoteAudioElement = null;
-            }
+            if (remoteAudioElement) { remoteAudioElement.remove(); remoteAudioElement = null; }
         }
-
         function toggleMute() {
             if (!localStream) return;
             const track = localStream.getAudioTracks()[0];
-            if (track) {
-                track.enabled = !track.enabled;
-                muteCallBtn.innerHTML = track.enabled ? '<i class="fas fa-microphone"></i>' : '<i class="fas fa-microphone-slash"></i>';
-                showNotification(track.enabled ? 'إلغاء كتم' : 'تم الكتم');
-            }
+            if (track) { track.enabled = !track.enabled; muteCallBtn.innerHTML = track.enabled ? '<i class="fas fa-microphone"></i>' : '<i class="fas fa-microphone-slash"></i>'; showNotification(track.enabled ? 'إلغاء كتم' : 'تم الكتم'); }
         }
-
         async function toggleScreenShare() {
-            if (!pc) {
-                showNotification('لا توجد مكالمة نشطة', 'warning');
-                return;
-            }
+            if (!pc) { showNotification('لا توجد مكالمة', 'warning'); return; }
             if (screenShareStream) {
                 screenShareStream.getTracks().forEach(t => t.stop());
                 const audioTrack = localStream.getAudioTracks()[0];
@@ -2015,12 +1554,9 @@
                     else pc.addTrack(videoTrack, screenShareStream);
                     videoTrack.onended = () => toggleScreenShare();
                     shareScreenBtn.innerHTML = '<i class="fas fa-stop"></i>';
-                } catch (err) {
-                    showNotification('فشل مشاركة الشاشة', 'danger');
-                }
+                } catch (err) { showNotification('فشل مشاركة الشاشة', 'danger'); }
             }
         }
-
         function listenForCalls() {
             if (!currentRoom) return;
             const callsRef = ref(db, `calls/${currentRoom}`);
@@ -2031,139 +1567,71 @@
                 const offer = callData.offer;
                 if (offer.from === userId) return;
                 if (offer.targetId && offer.targetId !== userId) return;
-                if (pc) {
-                    showNotification('مكالمة واردة من ' + offer.name + ' ولكن لديك مكالمة حالياً', 'warning');
-                    return;
-                }
+                if (pc) { showNotification('مكالمة واردة من ' + offer.name + ' ولكن لديك مكالمة', 'warning'); return; }
                 currentCallId = callId;
                 incomingOffer = offer;
                 incomingCallerName.textContent = offer.name || 'مستخدم';
                 incomingPanel.classList.add('active');
-                ring.loop = true;
-                ring.volume = 0.5;
-                ring.play().catch(e => console.log('تعذر تشغيل الرنين', e));
-                onChildRemoved(ref(db, `calls/${currentRoom}/${callId}`), () => {
-                    if (currentCallId === callId) {
-                        endCall();
-                        showNotification('تم إنهاء المكالمة من قبل الطرف الآخر', 'info');
-                        incomingPanel.classList.remove('active');
-                        ring.pause();
-                        ring.currentTime = 0;
-                    }
-                });
+                ring.loop = true; ring.volume = 0.5; ring.play().catch(e => {});
+                onChildRemoved(ref(db, `calls/${currentRoom}/${callId}`), () => { if (currentCallId === callId) { endCall(); showNotification('تم إنهاء المكالمة', 'info'); incomingPanel.classList.remove('active'); ring.pause(); ring.currentTime = 0; } });
             });
         }
-
-        // ================== الدخول إلى الغرفة ==================
         async function enterChat(room, name) {
-            showLoading('جاري الدخول إلى الغرفة...');
+            showLoading('جاري الدخول...');
             try {
                 if (currentRoom) leaveRoom();
-                displayedMessages.clear();
-                oldestMessageKey = null;
-                allMessagesLoaded = false;
+                displayedMessages.clear(); oldestMessageKey = null; allMessagesLoaded = false;
                 currentRoom = room;
                 const isAdmin = (name === ADMIN_LOGIN);
                 currentUser = isAdmin ? ADMIN_DISPLAY : name;
                 userId = generateUserId();
-
                 roomNameSpan.textContent = `غرفة ${room}`;
                 currentUserNameSpan.textContent = currentUser;
-                userStatusSpan.innerHTML = isAdmin ?
-                    `<i class="fas fa-crown"></i> ${currentUser}` :
-                    `<i class="fas fa-user"></i> ${currentUser}`;
-
+                userStatusSpan.innerHTML = isAdmin ? `<i class="fas fa-crown"></i> ${currentUser}` : `<i class="fas fa-user"></i> ${currentUser}`;
                 const userRef = ref(db, `rooms/${room}/users/${userId}`);
                 await set(userRef, { name: isAdmin ? ADMIN_LOGIN : currentUser, joinedAt: Date.now(), lastActive: Date.now() });
                 onDisconnect(userRef).remove();
                 onDisconnect(ref(db, `rooms/${room}/typing/${userId}`)).remove();
-
                 const systemMsgKey = `${Date.now()}_system_${userId}`;
-                await set(ref(db, `rooms/${room}/messages/${systemMsgKey}`), {
-                    sender: 'نظام',
-                    text: `${currentUser} دخل الغرفة`,
-                    timestamp: Date.now()
-                });
+                await set(ref(db, `rooms/${room}/messages/${systemMsgKey}`), { sender: 'نظام', text: `${currentUser} دخل الغرفة`, timestamp: Date.now() });
                 await cleanOldMessages(room);
-
                 monitorRoomUsers(room);
                 setupTyping(room, userId);
                 listenTyping(room);
                 await setupMessageListener();
                 listenForCalls();
-
                 if (Notification.permission === 'default') Notification.requestPermission();
                 hideLoading();
                 resetInactivityTimer();
                 document.addEventListener('mousemove', resetInactivityTimer);
                 document.addEventListener('keypress', resetInactivityTimer);
                 updateStats();
-            } catch (err) {
-                hideLoading();
-                showNotification('خطأ: ' + err.message, 'danger');
-            }
+            } catch (err) { hideLoading(); showNotification('خطأ: ' + err.message, 'danger'); }
         }
-
         function resetInactivityTimer() {
             if (inactivityTimer) clearTimeout(inactivityTimer);
-            inactivityTimer = setTimeout(() => {
-                if (currentRoom) {
-                    showNotification('تم تسجيل الخروج لعدم النشاط', 'warning');
-                    leaveRoom();
-                }
-            }, INACTIVITY_TIMEOUT);
+            inactivityTimer = setTimeout(() => { if (currentRoom) { showNotification('خروج لعدم النشاط', 'warning'); leaveRoom(); } }, INACTIVITY_TIMEOUT);
         }
-
-        // ================== الخروج من الغرفة ==================
         function leaveRoom() {
-            endCall();
-            closeLocalStream();
+            endCall(); closeLocalStream();
             if (currentRoom && userId) {
                 const systemMsgKey = `${Date.now()}_system_${userId}`;
-                set(ref(db, `rooms/${currentRoom}/messages/${systemMsgKey}`), {
-                    sender: 'نظام',
-                    text: `${currentUser} غادر الغرفة`,
-                    timestamp: Date.now()
-                });
+                set(ref(db, `rooms/${currentRoom}/messages/${systemMsgKey}`), { sender: 'نظام', text: `${currentUser} غادر الغرفة`, timestamp: Date.now() });
                 remove(ref(db, `rooms/${currentRoom}/users/${userId}`));
                 remove(ref(db, `rooms/${currentRoom}/typing/${userId}`));
             }
-            Object.keys(firebaseListeners).forEach(key => {
-                const listener = firebaseListeners[key];
-                if (listener) {
-                    if (key === 'messages' && messagesRef) off(messagesRef, listener);
-                    else if (key === 'usersAdded' && currentRoom) off(ref(db, `rooms/${currentRoom}/users`), listener);
-                    else if (key === 'usersRemoved' && currentRoom) off(ref(db, `rooms/${currentRoom}/users`), listener);
-                    else if (key === 'typing' && currentRoom) off(ref(db, `rooms/${currentRoom}/typing`), listener);
-                    firebaseListeners[key] = null;
-                }
-            });
-            displayedMessages.clear();
-            messagesContainer.innerHTML = '';
-            usersMap = {};
-            window.audioPlayers.forEach(audio => { audio.pause(); audio.src = ''; });
-            window.audioPlayers.clear();
+            Object.keys(firebaseListeners).forEach(key => { const listener = firebaseListeners[key]; if (listener) { if (key === 'messages' && messagesRef) off(messagesRef, listener); else if (key === 'usersAdded' && currentRoom) off(ref(db, `rooms/${currentRoom}/users`), listener); else if (key === 'usersRemoved' && currentRoom) off(ref(db, `rooms/${currentRoom}/users`), listener); else if (key === 'typing' && currentRoom) off(ref(db, `rooms/${currentRoom}/typing`), listener); firebaseListeners[key] = null; } });
+            displayedMessages.clear(); messagesContainer.innerHTML = ''; usersMap = {};
+            window.audioPlayers.forEach(audio => { audio.pause(); audio.src = ''; }); window.audioPlayers.clear();
             if (inactivityTimer) clearTimeout(inactivityTimer);
             document.removeEventListener('mousemove', resetInactivityTimer);
             document.removeEventListener('keypress', resetInactivityTimer);
             currentRoom = currentUser = userId = messagesRef = null;
             window.location.href = 'login.html';
         }
-
-        function confirmLeave() {
-            confirmDialog.classList.add('active');
-        }
-
-        confirmYes.addEventListener('click', () => {
-            confirmDialog.classList.remove('active');
-            leaveRoom();
-        });
-
-        confirmNo.addEventListener('click', () => {
-            confirmDialog.classList.remove('active');
-        });
-
-        // ================== تحديث واجهة التحميل ==================
+        function confirmLeave() { confirmDialog.classList.add('active'); }
+        confirmYes.addEventListener('click', () => { confirmDialog.classList.remove('active'); leaveRoom(); });
+        confirmNo.addEventListener('click', () => { confirmDialog.classList.remove('active'); });
         function updateProgressUI(taskId, fileName, percent) {
             let item = document.getElementById(`progress-${taskId}`);
             if (!item) {
@@ -2179,49 +1647,23 @@
             percentSpan.textContent = Math.round(percent * 100) + '%';
             if (percent >= 1) setTimeout(() => item.remove(), 1000);
         }
-
-        // ================== رفع الملفات ==================
         async function handleFileUpload(file, type) {
-            if (!currentRoom) {
-                showNotification('أنت لست في غرفة', 'danger');
-                return;
-            }
+            if (!currentRoom) { showNotification('أنت لست في غرفة', 'danger'); return; }
             const taskId = Date.now() + '-' + Math.random().toString(36).substr(2, 5);
             try {
                 progressDiv.style.display = 'block';
-                if (type === 'image') {
-                    try {
-                        file = await compressImage(file);
-                    } catch (e) {
-                        console.warn('فشل ضغط الصورة، سيتم رفع الأصل', e);
-                    }
-                } else if (type === 'video' && file.size > 100 * 1024 * 1024) {
-                    showNotification('الفيديو كبير جداً (أكثر من 100MB) ولن يتم رفعه', 'danger');
-                    return;
-                }
+                if (type === 'image') { try { file = await compressImage(file); } catch (e) {} }
+                else if (type === 'video' && file.size > 100 * 1024 * 1024) { showNotification('الفيديو كبير جداً', 'danger'); return; }
                 const ext = file.name.split('.').pop() || (type === 'image' ? 'jpg' : type === 'video' ? 'mp4' : 'webm');
                 const fname = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '.' + ext;
                 const url = await uploadToGitHubWithProgress(file, fname, type, (percent) => updateProgressUI(taskId, file.name, percent));
                 if (currentRoom && messagesRef) {
                     const msgKey = `${Date.now()}_${userId}`;
-                    await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), {
-                        sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser,
-                        text: url,
-                        type,
-                        timestamp: Date.now()
-                    });
+                    await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), { sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser, text: url, type, timestamp: Date.now() });
                     showNotification('تم الإرسال');
-                } else {
-                    showNotification('تم الرفع ولكنك غادرت الغرفة', 'warning');
-                }
-            } catch (e) {
-                showNotification(e.toString(), 'danger');
-            } finally {
-                if (progressDiv.children.length === 0) progressDiv.style.display = 'none';
-            }
+                } else { showNotification('تم الرفع ولكنك غادرت', 'warning'); }
+            } catch (e) { showNotification(e.toString(), 'danger'); } finally { if (progressDiv.children.length === 0) progressDiv.style.display = 'none'; }
         }
-
-        // ================== التسجيل الصوتي ==================
         async function startRecording() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -2245,27 +1687,19 @@
                 for (let i = 0; i < 16; i++) voiceVisualizer.innerHTML += '<div class="voice-bar"></div>';
                 mediaRecorder.start();
                 recordingStartTime = Date.now();
-                recordingTimerInterval = setInterval(() => {
-                    let e = Math.floor((Date.now() - recordingStartTime) / 1000);
-                    voiceTimer.textContent = `${Math.floor(e / 60).toString().padStart(2, '0')}:${(e % 60).toString().padStart(2, '0')}`;
-                }, 1000);
+                recordingTimerInterval = setInterval(() => { let e = Math.floor((Date.now() - recordingStartTime) / 1000); voiceTimer.textContent = `${Math.floor(e / 60).toString().padStart(2, '0')}:${(e % 60).toString().padStart(2, '0')}`; }, 1000);
                 voiceRecordingBar.classList.add('active');
                 const updateVis = () => {
                     if (!analyser || !voiceRecordingBar.classList.contains('active')) return;
                     const data = new Uint8Array(analyser.frequencyBinCount);
                     analyser.getByteFrequencyData(data);
-                    voiceVisualizer.querySelectorAll('.voice-bar').forEach((b, i) => {
-                        b.style.height = (10 + (data[i] / 255) * 20) + 'px';
-                    });
+                    voiceVisualizer.querySelectorAll('.voice-bar').forEach((b, i) => { b.style.height = (10 + (data[i] / 255) * 20) + 'px'; });
                     visualizerAnimation = requestAnimationFrame(updateVis);
                 };
                 updateVis();
                 showNotification('بدأ التسجيل');
-            } catch {
-                showNotification('تعذر الوصول إلى الميكروفون', 'danger');
-            }
+            } catch { showNotification('تعذر الوصول إلى الميكروفون', 'danger'); }
         }
-
         function stopRecording() {
             if (mediaRecorder && mediaRecorder.state !== 'inactive') {
                 mediaRecorder.stop();
@@ -2276,52 +1710,30 @@
                 showNotification('تم إيقاف التسجيل');
             }
         }
-
-        // ================== أحداث الإدخال والإرسال ==================
         sendBtn.addEventListener('click', async () => {
             const text = messageInput.value.trim();
             if (!text || !currentRoom) return;
             const msgKey = `${Date.now()}_${userId}`;
-            const msgData = {
-                sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser,
-                text,
-                timestamp: Date.now()
-            };
-            if (messageInput.dataset.replyTo) {
-                msgData.replyTo = messageInput.dataset.replyTo;
-                delete messageInput.dataset.replyTo;
-                messageInput.placeholder = 'اكتب رسالتك...';
-            }
+            const msgData = { sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser, text, timestamp: Date.now() };
+            if (messageInput.dataset.replyTo) { msgData.replyTo = messageInput.dataset.replyTo; delete messageInput.dataset.replyTo; messageInput.placeholder = 'اكتب رسالتك...'; }
             await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), msgData);
             messageInput.value = '';
             if (currentRoom && userId) set(ref(db, `rooms/${currentRoom}/typing/${userId}`), false);
         });
-
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendBtn.click();
-            }
-        });
-
-        // الإشارات @
+        messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendBtn.click(); } });
         messageInput.addEventListener('input', () => {
             const val = messageInput.value;
             const lastAt = val.lastIndexOf('@');
-            if (lastAt !== -1 && (lastAt === 0 || val[lastAt - 1] === ' ') && !val.slice(lastAt + 1).includes(' ')) {
-                const query = val.slice(lastAt + 1).toLowerCase();
-                const matches = Object.values(usersMap).filter(name =>
-                    name.toLowerCase().includes(query) && name !== (currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser)
-                );
+            if (lastAt !== -1 && (lastAt === 0 || val[lastAt-1] === ' ') && !val.slice(lastAt+1).includes(' ')) {
+                const query = val.slice(lastAt+1).toLowerCase();
+                const matches = Object.values(usersMap).filter(name => name.toLowerCase().includes(query) && name !== (currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser));
                 if (matches.length > 0) {
-                    mentionPopup.innerHTML = matches.map(name =>
-                        `<div class="mention-item" data-name="${name}"><div class="user-avatar" style="width:24px;height:24px;font-size:0.8rem;">${name.charAt(0)}</div>${name}</div>`
-                    ).join('');
+                    mentionPopup.innerHTML = matches.map(name => `<div class="mention-item" data-name="${name}"><div class="user-avatar" style="width:24px;height:24px;font-size:0.8rem;">${name.charAt(0)}</div>${name}</div>`).join('');
                     mentionPopup.style.display = 'flex';
                     mentionPopup.querySelectorAll('.mention-item').forEach(item => {
                         item.addEventListener('click', () => {
                             const name = item.dataset.name;
-                            messageInput.value = val.substring(0, lastAt + 1) + name + ' ';
+                            messageInput.value = val.substring(0, lastAt+1) + name + ' ';
                             mentionPopup.style.display = 'none';
                             messageInput.focus();
                         });
@@ -2331,230 +1743,78 @@
             }
             mentionPopup.style.display = 'none';
         });
-
-        // ================== أحداث الوسائط ==================
-        attachBtn.addEventListener('click', () => {
-            fileInput.click();
-            mediaPopup.classList.remove('show');
-        });
-
-        cameraBtn.addEventListener('click', () => {
-            cameraInput.click();
-            mediaPopup.classList.remove('show');
-        });
-
+        attachBtn.addEventListener('click', () => { fileInput.click(); mediaPopup.classList.remove('show'); });
+        cameraBtn.addEventListener('click', () => { cameraInput.click(); mediaPopup.classList.remove('show'); });
         fileInput.addEventListener('change', (e) => {
-            const files = Array.from(e.target.files);
-            files.forEach(file => {
+            Array.from(e.target.files).forEach(file => {
                 if (file.type.startsWith('image/')) handleFileUpload(file, 'image');
                 else if (file.type.startsWith('video/')) handleFileUpload(file, 'video');
                 else showNotification('نوع غير مدعوم: ' + file.name, 'danger');
             });
             fileInput.value = '';
         });
-
-        cameraInput.addEventListener('change', (e) => {
-            const f = e.target.files[0];
-            if (f?.type.startsWith('image/')) handleFileUpload(f, 'image');
-            cameraInput.value = '';
-        });
-
-        voiceRecordBtn.addEventListener('click', () => {
-            mediaPopup.classList.remove('show');
-            startRecording();
-        });
-
+        cameraInput.addEventListener('change', (e) => { const f = e.target.files[0]; if (f?.type.startsWith('image/')) handleFileUpload(f, 'image'); cameraInput.value = ''; });
+        voiceRecordBtn.addEventListener('click', () => { mediaPopup.classList.remove('show'); startRecording(); });
         stopRecordingBtn.addEventListener('click', stopRecording);
         sendVoiceBtn.addEventListener('click', stopRecording);
-
-        stickerBtn.addEventListener('click', () => {
-            stickerPanel.classList.toggle('show');
-            mediaPopup.classList.remove('show');
-        });
-
+        stickerBtn.addEventListener('click', () => { stickerPanel.classList.toggle('show'); mediaPopup.classList.remove('show'); });
         document.querySelectorAll('.sticker-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
                 const sticker = btn.textContent;
                 const msgKey = `${Date.now()}_${userId}`;
-                await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), {
-                    sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser,
-                    text: sticker,
-                    type: 'sticker',
-                    timestamp: Date.now()
-                });
+                await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), { sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser, text: sticker, type: 'sticker', timestamp: Date.now() });
                 stickerPanel.classList.remove('show');
             });
         });
-
         mediaBtn.addEventListener('click', () => mediaPopup.classList.toggle('show'));
-
-        document.addEventListener('click', (e) => {
-            if (!mediaBtn?.contains(e.target) && !mediaPopup?.contains(e.target)) {
-                mediaPopup?.classList.remove('show');
-            }
-        });
-
-        // ================== أحداث المستخدمين والمكالمات ==================
-        menuBtn.addEventListener('click', () => {
-            sideMenu.classList.toggle('show');
-        });
-
-        // إغلاق القائمة عند النقر خارجها
-        document.addEventListener('click', (e) => {
-            if (!sideMenu.contains(e.target) && !menuBtn.contains(e.target)) {
-                sideMenu.classList.remove('show');
-            }
-        });
-
+        document.addEventListener('click', (e) => { if (!mediaBtn?.contains(e.target) && !mediaPopup?.contains(e.target)) mediaPopup?.classList.remove('show'); });
+        menuBtn.addEventListener('click', () => sideMenu.classList.toggle('show'));
+        document.addEventListener('click', (e) => { if (!sideMenu.contains(e.target) && !menuBtn.contains(e.target)) sideMenu.classList.remove('show'); });
         leaveBtn.addEventListener('click', confirmLeave);
-
-        callUserBtn.addEventListener('click', () => {
-            if (!currentRoom) return;
-            usersPopup.classList.toggle('show');
-            popupOverlay.style.display = usersPopup.classList.contains('show') ? 'block' : 'none';
-            sideMenu.classList.remove('show');
-        });
-
-        popupUsersList.addEventListener('click', (e) => {
-            const item = e.target.closest('.user-item');
-            if (!item) return;
-            const userIdAttr = item.dataset.userId;
-            if (userIdAttr && userIdAttr !== userId) {
-                usersPopup.classList.remove('show');
-                popupOverlay.style.display = 'none';
-                startCall(userIdAttr);
-                sideMenu.classList.remove('show');
-            }
-        });
-
+        callUserBtn.addEventListener('click', () => { if (!currentRoom) return; usersPopup.classList.toggle('show'); popupOverlay.style.display = usersPopup.classList.contains('show') ? 'block' : 'none'; sideMenu.classList.remove('show'); });
+        popupUsersList.addEventListener('click', (e) => { const item = e.target.closest('.user-item'); if (!item) return; const userIdAttr = item.dataset.userId; if (userIdAttr && userIdAttr !== userId) { usersPopup.classList.remove('show'); popupOverlay.style.display = 'none'; startCall(userIdAttr); sideMenu.classList.remove('show'); } });
         acceptIncoming.addEventListener('click', acceptCall);
-
         rejectIncoming.addEventListener('click', () => {
-            incomingPanel.classList.remove('active');
-            ring.pause();
-            ring.currentTime = 0;
-            if (currentRoom && currentCallId) {
-                remove(ref(db, `calls/${currentRoom}/${currentCallId}`));
-                currentCallId = null;
-            }
+            incomingPanel.classList.remove('active'); ring.pause(); ring.currentTime = 0;
+            if (currentRoom && currentCallId) { remove(ref(db, `calls/${currentRoom}/${currentCallId}`)); currentCallId = null; }
             incomingOffer = null;
         });
-
         muteCallBtn.addEventListener('click', toggleMute);
         shareScreenBtn.addEventListener('click', toggleScreenShare);
         endCallBtn.addEventListener('click', endCall);
-
-        function closeUsersPopup() {
-            usersPopup.classList.remove('show');
-            popupOverlay.style.display = 'none';
-        }
-
-        toggleUsersBtn.addEventListener('click', () => {
-            usersPopup.classList.toggle('show');
-            popupOverlay.style.display = usersPopup.classList.contains('show') ? 'block' : 'none';
-            sideMenu.classList.remove('show');
-        });
-
+        function closeUsersPopup() { usersPopup.classList.remove('show'); popupOverlay.style.display = 'none'; }
+        toggleUsersBtn.addEventListener('click', () => { usersPopup.classList.toggle('show'); popupOverlay.style.display = usersPopup.classList.contains('show') ? 'block' : 'none'; sideMenu.classList.remove('show'); });
         popupOverlay.addEventListener('click', closeUsersPopup);
         closePopupBtn.addEventListener('click', closeUsersPopup);
-
-        copyRoomBtn.addEventListener('click', async () => {
-            if (currentRoom) {
-                const success = await copyToClipboard(currentRoom);
-                showNotification(success ? 'تم نسخ رقم الغرفة' : 'فشل النسخ', success ? 'success' : 'danger');
-                sideMenu.classList.remove('show');
-            }
-        });
-
+        copyRoomBtn.addEventListener('click', async () => { if (currentRoom) { const success = await copyToClipboard(currentRoom); showNotification(success ? 'تم النسخ' : 'فشل النسخ', success ? 'success' : 'danger'); sideMenu.classList.remove('show'); } });
         shareRoomBtn.addEventListener('click', () => {
             if (currentRoom) {
-                const shareText = `انضم إلي في غرفة ${currentRoom} على تطبيق اسهل حل`;
+                const shareText = `انضم إلي في غرفة ${currentRoom}`;
                 const shareUrl = `${location.origin}${location.pathname.replace('chat.html', 'login.html')}?room=${currentRoom}`;
-                if (navigator.share) {
-                    navigator.share({ title: 'اسهل حل', text: shareText, url: shareUrl }).catch(() => {
-                        copyToClipboard(shareUrl).then(success => {
-                            showNotification(success ? 'تم نسخ رابط الدعوة' : 'فشل النسخ', success ? 'success' : 'danger');
-                        });
-                    });
-                } else {
-                    copyToClipboard(shareUrl).then(success => {
-                        showNotification(success ? 'تم نسخ رابط الدعوة' : 'فشل النسخ', success ? 'success' : 'danger');
-                    });
-                }
+                if (navigator.share) { navigator.share({ title: 'اسهل حل', text: shareText, url: shareUrl }).catch(() => { copyToClipboard(shareUrl).then(success => { showNotification(success ? 'تم نسخ الرابط' : 'فشل', success ? 'success' : 'danger'); }); }); }
+                else { copyToClipboard(shareUrl).then(success => { showNotification(success ? 'تم نسخ الرابط' : 'فشل', success ? 'success' : 'danger'); }); }
                 sideMenu.classList.remove('show');
             }
         });
-
-        emojiBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            emojiPanel.classList.toggle('show');
-        });
-
-        document.querySelectorAll('.emoji-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                messageInput.value += btn.textContent;
-                messageInput.focus();
-                emojiPanel.classList.remove('show');
-            });
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!emojiBtn.contains(e.target) && !emojiPanel.contains(e.target)) {
-                emojiPanel.classList.remove('show');
-            }
-        });
-
-        statsBtn.addEventListener('click', () => {
-            statsPanel.classList.toggle('show');
-            updateStats();
-            sideMenu.classList.remove('show');
-        });
-
-        searchBtn.addEventListener('click', () => {
-            searchBox.classList.toggle('active');
-            if (searchBox.classList.contains('active')) searchInput.focus();
-            sideMenu.classList.remove('show');
-        });
-
+        emojiBtn.addEventListener('click', (e) => { e.stopPropagation(); emojiPanel.classList.toggle('show'); });
+        document.querySelectorAll('.emoji-btn').forEach(btn => { btn.addEventListener('click', () => { messageInput.value += btn.textContent; messageInput.focus(); emojiPanel.classList.remove('show'); }); });
+        document.addEventListener('click', (e) => { if (!emojiBtn.contains(e.target) && !emojiPanel.contains(e.target)) emojiPanel.classList.remove('show'); });
+        statsBtn.addEventListener('click', () => { statsPanel.classList.toggle('show'); updateStats(); sideMenu.classList.remove('show'); });
+        searchBtn.addEventListener('click', () => { searchBox.classList.toggle('active'); if (searchBox.classList.contains('active')) searchInput.focus(); sideMenu.classList.remove('show'); });
         searchClose.addEventListener('click', () => searchBox.classList.remove('active'));
-
         searchInput.addEventListener('input', () => {
             const term = searchInput.value.toLowerCase();
-            document.querySelectorAll('.message').forEach(msg => {
-                const text = msg.textContent.toLowerCase();
-                msg.style.display = text.includes(term) ? 'flex' : 'none';
-            });
+            document.querySelectorAll('.message').forEach(msg => { const text = msg.textContent.toLowerCase(); msg.style.display = text.includes(term) ? 'flex' : 'none'; });
         });
-
-        // الوضع الليلي
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
-
-        // ================== التهيئة ==================
+        if (localStorage.getItem('darkMode') === 'true') document.documentElement.setAttribute('data-theme', 'dark');
         (async function init() {
             const room = localStorage.getItem('chatRoom');
             const user = localStorage.getItem('chatUser');
-            if (room && user) {
-                localStorage.removeItem('chatRoom');
-                localStorage.removeItem('chatUser');
-                await enterChat(room, user);
-            } else {
-                window.location.href = 'login.html';
-            }
+            if (room && user) { localStorage.removeItem('chatRoom'); localStorage.removeItem('chatUser'); await enterChat(room, user); }
+            else { window.location.href = 'login.html'; }
         })();
-
-        // إغلاق معرض الوسائط
-        document.getElementById('closeModalBtn').addEventListener('click', () => {
-            document.getElementById('mediaModal').classList.remove('active');
-        });
-
-        // إخفاء قائمة الإشارات عند النقر خارجها
-        document.addEventListener('click', (e) => {
-            if (!mentionPopup.contains(e.target) && e.target !== messageInput) {
-                mentionPopup.style.display = 'none';
-            }
-        });
+        document.getElementById('closeModalBtn').addEventListener('click', () => { document.getElementById('mediaModal').classList.remove('active'); });
+        document.addEventListener('click', (e) => { if (!mentionPopup.contains(e.target) && e.target !== messageInput) mentionPopup.style.display = 'none'; });
     </script>
 </body>
 </html>
