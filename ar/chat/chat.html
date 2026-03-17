@@ -259,6 +259,17 @@
             border-radius: 24px 24px 6px 24px;
         }
 
+        /* تحسين تباين رسائل الآخرين */
+        .message:not(.own):not(.system) {
+            background: #e5eaf0;  /* أغمق قليلاً */
+            border: 1px solid #c0c8d0;
+        }
+
+        [data-theme="dark"] .message:not(.own):not(.system) {
+            background: #3a3a50;
+            border: 1px solid #5a5a78;
+        }
+
         .message.system {
             align-self: center;
             background: #8892b0;
@@ -1482,7 +1493,7 @@
                 actionsDiv.appendChild(replyBtn);
             }
 
-            // زر الحذف للمستخدم نفسه خلال 5 دقائق
+            // زر الحذف للرسائل الخاصة (خلال 5 دقائق)
             if (isOwn && !isSystem && Date.now() - msg.timestamp < 5 * 60 * 1000) {
                 const deleteBtn = document.createElement('button');
                 deleteBtn.innerHTML = '<i class="fas fa-trash"></i>'; deleteBtn.title = 'حذف';
