@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>اسهل حل | دخول</title>
+    <title>اسهل حل | الرئيسية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -47,109 +47,136 @@
             justify-content: center;
             padding: 12px;
         }
-        .home-container {
-            max-width: 380px;
+        .index-container {
+            max-width: 400px;
             width: 100%;
             background: var(--card-bg);
             backdrop-filter: blur(12px);
-            border-radius: 36px;
-            padding: 28px 20px;
+            border-radius: 40px;
+            padding: 32px 24px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
             text-align: center;
         }
         .logo {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 800;
             color: var(--primary);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
         }
-        .logo i { font-size: 2rem; color: var(--primary-dark); }
-        .tagline { color: var(--gray); margin-bottom: 24px; font-size: 0.9rem; }
-        .input-group { margin-bottom: 16px; text-align: right; }
-        .input-group label { display: block; margin-bottom: 4px; font-weight: 600; color: var(--dark); font-size: 0.85rem; }
-        .input-wrapper {
-            display: flex; align-items: center; background: var(--light); border: 1px solid var(--border);
-            border-radius: 50px; padding: 4px 14px; transition: var(--transition);
+        .logo i { font-size: 2.2rem; color: var(--primary-dark); }
+        .main-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--dark);
         }
-        .input-wrapper:focus-within { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1); }
-        .input-wrapper i { color: var(--gray); font-size: 1rem; margin-left: 6px; }
-        .input-wrapper input {
-            flex: 1; border: none; background: transparent; padding: 10px 0; color: var(--dark);
+        .description {
+            color: var(--gray);
+            margin-bottom: 24px;
             font-size: 0.95rem;
+            line-height: 1.6;
         }
-        .input-wrapper input:focus { outline: none; }
-        .input-wrapper input::placeholder { color: var(--gray); opacity: 0.7; }
-        .random-room {
-            display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px;
-            color: var(--primary); cursor: pointer; font-size: 0.85rem; font-weight: 600;
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 24px 0;
         }
-        .random-room:hover { text-decoration: underline; }
-        .enter-btn {
-            width: 100%; padding: 12px; border: none; border-radius: 50px;
+        .btn {
+            padding: 14px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white; font-size: 1rem; font-weight: 700; cursor: pointer; transition: var(--transition);
-            margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;
+            color: white;
             box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
         }
-        .enter-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4); }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
+        }
+        .btn-outline {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
         .theme-toggle {
-            display: flex; align-items: center; justify-content: center; gap: 8px; margin: 20px 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0 16px;
         }
         .theme-toggle button {
-            background: var(--light); border: 1px solid var(--border); border-radius: 50px; padding: 6px 14px;
-            cursor: pointer; color: var(--dark); font-weight: 600; transition: var(--transition);
-            display: flex; align-items: center; gap: 6px; font-size: 0.8rem;
+            background: var(--light);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 6px 14px;
+            cursor: pointer;
+            color: var(--dark);
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
         }
-        .theme-toggle button:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .theme-toggle button:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
         .footer-links {
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 18px;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 16px;
             font-size: 0.75rem;
         }
-        .footer-links a { color: var(--gray); text-decoration: none; transition: var(--transition); display: flex; align-items: center; gap: 4px; }
-        .footer-links a:hover { color: var(--primary); }
-        .error-message { color: var(--danger); font-size: 0.8rem; margin-top: 6px; min-height: 20px; }
-        .info-message { color: var(--gray); font-size: 0.8rem; margin-top: 12px; }
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .footer-links a:hover {
+            color: var(--primary);
+        }
     </style>
 </head>
 <body>
-    <div class="home-container">
+    <div class="index-container">
         <div class="logo">
             <i class="fas fa-comment-dots"></i>
             <span>اسهل حل</span>
         </div>
-        <div class="tagline">دردشة حقيقية، بسيطة وآمنة</div>
-
-        <div class="input-group">
-            <label>اسم المستخدم (اختياري)</label>
-            <div class="input-wrapper">
-                <i class="fas fa-user"></i>
-                <input type="text" id="username" placeholder="سيتم توليد اسم تلقائي" autocomplete="off">
-            </div>
+        <div class="main-title">تواصل بكل سهولة</div>
+        <div class="description">
+            منصة الدردشة الأسرع والأكثر أماناً. محادثات فورية، مشاركة ملفات، وصوت عالي الجودة.
         </div>
 
-        <div class="input-group">
-            <label>رقم الغرفة</label>
-            <div class="input-wrapper">
-                <i class="fas fa-door-open"></i>
-                <input type="text" id="room" placeholder="أدخل 5 أرقام" maxlength="5" pattern="\d*" inputmode="numeric">
-            </div>
-            <div class="random-room" id="randomRoomBtn">
-                <i class="fas fa-dice"></i>
-                <span>إنشاء غرفة عشوائية (5 أرقام)</span>
-            </div>
+        <div class="cta-buttons">
+            <button class="btn btn-primary" id="startBtn"><i class="fas fa-sign-in-alt"></i> ابدأ الآن</button>
+            <button class="btn btn-outline" id="aboutBtn"><i class="fas fa-info-circle"></i> عن التطبيق</button>
         </div>
-
-        <button class="enter-btn" id="enterBtn">
-            <i class="fas fa-sign-in-alt"></i>
-            دخول
-        </button>
-
-        <div class="error-message" id="errorMessage"></div>
 
         <div class="theme-toggle">
             <button id="lightModeBtn"><i class="fas fa-sun"></i> فاتح</button>
@@ -157,15 +184,9 @@
         </div>
 
         <div class="footer-links">
-            <a href="#" id="homeLink"><i class="fas fa-home"></i> الرئيسية</a>
-            <a href="#" id="helpLink"><i class="fas fa-question-circle"></i> مساعدة</a>
-            <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i> حول</a>
-            <a href="#" id="privacyLink"><i class="fas fa-shield-alt"></i> خصوصية</a>
-            <a href="#" id="termsLink"><i class="fas fa-file-contract"></i> شروط</a>
-        </div>
-
-        <div class="info-message">
-            <i class="fas fa-lock"></i> جميع المحادثات مشفرة
+            <a href="#" id="privacyLink">خصوصية</a>
+            <a href="#" id="termsLink">شروط</a>
+            <a href="#" id="helpLink">مساعدة</a>
         </div>
     </div>
 
@@ -189,78 +210,16 @@
             localStorage.setItem('darkMode', 'true');
         });
 
-        // عناصر الإدخال
-        const usernameInput = document.getElementById('username');
-        const roomInput = document.getElementById('room');
-        const enterBtn = document.getElementById('enterBtn');
-        const errorMessage = document.getElementById('errorMessage');
-        const randomRoomBtn = document.getElementById('randomRoomBtn');
-
-        // توليد رقم غرفة عشوائي مكون من 5 أرقام (من 10000 إلى 99999)
-        function generateRandomRoom() {
-            return Math.floor(10000 + Math.random() * 90000).toString();
-        }
-
-        // توليد اسم عشوائي (مثل "زائر1234")
-        function generateRandomUsername() {
-            const randomNum = Math.floor(1000 + Math.random() * 9000);
-            return `زائر${randomNum}`;
-        }
-
-        randomRoomBtn.addEventListener('click', () => {
-            roomInput.value = generateRandomRoom();
+        // أزرار التنقل
+        document.getElementById('startBtn').addEventListener('click', () => {
+            window.location.href = 'welcome.html'; // أو login.html حسب التدفق المطلوب
         });
 
-        enterBtn.addEventListener('click', () => {
-            let username = usernameInput.value.trim();
-            const room = roomInput.value.trim();
-
-            // إذا لم يدخل المستخدم اسماً، نولد اسماً عشوائياً
-            if (!username) {
-                username = generateRandomUsername();
-            }
-
-            if (!room) {
-                errorMessage.textContent = 'الرجاء إدخال رقم الغرفة';
-                return;
-            }
-
-            // التحقق من أن رقم الغرفة مكون من 5 أرقام (اختياري ولكن مفيد)
-            if (!/^\d{5}$/.test(room)) {
-                errorMessage.textContent = 'رقم الغرفة يجب أن يكون 5 أرقام';
-                return;
-            }
-
-            // حفظ البيانات في localStorage
-            localStorage.setItem('chatUser', username);
-            localStorage.setItem('chatRoom', room);
-
-            // الانتقال إلى صفحة الدردشة
-            window.location.href = 'chat.html';
+        document.getElementById('aboutBtn').addEventListener('click', () => {
+            alert('تطبيق اسهل حل - نسخة 1.0\nدردشة حقيقية بسيطة وآمنة');
         });
 
-        // السماح بالدخول بالضغط على Enter
-        [usernameInput, roomInput].forEach(input => {
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    enterBtn.click();
-                }
-            });
-        });
-
-        // روابط القائمة
-        document.getElementById('homeLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('الصفحة الرئيسية - قيد التطوير');
-        });
-        document.getElementById('helpLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('المساعدة - قيد التطوير');
-        });
-        document.getElementById('aboutLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('حول التطبيق - قيد التطوير');
-        });
+        // روابط
         document.getElementById('privacyLink').addEventListener('click', (e) => {
             e.preventDefault();
             alert('سياسة الخصوصية - قيد التطوير');
@@ -268,6 +227,10 @@
         document.getElementById('termsLink').addEventListener('click', (e) => {
             e.preventDefault();
             alert('شروط الاستخدام - قيد التطوير');
+        });
+        document.getElementById('helpLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('المساعدة - قيد التطوير');
         });
     </script>
 </body>
