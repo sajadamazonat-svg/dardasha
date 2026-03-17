@@ -4,389 +4,278 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
     <title>اسهل حل | مرحباً</title>
-    <!-- Font Awesome (مكتبة أيقونات) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- خط جوجل (Cairo) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #2c3e9e;
+            --primary-light: #6c7ffa;
+            --secondary: #06d6a0;
+            --success: #06d6a0;
+            --warning: #ffb703;
+            --danger: #d9042b;
+            --dark: #1e1e2f;
+            --light: #f4f7fb;
+            --gray: #6b7280;
+            --bg-gradient: linear-gradient(145deg, #ffffff 0%, #f0f4fa 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border: #d1d5db;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --font-base: 13px;
+            --transition: all 0.2s ease;
         }
-
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(145deg, #12121c 0%, #1e1e2e 100%);
+            --card-bg: rgba(28, 28, 42, 0.95);
+            --dark: #f0f0fa;
+            --light: #2a2a3c;
+            --gray: #a0a0b0;
+            --border: #4a4a60;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: var(--bg-gradient);
+            color: var(--dark);
+            font-size: var(--font-base);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 12px;
         }
-
-        .app-container {
-            max-width: 500px;
+        .welcome-container {
+            max-width: 400px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 36px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            overflow: hidden;
-        }
-
-        .top-bar {
-            background: rgba(255, 255, 255, 0.8);
-            border-bottom: 1px solid #e0e7ff;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .brand {
-            font-weight: 800;
-            font-size: 1.4rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #4361ee;
-        }
-
-        .menu-btn {
-            background: white;
-            border: 1px solid #dee2e6;
-            color: #4361ee;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.2s;
-        }
-
-        .menu-btn:hover {
-            background: #f0f3ff;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -280px;
-            width: 250px;
-            height: 100vh;
-            background: white;
-            box-shadow: -5px 0 20px rgba(0,0,0,0.1);
-            z-index: 1000;
-            transition: right 0.3s ease;
-            padding: 20px 0;
-            border-radius: 30px 0 0 30px;
-        }
-
-        .sidebar.open {
-            right: 0;
-        }
-
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px 16px;
-            border-bottom: 2px solid #e0e7ff;
-        }
-
-        .close-btn {
-            background: white;
-            border: 1px solid #dee2e6;
-            color: #4361ee;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            padding: 0 12px;
-            margin-top: 16px;
-        }
-
-        .sidebar-nav a {
-            background: transparent;
-            border: none;
-            color: #2b2d42;
-            padding: 10px 14px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
             border-radius: 40px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            width: 100%;
-            border: 1px solid transparent;
-            text-decoration: none;
+            padding: 32px 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            text-align: center;
         }
-
-        .sidebar-nav a:hover {
-            background: rgba(67, 97, 238, 0.05);
-            color: #4361ee;
-            border-color: #6c7ffa;
-        }
-
-        .sidebar-nav a i {
-            font-size: 1.1rem;
-            color: #4361ee;
-        }
-
-        .sidebar-nav a.active {
-            background: rgba(67, 97, 238, 0.1);
-            color: #4361ee;
-            border-color: #6c7ffa;
-        }
-
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(4px);
-            z-index: 999;
-            display: none;
-        }
-
-        .sidebar-overlay.active {
-            display: block;
-        }
-
-        .content {
-            padding: 24px 20px;
-        }
-
         .logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .logo h1 {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #4361ee, #06d6a0);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .logo p {
-            color: #5a6a7a;
-            font-size: 1rem;
-            border-bottom: 1px solid #e0e7ff;
-            padding-bottom: 12px;
-        }
-
-        .welcome-message {
-            background: #f8faff;
-            border-radius: 40px;
-            padding: 28px 20px;
-            margin: 20px 0 30px;
-            border: 1px solid #e0e7ff;
-            text-align: center;
-        }
-
-        .welcome-message h2 {
-            color: #4361ee;
-            font-size: 1.8rem;
-            margin-bottom: 16px;
-        }
-
-        .welcome-message p {
-            color: #5a6a7a;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin: 30px 0;
-        }
-
-        .feature-item {
-            background: #f8faff;
-            border-radius: 30px;
-            padding: 20px 12px;
-            border: 1px solid #e0e7ff;
-            transition: transform 0.2s;
-            text-align: center;
-        }
-
-        .feature-item:hover {
-            transform: translateY(-5px);
-        }
-
-        .feature-item i {
-            font-size: 2rem;
-            color: #4361ee;
-            margin-bottom: 10px;
-        }
-
-        .feature-item span {
-            display: block;
-            font-weight: 600;
-            color: #2b2d42;
-        }
-
-        .btn {
-            display: inline-flex;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            width: 100%;
-            padding: 12px 18px;
+        }
+        .logo i { font-size: 2.2rem; color: var(--primary-dark); }
+        .welcome-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        .welcome-text {
+            color: var(--gray);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 24px 0;
+            text-align: right;
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--light);
+            padding: 12px 16px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+        }
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .feature-text {
+            flex: 1;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        .feature-desc {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 2px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
             border: none;
             border-radius: 50px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            margin: 6px 0;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
-
-        .btn i {
-            font-size: 1.1rem;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #06d6a0, #05b386);
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            box-shadow: 0 6px 16px rgba(6, 214, 160, 0.3);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
         }
-
-        .btn-success:hover {
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(6, 214, 160, 0.4);
+            box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
         }
-
         .btn-outline {
-            background: transparent;
-            color: #4361ee;
-            border: 2px solid #4361ee;
-            box-shadow: none;
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
         }
-
         .btn-outline:hover {
-            background: #4361ee;
+            background: var(--primary);
             color: white;
+            border-color: var(--primary);
+        }
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0 0;
+        }
+        .theme-toggle button {
+            background: var(--light);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 6px 14px;
+            cursor: pointer;
+            color: var(--dark);
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+        }
+        .theme-toggle button:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .footer-note {
+            margin-top: 20px;
+            color: var(--gray);
+            font-size: 0.7rem;
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- الشريط العلوي -->
-        <div class="top-bar">
-            <span class="brand"><i class="fas fa-comments"></i> اسهل حل</span>
-            <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+    <div class="welcome-container">
+        <div class="logo">
+            <i class="fas fa-comment-dots"></i>
+            <span>اسهل حل</span>
+        </div>
+        <div class="welcome-title">مرحباً بك</div>
+        <div class="welcome-text">
+            تطبيق الدردشة الأكثر أماناً وسهولة. تواصل مع أصدقائك بخصوصية تامة.
         </div>
 
-        <!-- القائمة الجانبية -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <span class="brand">اسهل حل</span>
-                <button class="close-btn" id="closeSidebar"><i class="fas fa-times"></i></button>
+        <div class="features">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                <div>
+                    <div class="feature-text">تشفير كامل</div>
+                    <div class="feature-desc">جميع المحادثات مشفرة وآمنة</div>
+                </div>
             </div>
-            <div class="sidebar-nav">
-                <a href="welcome.html" class="active"><i class="fas fa-home"></i> الرئيسية</a>
-                <a href="login.html"><i class="fas fa-sign-in-alt"></i> دخول</a>
-                <a href="help.html"><i class="fas fa-question-circle"></i> مساعدة</a>
-                <a href="about.html"><i class="fas fa-info-circle"></i> حول</a>
-                <a href="privacy.html"><i class="fas fa-lock"></i> خصوصية</a>
-                <a href="terms.html"><i class="fas fa-file-alt"></i> شروط</a>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <div>
+                    <div class="feature-text">سرعة عالية</div>
+                    <div class="feature-desc">إرسال واستقبال فوري للرسائل</div>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-images"></i></div>
+                <div>
+                    <div class="feature-text">مشاركة الوسائط</div>
+                    <div class="feature-desc">صور، فيديو، وصوت بجودة عالية</div>
+                </div>
             </div>
         </div>
-        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-        <!-- المحتوى الرئيسي -->
-        <div class="content">
-            <div class="logo">
-                <h1>اسهل حل</h1>
-                <p>دردشة فورية متطورة</p>
-            </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" id="loginBtn"><i class="fas fa-sign-in-alt"></i> دخول</button>
+            <button class="btn btn-outline" id="registerBtn"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
+        </div>
 
-            <div class="welcome-message">
-                <h2>مرحباً بك</h2>
-                <p>تواصل مع أصدقائك بسهولة وأمان. محادثات فورية، مكالمات صوتية، ومشاركة الملفات.</p>
-            </div>
+        <div class="theme-toggle">
+            <button id="lightModeBtn"><i class="fas fa-sun"></i> فاتح</button>
+            <button id="darkModeBtn"><i class="fas fa-moon"></i> داكن</button>
+        </div>
 
-            <div class="features">
-                <div class="feature-item">
-                    <i class="fas fa-comment"></i>
-                    <span>دردشة لحظية</span>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-phone"></i>
-                    <span>مكالمات صوتية</span>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-image"></i>
-                    <span>مشاركة صور</span>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-microphone"></i>
-                    <span>تسجيل صوتي</span>
-                </div>
-            </div>
-
-            <a href="login.html" class="btn btn-success">
-                <i class="fas fa-comment-dots"></i> ابدأ المحادثة
-            </a>
-
-            <div style="display: flex; gap: 10px; margin-top: 16px;">
-                <a href="help.html" class="btn btn-outline" style="flex:1;">
-                    <i class="fas fa-question-circle"></i> مساعدة
-                </a>
-                <a href="about.html" class="btn btn-outline" style="flex:1;">
-                    <i class="fas fa-info-circle"></i> حول
-                </a>
-            </div>
+        <div class="footer-note">
+            بالدخول أنت توافق على <a href="#" style="color: var(--primary);">الشروط</a> و <a href="#" style="color: var(--primary);">الخصوصية</a>
         </div>
     </div>
 
-    <!-- جافا سكريبت خاص بالصفحة (للقائمة الجانبية) -->
     <script>
-        // وظائف القائمة الجانبية
-        const menuBtn = document.getElementById('menuBtn');
-        const closeBtn = document.getElementById('closeSidebar');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
+        // الوضع الليلي
+        const lightModeBtn = document.getElementById('lightModeBtn');
+        const darkModeBtn = document.getElementById('darkModeBtn');
+        const htmlElement = document.documentElement;
 
-        function openSidebar() {
-            sidebar.classList.add('open');
-            overlay.classList.add('active');
+        if (localStorage.getItem('darkMode') === 'true') {
+            htmlElement.setAttribute('data-theme', 'dark');
         }
 
-        function closeSidebar() {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-        }
+        lightModeBtn.addEventListener('click', () => {
+            htmlElement.removeAttribute('data-theme');
+            localStorage.setItem('darkMode', 'false');
+        });
 
-        menuBtn.addEventListener('click', openSidebar);
-        closeBtn.addEventListener('click', closeSidebar);
-        overlay.addEventListener('click', closeSidebar);
+        darkModeBtn.addEventListener('click', () => {
+            htmlElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('darkMode', 'true');
+        });
+
+        // أزرار التنقل
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            window.location.href = 'login.html';
+        });
+
+        document.getElementById('registerBtn').addEventListener('click', () => {
+            alert('ميزة إنشاء حساب قيد التطوير');
+        });
+
+        // روابط الشروط والخصوصية
+        document.querySelectorAll('.footer-note a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('قيد التطوير');
+            });
+        });
     </script>
 </body>
 </html>
