@@ -6,7 +6,6 @@
     <title>اسهل حل | الدردشة النهائية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         html, body { height: 100%; overflow: hidden; }
@@ -609,9 +608,8 @@
             <button class="action-btn secondary" id="emoji-btn"><i class="far fa-smile"></i></button>
             <button id="media-btn" class="action-btn secondary"><i class="fas fa-paperclip"></i></button>
             <div id="media-popup" class="media-popup">
-                <button id="attach-btn" class="action-btn"><i class="fas fa-cloud-upload-alt"></i> رفع</button>
-                <button id="camera-btn" class="action-btn"><i class="fas fa-camera"></i> كاميرا</button>
-                <button id="voice-record-btn" class="action-btn"><i class="fas fa-microphone"></i> تسجيل</button>
+                <button id="attach-btn" class="action-btn"><i class="fas fa-cloud-upload-alt"></i> رفع صور</button>
+                <button id="voice-record-btn" class="action-btn"><i class="fas fa-microphone"></i> تسجيل صوت</button>
             </div>
             <div id="emoji-panel" class="media-popup">
                 <button class="emoji-btn">😊</button><button class="emoji-btn">😂</button><button class="emoji-btn">❤️</button>
@@ -622,8 +620,7 @@
             <button id="send-message-btn" class="action-btn"><i class="fas fa-paper-plane"></i></button>
         </div>
 
-        <input type="file" id="file-input" accept="image/*,video/*" multiple style="display:none">
-        <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none">
+        <input type="file" id="file-input" accept="image/*" multiple style="display:none">
     </div>
 
     <div id="mediaModal" class="media-modal"><button class="modal-close-btn" id="closeModalBtn"><i class="fas fa-times"></i></button><div class="modal-media-container"><div id="modalMediaContainer"></div></div></div>
@@ -645,11 +642,9 @@
     <audio id="ring" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto" loop></audio>
 
     <script type="module">
-        // استيراد Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, push, onChildAdded, onChildRemoved, onDisconnect, get, remove, onValue, query, limitToLast, orderByKey, off, endAt } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // إعدادات Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
             authDomain: "zio3-8ffdd.firebaseapp.com",
@@ -663,7 +658,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // ثوابت
         const GITHUB_USERNAME = "ashlhl";
         const GITHUB_REPO = "ashlhl";
         const GITHUB_TOKEN_PATH = "2026";
@@ -672,9 +666,7 @@
         const ONE_HOUR = 60 * 60 * 1000;
         const MAX_MSGS = 20;
         const MAX_FILES = 5;
-        const MAX_VIDEO_DURATION = 120;
 
-        // عناصر DOM
         const roomNameSpan = document.getElementById('room-name-display');
         const userCountSpan = document.getElementById('user-count');
         const currentUserNameSpan = document.getElementById('current-user-name');
@@ -692,8 +684,6 @@
         const mediaPopup = document.getElementById('media-popup');
         const attachBtn = document.getElementById('attach-btn');
         const fileInput = document.getElementById('file-input');
-        const cameraBtn = document.getElementById('camera-btn');
-        const cameraInput = document.getElementById('camera-input');
         const voiceRecordBtn = document.getElementById('voice-record-btn');
         const voiceRecordingBar = document.getElementById('voice-recording-bar');
         const voiceTimer = document.getElementById('voice-timer');
@@ -735,7 +725,6 @@
         const darkModeToggle = document.getElementById('dark-mode-toggle');
         const modalCloseBtn = document.getElementById('closeModalBtn');
 
-        // متغيرات الحالة
         let currentRoom = null, currentUser = null, userId = null, messagesRef = null, typingTimeout = null;
         let displayedMessages = new Set();
         let oldestMessageKey = null, allMessagesLoaded = false, loadingMore = false;
@@ -754,7 +743,6 @@
         const callBasePath = () => `calls/${currentRoom}`;
         const configuration = { iceServers: [ { urls: 'stun:stun.l.google.com:19302' } ] };
 
-        // دوال مساعدة
         function showLoading(text = 'جاري التحميل...') { loaderText.textContent = text; globalLoader.classList.add('active'); }
         function hideLoading() { globalLoader.classList.remove('active'); }
         function showNotification(msg, type = 'success') {
@@ -817,92 +805,10 @@
             });
         }
 
-        function getVideoInfo(file) {
-            return new Promise((resolve, reject) => {
-                const video = document.createElement('video');
-                video.preload = 'metadata';
-                video.onloadedmetadata = () => {
-                    URL.revokeObjectURL(video.src);
-                    resolve({ duration: video.duration, width: video.videoWidth, height: video.videoHeight });
-                };
-                video.onerror = () => {
-                    URL.revokeObjectURL(video.src);
-                    reject(new Error('فشل قراءة الفيديو'));
-                };
-                video.src = URL.createObjectURL(file);
-            });
-        }
-
-        // ضغط الفيديو إلى 720p باستخدام FFmpeg أو Canvas fallback
-        async function convertVideoTo720p(file) {
-            return new Promise(async (resolve, reject) => {
-                let ffmpeg = null;
-                try {
-                    if (typeof FFmpeg === 'undefined') throw new Error('FFmpeg غير متوفرة');
-                    progressMessage.textContent = 'جاري تحضير تحويل الفيديو...';
-                    progressFill.style.width = '0%'; progressPercent.textContent = '0%';
-                    const { createFFmpeg, fetchFile } = FFmpeg;
-                    ffmpeg = createFFmpeg({ log: false, progress: (p) => { if (p.ratio) { const percent = Math.round(p.ratio * 100); progressFill.style.width = percent + '%'; progressPercent.textContent = percent + '%'; } } });
-                    await ffmpeg.load();
-                    const inputName = 'input.mp4';
-                    ffmpeg.FS('writeFile', inputName, await fetchFile(file));
-                    progressMessage.textContent = 'جاري تحويل الفيديو إلى 720p...';
-                    await ffmpeg.run('-i', inputName, '-vf', 'scale=1280:-2', '-c:v', 'libx264', '-preset', 'fast', '-crf', '28', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', 'output.mp4');
-                    const data = ffmpeg.FS('readFile', 'output.mp4');
-                    if (data.length === 0) throw new Error('الملف الناتج فارغ');
-                    const compressedFile = new File([data.buffer], file.name.replace(/\.[^/.]+$/, '') + '_720p.mp4', { type: 'video/mp4' });
-                    resolve(compressedFile);
-                } catch (error) {
-                    console.warn('FFmpeg فشل، استخدام canvas fallback', error);
-                    resolve(await fallbackDownscaleVideo(file));
-                } finally {
-                    try { if (ffmpeg) { ffmpeg.FS('unlink', 'input.mp4'); ffmpeg.FS('unlink', 'output.mp4'); } } catch (e) {}
-                }
-            });
-        }
-
-        // طريقة بديلة باستخدام canvas + MediaRecorder
-        async function fallbackDownscaleVideo(file) {
-            return new Promise((resolve, reject) => {
-                const video = document.createElement('video');
-                video.src = URL.createObjectURL(file);
-                video.muted = true;
-                video.playsInline = true;
-                video.onloadedmetadata = () => {
-                    const origW = video.videoWidth;
-                    const origH = video.videoHeight;
-                    const targetH = 720;
-                    const scale = targetH / origH;
-                    const targetW = Math.round(origW * scale / 2) * 2;
-                    if (isNaN(targetW) || targetW < 1) { video.remove(); resolve(file); return; }
-                    const canvas = document.createElement('canvas');
-                    canvas.width = targetW; canvas.height = targetH;
-                    const ctx = canvas.getContext('2d');
-                    let stream;
-                    try { stream = canvas.captureStream(30); } catch (e) { video.remove(); resolve(file); return; }
-                    const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-                    const chunks = [];
-                    recorder.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
-                    recorder.onstop = () => { resolve(new Blob(chunks, { type: 'video/webm' })); video.remove(); };
-                    video.play();
-                    recorder.start();
-                    function draw() {
-                        if (!video.ended && !video.paused) {
-                            try { ctx.drawImage(video, 0, 0, canvas.width, canvas.height); } catch (e) {}
-                            requestAnimationFrame(draw);
-                        }
-                    }
-                    draw();
-                    video.onended = () => { setTimeout(() => recorder.stop(), 500); };
-                };
-                video.onerror = () => { video.remove(); resolve(file); };
-            });
-        }
-
         function uploadToGitHubWithProgress(file, fileName, fileType, onProgress) {
             return new Promise(async (resolve, reject) => {
                 const token = await getGitHubToken();
-                let typeFolder = { image: 'صور', video: 'فيديو', audio: 'تسجيل_صوتي' }[fileType] || 'اخرى';
+                let typeFolder = { image: 'صور', audio: 'تسجيل_صوتي' }[fileType] || 'اخرى';
                 const githubPath = `chat/${typeFolder}/${sanitizeFolderName(currentRoom)}/${sanitizeFolderName(currentUser)}/${fileName}`;
                 const reader = new FileReader();
                 reader.onload = async (e) => {
@@ -932,27 +838,15 @@
             let completed = 0; const total = files.length;
             for (let i = 0; i < files.length; i++) {
                 let file = files[i];
-                let type = file.type.startsWith('image/') ? 'image' : file.type.startsWith('video/') ? 'video' : null;
+                let type = file.type.startsWith('image/') ? 'image' : null;
                 if (!type) { showNotification(`نوع الملف غير مدعوم: ${file.name}`, 'danger'); continue; }
                 try {
                     progressMessage.textContent = `جاري معالجة الملف ${i+1}/${total}: ${file.name}`;
                     progressFill.style.width = '0%'; progressPercent.textContent = '0%';
                     if (type === 'image') {
                         try { file = await compressImage(file); } catch (e) { console.warn('فشل ضغط الصورة', e); }
-                    } else if (type === 'video') {
-                        try {
-                            const info = await getVideoInfo(file);
-                            if (info.duration > MAX_VIDEO_DURATION) { showNotification(`الفيديو ${file.name} أطول من دقيقتين ولن يتم رفعه`, 'danger'); continue; }
-                            if (info.height > 720) {
-                                progressMessage.textContent = `جاري تحويل الفيديو ${i+1}/${total} إلى 720p...`;
-                                file = await convertVideoTo720p(file);
-                            } else progressMessage.textContent = `الفيديو ${i+1}/${total} بدقة منخفضة، جاري الرفع...`;
-                        } catch (e) {
-                            console.warn('فشل معالجة الفيديو، سيتم رفعه أصلياً', e);
-                            showNotification(`تعذر تحليل ${file.name}، سيتم رفعه كما هو`, 'warning');
-                        }
                     }
-                    const fname = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '.' + (file.name.split('.').pop() || (type === 'image' ? 'jpg' : 'mp4'));
+                    const fname = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '.' + (file.name.split('.').pop() || 'jpg');
                     const url = await uploadToGitHubWithProgress(file, fname, type, (percent) => { progressFill.style.width = percent + '%'; progressPercent.textContent = percent + '%'; });
                     if (currentRoom && messagesRef) {
                         const msgKey = `${Date.now()}_${userId}`;
@@ -1030,10 +924,6 @@
                 const img = document.createElement('img'); img.src = msg.text; img.className = 'message-image';
                 img.onclick = () => { document.getElementById('modalMediaContainer').innerHTML = `<img src="${msg.text}" class="modal-media">`; document.getElementById('mediaModal').classList.add('active'); };
                 div.appendChild(img);
-            } else if (msg.type === 'video') {
-                const vid = document.createElement('video'); vid.src = msg.text; vid.controls = true; vid.className = 'message-image';
-                vid.onclick = () => { document.getElementById('modalMediaContainer').innerHTML = `<video src="${msg.text}" controls class="modal-media"></video>`; document.getElementById('mediaModal').classList.add('active'); };
-                div.appendChild(vid);
             } else if (msg.type === 'audio') {
                 div.innerHTML = `<div style="display:flex;align-items:center;gap:8px"><button class="audio-play-btn" data-audio="${msg.text}" style="width:36px;height:36px;border-radius:50%;background:#4361ee;color:white;border:none"><i class="fas fa-play"></i></button><div style="flex:1;height:4px;background:rgba(255,255,255,0.3);border-radius:2px"><div class="audio-progress-filled" style="width:0%;height:100%;background:white;border-radius:2px"></div></div><span class="audio-duration" style="font-size:0.7rem">00:00</span></div>`;
                 const btn = div.querySelector('.audio-play-btn'); const prog = div.querySelector('.audio-progress-filled'); const dur = div.querySelector('.audio-duration'); const audioSrc = btn.dataset.audio; let audio = window.audioPlayers.get(audioSrc); if (!audio) { audio = new Audio(audioSrc); audio.preload = 'auto'; audio.load(); window.audioPlayers.set(audioSrc, audio); }
@@ -1130,10 +1020,21 @@
         async function startRecording() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream); audioChunks = [];
+                let options = { mimeType: 'audio/mp3' };
+                if (!MediaRecorder.isTypeSupported('audio/mp3')) {
+                    options = { mimeType: 'audio/webm' };
+                }
+                mediaRecorder = new MediaRecorder(stream, options);
+                audioChunks = [];
                 mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
                 mediaRecorder.onstop = () => {
-                    if (audioChunks.length > 0) { const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }); const audioFile = new File([audioBlob], 'audio_'+Date.now()+'.webm', { type: 'audio/webm' }); handleFileUpload(audioFile, 'audio'); audioChunks = []; }
+                    if (audioChunks.length > 0) {
+                        const audioBlob = new Blob(audioChunks, { type: options.mimeType });
+                        const extension = options.mimeType.includes('mp3') ? 'mp3' : 'webm';
+                        const audioFile = new File([audioBlob], 'audio_' + Date.now() + '.' + extension, { type: options.mimeType });
+                        handleFileUpload(audioFile, 'audio');
+                        audioChunks = [];
+                    }
                     stream.getTracks().forEach(t => t.stop());
                 };
                 audioContext = new AudioContext(); analyser = audioContext.createAnalyser(); analyser.fftSize = 32;
@@ -1148,7 +1049,6 @@
         }
         function stopRecording() { if (mediaRecorder && mediaRecorder.state !== 'inactive') { mediaRecorder.stop(); clearInterval(recordingTimerInterval); audioContext?.close(); if (visualizerAnimation) cancelAnimationFrame(visualizerAnimation); voiceRecordingBar.classList.remove('active'); showNotification('تم إيقاف التسجيل'); } }
 
-        // ربط الأحداث (مع التأكد من وجود العناصر)
         function initEventListeners() {
             if (sendBtn) sendBtn.addEventListener('click', async () => {
                 const text = messageInput.value.trim();
@@ -1162,16 +1062,12 @@
             if (messageInput) messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (sendBtn) sendBtn.click(); } });
 
             if (attachBtn) attachBtn.addEventListener('click', () => { fileInput.click(); mediaPopup?.classList.remove('show'); });
-            if (cameraBtn) cameraBtn.addEventListener('click', () => { cameraInput.click(); mediaPopup?.classList.remove('show'); });
             if (fileInput) fileInput.addEventListener('change', (e) => {
                 const files = Array.from(e.target.files); if (files.length === 0) return;
-                const imageFiles = files.filter(f => f.type.startsWith('image/')); const videoFiles = files.filter(f => f.type.startsWith('video/'));
-                const otherFiles = files.filter(f => !f.type.startsWith('image/') && !f.type.startsWith('video/'));
-                if (otherFiles.length > 0) showNotification('بعض الملفات غير مدعومة', 'warning');
-                const allFiles = [...imageFiles, ...videoFiles]; if (allFiles.length > 0) handleMultipleFilesUpload(allFiles, 'mix');
+                const imageFiles = files.filter(f => f.type.startsWith('image/'));
+                if (imageFiles.length > 0) handleMultipleFilesUpload(imageFiles, 'image');
                 fileInput.value = '';
             });
-            if (cameraInput) cameraInput.addEventListener('change', (e) => { const f = e.target.files[0]; if (f?.type.startsWith('image/')) handleFileUpload(f, 'image'); cameraInput.value = ''; });
 
             if (voiceRecordBtn) voiceRecordBtn.addEventListener('click', () => { mediaPopup?.classList.remove('show'); startRecording(); });
             if (stopRecordingBtn) stopRecordingBtn.addEventListener('click', stopRecording);
@@ -1223,10 +1119,8 @@
             if (modalCloseBtn) modalCloseBtn.addEventListener('click', () => document.getElementById('mediaModal')?.classList.remove('active'));
         }
 
-        // بدء الاستماع للأحداث
         initEventListeners();
 
-        // محاولة الدخول إلى الغرفة إذا كانت هناك بيانات في localStorage
         (async function init() {
             const room = localStorage.getItem('chatRoom'); const user = localStorage.getItem('chatUser');
             if (room && user) { localStorage.removeItem('chatRoom'); localStorage.removeItem('chatUser'); await enterChat(room, user); }
