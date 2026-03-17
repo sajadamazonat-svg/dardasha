@@ -273,6 +273,7 @@
             opacity: 0.7;
             margin-top: 4px;
             text-align: left;
+            color: var(--dark);
         }
 
         .message-image {
@@ -285,7 +286,6 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        /* إخفاء أزرار الإجراءات افتراضيًا */
         .message-actions {
             display: none;
             gap: 8px;
@@ -293,7 +293,6 @@
             justify-content: flex-end;
         }
 
-        /* إظهار الأزرار عند النقر على الرسالة (عبر كلاس active) */
         .message.active .message-actions {
             display: flex;
         }
@@ -442,7 +441,7 @@
         .voice-timer {
             font-size: 1.1rem;
             font-weight: 700;
-            color: white !important; /* لون أبيض ثابت */
+            color: white !important;
             background: rgba(0,0,0,0.5);
             padding: 4px 8px;
             border-radius: 20px;
@@ -478,6 +477,10 @@
             margin-top: 4px;
         }
 
+        .message.own .audio-player {
+            background: rgba(255,255,255,0.1);
+        }
+
         .audio-play-btn {
             width: 36px;
             height: 36px;
@@ -490,6 +493,7 @@
             align-items: center;
             justify-content: center;
             font-size: 1rem;
+            flex-shrink: 0;
         }
 
         .audio-progress {
@@ -511,7 +515,17 @@
         .audio-duration {
             font-size: 0.7rem;
             min-width: 40px;
-            color: var(--gray);
+            color: white; /* أبيض */
+            text-align: right;
+            direction: ltr;
+        }
+
+        .message:not(.own) .audio-duration {
+            color: var(--dark); /* في الرسائل غير المرسلة مني يكون غامق */
+        }
+
+        [data-theme="dark"] .message:not(.own) .audio-duration {
+            color: white;
         }
 
         .users-popup {
@@ -999,7 +1013,7 @@
 
         <div id="upload-progress" class="progress-container"></div>
 
-        <!-- شريط التسجيل الصوتي (بدون زر إرسال) -->
+        <!-- شريط التسجيل الصوتي -->
         <div id="voice-recording-bar" class="voice-recording-bar">
             <span class="voice-timer" id="voice-timer">00:00</span>
             <div class="voice-visualizer" id="voice-visualizer"></div>
@@ -1021,7 +1035,7 @@
                 <button class="emoji-btn">👍</button><button class="emoji-btn">🔥</button><button class="emoji-btn">🎉</button>
                 <button class="emoji-btn">😢</button><button class="emoji-btn">😡</button><button class="emoji-btn">👋</button>
                 <button class="emoji-btn">🤔</button><button class="emoji-btn">😎</button><button class="emoji-btn">🥳</button>
-                <!-- ملصقات (بنفس التنسيق ولكن بحجم أكبر قليلاً) -->
+                <!-- ملصقات -->
                 <button class="emoji-btn sticker-emoji">👍</button>
                 <button class="emoji-btn sticker-emoji">❤️</button>
                 <button class="emoji-btn sticker-emoji">😂</button>
@@ -1371,26 +1385,46 @@
 
                 const audioSrc = msg.text;
                 let audio = window.audioPlayers.get(audioSrc);
-                if (!audio) { audio = new Audio(audioSrc); audio.preload = 'auto'; audio.load(); window.audioPlayers.set(audioSrc, audio); }
+                if (!audio) {
+                    audio = new Audio(audioSrc);
+                    audio.preload = 'auto';
+                    audio.load();
+                    window.audioPlayers.set(audioSrc, audio);
+                }
                 audio.onerror = () => { playBtn.disabled = true; playBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i>'; };
                 audio.oncanplaythrough = () => { playBtn.disabled = false; };
-                audio.ontimeupdate = () => {
-                    if (audio.duration) {
+                audio.addEventListener('timeupdate', () => {
+                    if (audio.duration && !isNaN(audio.duration)) {
                         const percent = (audio.currentTime / audio.duration) * 100;
                         progressFilled.style.width = percent + '%';
                         const mins = Math.floor(audio.currentTime / 60);
                         const secs = Math.floor(audio.currentTime % 60);
                         durationSpan.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
                     }
+                });
+                audio.onended = () => {
+                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    progressFilled.style.width = '0%';
+                    durationSpan.textContent = '00:00';
                 };
-                audio.onended = () => { playBtn.innerHTML = '<i class="fas fa-play"></i>'; progressFilled.style.width = '0%'; durationSpan.textContent = '00:00'; };
                 playBtn.onclick = () => {
                     if (audio.paused) {
                         window.audioPlayers.forEach(a => { if (!a.paused && a !== audio) a.pause(); });
                         audio.play().catch(() => {});
                         playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    } else { audio.pause(); playBtn.innerHTML = '<i class="fas fa-play"></i>'; }
+                    } else {
+                        audio.pause();
+                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    }
                 };
+                // تحديث المدة عند التحميل
+                audio.addEventListener('loadedmetadata', () => {
+                    if (audio.duration && !isNaN(audio.duration)) {
+                        const mins = Math.floor(audio.duration / 60);
+                        const secs = Math.floor(audio.duration % 60);
+                        durationSpan.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                    }
+                });
             } else if (msg.type === 'sticker') {
                 const stickerDiv = document.createElement('div');
                 stickerDiv.style.fontSize = '3rem';
@@ -1460,11 +1494,8 @@
 
             // إضافة حدث النقر لإظهار/إخفاء الأزرار
             div.addEventListener('click', (e) => {
-                // منع الحدث من الفقاعة إذا تم النقر على زر داخل الأزرار
                 if (e.target.closest('.message-actions')) return;
-                // إزالة الكلاس active من جميع الرسائل
                 document.querySelectorAll('.message').forEach(m => m.classList.remove('active'));
-                // إضافة الكلاس active للرسالة الحالية
                 div.classList.add('active');
             });
 
@@ -1783,7 +1814,7 @@
                 audioContext?.close();
                 if (visualizerAnimation) cancelAnimationFrame(visualizerAnimation);
                 voiceRecordingBar.classList.remove('active');
-                voiceTimer.textContent = '00:00'; // إعادة تعيين المؤقت
+                voiceTimer.textContent = '00:00';
             }
         }
         sendBtn.addEventListener('click', async () => {
@@ -1894,7 +1925,6 @@
         document.getElementById('closeModalBtn').addEventListener('click', () => { document.getElementById('mediaModal').classList.remove('active'); });
         document.addEventListener('click', (e) => { if (!mentionPopup.contains(e.target) && e.target !== messageInput) mentionPopup.style.display = 'none'; });
 
-        // النقر على أي مكان في المحتوى لإزالة التحديد النشط عن الرسائل
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.message')) {
                 document.querySelectorAll('.message').forEach(m => m.classList.remove('active'));
