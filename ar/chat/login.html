@@ -2,207 +2,273 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
     <title>اسهل حل | دخول</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* نفس الأنماط السابقة */
         :root {
             --primary: #4361ee;
-            --primary-dark: #3a56d4;
+            --primary-dark: #2c3e9e;
+            --primary-light: #6c7ffa;
             --secondary: #06d6a0;
-            --danger: #ef476f;
-            --dark: #2b2d42;
-            --light: #f8f9fa;
-            --gray: #8d99ae;
-            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --success: #06d6a0;
+            --warning: #ffb703;
+            --danger: #d9042b;
+            --dark: #1e1e2f;
+            --light: #f4f7fb;
+            --gray: #6b7280;
+            --bg-gradient: linear-gradient(145deg, #ffffff 0%, #f0f4fa 100%);
             --card-bg: rgba(255, 255, 255, 0.95);
-            --border: #dee2e6;
-            --border-radius-lg: 28px;
+            --border: #d1d5db;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --font-base: 13px;
             --transition: all 0.2s ease;
         }
         [data-theme="dark"] {
-            --bg-gradient: linear-gradient(135deg, #0a0a14 0%, #14142b 100%);
-            --card-bg: rgba(22, 22, 40, 0.98);
+            --bg-gradient: linear-gradient(145deg, #12121c 0%, #1e1e2e 100%);
+            --card-bg: rgba(28, 28, 42, 0.95);
             --dark: #f0f0fa;
             --light: #2a2a3c;
-            --border: #44445a;
+            --gray: #a0a0b0;
+            --border: #4a4a60;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        body { background: var(--bg-gradient); color: var(--dark); height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: background 0.3s; }
-        .card { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: var(--border-radius-lg); padding: 20px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--border); }
-        .logo { text-align: center; margin-bottom: 20px; }
-        .logo h1 { font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .logo p { color: var(--gray); font-size: 1rem; }
-        .input-field { width: 100%; padding: 12px 16px; margin: 8px 0; border: 2px solid rgba(67, 97, 238, 0.2); border-radius: 40px; background: white; color: #000; font-size: 1rem; transition: var(--transition); }
-        [data-theme="dark"] .input-field { background: #2a2a3c; color: #f0f0fa; border-color: #44445a; }
-        .input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1); }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 40px; font-weight: 600; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; cursor: pointer; transition: var(--transition); margin: 6px 0; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; }
-        .btn-success { background: linear-gradient(135deg, var(--secondary), #05b386); }
-        .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none; }
-        .btn-outline:hover { background: var(--primary); color: white; }
-        .dark-toggle { position: fixed; top: 20px; left: 20px; background: var(--card-bg); border: 1px solid var(--border); color: var(--primary); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; z-index: 100; }
-        #error-message { color: var(--danger); font-size: 0.85rem; text-align: center; margin-top: 8px; }
+        body {
+            background: var(--bg-gradient);
+            color: var(--dark);
+            font-size: var(--font-base);
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+        .home-container {
+            max-width: 380px;
+            width: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border-radius: 36px;
+            padding: 28px 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .logo i { font-size: 2rem; color: var(--primary-dark); }
+        .tagline { color: var(--gray); margin-bottom: 24px; font-size: 0.9rem; }
+        .input-group { margin-bottom: 16px; text-align: right; }
+        .input-group label { display: block; margin-bottom: 4px; font-weight: 600; color: var(--dark); font-size: 0.85rem; }
+        .input-wrapper {
+            display: flex; align-items: center; background: var(--light); border: 1px solid var(--border);
+            border-radius: 50px; padding: 4px 14px; transition: var(--transition);
+        }
+        .input-wrapper:focus-within { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1); }
+        .input-wrapper i { color: var(--gray); font-size: 1rem; margin-left: 6px; }
+        .input-wrapper input {
+            flex: 1; border: none; background: transparent; padding: 10px 0; color: var(--dark);
+            font-size: 0.95rem;
+        }
+        .input-wrapper input:focus { outline: none; }
+        .input-wrapper input::placeholder { color: var(--gray); opacity: 0.7; }
+        .random-room {
+            display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px;
+            color: var(--primary); cursor: pointer; font-size: 0.85rem; font-weight: 600;
+        }
+        .random-room:hover { text-decoration: underline; }
+        .enter-btn {
+            width: 100%; padding: 12px; border: none; border-radius: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; font-size: 1rem; font-weight: 700; cursor: pointer; transition: var(--transition);
+            margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+        .enter-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4); }
+        .theme-toggle {
+            display: flex; align-items: center; justify-content: center; gap: 8px; margin: 20px 0 12px;
+        }
+        .theme-toggle button {
+            background: var(--light); border: 1px solid var(--border); border-radius: 50px; padding: 6px 14px;
+            cursor: pointer; color: var(--dark); font-weight: 600; transition: var(--transition);
+            display: flex; align-items: center; gap: 6px; font-size: 0.8rem;
+        }
+        .theme-toggle button:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .footer-links {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 18px;
+            font-size: 0.75rem;
+        }
+        .footer-links a { color: var(--gray); text-decoration: none; transition: var(--transition); display: flex; align-items: center; gap: 4px; }
+        .footer-links a:hover { color: var(--primary); }
+        .error-message { color: var(--danger); font-size: 0.8rem; margin-top: 6px; min-height: 20px; }
+        .info-message { color: var(--gray); font-size: 0.8rem; margin-top: 12px; }
     </style>
 </head>
 <body>
-    <button class="dark-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
-    <div class="card">
+    <div class="home-container">
         <div class="logo">
-            <h1>اسهل حل</h1>
-            <p>دخول إلى المحادثة</p>
+            <i class="fas fa-comment-dots"></i>
+            <span>اسهل حل</span>
         </div>
-        <input type="text" id="username" class="input-field" placeholder="اسمك (اتركه فارغاً لاسم عشوائي)" maxlength="20">
-        <div style="display:flex; align-items:center; gap:6px; margin:4px 0">
-            <input type="checkbox" id="manualCodeCheckbox" style="width:18px; height:18px">
-            <label for="manualCodeCheckbox">استخدام مفتاح مخصص</label>
+        <div class="tagline">دردشة حقيقية، بسيطة وآمنة</div>
+
+        <div class="input-group">
+            <label>اسم المستخدم (اختياري)</label>
+            <div class="input-wrapper">
+                <i class="fas fa-user"></i>
+                <input type="text" id="username" placeholder="سيتم توليد اسم تلقائي" autocomplete="off">
+            </div>
         </div>
-        <div id="customKeyContainer" style="display:none">
-            <input type="text" id="customRoom" class="input-field" placeholder="المفتاح (أرقام فقط)" maxlength="6">
+
+        <div class="input-group">
+            <label>رقم الغرفة</label>
+            <div class="input-wrapper">
+                <i class="fas fa-door-open"></i>
+                <input type="text" id="room" placeholder="أدخل 5 أرقام" maxlength="5" pattern="\d*" inputmode="numeric">
+            </div>
+            <div class="random-room" id="randomRoomBtn">
+                <i class="fas fa-dice"></i>
+                <span>إنشاء غرفة عشوائية (5 أرقام)</span>
+            </div>
         </div>
-        <button id="createRoomBtn" class="btn"><i class="fas fa-plus-circle"></i> إنشاء غرفة جديدة</button>
-        <div style="margin:8px 0; text-align:center; color:var(--gray);">أو</div>
-        <div style="display:flex; gap:6px">
-            <input type="text" id="roomCode" class="input-field" placeholder="مفتاح الغرفة" maxlength="6" style="flex:2">
-            <button id="joinRoomBtn" class="btn btn-outline" style="flex:1"><i class="fas fa-door-open"></i> انضمام</button>
+
+        <button class="enter-btn" id="enterBtn">
+            <i class="fas fa-sign-in-alt"></i>
+            دخول
+        </button>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="theme-toggle">
+            <button id="lightModeBtn"><i class="fas fa-sun"></i> فاتح</button>
+            <button id="darkModeBtn"><i class="fas fa-moon"></i> داكن</button>
         </div>
-        <button id="publicRoomBtn" class="btn btn-success"><i class="fas fa-users"></i> غرفة عامة</button>
-        <div id="error-message"></div>
+
+        <div class="footer-links">
+            <a href="#" id="homeLink"><i class="fas fa-home"></i> الرئيسية</a>
+            <a href="#" id="helpLink"><i class="fas fa-question-circle"></i> مساعدة</a>
+            <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i> حول</a>
+            <a href="#" id="privacyLink"><i class="fas fa-shield-alt"></i> خصوصية</a>
+            <a href="#" id="termsLink"><i class="fas fa-file-contract"></i> شروط</a>
+        </div>
+
+        <div class="info-message">
+            <i class="fas fa-lock"></i> جميع المحادثات مشفرة
+        </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
-            authDomain: "zio3-8ffdd.firebaseapp.com",
-            databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
-            projectId: "zio3-8ffdd",
-            storageBucket: "zio3-8ffdd.firebasestorage.app",
-            messagingSenderId: "560939348415",
-            appId: "1:560939348415:web:c854e9e214e498ad2d310a"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        const usernameInput = document.getElementById('username');
-        const roomCodeInput = document.getElementById('roomCode');
-        const customRoomInput = document.getElementById('customRoom');
-        const manualCheckbox = document.getElementById('manualCodeCheckbox');
-        const customContainer = document.getElementById('customKeyContainer');
-        const createBtn = document.getElementById('createRoomBtn');
-        const joinBtn = document.getElementById('joinRoomBtn');
-        const publicBtn = document.getElementById('publicRoomBtn');
-        const errorDiv = document.getElementById('error-message');
-        const darkToggle = document.getElementById('darkModeToggle');
-
-        const isValidRoomCode = (code) => /^\d{3,6}$/.test(code);
-        const generateRandomCode = () => Math.floor(1000 + Math.random() * 9000).toString();
-        const generateRandomName = () => 'guest' + Math.floor(Math.random() * 10000);
+    <script>
+        // الوضع الليلي
+        const lightModeBtn = document.getElementById('lightModeBtn');
+        const darkModeBtn = document.getElementById('darkModeBtn');
+        const htmlElement = document.documentElement;
 
         if (localStorage.getItem('darkMode') === 'true') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            darkToggle.innerHTML = '<i class="fas fa-sun"></i>';
-        }
-        darkToggle.addEventListener('click', () => {
-            const isDark = document.documentElement.hasAttribute('data-theme');
-            if (isDark) {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('darkMode', 'false');
-                darkToggle.innerHTML = '<i class="fas fa-moon"></i>';
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('darkMode', 'true');
-                darkToggle.innerHTML = '<i class="fas fa-sun"></i>';
-            }
-        });
-
-        manualCheckbox.addEventListener('change', () => {
-            customContainer.style.display = manualCheckbox.checked ? 'block' : 'none';
-        });
-
-        [customRoomInput, roomCodeInput].forEach(i => {
-            i.addEventListener('input', function() { this.value = this.value.replace(/\D/g, ''); });
-        });
-
-        function goToChat(room, username) {
-            localStorage.setItem('chatRoom', room);
-            localStorage.setItem('chatUser', username);
-            window.location.href = 'chat.html';
+            htmlElement.setAttribute('data-theme', 'dark');
         }
 
-        createBtn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const name = usernameInput.value.trim() || generateRandomName();
-            let code;
-            if (manualCheckbox.checked) {
-                code = customRoomInput.value.trim();
-                if (!code || !isValidRoomCode(code)) {
-                    errorDiv.textContent = 'المفتاح يجب أن يكون 3-6 أرقام';
-                    return;
-                }
-            } else {
-                code = generateRandomCode();
-            }
-            errorDiv.textContent = '';
-            try {
-                const roomRef = ref(db, `rooms/${code}/info`);
-                const snap = await get(roomRef);
-                if (!snap.exists()) {
-                    await set(roomRef, { createdAt: Date.now(), createdBy: name });
-                }
-                goToChat(code, name);
-            } catch (err) {
-                errorDiv.textContent = 'خطأ: ' + err.message;
-            }
+        lightModeBtn.addEventListener('click', () => {
+            htmlElement.removeAttribute('data-theme');
+            localStorage.setItem('darkMode', 'false');
         });
 
-        joinBtn.addEventListener('click', async () => {
-            const name = usernameInput.value.trim() || generateRandomName();
-            const code = roomCodeInput.value.trim();
-            if (!code || !isValidRoomCode(code)) {
-                errorDiv.textContent = 'المفتاح يجب أن يكون 3-6 أرقام';
+        darkModeBtn.addEventListener('click', () => {
+            htmlElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('darkMode', 'true');
+        });
+
+        // عناصر الإدخال
+        const usernameInput = document.getElementById('username');
+        const roomInput = document.getElementById('room');
+        const enterBtn = document.getElementById('enterBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const randomRoomBtn = document.getElementById('randomRoomBtn');
+
+        // توليد رقم غرفة عشوائي مكون من 5 أرقام (من 10000 إلى 99999)
+        function generateRandomRoom() {
+            return Math.floor(10000 + Math.random() * 90000).toString();
+        }
+
+        // توليد اسم عشوائي (مثل "زائر1234")
+        function generateRandomUsername() {
+            const randomNum = Math.floor(1000 + Math.random() * 9000);
+            return `زائر${randomNum}`;
+        }
+
+        randomRoomBtn.addEventListener('click', () => {
+            roomInput.value = generateRandomRoom();
+        });
+
+        enterBtn.addEventListener('click', () => {
+            let username = usernameInput.value.trim();
+            const room = roomInput.value.trim();
+
+            // إذا لم يدخل المستخدم اسماً، نولد اسماً عشوائياً
+            if (!username) {
+                username = generateRandomUsername();
+            }
+
+            if (!room) {
+                errorMessage.textContent = 'الرجاء إدخال رقم الغرفة';
                 return;
             }
-            errorDiv.textContent = '';
-            try {
-                const roomRef = ref(db, `rooms/${code}/info`);
-                const snap = await get(roomRef);
-                if (!snap.exists()) {
-                    errorDiv.textContent = 'المفتاح غير صحيح';
-                    return;
-                }
-                goToChat(code, name);
-            } catch (err) {
-                errorDiv.textContent = 'خطأ: ' + err.message;
+
+            // التحقق من أن رقم الغرفة مكون من 5 أرقام (اختياري ولكن مفيد)
+            if (!/^\d{5}$/.test(room)) {
+                errorMessage.textContent = 'رقم الغرفة يجب أن يكون 5 أرقام';
+                return;
             }
+
+            // حفظ البيانات في localStorage
+            localStorage.setItem('chatUser', username);
+            localStorage.setItem('chatRoom', room);
+
+            // الانتقال إلى صفحة الدردشة
+            window.location.href = 'chat.html';
         });
 
-        publicBtn.addEventListener('click', async () => {
-            const name = usernameInput.value.trim() || generateRandomName();
-            const code = '1000';
-            try {
-                const roomRef = ref(db, `rooms/${code}/info`);
-                const snap = await get(roomRef);
-                if (!snap.exists()) {
-                    await set(roomRef, { createdAt: Date.now(), createdBy: 'system' });
+        // السماح بالدخول بالضغط على Enter
+        [usernameInput, roomInput].forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    enterBtn.click();
                 }
-                goToChat(code, name);
-            } catch (err) {
-                errorDiv.textContent = 'خطأ: ' + err.message;
-            }
+            });
         });
 
-        (function handleInvite() {
-            const params = new URLSearchParams(window.location.search);
-            const room = params.get('room');
-            if (room && isValidRoomCode(room)) {
-                roomCodeInput.value = room;
-            }
-        })();
+        // روابط القائمة
+        document.getElementById('homeLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('الصفحة الرئيسية - قيد التطوير');
+        });
+        document.getElementById('helpLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('المساعدة - قيد التطوير');
+        });
+        document.getElementById('aboutLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('حول التطبيق - قيد التطوير');
+        });
+        document.getElementById('privacyLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('سياسة الخصوصية - قيد التطوير');
+        });
+        document.getElementById('termsLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('شروط الاستخدام - قيد التطوير');
+        });
     </script>
 </body>
 </html>
