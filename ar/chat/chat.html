@@ -69,6 +69,7 @@
             flex-direction: column;
             background: transparent;
             padding: 8px;
+            position: relative;
         }
 
         /* ========== رأس الدردشة ========== */
@@ -154,6 +155,49 @@
         [data-theme="dark"] .action-btn.secondary {
             background: #2a2a3c;
             color: var(--primary);
+        }
+
+        /* ========== القائمة الجانبية ========== */
+        .side-menu {
+            position: absolute;
+            top: 70px;
+            left: 8px;
+            right: 8px;
+            background: var(--card-bg);
+            border-radius: 28px;
+            padding: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .side-menu.show {
+            display: flex;
+        }
+
+        .side-menu .action-btn {
+            width: 100%;
+            border-radius: 40px;
+            justify-content: flex-start;
+            gap: 10px;
+            padding: 0 16px;
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        .side-menu .action-btn i {
+            width: 24px;
+            text-align: center;
+        }
+
+        .side-menu .action-btn#leave-room-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
         }
 
         /* ========== منطقة الرسائل ========== */
@@ -871,14 +915,19 @@
             </div>
             <div class="user-info">
                 <span class="user-badge" id="user-status"><i class="fas fa-user"></i> <span id="current-user-name"></span></span>
-                <button class="action-btn secondary" id="toggle-users-btn" title="المتصلون"><i class="fas fa-users"></i></button>
-                <button class="action-btn secondary" id="call-user-btn" title="اتصال صوتي"><i class="fas fa-phone"></i></button>
-                <button class="action-btn secondary" id="stats-btn" title="إحصائيات الغرفة"><i class="fas fa-chart-bar"></i></button>
-                <button class="action-btn secondary" id="search-btn" title="بحث في الرسائل"><i class="fas fa-search"></i></button>
-                <button class="action-btn secondary" id="copy-room-btn" title="نسخ رقم الغرفة"><i class="fas fa-copy"></i></button>
-                <button class="action-btn secondary" id="share-room-btn" title="مشاركة الغرفة"><i class="fas fa-share-alt"></i></button>
-                <button class="action-btn secondary" id="leave-room-btn" style="background:var(--danger);color:white" title="خروج"><i class="fas fa-sign-out-alt"></i></button>
+                <button class="action-btn secondary" id="menu-btn"><i class="fas fa-bars"></i></button>
             </div>
+        </div>
+
+        <!-- القائمة الجانبية (الأزرار الدائرية) -->
+        <div id="side-menu" class="side-menu">
+            <button class="action-btn secondary" id="toggle-users-btn"><i class="fas fa-users"></i> المتصلون</button>
+            <button class="action-btn secondary" id="call-user-btn"><i class="fas fa-phone"></i> اتصال</button>
+            <button class="action-btn secondary" id="stats-btn"><i class="fas fa-chart-bar"></i> إحصائيات</button>
+            <button class="action-btn secondary" id="search-btn"><i class="fas fa-search"></i> بحث</button>
+            <button class="action-btn secondary" id="copy-room-btn"><i class="fas fa-copy"></i> نسخ الرقم</button>
+            <button class="action-btn secondary" id="share-room-btn"><i class="fas fa-share-alt"></i> مشاركة</button>
+            <button class="action-btn secondary" id="leave-room-btn" style="background:var(--danger);color:white"><i class="fas fa-sign-out-alt"></i> خروج</button>
         </div>
 
         <!-- قائمة المستخدمين المنبثقة -->
@@ -1088,6 +1137,8 @@
         const searchBox = document.getElementById('search-box');
         const searchInput = document.getElementById('search-input');
         const searchClose = document.getElementById('search-close');
+        const menuBtn = document.getElementById('menu-btn');
+        const sideMenu = document.getElementById('side-menu');
 
         // ================== متغيرات الحالة ==================
         let currentRoom = null;
@@ -2344,12 +2395,24 @@
         });
 
         // ================== أحداث المستخدمين والمكالمات ==================
+        menuBtn.addEventListener('click', () => {
+            sideMenu.classList.toggle('show');
+        });
+
+        // إغلاق القائمة عند النقر خارجها
+        document.addEventListener('click', (e) => {
+            if (!sideMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+                sideMenu.classList.remove('show');
+            }
+        });
+
         leaveBtn.addEventListener('click', confirmLeave);
 
         callUserBtn.addEventListener('click', () => {
             if (!currentRoom) return;
             usersPopup.classList.toggle('show');
             popupOverlay.style.display = usersPopup.classList.contains('show') ? 'block' : 'none';
+            sideMenu.classList.remove('show');
         });
 
         popupUsersList.addEventListener('click', (e) => {
@@ -2360,6 +2423,7 @@
                 usersPopup.classList.remove('show');
                 popupOverlay.style.display = 'none';
                 startCall(userIdAttr);
+                sideMenu.classList.remove('show');
             }
         });
 
@@ -2388,6 +2452,7 @@
         toggleUsersBtn.addEventListener('click', () => {
             usersPopup.classList.toggle('show');
             popupOverlay.style.display = usersPopup.classList.contains('show') ? 'block' : 'none';
+            sideMenu.classList.remove('show');
         });
 
         popupOverlay.addEventListener('click', closeUsersPopup);
@@ -2397,6 +2462,7 @@
             if (currentRoom) {
                 const success = await copyToClipboard(currentRoom);
                 showNotification(success ? 'تم نسخ رقم الغرفة' : 'فشل النسخ', success ? 'success' : 'danger');
+                sideMenu.classList.remove('show');
             }
         });
 
@@ -2415,6 +2481,7 @@
                         showNotification(success ? 'تم نسخ رابط الدعوة' : 'فشل النسخ', success ? 'success' : 'danger');
                     });
                 }
+                sideMenu.classList.remove('show');
             }
         });
 
@@ -2440,11 +2507,13 @@
         statsBtn.addEventListener('click', () => {
             statsPanel.classList.toggle('show');
             updateStats();
+            sideMenu.classList.remove('show');
         });
 
         searchBtn.addEventListener('click', () => {
             searchBox.classList.toggle('active');
             if (searchBox.classList.contains('active')) searchInput.focus();
+            sideMenu.classList.remove('show');
         });
 
         searchClose.addEventListener('click', () => searchBox.classList.remove('active'));
