@@ -285,11 +285,17 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
+        /* إخفاء أزرار الإجراءات افتراضيًا */
         .message-actions {
-            display: flex;
+            display: none;
             gap: 8px;
             margin-top: 6px;
             justify-content: flex-end;
+        }
+
+        /* إظهار الأزرار عند النقر على الرسالة (عبر كلاس active) */
+        .message.active .message-actions {
+            display: flex;
         }
 
         .message-actions button {
@@ -436,13 +442,14 @@
         .voice-timer {
             font-size: 1.1rem;
             font-weight: 700;
-            color: white;
-            direction: ltr;
-            background: rgba(0,0,0,0.3);
+            color: white !important; /* لون أبيض ثابت */
+            background: rgba(0,0,0,0.5);
             padding: 4px 8px;
             border-radius: 20px;
             min-width: 60px;
             text-align: center;
+            direction: ltr;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .voice-visualizer {
@@ -1450,6 +1457,17 @@
                 ts.textContent = msgDate.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' }) + ' ' + msgDate.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
             }
             div.appendChild(ts);
+
+            // إضافة حدث النقر لإظهار/إخفاء الأزرار
+            div.addEventListener('click', (e) => {
+                // منع الحدث من الفقاعة إذا تم النقر على زر داخل الأزرار
+                if (e.target.closest('.message-actions')) return;
+                // إزالة الكلاس active من جميع الرسائل
+                document.querySelectorAll('.message').forEach(m => m.classList.remove('active'));
+                // إضافة الكلاس active للرسالة الحالية
+                div.classList.add('active');
+            });
+
             return div;
         }
         function displayMessage(msg, isOwn, isSystem, msgId) {
@@ -1875,6 +1893,13 @@
         })();
         document.getElementById('closeModalBtn').addEventListener('click', () => { document.getElementById('mediaModal').classList.remove('active'); });
         document.addEventListener('click', (e) => { if (!mentionPopup.contains(e.target) && e.target !== messageInput) mentionPopup.style.display = 'none'; });
+
+        // النقر على أي مكان في المحتوى لإزالة التحديد النشط عن الرسائل
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.message')) {
+                document.querySelectorAll('.message').forEach(m => m.classList.remove('active'));
+            }
+        });
     </script>
 </body>
 </html>
