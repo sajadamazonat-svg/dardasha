@@ -57,9 +57,12 @@
             font-size: var(--base-font);
             line-height: 1.4;
             transition: background 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
         }
 
         .top-bar {
+            flex-shrink: 0;
             background: var(--card-bg);
             backdrop-filter: blur(16px);
             border: 1px solid var(--border);
@@ -123,9 +126,11 @@
         .sidebar-overlay.active { display: block; }
 
         #app {
+            flex: 1;
+            min-height: 0;
             max-width: 500px;
             margin: 0 auto;
-            height: 100%;
+            width: 100%;
             display: flex;
             flex-direction: column;
             background: transparent;
@@ -240,7 +245,6 @@
             padding: 3px 3px 3px 12px;
             border: 1px solid var(--border);
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            margin-top: auto;
         }
 
         .input-area textarea {
