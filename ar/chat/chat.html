@@ -293,7 +293,7 @@
         }
 
         .message-actions button {
-            background: rgba(255,255,255,0.8);
+            background: #ffffff;
             border: none;
             color: #1a1a2c;
             cursor: pointer;
@@ -398,7 +398,7 @@
             font-size: 0.9rem;
         }
 
-        .emoji-btn, .sticker-btn {
+        .emoji-btn {
             font-size: 2rem;
             padding: 8px;
             background: var(--light);
@@ -409,9 +409,13 @@
             color: var(--dark);
         }
 
-        .emoji-btn:hover, .sticker-btn:hover {
+        .emoji-btn:hover {
             transform: scale(1.2);
             background: var(--primary-light);
+        }
+
+        .sticker-emoji {
+            font-size: 2.2rem; /* حجم أكبر للملصقات */
         }
 
         .voice-recording-bar {
@@ -961,20 +965,20 @@
                 <button id="voice-record-btn" class="action-btn"><i class="fas fa-microphone"></i> تسجيل</button>
             </div>
             <div id="emoji-panel" class="emoji-panel">
-                <!-- الإيموجي -->
+                <!-- الإيموجي العادي -->
                 <button class="emoji-btn">😊</button><button class="emoji-btn">😂</button><button class="emoji-btn">❤️</button>
                 <button class="emoji-btn">👍</button><button class="emoji-btn">🔥</button><button class="emoji-btn">🎉</button>
                 <button class="emoji-btn">😢</button><button class="emoji-btn">😡</button><button class="emoji-btn">👋</button>
                 <button class="emoji-btn">🤔</button><button class="emoji-btn">😎</button><button class="emoji-btn">🥳</button>
-                <!-- الملصقات (نفس التنسيق ولكن بحجم أكبر قليلاً) -->
-                <button class="sticker-btn" style="font-size:2.2rem;">👍</button>
-                <button class="sticker-btn" style="font-size:2.2rem;">❤️</button>
-                <button class="sticker-btn" style="font-size:2.2rem;">😂</button>
-                <button class="sticker-btn" style="font-size:2.2rem;">😮</button>
-                <button class="sticker-btn" style="font-size:2.2rem;">😢</button>
-                <button class="sticker-btn" style="font-size:2.2rem;">🔥</button>
-                <button class="sticker-btn" style="font-size:2.2rem;">🎉</button>
-                <button class="sticker-btn" style="font-size:2.2rem;">👌</button>
+                <!-- ملصقات (بنفس التنسيق ولكن بحجم أكبر قليلاً) -->
+                <button class="emoji-btn sticker-emoji">👍</button>
+                <button class="emoji-btn sticker-emoji">❤️</button>
+                <button class="emoji-btn sticker-emoji">😂</button>
+                <button class="emoji-btn sticker-emoji">😮</button>
+                <button class="emoji-btn sticker-emoji">😢</button>
+                <button class="emoji-btn sticker-emoji">🔥</button>
+                <button class="emoji-btn sticker-emoji">🎉</button>
+                <button class="emoji-btn sticker-emoji">👌</button>
             </div>
             <button id="send-message-btn" class="action-btn"><i class="fas fa-paper-plane"></i></button>
         </div>
@@ -1021,6 +1025,7 @@
     <audio id="ring" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto" loop></audio>
 
     <script type="module">
+        // استيراد Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, push, onChildAdded, onChildRemoved, onDisconnect, get, remove, onValue, query, limitToLast, orderByKey, off, endAt } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
@@ -1037,6 +1042,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // الثوابت
         const GITHUB_USERNAME = "ashlhl";
         const GITHUB_REPO = "ashlhl";
         const GITHUB_TOKEN_PATH = "2026";
@@ -1046,6 +1052,7 @@
         const MAX_MSGS = 20;
         const INACTIVITY_TIMEOUT = 30 * 60 * 1000;
 
+        // عناصر DOM
         const roomNameSpan = document.getElementById('room-name-display');
         const userCountSpan = document.getElementById('user-count');
         const currentUserNameSpan = document.getElementById('current-user-name');
@@ -1105,6 +1112,7 @@
         const menuBtn = document.getElementById('menu-btn');
         const sideMenu = document.getElementById('side-menu');
 
+        // متغيرات الحالة
         let currentRoom = null, currentUser = null, userId = null, messagesRef = null, typingTimeout = null;
         let displayedMessages = new Set();
         let oldestMessageKey = null, allMessagesLoaded = false, loadingMore = false;
@@ -1121,6 +1129,7 @@
         const firebaseListeners = { messages: null, usersAdded: null, usersRemoved: null, typing: null };
         const configuration = { iceServers: [ { urls: 'stun:stun.l.google.com:19302' } ] };
 
+        // دوال مساعدة
         function showLoading(text) { loaderText.textContent = text; globalLoader.classList.add('active'); }
         function hideLoading() { globalLoader.classList.remove('active'); }
         function showNotification(msg, type = 'success') {
@@ -1751,10 +1760,10 @@
         stopRecordingBtn.addEventListener('click', stopRecording);
         sendVoiceBtn.addEventListener('click', stopRecording);
         emojiBtn.addEventListener('click', (e) => { e.stopPropagation(); emojiPanel.classList.toggle('show'); });
-        document.querySelectorAll('.emoji-btn, .sticker-btn').forEach(btn => {
+        document.querySelectorAll('.emoji-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
                 const content = btn.textContent;
-                const isSticker = btn.classList.contains('sticker-btn');
+                const isSticker = btn.classList.contains('sticker-emoji'); // مجرد تصنيف، نستخدمه لتحديد النوع
                 const msgKey = `${Date.now()}_${userId}`;
                 await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), {
                     sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser,
