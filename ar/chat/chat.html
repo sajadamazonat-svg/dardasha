@@ -415,7 +415,7 @@
         }
 
         .sticker-emoji {
-            font-size: 2.2rem; /* حجم أكبر للملصقات */
+            font-size: 2.2rem;
         }
 
         .voice-recording-bar {
@@ -1373,7 +1373,7 @@
             if (isOwn && !isSystem && Date.now() - msg.timestamp < 5 * 60 * 1000) {
                 const deleteBtn = document.createElement('button');
                 deleteBtn.innerHTML = '<i class="fas fa-trash"></i>'; deleteBtn.title = 'حذف';
-                deleteBtn.onclick = async () => { if (confirm('حذف؟')) { await remove(ref(db, `rooms/${currentRoom}/messages/${msgId}`)); div.remove(); } };
+                deleteBtn.onclick = async () => { if (confirm('حذف؟')) { await remove(ref(db, `rooms/${currentRoom}/messages/${msgId}`)); } };
                 actionsDiv.appendChild(deleteBtn);
             }
 
@@ -1392,7 +1392,7 @@
                 adminDiv.appendChild(pinBtn);
                 const deleteBtn = document.createElement('button');
                 deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                deleteBtn.onclick = async () => { if (confirm('حذف?')) { await remove(ref(db, `rooms/${currentRoom}/messages/${msgId}`)); div.remove(); } };
+                deleteBtn.onclick = async () => { if (confirm('حذف?')) { await remove(ref(db, `rooms/${currentRoom}/messages/${msgId}`)); } };
                 adminDiv.appendChild(deleteBtn);
                 div.appendChild(adminDiv);
             }
@@ -1454,6 +1454,7 @@
             if (firebaseListeners.messages) off(messagesRef, firebaseListeners.messages);
             messagesRef = ref(db, `rooms/${currentRoom}/messages`);
             const now = Date.now();
+            // استماع للإضافات
             firebaseListeners.messages = onChildAdded(query(messagesRef, orderByKey(), limitToLast(1)), async (snap) => {
                 const msg = snap.val();
                 if (!msg) return;
@@ -1461,6 +1462,15 @@
                 if (keyTimestamp && keyTimestamp < now - ONE_HOUR) { await remove(ref(db, `rooms/${currentRoom}/messages/${snap.key}`)); return; }
                 displayMessage(msg, (msg.sender === (currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser)) && msg.sender !== 'نظام', msg.sender === 'نظام', snap.key);
                 updateStats();
+            });
+            // استماع للحذف
+            onChildRemoved(messagesRef, (snap) => {
+                const msgId = snap.key;
+                const msgElement = document.getElementById(msgId);
+                if (msgElement) {
+                    msgElement.remove();
+                    displayedMessages.delete(msgId);
+                }
             });
             onValue(ref(db, `rooms/${currentRoom}/pinned`), (snap) => { const pinned = snap.val() || {}; pinnedMessages.clear(); Object.keys(pinned).forEach(key => pinnedMessages.add(key)); });
         }
@@ -1763,7 +1773,7 @@
         document.querySelectorAll('.emoji-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
                 const content = btn.textContent;
-                const isSticker = btn.classList.contains('sticker-emoji'); // مجرد تصنيف، نستخدمه لتحديد النوع
+                const isSticker = btn.classList.contains('sticker-emoji');
                 const msgKey = `${Date.now()}_${userId}`;
                 await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), {
                     sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser,
