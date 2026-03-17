@@ -436,8 +436,13 @@
         .voice-timer {
             font-size: 1.1rem;
             font-weight: 700;
-            color: white; /* تغيير اللون إلى الأبيض */
+            color: white;
             direction: ltr;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 8px;
+            border-radius: 20px;
+            min-width: 60px;
+            text-align: center;
         }
 
         .voice-visualizer {
@@ -720,6 +725,45 @@
 
         .confirm-dialog.active { display: flex; }
 
+        .confirm-dialog p {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .confirm-dialog .btn-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .confirm-dialog .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .confirm-dialog .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .confirm-dialog .btn-outline {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        .confirm-dialog .btn:hover {
+            transform: scale(1.02);
+            filter: brightness(0.95);
+        }
+
         #upload-progress {
             flex-shrink: 0;
             display: none;
@@ -999,8 +1043,8 @@
     <div id="confirm-dialog" class="confirm-dialog">
         <p>هل أنت متأكد من الخروج من الغرفة؟</p>
         <div class="btn-group">
-            <button id="confirm-yes" class="btn btn-danger" style="flex:1">نعم</button>
-            <button id="confirm-no" class="btn btn-outline" style="flex:1">لا</button>
+            <button id="confirm-yes" class="btn btn-danger">نعم</button>
+            <button id="confirm-no" class="btn btn-outline">لا</button>
         </div>
     </div>
 
@@ -1698,7 +1742,10 @@
                 for (let i = 0; i < 16; i++) voiceVisualizer.innerHTML += '<div class="voice-bar"></div>';
                 mediaRecorder.start();
                 recordingStartTime = Date.now();
-                recordingTimerInterval = setInterval(() => { let e = Math.floor((Date.now() - recordingStartTime) / 1000); voiceTimer.textContent = `${Math.floor(e / 60).toString().padStart(2, '0')}:${(e % 60).toString().padStart(2, '0')}`; }, 1000);
+                recordingTimerInterval = setInterval(() => { 
+                    let e = Math.floor((Date.now() - recordingStartTime) / 1000); 
+                    voiceTimer.textContent = `${Math.floor(e / 60).toString().padStart(2, '0')}:${(e % 60).toString().padStart(2, '0')}`; 
+                }, 1000);
                 voiceRecordingBar.classList.add('active');
                 const updateVis = () => {
                     if (!analyser || !voiceRecordingBar.classList.contains('active')) return;
@@ -1718,7 +1765,7 @@
                 audioContext?.close();
                 if (visualizerAnimation) cancelAnimationFrame(visualizerAnimation);
                 voiceRecordingBar.classList.remove('active');
-                // تمت إزالة الإشعار لأن handleFileUpload سيعرض إشعاراً عند الرفع
+                voiceTimer.textContent = '00:00'; // إعادة تعيين المؤقت
             }
         }
         sendBtn.addEventListener('click', async () => {
