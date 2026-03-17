@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>اسهل حل | الدردشة الحقيقية</title>
+    <title>اسهل حل | دخول</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #4361ee;
@@ -21,11 +21,10 @@
             --bg-gradient: linear-gradient(145deg, #ffffff 0%, #f0f4fa 100%);
             --card-bg: rgba(255, 255, 255, 0.95);
             --border: #d1d5db;
-            --shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-            --font-base: 14px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --font-base: 13px;
             --transition: all 0.2s ease;
         }
-
         [data-theme="dark"] {
             --bg-gradient: linear-gradient(145deg, #12121c 0%, #1e1e2e 100%);
             --card-bg: rgba(28, 28, 42, 0.95);
@@ -33,16 +32,9 @@
             --light: #2a2a3c;
             --gray: #a0a0b0;
             --border: #4a4a60;
-            --shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         body {
             background: var(--bg-gradient);
             color: var(--dark);
@@ -53,203 +45,75 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 16px;
+            padding: 12px;
         }
-
         .home-container {
-            max-width: 400px;
+            max-width: 380px;
             width: 100%;
             background: var(--card-bg);
             backdrop-filter: blur(12px);
-            border-radius: 40px;
-            padding: 32px 24px;
+            border-radius: 36px;
+            padding: 28px 20px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
             text-align: center;
         }
-
         .logo {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 800;
             color: var(--primary);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .logo i {
-            font-size: 2.2rem;
-            color: var(--primary-dark);
-        }
-
-        .tagline {
-            color: var(--gray);
-            margin-bottom: 32px;
-            font-size: 1rem;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-            text-align: right;
-        }
-
-        .input-group label {
-            display: block;
             margin-bottom: 6px;
-            font-weight: 600;
-            color: var(--dark);
-            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-
+        .logo i { font-size: 2rem; color: var(--primary-dark); }
+        .tagline { color: var(--gray); margin-bottom: 24px; font-size: 0.9rem; }
+        .input-group { margin-bottom: 16px; text-align: right; }
+        .input-group label { display: block; margin-bottom: 4px; font-weight: 600; color: var(--dark); font-size: 0.85rem; }
         .input-wrapper {
-            display: flex;
-            align-items: center;
-            background: var(--light);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            padding: 4px 16px;
-            transition: var(--transition);
+            display: flex; align-items: center; background: var(--light); border: 1px solid var(--border);
+            border-radius: 50px; padding: 4px 14px; transition: var(--transition);
         }
-
-        .input-wrapper:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-        }
-
-        .input-wrapper i {
-            color: var(--gray);
-            font-size: 1.1rem;
-            margin-left: 8px;
-        }
-
+        .input-wrapper:focus-within { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1); }
+        .input-wrapper i { color: var(--gray); font-size: 1rem; margin-left: 6px; }
         .input-wrapper input {
-            flex: 1;
-            border: none;
-            background: transparent;
-            padding: 12px 0;
-            color: var(--dark);
-            font-size: 1rem;
+            flex: 1; border: none; background: transparent; padding: 10px 0; color: var(--dark);
+            font-size: 0.95rem;
         }
-
-        .input-wrapper input:focus {
-            outline: none;
-        }
-
-        .input-wrapper input::placeholder {
-            color: var(--gray);
-            opacity: 0.7;
-        }
-
+        .input-wrapper input:focus { outline: none; }
+        .input-wrapper input::placeholder { color: var(--gray); opacity: 0.7; }
         .random-room {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 8px;
-            color: var(--primary);
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
+            display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px;
+            color: var(--primary); cursor: pointer; font-size: 0.85rem; font-weight: 600;
         }
-
-        .random-room:hover {
-            text-decoration: underline;
-        }
-
+        .random-room:hover { text-decoration: underline; }
         .enter-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 50px;
+            width: 100%; padding: 12px; border: none; border-radius: 50px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            margin-top: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            color: white; font-size: 1rem; font-weight: 700; cursor: pointer; transition: var(--transition);
+            margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;
             box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
         }
-
-        .enter-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
-        }
-
+        .enter-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4); }
         .theme-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin: 24px 0 16px;
+            display: flex; align-items: center; justify-content: center; gap: 8px; margin: 20px 0 12px;
         }
-
         .theme-toggle button {
-            background: var(--light);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            padding: 8px 16px;
-            cursor: pointer;
-            color: var(--dark);
-            font-weight: 600;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            background: var(--light); border: 1px solid var(--border); border-radius: 50px; padding: 6px 14px;
+            cursor: pointer; color: var(--dark); font-weight: 600; transition: var(--transition);
+            display: flex; align-items: center; gap: 6px; font-size: 0.8rem;
         }
-
-        .theme-toggle button:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
+        .theme-toggle button:hover { background: var(--primary); color: white; border-color: var(--primary); }
         .footer-links {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 24px;
-            font-size: 0.8rem;
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 18px;
+            font-size: 0.75rem;
         }
-
-        .footer-links a {
-            color: var(--gray);
-            text-decoration: none;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary);
-        }
-
-        .error-message {
-            color: var(--danger);
-            font-size: 0.9rem;
-            margin-top: 8px;
-            min-height: 20px;
-        }
-
-        .info-message {
-            color: var(--gray);
-            font-size: 0.9rem;
-            margin-top: 16px;
-        }
-
-        @media (max-width: 480px) {
-            .home-container {
-                padding: 24px 16px;
-            }
-        }
+        .footer-links a { color: var(--gray); text-decoration: none; transition: var(--transition); display: flex; align-items: center; gap: 4px; }
+        .footer-links a:hover { color: var(--primary); }
+        .error-message { color: var(--danger); font-size: 0.8rem; margin-top: 6px; min-height: 20px; }
+        .info-message { color: var(--gray); font-size: 0.8rem; margin-top: 12px; }
     </style>
 </head>
 <body>
@@ -261,10 +125,10 @@
         <div class="tagline">دردشة حقيقية، بسيطة وآمنة</div>
 
         <div class="input-group">
-            <label>اسم المستخدم</label>
+            <label>اسم المستخدم (اختياري)</label>
             <div class="input-wrapper">
                 <i class="fas fa-user"></i>
-                <input type="text" id="username" placeholder="أدخل اسمك" autocomplete="off">
+                <input type="text" id="username" placeholder="سيتم توليد اسم تلقائي" autocomplete="off">
             </div>
         </div>
 
@@ -272,11 +136,11 @@
             <label>رقم الغرفة</label>
             <div class="input-wrapper">
                 <i class="fas fa-door-open"></i>
-                <input type="text" id="room" placeholder="أدخل رقم الغرفة">
+                <input type="text" id="room" placeholder="أدخل 5 أرقام" maxlength="5" pattern="\d*" inputmode="numeric">
             </div>
             <div class="random-room" id="randomRoomBtn">
                 <i class="fas fa-dice"></i>
-                <span>إنشاء غرفة عشوائية</span>
+                <span>إنشاء غرفة عشوائية (5 أرقام)</span>
             </div>
         </div>
 
@@ -311,7 +175,6 @@
         const darkModeBtn = document.getElementById('darkModeBtn');
         const htmlElement = document.documentElement;
 
-        // استرجاع الوضع المحفوظ
         if (localStorage.getItem('darkMode') === 'true') {
             htmlElement.setAttribute('data-theme', 'dark');
         }
@@ -333,35 +196,47 @@
         const errorMessage = document.getElementById('errorMessage');
         const randomRoomBtn = document.getElementById('randomRoomBtn');
 
-        // إنشاء رقم غرفة عشوائي
+        // توليد رقم غرفة عشوائي مكون من 5 أرقام (من 10000 إلى 99999)
         function generateRandomRoom() {
-            return Math.random().toString(36).substring(2, 8).toUpperCase();
+            return Math.floor(10000 + Math.random() * 90000).toString();
+        }
+
+        // توليد اسم عشوائي (مثل "زائر1234")
+        function generateRandomUsername() {
+            const randomNum = Math.floor(1000 + Math.random() * 9000);
+            return `زائر${randomNum}`;
         }
 
         randomRoomBtn.addEventListener('click', () => {
             roomInput.value = generateRandomRoom();
         });
 
-        // التحقق من المدخلات والدخول
         enterBtn.addEventListener('click', () => {
-            const username = usernameInput.value.trim();
+            let username = usernameInput.value.trim();
             const room = roomInput.value.trim();
 
+            // إذا لم يدخل المستخدم اسماً، نولد اسماً عشوائياً
             if (!username) {
-                errorMessage.textContent = 'الرجاء إدخال اسم المستخدم';
-                return;
+                username = generateRandomUsername();
             }
+
             if (!room) {
                 errorMessage.textContent = 'الرجاء إدخال رقم الغرفة';
                 return;
             }
 
-            // حفظ البيانات في localStorage (سيتم قراءتها في صفحة الدردشة)
+            // التحقق من أن رقم الغرفة مكون من 5 أرقام (اختياري ولكن مفيد)
+            if (!/^\d{5}$/.test(room)) {
+                errorMessage.textContent = 'رقم الغرفة يجب أن يكون 5 أرقام';
+                return;
+            }
+
+            // حفظ البيانات في localStorage
             localStorage.setItem('chatUser', username);
             localStorage.setItem('chatRoom', room);
 
             // الانتقال إلى صفحة الدردشة
-            window.location.href = 'chat.html'; // تأكد من أن اسم ملف الدردشة هو chat.html
+            window.location.href = 'chat.html';
         });
 
         // السماح بالدخول بالضغط على Enter
@@ -373,7 +248,7 @@
             });
         });
 
-        // روابط القائمة (لأغراض العرض، يمكن توجيهها إلى صفحات أخرى)
+        // روابط القائمة
         document.getElementById('homeLink').addEventListener('click', (e) => {
             e.preventDefault();
             alert('الصفحة الرئيسية - قيد التطوير');
