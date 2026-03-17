@@ -425,6 +425,10 @@
             gap: 10px;
             padding: 8px;
             border-bottom: 1px solid var(--border);
+            cursor: pointer;
+        }
+        .user-item:hover {
+            background: var(--light);
         }
         .user-avatar {
             width: 38px;
@@ -760,7 +764,7 @@
     <script type="module">
         // ================== استيراد Firebase ==================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, push, onChildAdded, onChildRemoved, onDisconnect, get, remove, onValue, query, limitToLast, orderByKey, off, endAt, startAt, limitToFirst } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, push, onChildAdded, onChildRemoved, onDisconnect, get, remove, onValue, query, limitToLast, orderByKey, off, endAt } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
@@ -845,14 +849,14 @@
         let mediaRecorder = null, audioChunks = [], recordingStartTime = 0, recordingTimerInterval = null;
         let audioContext = null, analyser = null, visualizerAnimation = null;
         let localStream = null, pc = null, connected = false;
-        let currentCallId = null; // معرف المكالمة الحالية
+        let currentCallId = null; // معرف فريد للمكالمة الحالية
         let callTimeout = null, incomingOffer = null;
         let remoteAudioElement = null;
-        window.audioPlayers = new Map(); // لتخزين كائنات الصوت لكل رسالة
+        window.audioPlayers = new Map(); // لتخزين كائنات الصوت
 
         const firebaseListeners = {
             messages: null, usersAdded: null, usersRemoved: null, typing: null,
-            offer: null, answer: null, callerCandidates: null, calleeCandidates: null
+            // لم نعد بحاجة لمستمعي offer/answer منفصلين لأننا نستخدم معرف المكالمة
         };
 
         const configuration = { iceServers: [ { urls: 'stun:stun.l.google.com:19302' } ] };
@@ -1037,7 +1041,6 @@
             const messagesRefDb = ref(db, `rooms/${room}/messages`);
             const now = Date.now();
             const cutoff = now - ONE_HOUR;
-            // جلب جميع الرسائل (قد يكون عدد كبير ولكن لا يوجد بديل عملي مع Realtime DB)
             const snapshot = await get(query(messagesRefDb, orderByKey()));
             const msgs = snapshot.val();
             if (!msgs) return;
@@ -1170,7 +1173,7 @@
 
                 playBtn.onclick = () => {
                     if (audio.paused) {
-                        // إيقاف أي صوت آخر قيد التشغيل
+                        // إيقاف أي صوت آخر
                         window.audioPlayers.forEach(a => {
                             if (!a.paused && a !== audio) a.pause();
                         });
@@ -1201,7 +1204,7 @@
             const div = createMessageElement(msg, isOwn, isSystem, msgId);
             messagesContainer.appendChild(div);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            // منع تراكم عدد كبير جداً في Set
+            // منع تراكم الذاكرة
             if (displayedMessages.size > 200) {
                 const firstKey = displayedMessages.values().next().value;
                 displayedMessages.delete(firstKey);
@@ -1215,6 +1218,7 @@
             const messagesRefDb = ref(db, `rooms/${currentRoom}/messages`);
             let q;
             if (oldestMessageKey) {
+                // نجلب رسائل أقدم من oldestMessageKey
                 q = query(messagesRefDb, orderByKey(), endAt(oldestMessageKey), limitToLast(MAX_MSGS + 1));
             } else {
                 q = query(messagesRefDb, orderByKey(), limitToLast(MAX_MSGS));
@@ -1235,7 +1239,7 @@
             const fragment = document.createDocumentFragment();
             let newOldestKey = null;
             entries.forEach(([key, msg]) => {
-                if (oldestMessageKey && key === oldestMessageKey) return;
+                if (oldestMessageKey && key === oldestMessageKey) return; // تخطي الرابط القديم
                 if (displayedMessages.has(key)) return;
                 displayedMessages.add(key);
                 const isOwn = msg.sender === (currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser) && msg.sender !== 'نظام';
@@ -1272,7 +1276,7 @@
             });
         }
 
-        // ================== دوال المكالمات الصوتية (مع تحسينات) ==================
+        // ================== دوال المكالمات الصوتية ==================
         async function setupLocalStream() {
             if (localStream) return localStream;
             try {
@@ -1295,14 +1299,12 @@
         function createPeerConnection() {
             const pc = new RTCPeerConnection(configuration);
 
-            // إضافة المسارات المحلية إلى peer connection
             if (localStream) {
                 localStream.getTracks().forEach(track => {
                     pc.addTrack(track, localStream);
                 });
             }
 
-            // استقبال المسارات البعيدة
             pc.ontrack = (event) => {
                 if (event.streams && event.streams[0]) {
                     if (remoteAudioElement) remoteAudioElement.remove();
@@ -1312,14 +1314,12 @@
                     remoteAudioElement.style.display = 'none';
                     document.body.appendChild(remoteAudioElement);
                     callInfo.textContent = 'جاري التحدث...';
-                    console.log('تم استقبال الصوت البعيد');
                 }
             };
 
             pc.onicecandidate = (event) => {
                 if (!event.candidate || !currentRoom || !currentCallId) return;
                 const c = event.candidate.toJSON();
-                // حفظ المرشح في المسار الخاص بالمكالمة الحالية
                 push(ref(db, `calls/${currentRoom}/${currentCallId}/callerCandidates`), c);
             };
 
@@ -1345,7 +1345,6 @@
                 await setupLocalStream();
                 pc = createPeerConnection();
 
-                // إنشاء معرف فريد للمكالمة
                 currentCallId = 'call_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
                 const callRef = ref(db, `calls/${currentRoom}/${currentCallId}`);
 
@@ -1401,7 +1400,6 @@
                 callAvatar.innerHTML = '<i class="fas fa-user"></i>';
                 incomingPanel.classList.remove('active');
                 if (callTimeout) clearTimeout(callTimeout);
-                // إيقاف الرنين
                 ring.pause();
                 ring.currentTime = 0;
             } catch (err) {
@@ -1417,7 +1415,6 @@
                 pc.close();
                 pc = null;
             }
-            // حذف بيانات المكالمة الحالية من Firebase إذا كانت موجودة
             if (currentRoom && currentCallId) {
                 remove(ref(db, `calls/${currentRoom}/${currentCallId}`));
             }
@@ -1431,8 +1428,6 @@
                 remoteAudioElement.remove();
                 remoteAudioElement = null;
             }
-            // إغلاق المستمعين الخاصة بالمكالمات (سيتم إعادة ضبطها عند بدء مكالمة جديدة)
-            // لكن لا نغلقها هنا لأنها قد تكون لمكالمات أخرى، لكننا نستخدم معرفات فريدة
         }
 
         function toggleMute() {
@@ -1447,21 +1442,18 @@
 
         function listenForCalls() {
             if (!currentRoom) return;
-            // الاستماع للمكالمات الواردة (أحدث مكالمة)
             const callsRef = ref(db, `calls/${currentRoom}`);
             onChildAdded(callsRef, (snap) => {
                 const callId = snap.key;
                 const callData = snap.val();
                 if (!callData || !callData.offer) return;
                 const offer = callData.offer;
-                if (offer.from === userId) return; // المكالمة من نفسي
+                if (offer.from === userId) return; // مكالمتي أنا
                 if (offer.targetId && offer.targetId !== userId) return; // ليست موجهة لي
-                // تجاهل إذا كان هناك مكالمة قائمة بالفعل
                 if (pc) {
                     showNotification('مكالمة واردة من ' + offer.name + ' ولكن لديك مكالمة حالياً', 'warning');
                     return;
                 }
-                // حفظ معرف المكالمة وعرضها
                 currentCallId = callId;
                 incomingOffer = offer;
                 incomingCallerName.textContent = offer.name || 'مستخدم';
@@ -1470,12 +1462,9 @@
                 ring.volume = 0.5;
                 ring.play().catch(e => console.log('تعذر تشغيل الرنين', e));
 
-                // الاستماع للإجابة والمرشحات لهذه المكالمة تحديداً (لكن نحن المتلقي، سنستمع للإجابة إذا كنت البادئ)
-                // لكن هنا نحن المستقبل، سننتظر الإجابة من قبل المستخدم عبر acceptCall
-                // يمكننا أيضاً الاستماع للإلغاء
+                // مراقبة حذف المكالمة (إذا ألغاها المرسل)
                 onChildRemoved(ref(db, `calls/${currentRoom}/${callId}`), () => {
                     if (currentCallId === callId) {
-                        // تم إنهاء المكالمة من قبل الطرف الآخر
                         endCall();
                         showNotification('تم إنهاء المكالمة من قبل الطرف الآخر', 'info');
                         incomingPanel.classList.remove('active');
@@ -1483,10 +1472,7 @@
                         ring.currentTime = 0;
                     }
                 });
-            }, { onlyOnce: false }); // نريد الاستماع لكل المكالمات الجديدة
-
-            // الاستماع للإجابات على المكالمات التي بدأتها (إذا كنا البادئ)
-            // سيتم التعامل معها داخل startCall عبر الاستماع للإجابة على المكالمة المحددة
+            });
         }
 
         // ================== الدخول إلى الغرفة ==================
@@ -1518,7 +1504,7 @@
                 monitorRoomUsers(room);
                 setupTyping(room, userId);
                 listenTyping(room);
-                await setupMessageListener(); // انتظر حتى يتم تحميل الرسائل الحالية
+                await setupMessageListener();
                 listenForCalls();
 
                 hideLoading();
@@ -1545,7 +1531,6 @@
                     else if (key === 'usersAdded' && currentRoom) off(ref(db, `rooms/${currentRoom}/users`), listener);
                     else if (key === 'usersRemoved' && currentRoom) off(ref(db, `rooms/${currentRoom}/users`), listener);
                     else if (key === 'typing' && currentRoom) off(ref(db, `rooms/${currentRoom}/typing`), listener);
-                    else if (key.includes('call') && currentRoom) off(ref(db, `calls/${currentRoom}`), listener);
                     firebaseListeners[key] = null;
                 }
             });
@@ -1725,7 +1710,6 @@
             incomingPanel.classList.remove('active');
             ring.pause();
             ring.currentTime = 0;
-            // حذف المكالمة الواردة من Firebase
             if (currentRoom && currentCallId) {
                 remove(ref(db, `calls/${currentRoom}/${currentCallId}`));
                 currentCallId = null;
