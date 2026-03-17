@@ -6,7 +6,6 @@
     <title>اسهل حل | الدردشة الحقيقية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
     <style>
         :root {
             --primary: #4361ee;
@@ -24,8 +23,6 @@
             --border: #dee2e6;
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             --base-font: 14px;
-            --btn-size: 44px;
-            --border-radius-lg: 28px;
             --transition: all 0.2s ease;
         }
         [data-theme="dark"] {
@@ -136,6 +133,7 @@
             flex-direction: column;
             gap: 8px;
             border: 1px solid var(--border);
+            scroll-behavior: smooth;
         }
         .message {
             max-width: 80%;
@@ -148,6 +146,7 @@
             position: relative;
             word-break: break-word;
             font-size: 0.95rem;
+            transition: var(--transition);
         }
         [data-theme="dark"] .message { background: #2a2a3c; color: #f0f0fa; }
         .message.own {
@@ -188,6 +187,14 @@
             cursor: pointer;
             margin-top: 4px;
             border: 2px solid white;
+        }
+        .message-thumbnail {
+            max-width: 60px;
+            max-height: 60px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 8px;
+            border: 1px solid var(--border);
         }
         .typing-indicator {
             font-size: 0.8rem;
@@ -523,12 +530,24 @@
             border-radius: 40px;
             margin-bottom: 4px;
         }
-        .progress-indeterminate {
+        .progress-item {
             display: flex;
             align-items: center;
-            gap: 6px;
-            color: var(--dark);
-            font-size: 0.85rem;
+            gap: 8px;
+            margin: 4px 0;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.2s;
         }
         .progress-indeterminate .spinner {
             width: 18px;
@@ -539,12 +558,6 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        #upload-progress .progress-text {
-            font-size: 0.8rem;
-            display: flex;
-            justify-content: space-between;
-            color: var(--dark);
-        }
         #global-loader {
             display: none;
             position: fixed;
@@ -601,6 +614,20 @@
             gap: 8px;
         }
         .mention-item:hover { background: var(--light); }
+        .admin-controls {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+            justify-content: flex-end;
+        }
+        .admin-controls button {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .admin-controls button:hover { color: var(--danger); }
     </style>
 </head>
 <body>
@@ -623,10 +650,7 @@
         </div>
         <div id="popup-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.2); z-index:1999;"></div>
         <div id="messages-container" class="messages-container"><div class="typing-indicator" id="typing-indicator"></div></div>
-        <div id="upload-progress">
-            <div class="progress-text"><span id="progress-message">جاري الرفع...</span><span id="progress-percent"></span></div>
-            <div class="progress-indeterminate" id="progress-indicator"><div class="spinner"></div><span>جاري المعالجة...</span></div>
-        </div>
+        <div id="upload-progress" class="progress-container"></div>
         <div id="voice-recording-bar" class="voice-recording-bar">
             <span class="voice-timer" id="voice-timer">00:00</span>
             <div class="voice-visualizer" id="voice-visualizer"></div>
@@ -638,10 +662,11 @@
             <button class="action-btn secondary" id="emoji-btn"><i class="far fa-smile"></i></button>
             <button id="media-btn" class="action-btn secondary"><i class="fas fa-paperclip"></i></button>
             <div id="media-popup" class="media-popup">
-                <button id="attach-btn" class="action-btn"><i class="fas fa-cloud-upload-alt"></i> رفع</button>
+                <button id="attach-btn" class="action-btn"><i class="fas fa-cloud-upload-alt"></i> رفع ملفات</button>
                 <button id="camera-btn" class="action-btn"><i class="fas fa-camera"></i> كاميرا</button>
                 <button id="voice-record-btn" class="action-btn"><i class="fas fa-microphone"></i> تسجيل</button>
                 <button id="location-btn" class="action-btn"><i class="fas fa-map-marker-alt"></i> موقعي</button>
+                <button id="contact-btn" class="action-btn"><i class="fas fa-address-card"></i> جهة اتصال</button>
             </div>
             <div id="emoji-panel" class="media-popup">
                 <button class="emoji-btn">😊</button><button class="emoji-btn">😂</button><button class="emoji-btn">❤️</button>
@@ -651,7 +676,7 @@
             </div>
             <button id="send-message-btn" class="action-btn"><i class="fas fa-paper-plane"></i></button>
         </div>
-        <input type="file" id="file-input" accept="image/*,video/*" style="display:none">
+        <input type="file" id="file-input" accept="image/*,video/*" multiple style="display:none">
         <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none">
         <div id="mention-popup" class="mention-popup"></div>
     </div>
@@ -720,9 +745,6 @@
         const sendVoiceBtn = document.getElementById('send-voice-btn');
         const typingIndicator = document.getElementById('typing-indicator');
         const progressDiv = document.getElementById('upload-progress');
-        const progressMessage = document.getElementById('progress-message');
-        const progressPercent = document.getElementById('progress-percent');
-        const progressIndicator = document.getElementById('progress-indicator');
         const notification = document.getElementById('notification');
         const confirmDialog = document.getElementById('confirm-dialog');
         const confirmYes = document.getElementById('confirm-yes');
@@ -746,6 +768,7 @@
         const globalLoader = document.getElementById('global-loader');
         const loaderText = document.getElementById('loader-text');
         const locationBtn = document.getElementById('location-btn');
+        const contactBtn = document.getElementById('contact-btn');
         const mentionPopup = document.getElementById('mention-popup');
 
         let currentRoom = null, currentUser = null, userId = null, messagesRef = null, typingTimeout = null;
@@ -760,6 +783,7 @@
         let remoteAudioElement = null;
         let screenShareStream = null;
         let inactivityTimer = null;
+        let uploadTasks = new Map();
         window.audioPlayers = new Map();
         const firebaseListeners = { messages: null, usersAdded: null, usersRemoved: null, typing: null };
         const configuration = { iceServers: [ { urls: 'stun:stun.l.google.com:19302' } ] };
@@ -953,6 +977,13 @@
                         playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                     } else { audio.pause(); playBtn.innerHTML = '<i class="fas fa-play"></i>'; }
                 };
+            } else if (msg.type === 'contact') {
+                const contactDiv = document.createElement('div');
+                contactDiv.style.display = 'flex';
+                contactDiv.style.alignItems = 'center';
+                contactDiv.style.gap = '8px';
+                contactDiv.innerHTML = `<i class="fas fa-address-card" style="font-size:1.2rem;"></i><span>${msg.text}</span>`;
+                div.appendChild(contactDiv);
             } else {
                 const textSpan = document.createElement('span');
                 textSpan.innerHTML = msg.text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:var(--primary);">$1</a>');
@@ -973,6 +1004,21 @@
                     messageInput.focus();
                 };
                 div.appendChild(replyBtn);
+            }
+            if (currentUser === ADMIN_DISPLAY && !isSystem && !isOwn) {
+                const adminDiv = document.createElement('div');
+                adminDiv.className = 'admin-controls';
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                deleteBtn.title = 'حذف الرسالة';
+                deleteBtn.onclick = async () => {
+                    if (confirm('حذف هذه الرسالة؟')) {
+                        await remove(ref(db, `rooms/${currentRoom}/messages/${msgId}`));
+                        div.remove();
+                    }
+                };
+                adminDiv.appendChild(deleteBtn);
+                div.appendChild(adminDiv);
             }
             const ts = document.createElement('div');
             ts.className = 'time';
@@ -1202,24 +1248,36 @@
         function confirmLeave() { confirmDialog.classList.add('active'); }
         confirmYes.addEventListener('click', () => { confirmDialog.classList.remove('active'); leaveRoom(); });
         confirmNo.addEventListener('click', () => { confirmDialog.classList.remove('active'); });
+        function updateProgressUI(taskId, fileName, percent) {
+            let item = document.getElementById(`progress-${taskId}`);
+            if (!item) {
+                item = document.createElement('div');
+                item.id = `progress-${taskId}`;
+                item.className = 'progress-item';
+                item.innerHTML = `<span>${fileName}</span><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div><span class="progress-percent">0%</span>`;
+                progressDiv.appendChild(item);
+            }
+            const fill = item.querySelector('.progress-fill');
+            const percentSpan = item.querySelector('.progress-percent');
+            fill.style.width = percent * 100 + '%';
+            percentSpan.textContent = Math.round(percent * 100) + '%';
+            if (percent >= 1) setTimeout(() => item.remove(), 1000);
+        }
         async function handleFileUpload(file, type) {
             if (!currentRoom) { showNotification('أنت لست في غرفة', 'danger'); return; }
+            const taskId = Date.now() + '-' + Math.random().toString(36).substr(2, 5);
             try {
                 progressDiv.style.display = 'block';
-                progressIndicator.style.display = 'flex';
-                progressPercent.textContent = '';
-                progressMessage.textContent = `جاري رفع ${type}...`;
                 if (type === 'image') { try { file = await compressImage(file); } catch (e) { console.warn('فشل ضغط الصورة، سيتم رفع الأصل', e); } }
-                else if (type === 'video' && file.size > 100 * 1024 * 1024) { showNotification('الفيديو كبير جداً (أكثر من 100MB) ولن يتم رفعه', 'danger'); progressDiv.style.display = 'none'; return; }
+                else if (type === 'video' && file.size > 100 * 1024 * 1024) { showNotification('الفيديو كبير جداً (أكثر من 100MB) ولن يتم رفعه', 'danger'); return; }
                 const fname = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '.' + (file.name.split('.').pop() || (type === 'image' ? 'jpg' : type === 'video' ? 'mp4' : 'webm'));
-                const url = await uploadToGitHubWithProgress(file, fname, type, (percent) => { progressPercent.textContent = Math.round(percent * 100) + '%'; });
-                progressDiv.style.display = 'none';
+                const url = await uploadToGitHubWithProgress(file, fname, type, (percent) => updateProgressUI(taskId, file.name, percent));
                 if (currentRoom && messagesRef) {
                     const msgKey = `${Date.now()}_${userId}`;
                     await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), { sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser, text: url, type, timestamp: Date.now() });
                     showNotification('تم الإرسال');
                 } else { showNotification('تم الرفع ولكنك غادرت الغرفة', 'warning'); }
-            } catch (e) { progressDiv.style.display = 'none'; showNotification(e.toString(), 'danger'); }
+            } catch (e) { showNotification(e.toString(), 'danger'); } finally { if (progressDiv.children.length === 0) progressDiv.style.display = 'none'; }
         }
         async function startRecording() {
             try {
@@ -1302,7 +1360,15 @@
         });
         attachBtn.addEventListener('click', () => { fileInput.click(); mediaPopup.classList.remove('show'); });
         cameraBtn.addEventListener('click', () => { cameraInput.click(); mediaPopup.classList.remove('show'); });
-        fileInput.addEventListener('change', (e) => { const f = e.target.files[0]; if (!f) return; if (f.type.startsWith('image/')) handleFileUpload(f, 'image'); else if (f.type.startsWith('video/')) handleFileUpload(f, 'video'); else showNotification('نوع غير مدعوم', 'danger'); fileInput.value = ''; });
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                if (file.type.startsWith('image/')) handleFileUpload(file, 'image');
+                else if (file.type.startsWith('video/')) handleFileUpload(file, 'video');
+                else showNotification('نوع غير مدعوم: ' + file.name, 'danger');
+            });
+            fileInput.value = '';
+        });
         cameraInput.addEventListener('change', (e) => { const f = e.target.files[0]; if (f?.type.startsWith('image/')) handleFileUpload(f, 'image'); cameraInput.value = ''; });
         voiceRecordBtn.addEventListener('click', () => { mediaPopup.classList.remove('show'); startRecording(); });
         stopRecordingBtn.addEventListener('click', stopRecording);
@@ -1317,6 +1383,21 @@
                 await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), { sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser, text: `📍 موقعي: ${mapUrl}`, timestamp: Date.now() });
                 showNotification('تم إرسال الموقع');
             }, () => { showNotification('فشل الحصول على الموقع', 'danger'); });
+        });
+        contactBtn.addEventListener('click', async () => {
+            mediaPopup.classList.remove('show');
+            try {
+                const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false });
+                if (contacts.length > 0) {
+                    const contact = contacts[0];
+                    const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${contact.name}\nTEL:${contact.tel}\nEND:VCARD`;
+                    const blob = new Blob([vcard], { type: 'text/vcard' });
+                    const file = new File([blob], `${contact.name}.vcf`, { type: 'text/vcard' });
+                    handleFileUpload(file, 'contact');
+                }
+            } catch (err) {
+                showNotification('فشل اختيار جهة اتصال', 'danger');
+            }
         });
         mediaBtn.addEventListener('click', () => mediaPopup.classList.toggle('show'));
         document.addEventListener('click', (e) => { if (!mediaBtn?.contains(e.target) && !mediaPopup?.contains(e.target)) mediaPopup?.classList.remove('show'); });
