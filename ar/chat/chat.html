@@ -69,7 +69,6 @@
             position: relative;
         }
 
-        /* رأس الدردشة */
         .chat-header {
             flex-shrink: 0;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -118,7 +117,6 @@
             white-space: nowrap;
         }
 
-        /* الأزرار العامة */
         .action-btn {
             width: 40px;
             height: 40px;
@@ -153,7 +151,6 @@
             color: var(--primary-light);
         }
 
-        /* الشريط العلوي للأزرار الوظيفية */
         .top-bar {
             display: flex;
             gap: 4px;
@@ -180,7 +177,6 @@
             border: none;
         }
 
-        /* القائمة الجانبية للأزرار الثانوية */
         .side-menu {
             position: absolute;
             top: 70px;
@@ -539,7 +535,7 @@
         .audio-duration {
             font-size: 0.7rem;
             min-width: 40px;
-            color: white !important; /* أبيض ثابت لجميع الرسائل الصوتية */
+            color: white !important;
             text-align: right;
             direction: ltr;
             font-weight: 500;
@@ -984,7 +980,6 @@
 <body>
     <div id="global-loader"><div class="loader-spinner"></div><div class="loader-text" id="loader-text">جاري التحميل...</div></div>
     <div id="app">
-        <!-- رأس الدردشة -->
         <div class="chat-header">
             <div class="header-info">
                 <h2><i class="fas fa-comment"></i> <span id="room-name-display">غرفة</span> <span class="user-count" id="user-count">(0)</span></h2>
@@ -995,7 +990,6 @@
             </div>
         </div>
 
-        <!-- الشريط العلوي للأزرار الوظيفية -->
         <div class="top-bar">
             <button class="action-btn secondary" id="toggle-users-btn" title="المتصلون"><i class="fas fa-users"></i></button>
             <button class="action-btn secondary" id="call-user-btn" title="اتصال"><i class="fas fa-phone"></i></button>
@@ -1006,7 +1000,6 @@
             <button class="action-btn secondary" id="leave-room-btn" style="background:var(--danger);color:white" title="خروج"><i class="fas fa-sign-out-alt"></i></button>
         </div>
 
-        <!-- القائمة الجانبية للأزرار الثانوية -->
         <div id="side-menu" class="side-menu">
             <button class="action-btn secondary" id="home-btn"><i class="fas fa-home"></i> الرئيسية</button>
             <button class="action-btn secondary" id="login-btn"><i class="fas fa-sign-in-alt"></i> دخول</button>
@@ -1016,7 +1009,6 @@
             <button class="action-btn secondary" id="terms-btn"><i class="fas fa-file-contract"></i> شروط</button>
         </div>
 
-        <!-- قائمة المستخدمين المنبثقة -->
         <div id="users-popup" class="users-popup">
             <div class="users-popup-header">
                 <h4><i class="fas fa-users"></i> المتصلون الآن</h4>
@@ -1026,7 +1018,6 @@
         </div>
         <div id="popup-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.2); z-index:1999;"></div>
 
-        <!-- لوحة الإحصائيات -->
         <div id="stats-panel" class="stats-panel">
             <h4 style="margin-bottom:10px;"><i class="fas fa-chart-bar"></i> إحصائيات الغرفة</h4>
             <div class="stats-item"><span>عدد الرسائل:</span> <span id="stats-messages">0</span></div>
@@ -1034,28 +1025,23 @@
             <div class="stats-item"><span>أكثر عضو تفاعلاً:</span> <span id="stats-top-user">-</span></div>
         </div>
 
-        <!-- مربع البحث -->
         <div id="search-box" class="search-box">
             <input type="text" id="search-input" placeholder="ابحث في الرسائل...">
             <button id="search-close"><i class="fas fa-times"></i></button>
         </div>
 
-        <!-- منطقة الرسائل -->
         <div id="messages-container" class="messages-container">
             <div class="typing-indicator" id="typing-indicator"></div>
         </div>
 
-        <!-- شريط تقدم الرفع -->
         <div id="upload-progress" class="progress-container"></div>
 
-        <!-- شريط التسجيل الصوتي -->
         <div id="voice-recording-bar" class="voice-recording-bar">
             <span class="voice-timer" id="voice-timer">00:00</span>
             <div class="voice-visualizer" id="voice-visualizer"></div>
             <button id="stop-recording-btn" class="action-btn" style="background:var(--danger)"><i class="fas fa-stop"></i></button>
         </div>
 
-        <!-- منطقة الإدخال -->
         <div class="input-area">
             <textarea id="message-input" placeholder="اكتب رسالتك..." rows="1"></textarea>
             <button class="action-btn secondary" id="emoji-btn"><i class="far fa-smile"></i></button>
@@ -1066,12 +1052,10 @@
                 <button id="voice-record-btn" class="action-btn"><i class="fas fa-microphone"></i> تسجيل</button>
             </div>
             <div id="emoji-panel" class="emoji-panel">
-                <!-- الإيموجي العادي -->
                 <button class="emoji-btn">😊</button><button class="emoji-btn">😂</button><button class="emoji-btn">❤️</button>
                 <button class="emoji-btn">👍</button><button class="emoji-btn">🔥</button><button class="emoji-btn">🎉</button>
                 <button class="emoji-btn">😢</button><button class="emoji-btn">😡</button><button class="emoji-btn">👋</button>
                 <button class="emoji-btn">🤔</button><button class="emoji-btn">😎</button><button class="emoji-btn">🥳</button>
-                <!-- ملصقات -->
                 <button class="emoji-btn sticker-emoji">👍</button>
                 <button class="emoji-btn sticker-emoji">❤️</button>
                 <button class="emoji-btn sticker-emoji">😂</button>
@@ -1126,7 +1110,6 @@
     <audio id="ring" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto" loop></audio>
 
     <script type="module">
-        // استيراد Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, push, onChildAdded, onChildRemoved, onDisconnect, get, remove, onValue, query, limitToLast, orderByKey, off, endAt } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
@@ -1143,7 +1126,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // الثوابت
         const GITHUB_USERNAME = "ashlhl";
         const GITHUB_REPO = "ashlhl";
         const GITHUB_TOKEN_PATH = "2026";
@@ -1153,7 +1135,6 @@
         const MAX_MSGS = 20;
         const INACTIVITY_TIMEOUT = 30 * 60 * 1000;
 
-        // عناصر DOM
         const roomNameSpan = document.getElementById('room-name-display');
         const userCountSpan = document.getElementById('user-count');
         const currentUserNameSpan = document.getElementById('current-user-name');
@@ -1211,7 +1192,6 @@
         const searchClose = document.getElementById('search-close');
         const menuBtn = document.getElementById('menu-btn');
         const sideMenu = document.getElementById('side-menu');
-        // الأزرار الجديدة
         const homeBtn = document.getElementById('home-btn');
         const loginBtn = document.getElementById('login-btn');
         const helpBtn = document.getElementById('help-btn');
@@ -1219,7 +1199,6 @@
         const privacyBtn = document.getElementById('privacy-btn');
         const termsBtn = document.getElementById('terms-btn');
 
-        // متغيرات الحالة
         let currentRoom = null, currentUser = null, userId = null, messagesRef = null, typingTimeout = null;
         let displayedMessages = new Set();
         let oldestMessageKey = null, allMessagesLoaded = false, loadingMore = false;
@@ -1236,7 +1215,6 @@
         const firebaseListeners = { messages: null, usersAdded: null, usersRemoved: null, typing: null };
         const configuration = { iceServers: [ { urls: 'stun:stun.l.google.com:19302' } ] };
 
-        // دوال مساعدة
         function showLoading(text) { loaderText.textContent = text; globalLoader.classList.add('active'); }
         function hideLoading() { globalLoader.classList.remove('active'); }
         function showNotification(msg, type = 'success') {
@@ -1324,8 +1302,16 @@
         function monitorRoomUsers(room) {
             if (firebaseListeners.usersAdded) off(ref(db, `rooms/${room}/users`), firebaseListeners.usersAdded);
             if (firebaseListeners.usersRemoved) off(ref(db, `rooms/${room}/users`), firebaseListeners.usersRemoved);
-            firebaseListeners.usersAdded = onChildAdded(ref(db, `rooms/${room}/users`), (snap) => { const user = snap.val(); if (!user?.name) return; usersMap[snap.key] = user.name; updateUsersLists(); });
-            firebaseListeners.usersRemoved = onChildRemoved(ref(db, `rooms/${room}/users`), (snap) => { delete usersMap[snap.key]; updateUsersLists(); });
+            firebaseListeners.usersAdded = onChildAdded(ref(db, `rooms/${room}/users`), (snap) => {
+                const user = snap.val();
+                if (!user?.name) return;
+                usersMap[snap.key] = user.name;
+                updateUsersLists();
+            });
+            firebaseListeners.usersRemoved = onChildRemoved(ref(db, `rooms/${room}/users`), (snap) => {
+                delete usersMap[snap.key];
+                updateUsersLists();
+            });
         }
         function setupTyping(room, uid) {
             const typingRef = ref(db, `rooms/${room}/typing/${uid}`);
@@ -1496,10 +1482,11 @@
                 actionsDiv.appendChild(replyBtn);
             }
 
+            // زر الحذف للمستخدم نفسه خلال 5 دقائق
             if (isOwn && !isSystem && Date.now() - msg.timestamp < 5 * 60 * 1000) {
                 const deleteBtn = document.createElement('button');
                 deleteBtn.innerHTML = '<i class="fas fa-trash"></i>'; deleteBtn.title = 'حذف';
-                deleteBtn.onclick = async () => { if (confirm('حذف؟')) { await remove(ref(db, `rooms/${currentRoom}/messages/${msgId}`)); } };
+                deleteBtn.onclick = async () => { if (confirm('حذف هذه الرسالة؟')) { await remove(ref(db, `rooms/${currentRoom}/messages/${msgId}`)); } };
                 actionsDiv.appendChild(deleteBtn);
             }
 
@@ -1518,7 +1505,7 @@
                 adminDiv.appendChild(pinBtn);
                 const deleteBtn = document.createElement('button');
                 deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                deleteBtn.onclick = async () => { if (confirm('حذف?')) { await remove(ref(db, `rooms/${currentRoom}/messages/${msgId}`)); } };
+                deleteBtn.onclick = async () => { if (confirm('حذف هذه الرسالة؟')) { await remove(ref(db, `rooms/${currentRoom}/messages/${msgId}`)); } };
                 adminDiv.appendChild(deleteBtn);
                 div.appendChild(adminDiv);
             }
@@ -1964,7 +1951,6 @@
             document.querySelectorAll('.message').forEach(msg => { const text = msg.textContent.toLowerCase(); msg.style.display = text.includes(term) ? 'flex' : 'none'; });
         });
 
-        // أزرار القائمة الجانبية الجديدة
         homeBtn.addEventListener('click', () => showNotification('الصفحة الرئيسية', 'info'));
         loginBtn.addEventListener('click', () => showNotification('تسجيل الدخول', 'info'));
         helpBtn.addEventListener('click', () => showNotification('المساعدة', 'info'));
