@@ -3,234 +3,560 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>اسهل حل | الرئيسية</title>
+    <title>اسهل حل | روم الدردشة</title>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
         :root {
             --primary: #4361ee;
             --primary-dark: #2c3e9e;
             --primary-light: #6c7ffa;
             --secondary: #06d6a0;
-            --success: #06d6a0;
-            --warning: #ffb703;
-            --danger: #d9042b;
+            --secondary-dark: #05b386;
+            --accent-1: #ff6b6b;
+            --accent-2: #ffb703;
+            --accent-3: #a463f5;
             --dark: #1e1e2f;
             --light: #f4f7fb;
             --gray: #6b7280;
             --bg-gradient: linear-gradient(145deg, #ffffff 0%, #f0f4fa 100%);
             --card-bg: rgba(255, 255, 255, 0.95);
             --border: #d1d5db;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            --font-base: 13px;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            --font-base: 14px;
             --transition: all 0.2s ease;
         }
+
         [data-theme="dark"] {
-            --bg-gradient: linear-gradient(145deg, #12121c 0%, #1e1e2e 100%);
-            --card-bg: rgba(28, 28, 42, 0.95);
+            --primary: #5f7df2;
+            --primary-dark: #4054b2;
+            --primary-light: #8a9cff;
+            --secondary: #06d6a0;
+            --secondary-dark: #05b386;
+            --accent-1: #ff8a8a;
+            --accent-2: #ffca3a;
+            --accent-3: #b47aff;
             --dark: #f0f0fa;
             --light: #2a2a3c;
             --gray: #a0a0b0;
+            --bg-gradient: linear-gradient(145deg, #12121c 0%, #1e1e2e 100%);
+            --card-bg: rgba(28, 28, 42, 0.98);
             --border: #4a4a60;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+
         body {
             background: var(--bg-gradient);
             color: var(--dark);
             font-size: var(--font-base);
-            line-height: 1.5;
-            transition: background 0.3s, color 0.3s;
+            line-height: 1.6;
             min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px;
+            flex-direction: column;
+            transition: background 0.3s, color 0.3s;
         }
-        .index-container {
-            max-width: 400px;
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
             width: 100%;
+        }
+
+        /* الهيدر */
+        .header {
             background: var(--card-bg);
             backdrop-filter: blur(12px);
-            border-radius: 40px;
-            padding: 32px 24px;
             box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            text-align: center;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid var(--border);
         }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
         .logo {
-            font-size: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.8rem;
             font-weight: 800;
             color: var(--primary);
-            margin-bottom: 8px;
+        }
+
+        .logo i {
+            color: var(--primary-dark);
+            font-size: 2rem;
+        }
+
+        .nav-links {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
+            gap: 20px;
+            flex-wrap: wrap;
         }
-        .logo i { font-size: 2.2rem; color: var(--primary-dark); }
-        .main-title {
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--dark);
-        }
-        .description {
-            color: var(--gray);
-            margin-bottom: 24px;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-        .cta-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 24px 0;
-        }
-        .btn {
-            padding: 14px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
-        }
-        .btn-outline {
-            background: var(--light);
-            color: var(--dark);
-            border: 1px solid var(--border);
-        }
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        .theme-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin: 20px 0 16px;
-        }
-        .theme-toggle button {
-            background: var(--light);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            padding: 6px 14px;
-            cursor: pointer;
+
+        .nav-links a {
+            text-decoration: none;
             color: var(--dark);
             font-weight: 600;
-            transition: var(--transition);
+            transition: color 0.2s;
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
+            gap: 5px;
+            font-size: 0.95rem;
         }
-        .theme-toggle button:hover {
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .btn-outline-small {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+
+        .btn-outline-small:hover {
             background: var(--primary);
             color: white;
-            border-color: var(--primary);
         }
-        .footer-links {
+
+        /* زر تبديل الوضع */
+        .theme-toggle-btn {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 16px;
-            margin-top: 16px;
-            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1.2rem;
         }
-        .footer-links a {
+
+        .theme-toggle-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* شريط الترحيب */
+        .hero {
+            padding: 60px 0 40px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .hero-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 16px 45px;
+            border-radius: 60px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+            transition: 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(67, 97, 238, 0.4);
+        }
+
+        /* قسم البطاقات (الميزات) */
+        .features {
+            padding: 50px 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 40px;
+            padding: 35px 25px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent-1), var(--accent-2), var(--accent-3));
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 30px rgba(67, 97, 238, 0.15);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .feature-icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .feature-card:nth-child(2) .feature-icon {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+        }
+        .feature-card:nth-child(3) .feature-icon {
+            background: linear-gradient(135deg, var(--accent-1), #d45b5b);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        /* بطاقة نصيحة (كلمة اليوم) */
+        .tip-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 40px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            box-shadow: var(--shadow);
+            border-right: 8px solid var(--accent-2);
+        }
+
+        .tip-icon {
+            background: var(--accent-2);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tip-icon i {
+            font-size: 2.2rem;
+            color: white;
+        }
+
+        .tip-text {
+            flex: 1;
+        }
+
+        .tip-text h4 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .tip-text p {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        /* الفوتر */
+        .footer {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            padding: 40px 0 20px;
+            margin-top: 60px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-col h4 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+            border-right: 4px solid var(--primary);
+            padding-right: 10px;
+        }
+
+        .footer-col a {
+            display: block;
             color: var(--gray);
             text-decoration: none;
-            transition: var(--transition);
+            margin-bottom: 8px;
+            transition: color 0.2s;
+            font-size: 0.9rem;
         }
-        .footer-links a:hover {
+
+        .footer-col a:hover {
             color: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+
+        /* تحسينات الجوال */
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .hero-btn {
+                padding: 14px 30px;
+                font-size: 1.1rem;
+            }
+            .feature-card {
+                padding: 25px 15px;
+            }
+            .feature-card h3 {
+                font-size: 1.3rem;
+            }
+            .tip-card {
+                padding: 20px;
+                gap: 15px;
+            }
+            .tip-icon {
+                width: 55px;
+                height: 55px;
+            }
+            .tip-icon i {
+                font-size: 1.8rem;
+            }
+            .tip-text h4 {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .nav-links {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="index-container">
-        <div class="logo">
-            <i class="fas fa-comment-dots"></i>
-            <span>اسهل حل</span>
+    <!-- الهيدر -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-comment-dots"></i>
+                <span>اسهل حل</span>
+            </div>
+            <nav class="nav-links">
+                <a href="help.html"><i class="fas fa-question-circle"></i> المساعدة</a>
+                <a href="about.html"><i class="fas fa-info-circle"></i> حول</a>
+                <a href="login.html" class="btn-outline-small"><i class="fas fa-sign-in-alt"></i> دخول</a>
+                <!-- زر تبديل الوضع -->
+                <div class="theme-toggle-btn" id="themeToggle">
+                    <i class="fas fa-sun" id="themeIcon"></i>
+                </div>
+            </nav>
         </div>
-        <div class="main-title">تواصل بكل سهولة</div>
-        <div class="description">
-            منصة الدردشة الأسرع والأكثر أماناً. محادثات فورية، مشاركة ملفات، وصوت عالي الجودة.
-        </div>
+    </header>
 
-        <div class="cta-buttons">
-            <button class="btn btn-primary" id="startBtn"><i class="fas fa-sign-in-alt"></i> ابدأ الآن</button>
-            <button class="btn btn-outline" id="aboutBtn"><i class="fas fa-info-circle"></i> عن التطبيق</button>
+    <!-- شريط الترحيب -->
+    <section class="hero">
+        <div class="container">
+            <h1>مرحباً بك في روم الدردشة</h1>
+            <p>ابدأ الحديث مع الآخرين الآن، بسرعة وأمان، بدون تعقيدات</p>
+            <button class="hero-btn" id="startChatBtn"><i class="fas fa-comments"></i> ابدأ الدردشة</button>
         </div>
+    </section>
 
-        <div class="theme-toggle">
-            <button id="lightModeBtn"><i class="fas fa-sun"></i> فاتح</button>
-            <button id="darkModeBtn"><i class="fas fa-moon"></i> داكن</button>
+    <!-- بطاقات الميزات -->
+    <section class="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>دردشة فورية</h3>
+                    <p>تواصل مع الآخرين بسرعة فائقة بدون أي تأخير</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <h3>بدون تسجيل</h3>
+                    <p>ادخل مباشرة وابدأ المحادثة، لا تحتاج إلى إنشاء حساب</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>خصوصية تامة</h3>
+                    <p>الرسالة مشفرة وتُحذف بعد ساعة، لا أحد يطلع عليها</p>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <div class="footer-links">
-            <a href="#" id="privacyLink">خصوصية</a>
-            <a href="#" id="termsLink">شروط</a>
-            <a href="#" id="helpLink">مساعدة</a>
+    <!-- بطاقة نصيحة (كلمة اليوم) -->
+    <div class="container">
+        <div class="tip-card">
+            <div class="tip-icon">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+            <div class="tip-text">
+                <h4>💡 كلمة اليوم</h4>
+                <p>"أجمل ما في الدردشة أنها تجمع القلوب رغم المسافات. شارك الآخرين أفكارك وابدع في طرحك."</p>
+            </div>
         </div>
     </div>
 
-    <script>
-        // الوضع الليلي
-        const lightModeBtn = document.getElementById('lightModeBtn');
-        const darkModeBtn = document.getElementById('darkModeBtn');
-        const htmlElement = document.documentElement;
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>اسهل حل</h4>
+                    <p style="color: var(--gray); margin-bottom: 10px;">روم دردشة بسيط وآمن للجميع</p>
+                </div>
+                <div class="footer-col">
+                    <h4>الدعم</h4>
+                    <a href="help.html">المساعدة</a>
+                    <a href="about.html">حول الموقع</a>
+                </div>
+                <div class="footer-col">
+                    <h4>القانوني</h4>
+                    <a href="privacy.html">سياسة الخصوصية</a>
+                    <a href="terms.html">شروط الخدمة</a>
+                </div>
+                <div class="footer-col">
+                    <h4>روابط سريعة</h4>
+                    <a href="login.html">الدخول للدردشة</a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>جميع الحقوق محفوظة © 2026 اسهل حل</p>
+            </div>
+        </div>
+    </footer>
 
+    <script>
+        // عناصر التحكم في الوضع
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+
+        // التحقق من الوضع المخزن
         if (localStorage.getItem('darkMode') === 'true') {
-            htmlElement.setAttribute('data-theme', 'dark');
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
         }
 
-        lightModeBtn.addEventListener('click', () => {
-            htmlElement.removeAttribute('data-theme');
-            localStorage.setItem('darkMode', 'false');
+        // تبديل الوضع
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('darkMode', 'false');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('darkMode', 'true');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
         });
 
-        darkModeBtn.addEventListener('click', () => {
-            htmlElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('darkMode', 'true');
-        });
-
-        // أزرار التنقل
-        document.getElementById('startBtn').addEventListener('click', () => {
-            window.location.href = 'welcome.html'; // أو login.html حسب التدفق المطلوب
-        });
-
-        document.getElementById('aboutBtn').addEventListener('click', () => {
-            alert('تطبيق اسهل حل - نسخة 1.0\nدردشة حقيقية بسيطة وآمنة');
-        });
-
-        // روابط
-        document.getElementById('privacyLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('سياسة الخصوصية - قيد التطوير');
-        });
-        document.getElementById('termsLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('شروط الاستخدام - قيد التطوير');
-        });
-        document.getElementById('helpLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('المساعدة - قيد التطوير');
+        // التحقق من الموافقة على الشروط عند النقر على زر "ابدأ الدردشة"
+        document.getElementById('startChatBtn').addEventListener('click', function() {
+            const termsAgreed = localStorage.getItem('termsAgreed');
+            if (termsAgreed === 'true') {
+                window.location.href = 'login.html';
+            } else {
+                window.location.href = 'terms.html';
+            }
         });
     </script>
 </body>
