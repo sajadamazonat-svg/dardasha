@@ -152,7 +152,7 @@
             max-width: 600px;
             margin: 0 auto;
         }
-        /* بطاقات أفقية من اليمين إلى اليسار (horizontal scroll) */
+        /* بطاقات أفقية من اليمين إلى اليسار */
         .features {
             padding: 20px 0;
             overflow-x: auto;
@@ -163,9 +163,9 @@
             display: flex;
             flex-direction: row;
             gap: 20px;
-            direction: rtl; /* من اليمين إلى اليسار */
+            direction: rtl;
             justify-content: flex-start;
-            padding: 5px 5px 10px; /* لإظهار الظل دون قص */
+            padding: 5px 5px 10px;
         }
         .feature-card {
             background: var(--card-bg);
@@ -176,7 +176,6 @@
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
             transition: 0.2s;
-            /* شكل عرضي: نسبة العرض إلى الارتفاع 3:2 */
             flex: 0 0 auto;
             width: 160px;
             aspect-ratio: 3 / 2;
@@ -491,20 +490,32 @@
             }
         });
 
-        // تفعيل زر الدخول
+        // تفعيل زر الدخول مع حفظ الموافقة
         const agreeCheckbox = document.getElementById('agreeTerms');
         const startBtn = document.getElementById('startChatBtn');
 
+        // التحقق من وجود موافقة سابقة
+        const termsAccepted = localStorage.getItem('termsAccepted') === 'true';
+        if (termsAccepted) {
+            agreeCheckbox.checked = true;
+            startBtn.disabled = false;
+            startBtn.classList.add('active');
+        }
+
+        // عند تغيير حالة الموافقة
         agreeCheckbox.addEventListener('change', function() {
             if (this.checked) {
+                localStorage.setItem('termsAccepted', 'true');
                 startBtn.disabled = false;
                 startBtn.classList.add('active');
             } else {
+                localStorage.setItem('termsAccepted', 'false');
                 startBtn.disabled = true;
                 startBtn.classList.remove('active');
             }
         });
 
+        // الانتقال إلى صفحة login.html
         startBtn.addEventListener('click', function() {
             if (agreeCheckbox.checked) {
                 window.location.href = 'login.html';
