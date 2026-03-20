@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>سياسة الخصوصية - اسهل حل</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #2c3e9e;
+            --primary-light: #6c7ffa;
+            --secondary: #06d6a0;
+            --secondary-dark: #05b386;
+            --accent-1: #ff6b6b;
+            --accent-2: #ffb703;
+            --accent-3: #a463f5;
+            --dark: #1e1e2f;
+            --light: #f4f7fb;
+            --gray: #6b7280;
+            --bg-gradient: linear-gradient(145deg, #ffffff 0%, #f0f4fa 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border: #d1d5db;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --font-base: 13px;
+            --transition: all 0.2s ease;
+        }
+        [data-theme="dark"] {
+            --primary: #5f7df2;
+            --primary-dark: #4054b2;
+            --primary-light: #8a9cff;
+            --secondary: #06d6a0;
+            --secondary-dark: #05b386;
+            --accent-1: #ff8a8a;
+            --accent-2: #ffca3a;
+            --accent-3: #b47aff;
+            --dark: #f0f0fa;
+            --light: #2a2a3c;
+            --gray: #a0a0b0;
+            --bg-gradient: linear-gradient(145deg, #12121c 0%, #1e1e2e 100%);
+            --card-bg: rgba(28, 28, 42, 0.98);
+            --border: #4a4a60;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+        body {
+            background: var(--bg-gradient);
+            color: var(--dark);
+            font-size: var(--font-base);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.3s, color 0.3s;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 15px;
+            width: 100%;
+        }
+        .header {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .logo i {
+            color: var(--primary-dark);
+            font-size: 1.7rem;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 0.9rem;
+        }
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        .theme-toggle-btn {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+        .theme-toggle-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .privacy-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 30px;
+            padding: 30px;
+            margin: 40px 0;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        .privacy-card h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .privacy-card h2 {
+            font-size: 1.3rem;
+            margin: 20px 0 10px;
+            color: var(--dark);
+            border-right: 3px solid var(--primary);
+            padding-right: 10px;
+        }
+        .privacy-card p, .privacy-card li {
+            color: var(--gray);
+            line-height: 1.8;
+        }
+        .privacy-card ul {
+            padding-right: 20px;
+            margin: 10px 0;
+        }
+        .footer {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            padding: 25px 0 15px;
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .footer-col h4 {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            border-right: 3px solid var(--primary);
+            padding-right: 8px;
+        }
+        .footer-col a {
+            display: block;
+            color: var(--gray);
+            text-decoration: none;
+            margin-bottom: 4px;
+            font-size: 0.8rem;
+        }
+        .copyright {
+            text-align: center;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            color: var(--gray);
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <i class="fas fa-comment-dots"></i>
+                <span>اسهل حل</span>
+            </a>
+            <nav class="nav-links">
+                <a href="help.html"><i class="fas fa-question-circle"></i> المساعدة</a>
+                <a href="about.html"><i class="fas fa-info-circle"></i> حول</a>
+                <div class="theme-toggle-btn" id="themeToggle">
+                    <i class="fas fa-sun" id="themeIcon"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="privacy-card">
+            <h1><i class="fas fa-shield-alt"></i> سياسة الخصوصية</h1>
+            <p>آخر تحديث: 20 مارس 2026</p>
+            <p>نحن في "اسهل حل" نولي خصوصية بياناتك اهتماماً كبيراً. توضح هذه السياسة كيفية جمع واستخدام وحماية المعلومات عند استخدامك لتطبيق الدردشة.</p>
+
+            <h2>البيانات التي نجمعها</h2>
+            <ul>
+                <li><strong>الرسائل:</strong> جميع الرسائل التي ترسلها في الغرف يتم تخزينها مؤقتاً على خوادم Firebase. يتم حذف الرسائل تلقائياً بعد فترة من عدم النشاط (عادةً 24 ساعة).</li>
+                <li><strong>الأسماء المستعارة:</strong> الاسم الذي تختاره يُحفظ محلياً في متصفحك ولا يتم تخزينه على الخوادم إلا أثناء تواجدك في الغرفة.</li>
+                <li><strong>رقم الغرفة:</strong> يُستخدم لتوجيهك إلى الدردشة الصحيحة، ولا يتم ربطه بهويتك الشخصية.</li>
+                <li><strong>بيانات الاستخدام:</strong> نستخدم Firebase Analytics لجمع بيانات غير شخصية مثل عدد الزوار، الصفحات الأكثر زيارة، ونوع الجهاز المستخدم. هذه البيانات تساعدنا على تحسين الخدمة.</li>
+            </ul>
+
+            <h2>كيف نستخدم بياناتك</h2>
+            <ul>
+                <li>تقديم خدمة الدردشة الفورية.</li>
+                <li>تحسين أداء التطبيق وتجربة المستخدم.</li>
+                <li>مراقبة الاستخدام لضمان الامتثال للشروط.</li>
+                <li>عرض إعلانات ذات صلة (عبر Google AdSense) – يتم ذلك بناءً على ملفات تعريف الارتباط (كوكيز).</li>
+            </ul>
+
+            <h2>الإعلانات وملفات تعريف الارتباط</h2>
+            <p>نستخدم Google AdSense لعرض الإعلانات. يستخدم Google ملفات تعريف الارتباط (كوكيز) لعرض إعلانات مخصصة بناءً على زياراتك السابقة لمواقع الويب. يمكنك الاطلاع على <a href="https://policies.google.com/technologies/ads" target="_blank" style="color: var(--primary);">سياسة خصوصية Google للإعلانات</a> لمزيد من التفاصيل.</p>
+            <p>يمكنك تعطيل الإعلانات المخصصة من خلال إعدادات جهازك أو عن طريق زيارة <a href="https://www.google.com/settings/ads" target="_blank" style="color: var(--primary);">إعدادات الإعلانات من Google</a>.</p>
+
+            <h2>حقوقك</h2>
+            <ul>
+                <li><strong>طلب حذف البيانات:</strong> بما أن الخدمة لا تتطلب تسجيل دخول، يمكنك مسح بياناتك عن طريق تنظيف متصفحك (حذف localStorage) أو ببساطة بمغادرة الغرفة.</li>
+                <li><strong>عدم المشاركة:</strong> يمكنك استخدام الخدمة دون إدخال اسم حقيقي.</li>
+                <li><strong>الوصول إلى البيانات:</strong> يمكنك الاطلاع على الرسائل التي ترسلها في الغرفة أثناء وجودك.</li>
+            </ul>
+            <p>إذا كان لديك أي استفسار، تواصل معنا على: <strong>privacy@as3lhal.com</strong></p>
+
+            <h2>تعديلات السياسة</h2>
+            <p>قد نقوم بتحديث سياسة الخصوصية من حين لآخر. سيتم نشر أي تغييرات على هذه الصفحة مع تحديث تاريخ "آخر تحديث". نوصي بمراجعة هذه الصفحة دورياً.</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>اسهل حل</h4>
+                    <p style="color: var(--gray); font-size:0.8rem;">دردشة سريعة وآمنة</p>
+                </div>
+                <div class="footer-col">
+                    <h4>الدعم</h4>
+                    <a href="help.html">المساعدة</a>
+                    <a href="about.html">حول</a>
+                </div>
+                <div class="footer-col">
+                    <h4>القانوني</h4>
+                    <a href="privacy.html">الخصوصية</a>
+                    <a href="terms.html">الشروط</a>
+                </div>
+                <div class="footer-col">
+                    <h4>روابط</h4>
+                    <a href="login.html">الدخول</a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2026 اسهل حل</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+            authDomain: "zio3-8ffdd.firebaseapp.com",
+            databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+            projectId: "zio3-8ffdd",
+            storageBucket: "zio3-8ffdd.firebasestorage.app",
+            messagingSenderId: "560939348415",
+            appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+            measurementId: "G-CVN2B2D0RD"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const analytics = firebase.analytics();
+
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        }
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('darkMode', 'false');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('darkMode', 'true');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+    </script>
+</body>
+</html>
