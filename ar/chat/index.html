@@ -6,25 +6,17 @@
     <title>اسهل حل | روم الدردشة</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         :root {
             --primary: #4361ee;
             --primary-dark: #2c3e9e;
             --primary-light: #6c7ffa;
             --secondary: #06d6a0;
-            --secondary-dark: #05b386;
             --accent-1: #ff6b6b;
             --accent-2: #ffb703;
-            --accent-3: #a463f5;
             --dark: #1e1e2f;
             --light: #f4f7fb;
             --gray: #6b7280;
@@ -40,10 +32,8 @@
             --primary-dark: #4054b2;
             --primary-light: #8a9cff;
             --secondary: #06d6a0;
-            --secondary-dark: #05b386;
             --accent-1: #ff8a8a;
             --accent-2: #ffca3a;
-            --accent-3: #b47aff;
             --dark: #f0f0fa;
             --light: #2a2a3c;
             --gray: #a0a0b0;
@@ -62,13 +52,7 @@
             flex-direction: column;
             transition: background 0.3s, color 0.3s;
         }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 15px;
-            width: 100%;
-        }
-        /* هيدر مضغوط */
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 15px; width: 100%; }
         .header {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
@@ -94,10 +78,7 @@
             font-weight: 800;
             color: var(--primary);
         }
-        .logo i {
-            color: var(--primary-dark);
-            font-size: 1.7rem;
-        }
+        .logo i { color: var(--primary-dark); font-size: 1.7rem; }
         .nav-links {
             display: flex;
             align-items: center;
@@ -114,9 +95,7 @@
             gap: 3px;
             font-size: 0.9rem;
         }
-        .nav-links a:hover {
-            color: var(--primary);
-        }
+        .nav-links a:hover { color: var(--primary); }
         .theme-toggle-btn {
             background: transparent;
             border: 2px solid var(--primary);
@@ -131,34 +110,11 @@
             transition: 0.2s;
             font-size: 1rem;
         }
-        .theme-toggle-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-        /* هيرو */
-        .hero {
-            padding: 30px 0 20px;
-            text-align: center;
-        }
-        .hero h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--dark);
-            margin-bottom: 8px;
-        }
-        .hero p {
-            font-size: 1rem;
-            color: var(--gray);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        /* بطاقات أفقية من اليمين إلى اليسار */
-        .features {
-            padding: 20px 0;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin;
-        }
+        .theme-toggle-btn:hover { background: var(--primary); color: white; }
+        .hero { padding: 30px 0 20px; text-align: center; }
+        .hero h1 { font-size: 2rem; font-weight: 800; color: var(--dark); margin-bottom: 8px; }
+        .hero p { font-size: 1rem; color: var(--gray); max-width: 600px; margin: 0 auto; }
+        .features { padding: 20px 0; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
         .features-grid {
             display: flex;
             flex-direction: row;
@@ -184,10 +140,7 @@
             justify-content: center;
             align-items: center;
         }
-        .feature-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--primary);
-        }
+        .feature-card:hover { transform: translateY(-3px); border-color: var(--primary); }
         .feature-icon {
             width: 55px;
             height: 55px;
@@ -198,21 +151,9 @@
             justify-content: center;
             margin: 0 auto 8px;
         }
-        .feature-icon i {
-            font-size: 1.8rem;
-            color: white;
-        }
-        .feature-card h3 {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-            color: var(--dark);
-        }
-        .feature-card p {
-            color: var(--gray);
-            font-size: 0.8rem;
-        }
-        /* كلمة اليوم */
+        .feature-icon i { font-size: 1.8rem; color: white; }
+        .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; color: var(--dark); }
+        .feature-card p { color: var(--gray); font-size: 0.8rem; }
         .tip-card {
             background: var(--card-bg);
             backdrop-filter: blur(8px);
@@ -235,19 +176,9 @@
             align-items: center;
             justify-content: center;
         }
-        .tip-icon i {
-            font-size: 1.8rem;
-            color: white;
-        }
-        .tip-text h4 {
-            font-size: 1.1rem;
-            margin-bottom: 2px;
-        }
-        .tip-text p {
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-        /* مربع الموافقة */
+        .tip-icon i { font-size: 1.8rem; color: white; }
+        .tip-text h4 { font-size: 1.1rem; margin-bottom: 2px; }
+        .tip-text p { color: var(--gray); font-size: 0.9rem; }
         .terms-agreement {
             background: var(--card-bg);
             backdrop-filter: blur(8px);
@@ -288,7 +219,6 @@
             align-items: center;
             gap: 4px;
         }
-        /* زر الدخول */
         .enter-section {
             text-align: center;
             margin: 10px 0 20px;
@@ -316,7 +246,6 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 16px rgba(67, 97, 238, 0.4);
         }
-        /* فوتر */
         .footer {
             background: var(--card-bg);
             backdrop-filter: blur(8px);
@@ -355,16 +284,11 @@
 <body>
     <header class="header">
         <div class="container header-content">
-            <div class="logo">
-                <i class="fas fa-comment-dots"></i>
-                <span>اسهل حل</span>
-            </div>
+            <div class="logo"><i class="fas fa-comment-dots"></i><span>اسهل حل</span></div>
             <nav class="nav-links">
                 <a href="help.html"><i class="fas fa-question-circle"></i> المساعدة</a>
                 <a href="about.html"><i class="fas fa-info-circle"></i> حول</a>
-                <div class="theme-toggle-btn" id="themeToggle">
-                    <i class="fas fa-sun" id="themeIcon"></i>
-                </div>
+                <div class="theme-toggle-btn" id="themeToggle"><i class="fas fa-sun" id="themeIcon"></i></div>
             </nav>
         </div>
     </header>
@@ -427,33 +351,16 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
-                <div class="footer-col">
-                    <h4>اسهل حل</h4>
-                    <p style="color: var(--gray); font-size:0.8rem;">دردشة سريعة وآمنة</p>
-                </div>
-                <div class="footer-col">
-                    <h4>الدعم</h4>
-                    <a href="help.html">المساعدة</a>
-                    <a href="about.html">حول</a>
-                </div>
-                <div class="footer-col">
-                    <h4>القانوني</h4>
-                    <a href="privacy.html">الخصوصية</a>
-                    <a href="terms.html">الشروط</a>
-                </div>
-                <div class="footer-col">
-                    <h4>روابط</h4>
-                    <a href="login.html">الدخول</a>
-                </div>
+                <div class="footer-col"><h4>اسهل حل</h4><p style="color: var(--gray); font-size:0.8rem;">دردشة سريعة وآمنة</p></div>
+                <div class="footer-col"><h4>الدعم</h4><a href="help.html">المساعدة</a><a href="about.html">حول</a></div>
+                <div class="footer-col"><h4>القانوني</h4><a href="privacy.html">الخصوصية</a><a href="terms.html">الشروط</a></div>
+                <div class="footer-col"><h4>روابط</h4><a href="login.html">الدخول</a></div>
             </div>
-            <div class="copyright">
-                <p>© 2026 اسهل حل</p>
-            </div>
+            <div class="copyright"><p>© 2026 اسهل حل</p></div>
         </div>
     </footer>
 
     <script>
-        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
             authDomain: "zio3-8ffdd.firebaseapp.com",
@@ -467,7 +374,6 @@
         firebase.initializeApp(firebaseConfig);
         const analytics = firebase.analytics();
 
-        // الوضع الليلي
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
         if (localStorage.getItem('darkMode') === 'true') {
@@ -490,11 +396,10 @@
             }
         });
 
-        // تفعيل زر الدخول مع حفظ الموافقة
         const agreeCheckbox = document.getElementById('agreeTerms');
         const startBtn = document.getElementById('startChatBtn');
 
-        // التحقق من وجود موافقة سابقة
+        // التحقق من الموافقة السابقة
         const termsAccepted = localStorage.getItem('termsAccepted') === 'true';
         if (termsAccepted) {
             agreeCheckbox.checked = true;
@@ -502,7 +407,6 @@
             startBtn.classList.add('active');
         }
 
-        // عند تغيير حالة الموافقة
         agreeCheckbox.addEventListener('change', function() {
             if (this.checked) {
                 localStorage.setItem('termsAccepted', 'true');
@@ -515,7 +419,6 @@
             }
         });
 
-        // الانتقال إلى صفحة login.html
         startBtn.addEventListener('click', function() {
             if (agreeCheckbox.checked) {
                 window.location.href = 'login.html';
