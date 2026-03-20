@@ -6,15 +6,25 @@
     <title>اسهل حل | دخول</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
         :root {
             --primary: #4361ee;
             --primary-dark: #2c3e9e;
             --primary-light: #6c7ffa;
             --secondary: #06d6a0;
-            --success: #06d6a0;
-            --warning: #ffb703;
-            --danger: #d9042b;
+            --secondary-dark: #05b386;
+            --accent-1: #ff6b6b;
+            --accent-2: #ffb703;
+            --accent-3: #a463f5;
             --dark: #1e1e2f;
             --light: #f4f7fb;
             --gray: #6b7280;
@@ -26,30 +36,108 @@
             --transition: all 0.2s ease;
         }
         [data-theme="dark"] {
-            --bg-gradient: linear-gradient(145deg, #12121c 0%, #1e1e2e 100%);
-            --card-bg: rgba(28, 28, 42, 0.95);
+            --primary: #5f7df2;
+            --primary-dark: #4054b2;
+            --primary-light: #8a9cff;
+            --secondary: #06d6a0;
+            --secondary-dark: #05b386;
+            --accent-1: #ff8a8a;
+            --accent-2: #ffca3a;
+            --accent-3: #b47aff;
             --dark: #f0f0fa;
             --light: #2a2a3c;
             --gray: #a0a0b0;
+            --bg-gradient: linear-gradient(145deg, #12121c 0%, #1e1e2e 100%);
+            --card-bg: rgba(28, 28, 42, 0.98);
             --border: #4a4a60;
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         body {
             background: var(--bg-gradient);
             color: var(--dark);
             font-size: var(--font-base);
             line-height: 1.5;
-            transition: background 0.3s, color 0.3s;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.3s, color 0.3s;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 15px;
+            width: 100%;
+        }
+        /* هيدر مضغوط */
+        .header {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .logo i {
+            color: var(--primary-dark);
+            font-size: 1.7rem;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 0.9rem;
+        }
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        .theme-toggle-btn {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
         }
-        .home-container {
-            max-width: 380px;
-            width: 100%;
+        .theme-toggle-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        /* بطاقة الدخول (من الصفحة المرسلة) */
+        .login-card {
             background: var(--card-bg);
             backdrop-filter: blur(12px);
             border-radius: 36px;
@@ -57,8 +145,10 @@
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
             text-align: center;
+            max-width: 420px;
+            margin: 40px auto;
         }
-        .logo {
+        .login-logo {
             font-size: 2.2rem;
             font-weight: 800;
             color: var(--primary);
@@ -68,125 +158,257 @@
             justify-content: center;
             gap: 8px;
         }
-        .logo i { font-size: 2rem; color: var(--primary-dark); }
-        .tagline { color: var(--gray); margin-bottom: 24px; font-size: 0.9rem; }
-        .input-group { margin-bottom: 16px; text-align: right; }
-        .input-group label { display: block; margin-bottom: 4px; font-weight: 600; color: var(--dark); font-size: 0.85rem; }
-        .input-wrapper {
-            display: flex; align-items: center; background: var(--light); border: 1px solid var(--border);
-            border-radius: 50px; padding: 4px 14px; transition: var(--transition);
+        .login-logo i { font-size: 2rem; color: var(--primary-dark); }
+        .tagline {
+            color: var(--gray);
+            margin-bottom: 24px;
+            font-size: 0.9rem;
         }
-        .input-wrapper:focus-within { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1); }
-        .input-wrapper i { color: var(--gray); font-size: 1rem; margin-left: 6px; }
+        .input-group {
+            margin-bottom: 16px;
+            text-align: right;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.85rem;
+        }
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: var(--light);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 4px 14px;
+            transition: var(--transition);
+        }
+        .input-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1);
+        }
+        .input-wrapper i {
+            color: var(--gray);
+            font-size: 1rem;
+            margin-left: 6px;
+        }
         .input-wrapper input {
-            flex: 1; border: none; background: transparent; padding: 10px 0; color: var(--dark);
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px 0;
+            color: var(--dark);
             font-size: 0.95rem;
         }
         .input-wrapper input:focus { outline: none; }
-        .input-wrapper input::placeholder { color: var(--gray); opacity: 0.7; }
+        .input-wrapper input::placeholder {
+            color: var(--gray);
+            opacity: 0.7;
+        }
         .random-room {
-            display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px;
-            color: var(--primary); cursor: pointer; font-size: 0.85rem; font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 6px;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
         .random-room:hover { text-decoration: underline; }
         .enter-btn {
-            width: 100%; padding: 12px; border: none; border-radius: 50px;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 50px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white; font-size: 1rem; font-weight: 700; cursor: pointer; transition: var(--transition);
-            margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
         }
-        .enter-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4); }
-        .theme-toggle {
-            display: flex; align-items: center; justify-content: center; gap: 8px; margin: 20px 0 12px;
+        .enter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
         }
-        .theme-toggle button {
-            background: var(--light); border: 1px solid var(--border); border-radius: 50px; padding: 6px 14px;
-            cursor: pointer; color: var(--dark); font-weight: 600; transition: var(--transition);
-            display: flex; align-items: center; gap: 6px; font-size: 0.8rem;
+        .error-message {
+            color: var(--accent-1);
+            font-size: 0.8rem;
+            margin-top: 6px;
+            min-height: 20px;
         }
-        .theme-toggle button:hover { background: var(--primary); color: white; border-color: var(--primary); }
-        .footer-links {
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 18px;
+        .info-message {
+            color: var(--gray);
+            font-size: 0.8rem;
+            margin-top: 12px;
+        }
+        /* فوتر */
+        .footer {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            padding: 25px 0 15px;
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .footer-col h4 {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            border-right: 3px solid var(--primary);
+            padding-right: 8px;
+        }
+        .footer-col a {
+            display: block;
+            color: var(--gray);
+            text-decoration: none;
+            margin-bottom: 4px;
+            font-size: 0.8rem;
+        }
+        .copyright {
+            text-align: center;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            color: var(--gray);
             font-size: 0.75rem;
         }
-        .footer-links a { color: var(--gray); text-decoration: none; transition: var(--transition); display: flex; align-items: center; gap: 4px; }
-        .footer-links a:hover { color: var(--primary); }
-        .error-message { color: var(--danger); font-size: 0.8rem; margin-top: 6px; min-height: 20px; }
-        .info-message { color: var(--gray); font-size: 0.8rem; margin-top: 12px; }
     </style>
 </head>
 <body>
-    <div class="home-container">
-        <div class="logo">
-            <i class="fas fa-comment-dots"></i>
-            <span>اسهل حل</span>
+    <header class="header">
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <i class="fas fa-comment-dots"></i>
+                <span>اسهل حل</span>
+            </a>
+            <nav class="nav-links">
+                <a href="help.html"><i class="fas fa-question-circle"></i> المساعدة</a>
+                <a href="about.html"><i class="fas fa-info-circle"></i> حول</a>
+                <div class="theme-toggle-btn" id="themeToggle">
+                    <i class="fas fa-sun" id="themeIcon"></i>
+                </div>
+            </nav>
         </div>
-        <div class="tagline">دردشة حقيقية، بسيطة وآمنة</div>
+    </header>
 
-        <div class="input-group">
-            <label>اسم المستخدم (اختياري)</label>
-            <div class="input-wrapper">
-                <i class="fas fa-user"></i>
-                <input type="text" id="username" placeholder="سيتم توليد اسم تلقائي" autocomplete="off">
+    <div class="container">
+        <div class="login-card">
+            <div class="login-logo">
+                <i class="fas fa-comment-dots"></i>
+                <span>اسهل حل</span>
             </div>
-        </div>
+            <div class="tagline">دردشة حقيقية، بسيطة وآمنة</div>
 
-        <div class="input-group">
-            <label>رقم الغرفة</label>
-            <div class="input-wrapper">
-                <i class="fas fa-door-open"></i>
-                <input type="text" id="room" placeholder="أدخل 5 أرقام" maxlength="5" pattern="\d*" inputmode="numeric">
+            <div class="input-group">
+                <label>اسم المستخدم (اختياري)</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" placeholder="سيتم توليد اسم تلقائي" autocomplete="off">
+                </div>
             </div>
-            <div class="random-room" id="randomRoomBtn">
-                <i class="fas fa-dice"></i>
-                <span>إنشاء غرفة عشوائية (5 أرقام)</span>
+
+            <div class="input-group">
+                <label>رقم الغرفة</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-door-open"></i>
+                    <input type="text" id="room" placeholder="أدخل 5 أرقام" maxlength="5" pattern="\d*" inputmode="numeric">
+                </div>
+                <div class="random-room" id="randomRoomBtn">
+                    <i class="fas fa-dice"></i>
+                    <span>إنشاء غرفة عشوائية (5 أرقام)</span>
+                </div>
             </div>
-        </div>
 
-        <button class="enter-btn" id="enterBtn">
-            <i class="fas fa-sign-in-alt"></i>
-            دخول
-        </button>
+            <button class="enter-btn" id="enterBtn">
+                <i class="fas fa-sign-in-alt"></i>
+                دخول
+            </button>
 
-        <div class="error-message" id="errorMessage"></div>
+            <div class="error-message" id="errorMessage"></div>
 
-        <div class="theme-toggle">
-            <button id="lightModeBtn"><i class="fas fa-sun"></i> فاتح</button>
-            <button id="darkModeBtn"><i class="fas fa-moon"></i> داكن</button>
-        </div>
-
-        <div class="footer-links">
-            <a href="#" id="homeLink"><i class="fas fa-home"></i> الرئيسية</a>
-            <a href="#" id="helpLink"><i class="fas fa-question-circle"></i> مساعدة</a>
-            <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i> حول</a>
-            <a href="#" id="privacyLink"><i class="fas fa-shield-alt"></i> خصوصية</a>
-            <a href="#" id="termsLink"><i class="fas fa-file-contract"></i> شروط</a>
-        </div>
-
-        <div class="info-message">
-            <i class="fas fa-lock"></i> جميع المحادثات مشفرة
+            <div class="info-message">
+                <i class="fas fa-lock"></i> جميع المحادثات مشفرة
+            </div>
         </div>
     </div>
 
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>اسهل حل</h4>
+                    <p style="color: var(--gray); font-size:0.8rem;">دردشة سريعة وآمنة</p>
+                </div>
+                <div class="footer-col">
+                    <h4>الدعم</h4>
+                    <a href="help.html">المساعدة</a>
+                    <a href="about.html">حول</a>
+                </div>
+                <div class="footer-col">
+                    <h4>القانوني</h4>
+                    <a href="privacy.html">الخصوصية</a>
+                    <a href="terms.html">الشروط</a>
+                </div>
+                <div class="footer-col">
+                    <h4>روابط</h4>
+                    <a href="login.html">الدخول</a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2026 اسهل حل</p>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        // الوضع الليلي
-        const lightModeBtn = document.getElementById('lightModeBtn');
-        const darkModeBtn = document.getElementById('darkModeBtn');
-        const htmlElement = document.documentElement;
+        // Firebase تهيئة
+        const firebaseConfig = {
+            apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+            authDomain: "zio3-8ffdd.firebaseapp.com",
+            databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+            projectId: "zio3-8ffdd",
+            storageBucket: "zio3-8ffdd.firebasestorage.app",
+            messagingSenderId: "560939348415",
+            appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+            measurementId: "G-CVN2B2D0RD"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const analytics = firebase.analytics();
 
+        // الوضع الليلي (زر منفصل في الهيدر)
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
         if (localStorage.getItem('darkMode') === 'true') {
-            htmlElement.setAttribute('data-theme', 'dark');
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
         }
-
-        lightModeBtn.addEventListener('click', () => {
-            htmlElement.removeAttribute('data-theme');
-            localStorage.setItem('darkMode', 'false');
-        });
-
-        darkModeBtn.addEventListener('click', () => {
-            htmlElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('darkMode', 'true');
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('darkMode', 'false');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('darkMode', 'true');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
         });
 
         // عناصر الإدخال
@@ -196,7 +418,7 @@
         const errorMessage = document.getElementById('errorMessage');
         const randomRoomBtn = document.getElementById('randomRoomBtn');
 
-        // توليد رقم غرفة عشوائي مكون من 5 أرقام (من 10000 إلى 99999)
+        // توليد رقم غرفة عشوائي مكون من 5 أرقام
         function generateRandomRoom() {
             return Math.floor(10000 + Math.random() * 90000).toString();
         }
@@ -225,18 +447,19 @@
                 return;
             }
 
-            // التحقق من أن رقم الغرفة مكون من 5 أرقام (اختياري ولكن مفيد)
+            // التحقق من أن رقم الغرفة مكون من 5 أرقام
             if (!/^\d{5}$/.test(room)) {
                 errorMessage.textContent = 'رقم الغرفة يجب أن يكون 5 أرقام';
                 return;
             }
 
-            // حفظ البيانات في localStorage
-            localStorage.setItem('chatUser', username);
+            // حفظ البيانات في localStorage (متوافق مع room.html)
+            localStorage.setItem('nickname', username);
+            localStorage.setItem('userColor', '#4361ee'); // لون افتراضي
             localStorage.setItem('chatRoom', room);
 
-            // الانتقال إلى صفحة الدردشة
-            window.location.href = 'chat.html';
+            // الانتقال إلى صفحة الدردشة (room.html مع معرف الغرفة)
+            window.location.href = `room.html?room=${room}`;
         });
 
         // السماح بالدخول بالضغط على Enter
@@ -246,28 +469,6 @@
                     enterBtn.click();
                 }
             });
-        });
-
-        // روابط القائمة
-        document.getElementById('homeLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('الصفحة الرئيسية - قيد التطوير');
-        });
-        document.getElementById('helpLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('المساعدة - قيد التطوير');
-        });
-        document.getElementById('aboutLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('حول التطبيق - قيد التطوير');
-        });
-        document.getElementById('privacyLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('سياسة الخصوصية - قيد التطوير');
-        });
-        document.getElementById('termsLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('شروط الاستخدام - قيد التطوير');
         });
     </script>
 </body>
