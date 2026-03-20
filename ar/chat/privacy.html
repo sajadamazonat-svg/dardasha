@@ -6,25 +6,17 @@
     <title>سياسة الخصوصية - اسهل حل</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         :root {
             --primary: #4361ee;
             --primary-dark: #2c3e9e;
             --primary-light: #6c7ffa;
             --secondary: #06d6a0;
-            --secondary-dark: #05b386;
             --accent-1: #ff6b6b;
             --accent-2: #ffb703;
-            --accent-3: #a463f5;
             --dark: #1e1e2f;
             --light: #f4f7fb;
             --gray: #6b7280;
@@ -40,10 +32,8 @@
             --primary-dark: #4054b2;
             --primary-light: #8a9cff;
             --secondary: #06d6a0;
-            --secondary-dark: #05b386;
             --accent-1: #ff8a8a;
             --accent-2: #ffca3a;
-            --accent-3: #b47aff;
             --dark: #f0f0fa;
             --light: #2a2a3c;
             --gray: #a0a0b0;
@@ -62,12 +52,7 @@
             flex-direction: column;
             transition: background 0.3s, color 0.3s;
         }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 15px;
-            width: 100%;
-        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 15px; width: 100%; }
         .header {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
@@ -94,10 +79,7 @@
             color: var(--primary);
             text-decoration: none;
         }
-        .logo i {
-            color: var(--primary-dark);
-            font-size: 1.7rem;
-        }
+        .logo i { color: var(--primary-dark); font-size: 1.7rem; }
         .nav-links {
             display: flex;
             align-items: center;
@@ -114,9 +96,7 @@
             gap: 3px;
             font-size: 0.9rem;
         }
-        .nav-links a:hover {
-            color: var(--primary);
-        }
+        .nav-links a:hover { color: var(--primary); }
         .theme-toggle-btn {
             background: transparent;
             border: 2px solid var(--primary);
@@ -131,10 +111,7 @@
             transition: 0.2s;
             font-size: 1rem;
         }
-        .theme-toggle-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
+        .theme-toggle-btn:hover { background: var(--primary); color: white; }
         .privacy-card {
             background: var(--card-bg);
             backdrop-filter: blur(8px);
@@ -205,16 +182,12 @@
 <body>
     <header class="header">
         <div class="container header-content">
-            <a href="index.html" class="logo">
-                <i class="fas fa-comment-dots"></i>
-                <span>اسهل حل</span>
-            </a>
+            <a href="welcome.html" class="logo"><i class="fas fa-comment-dots"></i><span>اسهل حل</span></a>
             <nav class="nav-links">
                 <a href="help.html"><i class="fas fa-question-circle"></i> المساعدة</a>
                 <a href="about.html"><i class="fas fa-info-circle"></i> حول</a>
-                <div class="theme-toggle-btn" id="themeToggle">
-                    <i class="fas fa-sun" id="themeIcon"></i>
-                </div>
+                <a href="settings.html"><i class="fas fa-cog"></i> الإعدادات</a>
+                <div class="theme-toggle-btn" id="themeToggle"><i class="fas fa-sun" id="themeIcon"></i></div>
             </nav>
         </div>
     </header>
@@ -251,7 +224,13 @@
                 <li><strong>عدم المشاركة:</strong> يمكنك استخدام الخدمة دون إدخال اسم حقيقي.</li>
                 <li><strong>الوصول إلى البيانات:</strong> يمكنك الاطلاع على الرسائل التي ترسلها في الغرفة أثناء وجودك.</li>
             </ul>
-            <p>إذا كان لديك أي استفسار، تواصل معنا على: <strong>privacy@as3lhal.com</strong></p>
+
+            <h2>التواصل</h2>
+            <p>إذا كان لديك أي استفسار حول سياسة الخصوصية، تواصل معنا عبر:</p>
+            <ul>
+                <li><strong>البريد الإلكتروني:</strong> <a href="mailto:ashlhl.iq@gmail.com" style="color: var(--primary);">ashlhl.iq@gmail.com</a></li>
+                <li><strong>واتساب:</strong> <a href="https://wa.me/9647823053419" target="_blank" style="color: var(--primary);">+964 782 305 3419</a></li>
+            </ul>
 
             <h2>تعديلات السياسة</h2>
             <p>قد نقوم بتحديث سياسة الخصوصية من حين لآخر. سيتم نشر أي تغييرات على هذه الصفحة مع تحديث تاريخ "آخر تحديث". نوصي بمراجعة هذه الصفحة دورياً.</p>
@@ -261,28 +240,12 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
-                <div class="footer-col">
-                    <h4>اسهل حل</h4>
-                    <p style="color: var(--gray); font-size:0.8rem;">دردشة سريعة وآمنة</p>
-                </div>
-                <div class="footer-col">
-                    <h4>الدعم</h4>
-                    <a href="help.html">المساعدة</a>
-                    <a href="about.html">حول</a>
-                </div>
-                <div class="footer-col">
-                    <h4>القانوني</h4>
-                    <a href="privacy.html">الخصوصية</a>
-                    <a href="terms.html">الشروط</a>
-                </div>
-                <div class="footer-col">
-                    <h4>روابط</h4>
-                    <a href="login.html">الدخول</a>
-                </div>
+                <div class="footer-col"><h4>اسهل حل</h4><p style="color: var(--gray); font-size:0.8rem;">دردشة سريعة وآمنة</p></div>
+                <div class="footer-col"><h4>الدعم</h4><a href="help.html">المساعدة</a><a href="about.html">حول</a></div>
+                <div class="footer-col"><h4>القانوني</h4><a href="privacy.html">الخصوصية</a><a href="terms.html">الشروط</a></div>
+                <div class="footer-col"><h4>روابط</h4><a href="login.html">الدخول</a></div>
             </div>
-            <div class="copyright">
-                <p>© 2026 اسهل حل</p>
-            </div>
+            <div class="copyright"><p>© 2026 اسهل حل</p></div>
         </div>
     </footer>
 
