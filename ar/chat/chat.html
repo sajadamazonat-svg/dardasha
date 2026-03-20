@@ -2,179 +2,455 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Voice Call</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+  <title>اسهل حل | غرفة الدردشة</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root{
-      --bg:#0b1220;
-      --panel:#111a2e;
-      --panel2:#17223a;
-      --border:#273552;
-      --text:#eef2ff;
-      --muted:#9aa7c7;
-      --primary:#2563eb;
-      --danger:#dc2626;
-      --success:#16a34a;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Cairo', sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Arial, Tahoma, sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:16px;
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #2c3e9e;
+      --primary-light: #6c7ffa;
+      --secondary: #06d6a0;
+      --danger: #ff6b6b;
+      --danger-dark: #d9042b;
+      --success: #06d6a0;
+      --warning: #ffb703;
+      --dark: #1e1e2f;
+      --light: #f4f7fb;
+      --gray: #6b7280;
+      --bg-gradient: linear-gradient(145deg, #ffffff 0%, #f0f4fa 100%);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --border: #d1d5db;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --font-base: 14px;
+      --transition: all 0.2s ease;
     }
-    .app{
-      width:min(760px,100%);
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:24px;
-      padding:18px;
-      box-shadow:0 18px 50px rgba(0,0,0,.25);
+    [data-theme="dark"] {
+      --primary: #5f7df2;
+      --primary-dark: #4054b2;
+      --primary-light: #8a9cff;
+      --secondary: #06d6a0;
+      --danger: #ff8a8a;
+      --danger-dark: #b91c1c;
+      --dark: #f0f0fa;
+      --light: #2a2a3c;
+      --gray: #a0a0b0;
+      --bg-gradient: linear-gradient(145deg, #12121c 0%, #1e1e2e 100%);
+      --card-bg: rgba(28, 28, 42, 0.98);
+      --border: #4a4a60;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     }
-    h1{
-      margin:0 0 14px;
-      font-size:22px;
+    body {
+      background: var(--bg-gradient);
+      color: var(--dark);
+      font-size: var(--font-base);
+      line-height: 1.5;
+      height: 100vh;
+      overflow: hidden;
+      transition: background 0.3s, color 0.3s;
     }
-    .grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-bottom:14px;
+    /* app container */
+    .app {
+      max-width: 1000px;
+      margin: 0 auto;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 8px;
+      position: relative;
     }
-    .card{
-      background:var(--panel2);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:14px;
+    /* header */
+    .header {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      border-bottom: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 10px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    label{
-      display:block;
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:6px;
+    .brand h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    input{
-      width:100%;
-      border:1px solid var(--border);
-      background:#0b1220;
-      color:var(--text);
-      border-radius:14px;
-      padding:12px 14px;
-      font-size:15px;
-      outline:none;
+    .brand .sub {
+      font-size: 0.75rem;
+      color: var(--gray);
     }
-    .row{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:10px;
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-    button{
-      border:none;
-      border-radius:14px;
-      padding:11px 14px;
-      font-size:14px;
-      cursor:pointer;
-      color:#fff;
-      background:var(--primary);
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 40px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
-    button.secondary{ background:#475569; }
-    button.success{ background:var(--success); }
-    button.danger{ background:var(--danger); }
-    button:disabled{
-      opacity:.55;
-      cursor:not-allowed;
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
     }
-    .status{
-      margin-top:12px;
-      padding:12px 14px;
-      background:var(--panel2);
-      border:1px solid var(--border);
-      border-radius:16px;
-      min-height:48px;
-      line-height:1.6;
-      color:var(--muted);
-      white-space:pre-wrap;
+    .btn-outline {
+      background: var(--light);
+      color: var(--dark);
+      border: 1px solid var(--border);
     }
-    .incoming, .activeCall{
-      display:none;
-      margin-top:14px;
-      padding:14px;
-      background:rgba(37,99,235,.10);
-      border:1px solid rgba(37,99,235,.35);
-      border-radius:18px;
+    .btn-outline:hover {
+      background: var(--border);
+      color: var(--dark);
     }
-    .incoming.show, .activeCall.show{ display:block; }
-    audio{
-      width:100%;
-      margin-top:10px;
+    .btn-danger {
+      background: var(--danger);
     }
-    .small{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:8px;
+    .btn-danger:hover {
+      background: var(--danger-dark);
     }
-    @media (max-width:720px){
-      .grid{ grid-template-columns:1fr; }
+    .btn-success {
+      background: var(--success);
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    /* main layout */
+    .main {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      gap: 12px;
+      position: relative;
+    }
+    /* sidebar (users) */
+    .sidebar {
+      width: 280px;
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+    .sidebar.hidden {
+      display: none;
+    }
+    .sidebar-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+    }
+    .users-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .user-card {
+      background: var(--light);
+      border-radius: 20px;
+      padding: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid transparent;
+    }
+    .user-card:hover {
+      transform: translateX(-3px);
+      background: var(--primary-light);
+      color: white;
+    }
+    .user-card.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: white;
+    }
+    .user-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .user-meta {
+      font-size: 0.7rem;
+      color: var(--gray);
+      margin-top: 4px;
+    }
+    /* chat area */
+    .chat-area {
+      flex: 1;
+      min-width: 0;
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .message {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 24px 24px 24px 6px;
+      align-self: flex-start;
+      background: var(--light);
+      color: var(--dark);
+      border: 1px solid var(--border);
+      word-wrap: break-word;
+    }
+    .message.own {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      color: white;
+      border-radius: 24px 24px 6px 24px;
+    }
+    .message.system {
+      align-self: center;
+      background: var(--gray);
+      color: white;
+      font-size: 0.8rem;
+      padding: 6px 16px;
+      border-radius: 30px;
+    }
+    .sender {
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      opacity: 0.8;
+    }
+    .time {
+      font-size: 0.6rem;
+      opacity: 0.7;
+      margin-top: 6px;
+      text-align: left;
+    }
+    .typing-indicator {
+      font-size: 0.75rem;
+      color: var(--gray);
+      padding: 4px 16px;
+      min-height: 28px;
+    }
+    .composer {
+      border-top: 1px solid var(--border);
+      padding: 12px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      background: var(--card-bg);
+    }
+    .composer input {
+      flex: 1;
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      padding: 12px 16px;
+      color: var(--dark);
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .composer input:focus {
+      border-color: var(--primary);
+    }
+    /* overlays */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+    .overlay.show {
+      display: flex;
+    }
+    .modal {
+      background: var(--card-bg);
+      border-radius: 32px;
+      width: 100%;
+      max-width: 380px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .modal input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--light);
+      color: var(--dark);
+      border-radius: 40px;
+      padding: 12px 16px;
+      outline: none;
+    }
+    .call-status {
+      font-size: 0.9rem;
+      color: var(--gray);
+      text-align: center;
+    }
+    .audio-meter {
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+    .audio-meter-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--primary);
+      transition: width 0.1s;
+    }
+    audio {
+      width: 100%;
+      margin-top: 12px;
+      border-radius: 20px;
+    }
+    @media (max-width: 720px) {
+      .sidebar {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        z-index: 50;
+        border-radius: 28px;
+      }
+      .actions {
+        width: 100%;
+        justify-content: center;
+      }
+      .message {
+        max-width: 90%;
+      }
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <h1>الاتصال الصوتي</h1>
-
-    <div class="grid">
-      <div class="card">
-        <label>اسمك</label>
-        <input id="nameInput" placeholder="مثال: سجاد" />
+    <div class="header">
+      <div class="brand">
+        <h2><i class="fas fa-comment-dots"></i> <span id="roomName">غرفة</span></h2>
+        <div class="sub"><span id="userName">-</span> · <span id="userCount">0</span> متصل</div>
       </div>
-
-      <div class="card">
-        <label>اسم الغرفة</label>
-        <input id="roomInput" placeholder="main" value="main" />
-      </div>
-
-      <div class="card">
-        <label>معرّف الطرف الآخر (Target User ID)</label>
-        <input id="targetIdInput" placeholder="اكتب userId الخاص بالطرف الآخر" />
-      </div>
-
-      <div class="card">
-        <label>اسم الطرف الآخر</label>
-        <input id="targetNameInput" placeholder="اختياري" />
+      <div class="actions">
+        <button id="usersBtn" class="btn btn-outline"><i class="fas fa-users"></i> المستخدمون</button>
+        <button id="themeBtn" class="btn btn-outline"><i class="fas fa-moon"></i></button>
+        <button id="copyBtn" class="btn btn-outline"><i class="fas fa-copy"></i> نسخ الرابط</button>
+        <button id="callBtn" class="btn btn-outline" disabled><i class="fas fa-phone"></i> اتصال</button>
+        <button id="leaveBtn" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> خروج</button>
       </div>
     </div>
 
-    <div class="row">
-      <button id="joinBtn">دخول الغرفة</button>
-      <button id="callBtn">اتصال</button>
-      <button id="hangupBtn" class="danger" disabled>إنهاء</button>
-      <button id="muteBtn" class="secondary" disabled>كتم الميكروفون</button>
-    </div>
+    <div class="main">
+      <aside id="sidebar" class="sidebar hidden">
+        <div class="sidebar-header">
+          <span><i class="fas fa-users"></i> المتصلون</span>
+          <button id="closeSidebar" class="btn btn-outline" style="padding:4px 12px;">إغلاق</button>
+        </div>
+        <div id="usersList" class="users-list"></div>
+      </aside>
 
-    <div id="incomingBox" class="incoming">
-      <b>مكالمة واردة</b>
-      <div id="incomingText" style="margin-top:8px;"></div>
-      <div class="row">
-        <button id="acceptBtn" class="success">قبول</button>
-        <button id="rejectBtn" class="danger">رفض</button>
+      <div class="chat-area">
+        <div id="messages" class="messages"></div>
+        <div id="typing" class="typing-indicator"></div>
+        <div class="composer">
+          <input type="text" id="msgInput" placeholder="اكتب رسالتك..." autocomplete="off" />
+          <button id="sendBtn" class="btn"><i class="fas fa-paper-plane"></i> إرسال</button>
+        </div>
       </div>
     </div>
+  </div>
 
-    <div id="activeBox" class="activeCall">
-      <b>المكالمة نشطة</b>
-      <div id="activeText" style="margin-top:8px;"></div>
-      <audio id="remoteAudio" autoplay></audio>
+  <!-- overlays -->
+  <div id="joinOverlay" class="overlay show">
+    <div class="modal">
+      <div class="modal-header">مرحباً بك</div>
+      <div class="modal-body">
+        <input id="nameInput" type="text" placeholder="اسمك المستعار" autocomplete="off" />
+        <button id="joinBtn" class="btn">دخول</button>
+      </div>
     </div>
+  </div>
 
-    <div id="status" class="status">جاهز.</div>
-    <div class="small">
-      ملاحظة: هذا الكود يعتمد على WebRTC للصوت، وFirebase فقط لتبادل بيانات الاتصال.
+  <div id="incomingOverlay" class="overlay">
+    <div class="modal">
+      <div class="modal-header">مكالمة واردة</div>
+      <div class="modal-body">
+        <div class="call-status" id="incomingText">...</div>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <button id="acceptCallBtn" class="btn btn-success">قبول</button>
+          <button id="rejectCallBtn" class="btn btn-danger">رفض</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="activeCallOverlay" class="overlay">
+    <div class="modal">
+      <div class="modal-header">مكالمة صوتية</div>
+      <div class="modal-body">
+        <div class="call-status" id="callStatus">جاري الاتصال...</div>
+        <div id="callParty" class="call-status" style="font-size:0.8rem;"></div>
+        <div class="audio-meter"><div id="audioMeterFill" class="audio-meter-fill"></div></div>
+        <audio id="remoteAudio" autoplay></audio>
+        <button id="hangupBtn" class="btn btn-danger" style="margin-top:12px;">إنهاء المكالمة</button>
+      </div>
     </div>
   </div>
 
@@ -185,11 +461,11 @@
       ref,
       set,
       push,
-      update,
       onValue,
       onChildAdded,
       onDisconnect,
-      remove
+      remove,
+      update
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
     const firebaseConfig = {
@@ -202,167 +478,224 @@
       appId: "1:560939348415:web:c854e9e214e498ad2d310a",
       measurementId: "G-CVN2B2D0RD"
     };
-
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const nameInput = document.getElementById("nameInput");
-    const roomInput = document.getElementById("roomInput");
-    const targetIdInput = document.getElementById("targetIdInput");
-    const targetNameInput = document.getElementById("targetNameInput");
-    const joinBtn = document.getElementById("joinBtn");
-    const callBtn = document.getElementById("callBtn");
-    const hangupBtn = document.getElementById("hangupBtn");
-    const muteBtn = document.getElementById("muteBtn");
-    const incomingBox = document.getElementById("incomingBox");
-    const incomingText = document.getElementById("incomingText");
-    const acceptBtn = document.getElementById("acceptBtn");
-    const rejectBtn = document.getElementById("rejectBtn");
-    const activeBox = document.getElementById("activeBox");
-    const activeText = document.getElementById("activeText");
-    const statusEl = document.getElementById("status");
-    const remoteAudio = document.getElementById("remoteAudio");
+    // get room from localStorage (set by login.html)
+    const room = localStorage.getItem("chatRoom") || new URLSearchParams(location.search).get("room") || "عام";
+    localStorage.setItem("chatRoom", room);
+    document.getElementById("roomName").textContent = room;
 
-    let room = localStorage.getItem("voice_room") || roomInput.value || "main";
-    let userName = localStorage.getItem("voice_name") || nameInput.value || "";
-    let userId = localStorage.getItem("voice_user_id") || `${Date.now()}_${Math.floor(Math.random()*99999)}`;
+    // theme
+    const savedTheme = localStorage.getItem("darkMode") === "true" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    const themeBtn = document.getElementById("themeBtn");
+    themeBtn.innerHTML = savedTheme === "dark" ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+
+    // user id
+    let userId = localStorage.getItem("chat_user_id");
+    if (!userId) {
+      userId = `${Date.now()}_${Math.floor(Math.random() * 99999)}`;
+      localStorage.setItem("chat_user_id", userId);
+    }
+    let currentUser = localStorage.getItem("nickname") || "";
     let joined = false;
 
+    // DOM elements
+    const userNameSpan = document.getElementById("userName");
+    const userCountSpan = document.getElementById("userCount");
+    const messagesDiv = document.getElementById("messages");
+    const typingDiv = document.getElementById("typing");
+    const msgInput = document.getElementById("msgInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const usersBtn = document.getElementById("usersBtn");
+    const copyBtn = document.getElementById("copyBtn");
+    const callBtn = document.getElementById("callBtn");
+    const leaveBtn = document.getElementById("leaveBtn");
+    const sidebar = document.getElementById("sidebar");
+    const closeSidebar = document.getElementById("closeSidebar");
+    const usersListDiv = document.getElementById("usersList");
+
+    const joinOverlay = document.getElementById("joinOverlay");
+    const nameInput = document.getElementById("nameInput");
+    const joinBtn = document.getElementById("joinBtn");
+
+    const incomingOverlay = document.getElementById("incomingOverlay");
+    const incomingText = document.getElementById("incomingText");
+    const acceptCallBtn = document.getElementById("acceptCallBtn");
+    const rejectCallBtn = document.getElementById("rejectCallBtn");
+
+    const activeCallOverlay = document.getElementById("activeCallOverlay");
+    const hangupBtn = document.getElementById("hangupBtn");
+    const callStatus = document.getElementById("callStatus");
+    const callPartySpan = document.getElementById("callParty");
+    const remoteAudio = document.getElementById("remoteAudio");
+    const audioMeterFill = document.getElementById("audioMeterFill");
+
+    let usersMap = {};
+    let selectedUserId = null;
+    let selectedUserName = null;
+    let typingTimer = null;
     let pc = null;
     let localStream = null;
     let callId = null;
     let currentIncoming = null;
-    let isMuted = false;
-    let currentRole = null; // caller | callee
+    let meterCleanup = null;
 
-    const rtcConfig = {
-      iceServers: [
-        { urls: "stun:stun.l.google.com:19302" },
-        { urls: "stun:stun1.l.google.com:19302" }
-      ]
-    };
+    const rtcConfig = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
 
-    function setStatus(text) {
-      statusEl.textContent = text;
+    // Firebase references
+    const userRef = ref(db, `rooms/${room}/users/${userId}`);
+    const usersRef = ref(db, `rooms/${room}/users`);
+    const messagesRef = ref(db, `rooms/${room}/messages`);
+    const typingRef = ref(db, `rooms/${room}/typing/${userId}`);
+    const callsRef = ref(db, `rooms/${room}/calls`);
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === "&") return "&amp;";
+        if (m === "<") return "&lt;";
+        if (m === ">") return "&gt;";
+        return m;
+      });
+    }
+    function timeStr(ts) {
+      return new Date(ts).toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" });
+    }
+    function scrollBottom() {
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    function renderMessage(msg) {
+      const isOwn = msg.senderId === userId;
+      const div = document.createElement("div");
+      div.className = `message ${isOwn ? "own" : ""}${msg.senderId === "system" ? " system" : ""}`;
+      if (msg.senderId !== "system") {
+        const senderSpan = document.createElement("div");
+        senderSpan.className = "sender";
+        senderSpan.textContent = msg.sender || "مجهول";
+        div.appendChild(senderSpan);
+      }
+      const textSpan = document.createElement("div");
+      textSpan.textContent = msg.text || "";
+      div.appendChild(textSpan);
+      const timeSpan = document.createElement("div");
+      timeSpan.className = "time";
+      timeSpan.textContent = timeStr(msg.timestamp);
+      div.appendChild(timeSpan);
+      messagesDiv.appendChild(div);
+      scrollBottom();
+    }
+    function renderUsers() {
+      const list = Object.entries(usersMap);
+      userCountSpan.textContent = list.length;
+      usersListDiv.innerHTML = "";
+      if (!list.length) {
+        usersListDiv.innerHTML = '<div class="user-card" style="text-align:center;">لا يوجد متصلون</div>';
+        return;
+      }
+      list.forEach(([id, u]) => {
+        const isMe = id === userId;
+        const card = document.createElement("div");
+        card.className = `user-card ${id === selectedUserId ? "selected" : ""}`;
+        card.dataset.id = id;
+        card.innerHTML = `
+          <div class="user-name">
+            ${escapeHtml(u?.name || "مستخدم")}
+            ${isMe ? "<span style='font-size:0.7rem;'>(أنت)</span>" : ""}
+          </div>
+          <div class="user-meta">متصل الآن</div>
+        `;
+        if (!isMe) {
+          card.addEventListener("click", () => {
+            selectedUserId = id;
+            selectedUserName = u?.name;
+            callBtn.disabled = false;
+            renderUsers(); // re-render to highlight
+          });
+        }
+        usersListDiv.appendChild(card);
+      });
+    }
+    async function sendMessage() {
+      if (!joined) return;
+      const text = msgInput.value.trim();
+      if (!text) return;
+      const msgRef = push(messagesRef);
+      await set(msgRef, {
+        sender: currentUser,
+        senderId: userId,
+        text,
+        timestamp: Date.now()
+      });
+      msgInput.value = "";
+      await remove(typingRef);
+    }
+    async function initUser() {
+      if (!currentUser) return;
+      await set(userRef, { name: currentUser, joinedAt: Date.now() });
+      onDisconnect(userRef).remove();
+      onDisconnect(typingRef).remove();
+      const systemMsg = push(messagesRef);
+      await set(systemMsg, {
+        sender: "نظام",
+        senderId: "system",
+        text: `${currentUser} دخل الغرفة`,
+        timestamp: Date.now()
+      });
+      joined = true;
+      userNameSpan.textContent = currentUser;
+      joinOverlay.classList.remove("show");
+      callBtn.disabled = !selectedUserId;
     }
 
-    function showIncoming(data, id) {
-      currentIncoming = { data, id };
-      incomingText.textContent = `من: ${data.callerName || "مستخدم"}\nالمعرف: ${data.callerId || "-"}`;
-      incomingBox.classList.add("show");
+    // WebRTC call logic (unchanged functionality)
+    function setupAudioMeter(stream) {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+        const source = ctx.createMediaStreamSource(stream);
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+        const data = new Uint8Array(analyser.frequencyBinCount);
+        let raf = 0;
+        const loop = () => {
+          analyser.getByteFrequencyData(data);
+          let sum = 0;
+          for (let v of data) sum += v;
+          const avg = sum / data.length;
+          audioMeterFill.style.width = Math.min(100, Math.max(5, avg / 2)) + "%";
+          raf = requestAnimationFrame(loop);
+        };
+        loop();
+        return () => {
+          if (raf) cancelAnimationFrame(raf);
+          try { ctx.close(); } catch {}
+        };
+      } catch {
+        return () => {};
+      }
     }
-
-    function hideIncoming() {
-      incomingBox.classList.remove("show");
-      currentIncoming = null;
+    async function getLocalAudio() {
+      localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      meterCleanup = setupAudioMeter(localStream);
+      return localStream;
     }
-
-    function showActive(text) {
-      activeText.textContent = text;
-      activeBox.classList.add("show");
-      hangupBtn.disabled = false;
-      muteBtn.disabled = false;
-      callBtn.disabled = true;
-    }
-
-    function hideActive() {
-      activeBox.classList.remove("show");
-      hangupBtn.disabled = true;
-      muteBtn.disabled = true;
-      callBtn.disabled = false;
-      muteBtn.textContent = "كتم الميكروفون";
-      isMuted = false;
-    }
-
     async function createPeerConnection() {
       pc = new RTCPeerConnection(rtcConfig);
-
-      pc.ontrack = (event) => {
-        remoteAudio.srcObject = event.streams[0];
-      };
-
+      pc.ontrack = (event) => { remoteAudio.srcObject = event.streams[0]; };
       pc.onconnectionstatechange = () => {
-        setStatus(`حالة الاتصال: ${pc.connectionState}`);
+        callStatus.textContent = `حالة الاتصال: ${pc.connectionState}`;
       };
-
       return pc;
     }
-
-    async function getLocalAudio() {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      localStream = stream;
-      return stream;
-    }
-
-    async function joinRoom() {
-      room = roomInput.value.trim() || "main";
-      userName = nameInput.value.trim();
-
-      if (!userName) {
-        alert("اكتب اسمك أولاً");
-        return;
-      }
-
-      localStorage.setItem("voice_room", room);
-      localStorage.setItem("voice_name", userName);
-      localStorage.setItem("voice_user_id", userId);
-
-      document.title = `Voice Call - ${room}`;
-
-      const userRef = ref(db, `rooms/${room}/users/${userId}`);
-      await set(userRef, {
-        name: userName,
-        joinedAt: Date.now()
-      });
-
-      onDisconnect(userRef).remove();
-      joined = true;
-      setStatus(`دخلت الغرفة: ${room}`);
-      joinBtn.disabled = true;
-
-      const callsRef = ref(db, `rooms/${room}/calls`);
-
-      onChildAdded(callsRef, (snap) => {
-        const data = snap.val();
-        const id = snap.key;
-
-        if (!data) return;
-        if (data.status === "ended") return;
-
-        // استقبال مكالمة واردة
-        if (data.targetId === userId && data.status === "ringing") {
-          if (!currentIncoming || currentIncoming.id !== id) {
-            showIncoming(data, id);
-            setStatus(`هناك مكالمة واردة من ${data.callerName || "مستخدم"}`);
-          }
-        }
-      });
-    }
-
-    async function startOutgoingCall() {
-      if (!joined) {
-        alert("ادخل الغرفة أولاً");
-        return;
-      }
-
-      const targetId = targetIdInput.value.trim();
-      const targetName = targetNameInput.value.trim() || "مستخدم";
-
-      if (!targetId) {
-        alert("اكتب معرف الطرف الآخر");
-        return;
-      }
-
-      if (targetId === userId) {
-        alert("لا يمكنك الاتصال بنفسك");
-        return;
-      }
-
+    async function startCall() {
+      if (!joined) { alert("انضم للغرفة أولاً"); return; }
+      if (!selectedUserId) { alert("اختر شخصاً للاتصال"); return; }
+      if (selectedUserId === userId) { alert("لا يمكنك الاتصال بنفسك"); return; }
       if (pc) return;
-
-      currentRole = "caller";
-      callId = push(ref(db, `rooms/${room}/calls`)).key;
-
+      callId = push(callsRef).key;
       const callRef = ref(db, `rooms/${room}/calls/${callId}`);
       const callerCandidatesRef = ref(db, `rooms/${room}/calls/${callId}/callerCandidates`);
       const calleeCandidatesRef = ref(db, `rooms/${room}/calls/${callId}/calleeCandidates`);
@@ -370,162 +703,179 @@
 
       await getLocalAudio();
       await createPeerConnection();
-
       localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 
-      pc.onicecandidate = async (event) => {
-        if (event.candidate) {
-          await push(callerCandidatesRef, event.candidate.toJSON());
-        }
+      pc.onicecandidate = async (e) => {
+        if (e.candidate) await push(callerCandidatesRef, e.candidate.toJSON());
       };
-
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
-
       await set(callRef, {
         callerId: userId,
-        callerName: userName,
-        targetId,
-        targetName,
-        offer: {
-          type: offer.type,
-          sdp: offer.sdp
-        },
+        callerName: currentUser,
+        targetId: selectedUserId,
+        targetName: selectedUserName,
+        offer: { type: offer.type, sdp: offer.sdp },
         status: "ringing",
         createdAt: Date.now()
       });
 
-      setStatus(`جارٍ الاتصال بـ ${targetName}...`);
-      showActive(`المتصل: ${targetName}`);
+      showActiveCall(`جاري الاتصال بـ ${selectedUserName || "المستخدم"}...`);
+      callStatus.textContent = "يرن...";
 
       onValue(answerRef, async (snap) => {
-        const answer = snap.val();
-        if (!answer || !pc) return;
-
-        try {
-          await pc.setRemoteDescription(new RTCSessionDescription(answer));
-          setStatus("تم قبول المكالمة، جاري الاتصال...");
-        } catch (err) {
-          console.error(err);
+        const ans = snap.val();
+        if (ans && pc) {
+          await pc.setRemoteDescription(new RTCSessionDescription(ans));
+          callStatus.textContent = "المكالمة متصلة";
         }
       });
-
       onChildAdded(calleeCandidatesRef, async (snap) => {
-        const candidate = snap.val();
-        if (!candidate || !pc) return;
-        try {
-          await pc.addIceCandidate(new RTCIceCandidate(candidate));
-        } catch (err) {
-          console.error(err);
-        }
+        if (pc && snap.val()) await pc.addIceCandidate(new RTCIceCandidate(snap.val()));
       });
     }
-
     async function acceptIncomingCall() {
       if (!currentIncoming) return;
       if (pc) return;
-
       const { data, id } = currentIncoming;
+      callId = id;
       const callRef = ref(db, `rooms/${room}/calls/${id}`);
       const callerCandidatesRef = ref(db, `rooms/${room}/calls/${id}/callerCandidates`);
       const calleeCandidatesRef = ref(db, `rooms/${room}/calls/${id}/calleeCandidates`);
 
-      currentRole = "callee";
-      callId = id;
-
       await getLocalAudio();
       await createPeerConnection();
-
       localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 
-      pc.onicecandidate = async (event) => {
-        if (event.candidate) {
-          await push(calleeCandidatesRef, event.candidate.toJSON());
-        }
+      pc.onicecandidate = async (e) => {
+        if (e.candidate) await push(calleeCandidatesRef, e.candidate.toJSON());
       };
-
       onChildAdded(callerCandidatesRef, async (snap) => {
-        const candidate = snap.val();
-        if (!candidate || !pc) return;
-        try {
-          await pc.addIceCandidate(new RTCIceCandidate(candidate));
-        } catch (err) {
-          console.error(err);
-        }
+        if (pc && snap.val()) await pc.addIceCandidate(new RTCIceCandidate(snap.val()));
       });
-
       await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
-
-      await update(callRef, {
-        answer: {
-          type: answer.type,
-          sdp: answer.sdp
-        },
-        status: "connected"
-      });
-
+      await update(callRef, { answer: { type: answer.type, sdp: answer.sdp }, status: "connected" });
       hideIncoming();
-      showActive(`المتصل: ${data.callerName || "مستخدم"}`);
-      setStatus("المكالمة متصلة");
+      showActiveCall(`مكالمة مع ${data.callerName || "المستخدم"}`);
+      callStatus.textContent = "المكالمة متصلة";
     }
-
     async function rejectIncomingCall() {
       if (!currentIncoming) return;
-      const { id } = currentIncoming;
-
-      await update(ref(db, `rooms/${room}/calls/${id}`), {
-        status: "rejected"
-      });
-
+      await update(ref(db, `rooms/${room}/calls/${currentIncoming.id}`), { status: "rejected" });
       hideIncoming();
-      setStatus("تم رفض المكالمة");
+      currentIncoming = null;
     }
-
-    async function hangup() {
+    async function hangUp() {
       if (callId) {
-        try {
-          await update(ref(db, `rooms/${room}/calls/${callId}`), {
-            status: "ended"
-          });
-        } catch {}
+        try { await update(ref(db, `rooms/${room}/calls/${callId}`), { status: "ended" }); } catch {}
       }
-
-      if (pc) {
-        pc.close();
-        pc = null;
-      }
-
-      if (localStream) {
-        localStream.getTracks().forEach(t => t.stop());
-        localStream = null;
-      }
-
+      if (pc) { pc.close(); pc = null; }
+      if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
+      if (meterCleanup) { meterCleanup(); meterCleanup = null; }
       remoteAudio.srcObject = null;
       callId = null;
-      currentRole = null;
-      hideActive();
       hideIncoming();
-      setStatus("تم إنهاء المكالمة");
+      hideActiveCall();
+      callStatus.textContent = "انتهت المكالمة";
+    }
+    function showIncoming(data, id) {
+      currentIncoming = { data, id };
+      incomingText.textContent = `من: ${data.callerName || "مستخدم"}`;
+      incomingOverlay.classList.add("show");
+    }
+    function hideIncoming() { incomingOverlay.classList.remove("show"); currentIncoming = null; }
+    function showActiveCall(text) {
+      callPartySpan.textContent = text || "";
+      activeCallOverlay.classList.add("show");
+      callBtn.disabled = true;
+    }
+    function hideActiveCall() {
+      activeCallOverlay.classList.remove("show");
+      callStatus.textContent = "جاري الاتصال...";
+      callPartySpan.textContent = "";
+      audioMeterFill.style.width = "0%";
+      callBtn.disabled = !selectedUserId;
     }
 
-    function toggleMute() {
-      if (!localStream) return;
-      isMuted = !isMuted;
-      localStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
-      muteBtn.textContent = isMuted ? "إلغاء الكتم" : "كتم الميكروفون";
+    // Firebase listeners
+    onValue(usersRef, (snap) => {
+      usersMap = snap.val() || {};
+      renderUsers();
+    });
+    onChildAdded(messagesRef, (snap) => renderMessage(snap.val()));
+    onValue(ref(db, `rooms/${room}/typing`), (snap) => {
+      const data = snap.val() || {};
+      const typingUsers = Object.keys(data).filter(id => id !== userId && data[id] === true);
+      typingDiv.textContent = typingUsers.length ? "شخص يكتب..." : "";
+    });
+    onValue(callsRef, (snap) => {
+      const calls = snap.val() || {};
+      Object.entries(calls).forEach(([id, data]) => {
+        if (!data) return;
+        if (data.status === "ringing" && data.targetId === userId && !currentIncoming && !pc) {
+          showIncoming(data, id);
+        }
+      });
+    });
+
+    // Event listeners
+    msgInput.addEventListener("input", async () => {
+      if (!joined) return;
+      await set(typingRef, true);
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(async () => await remove(typingRef), 1200);
+    });
+    msgInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendBtn.click(); });
+    sendBtn.addEventListener("click", sendMessage);
+    usersBtn.addEventListener("click", () => sidebar.classList.toggle("hidden"));
+    closeSidebar.addEventListener("click", () => sidebar.classList.add("hidden"));
+    themeBtn.addEventListener("click", () => {
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      const newTheme = isDark ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", newTheme);
+      localStorage.setItem("darkMode", newTheme === "dark");
+      themeBtn.innerHTML = newTheme === "dark" ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    });
+    copyBtn.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(location.href);
+      const old = copyBtn.innerHTML;
+      copyBtn.innerHTML = '<i class="fas fa-check"></i> تم';
+      setTimeout(() => copyBtn.innerHTML = old, 1500);
+    });
+    callBtn.addEventListener("click", startCall);
+    acceptCallBtn.addEventListener("click", acceptIncomingCall);
+    rejectCallBtn.addEventListener("click", rejectIncomingCall);
+    hangupBtn.addEventListener("click", hangUp);
+    leaveBtn.addEventListener("click", async () => {
+      if (confirm("هل تريد مغادرة الغرفة؟")) {
+        await hangUp();
+        if (joined) {
+          await remove(userRef).catch(()=>{});
+          await remove(typingRef).catch(()=>{});
+        }
+        window.location.href = "login.html";
+      }
+    });
+    joinBtn.addEventListener("click", async () => {
+      const name = nameInput.value.trim();
+      if (!name) { alert("أدخل اسماً مستعاراً"); return; }
+      currentUser = name;
+      localStorage.setItem("nickname", currentUser);
+      userNameSpan.textContent = currentUser;
+      await initUser();
+    });
+    nameInput.addEventListener("keypress", (e) => { if (e.key === "Enter") joinBtn.click(); });
+
+    // Auto-join if already have nickname
+    if (currentUser) {
+      userNameSpan.textContent = currentUser;
+      joinOverlay.classList.remove("show");
+      initUser();
+    } else {
+      joinOverlay.classList.add("show");
     }
-
-    joinBtn.addEventListener("click", joinRoom);
-    callBtn.addEventListener("click", startOutgoingCall);
-    acceptBtn.addEventListener("click", acceptIncomingCall);
-    rejectBtn.addEventListener("click", rejectIncomingCall);
-    hangupBtn.addEventListener("click", hangup);
-    muteBtn.addEventListener("click", toggleMute);
-
-    if (userName) nameInput.value = userName;
-    if (room) roomInput.value = room;
   </script>
 </body>
 </html>
