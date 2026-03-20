@@ -3,479 +3,178 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chat Room</title>
+  <title>Voice Call</title>
   <style>
     :root{
       --bg:#0b1220;
       --panel:#111a2e;
-      --panel-2:#17223a;
-      --border:#2a3858;
+      --panel2:#17223a;
+      --border:#273552;
       --text:#eef2ff;
-      --muted:#aab6d6;
-      --primary:#3b82f6;
-      --primary-2:#2563eb;
-      --danger:#ef4444;
-      --success:#22c55e;
-      --bubble:#24324f;
-      --bubble-me:#2a67d6;
-      --shadow:0 12px 40px rgba(0,0,0,.25);
-      --radius:18px;
-    }
-
-    [data-theme="light"]{
-      --bg:#f4f7fb;
-      --panel:#ffffff;
-      --panel-2:#eef3fb;
-      --border:#d8e0ef;
-      --text:#0f172a;
-      --muted:#5b6783;
+      --muted:#9aa7c7;
       --primary:#2563eb;
-      --primary-2:#1d4ed8;
       --danger:#dc2626;
       --success:#16a34a;
-      --bubble:#edf2ff;
-      --bubble-me:#dbeafe;
-      --shadow:0 12px 35px rgba(15,23,42,.10);
     }
-
-    * { box-sizing: border-box; }
-    html, body {
+    *{box-sizing:border-box}
+    body{
       margin:0;
-      padding:0;
-      height:100%;
+      font-family:Arial, Tahoma, sans-serif;
       background:var(--bg);
       color:var(--text);
-      font-family: Arial, Tahoma, sans-serif;
-    }
-
-    body{
+      min-height:100vh;
       display:flex;
-      flex-direction:column;
-      overflow:hidden;
-    }
-
-    .app{
-      display:flex;
-      flex-direction:column;
-      height:100vh;
-      width:100%;
-    }
-
-    .topbar{
-      background:var(--panel);
-      border-bottom:1px solid var(--border);
-      padding:12px 14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      box-shadow:var(--shadow);
-      z-index:10;
-    }
-
-    .topbar .left,
-    .topbar .right{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    .brand{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-    }
-
-    .brand .title{
-      font-size:17px;
-      font-weight:700;
-    }
-
-    .brand .sub{
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .chip{
-      background:var(--panel-2);
-      border:1px solid var(--border);
-      color:var(--text);
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:13px;
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
-
-    button{
-      border:none;
-      outline:none;
-      cursor:pointer;
-      border-radius:14px;
-      padding:10px 12px;
-      font-size:14px;
-      background:var(--primary);
-      color:#fff;
-      transition:.2s ease;
-    }
-    button:hover{ transform: translateY(-1px); background:var(--primary-2); }
-    button.secondary{ background:var(--panel-2); color:var(--text); border:1px solid var(--border); }
-    button.secondary:hover{ background:var(--border); }
-    button.danger{ background:var(--danger); }
-    button.success{ background:var(--success); }
-
-    .main{
-      flex:1;
-      display:flex;
-      min-height:0;
-      position:relative;
-    }
-
-    .sidebar{
-      width:320px;
-      max-width:90vw;
-      background:var(--panel);
-      border-left:1px solid var(--border);
-      display:flex;
-      flex-direction:column;
-      min-height:0;
-      box-shadow:var(--shadow);
-    }
-
-    .sidebar.hidden{
-      display:none;
-    }
-
-    .panel-head{
-      padding:14px;
-      border-bottom:1px solid var(--border);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:8px;
-      font-weight:700;
-    }
-
-    .users-list{
-      overflow:auto;
-      padding:10px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-
-    .user-item{
-      background:var(--panel-2);
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-
-    .user-info{
-      display:flex;
-      flex-direction:column;
-      gap:3px;
-      min-width:0;
-    }
-
-    .user-name{
-      font-weight:700;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .user-meta{
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .user-actions{
-      display:flex;
-      gap:6px;
-      flex-shrink:0;
-    }
-
-    .chat{
-      flex:1;
-      min-width:0;
-      display:flex;
-      flex-direction:column;
-      min-height:0;
-    }
-
-    .messages{
-      flex:1;
-      overflow:auto;
-      padding:16px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-
-    .msg{
-      max-width:min(720px, 86%);
-      background:var(--bubble);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:10px 12px;
-      box-shadow:var(--shadow);
-      align-self:flex-start;
-    }
-
-    .msg.me{
-      background:var(--bubble-me);
-      align-self:flex-end;
-    }
-
-    .msg .sender{
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:6px;
-      font-weight:700;
-    }
-
-    .msg .text{
-      white-space:pre-wrap;
-      word-break:break-word;
-      line-height:1.6;
-      font-size:15px;
-      color:var(--text);
-    }
-
-    .msg .time{
-      margin-top:6px;
-      font-size:11px;
-      color:var(--muted);
-      text-align:left;
-    }
-
-    .msg img{
-      max-width:260px;
-      width:100%;
-      border-radius:12px;
-      display:block;
-    }
-
-    .msg audio{
-      width:260px;
-      max-width:100%;
-      margin-top:6px;
-    }
-
-    .typing{
-      min-height:24px;
-      padding:0 16px 6px;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .composer{
-      border-top:1px solid var(--border);
-      background:var(--panel);
-      padding:12px;
-      display:flex;
-      gap:8px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-
-    .composer input[type="text"]{
-      flex:1;
-      min-width:160px;
-      padding:13px 14px;
-      border-radius:14px;
-      border:1px solid var(--border);
-      outline:none;
-      background:var(--panel-2);
-      color:var(--text);
-      font-size:15px;
-    }
-
-    .composer input[type="text"]::placeholder{
-      color:var(--muted);
-    }
-
-    .small{
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .hidden{
-      display:none !important;
-    }
-
-    .overlay{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.5);
-      display:none;
       align-items:center;
       justify-content:center;
-      z-index:1000;
       padding:16px;
     }
-
-    .overlay.show{
-      display:flex;
-    }
-
-    .modal{
-      width:min(560px, 100%);
+    .app{
+      width:min(760px,100%);
       background:var(--panel);
       border:1px solid var(--border);
       border-radius:24px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
+      padding:18px;
+      box-shadow:0 18px 50px rgba(0,0,0,.25);
     }
-
-    .modal .head{
-      padding:14px 16px;
-      border-bottom:1px solid var(--border);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      font-weight:700;
+    h1{
+      margin:0 0 14px;
+      font-size:22px;
     }
-
-    .modal .body{
-      padding:16px;
-      display:flex;
-      flex-direction:column;
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
       gap:12px;
+      margin-bottom:14px;
     }
-
+    .card{
+      background:var(--panel2);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:14px;
+    }
+    label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    input{
+      width:100%;
+      border:1px solid var(--border);
+      background:#0b1220;
+      color:var(--text);
+      border-radius:14px;
+      padding:12px 14px;
+      font-size:15px;
+      outline:none;
+    }
     .row{
       display:flex;
       gap:8px;
       flex-wrap:wrap;
+      margin-top:10px;
     }
-
-    .call-box{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-
-    .call-status{
-      font-weight:700;
-      color:var(--primary);
-    }
-
-    .audio-meter{
-      width:100%;
-      height:8px;
-      background:var(--panel-2);
-      border:1px solid var(--border);
-      border-radius:999px;
-      overflow:hidden;
-    }
-
-    .audio-meter > div{
-      height:100%;
-      width:0%;
+    button{
+      border:none;
+      border-radius:14px;
+      padding:11px 14px;
+      font-size:14px;
+      cursor:pointer;
+      color:#fff;
       background:var(--primary);
-      transition:width .15s ease;
     }
-
-    .mobile-only{
+    button.secondary{ background:#475569; }
+    button.success{ background:var(--success); }
+    button.danger{ background:var(--danger); }
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    .status{
+      margin-top:12px;
+      padding:12px 14px;
+      background:var(--panel2);
+      border:1px solid var(--border);
+      border-radius:16px;
+      min-height:48px;
+      line-height:1.6;
+      color:var(--muted);
+      white-space:pre-wrap;
+    }
+    .incoming, .activeCall{
       display:none;
+      margin-top:14px;
+      padding:14px;
+      background:rgba(37,99,235,.10);
+      border:1px solid rgba(37,99,235,.35);
+      border-radius:18px;
     }
-
-    @media (max-width: 920px){
-      .sidebar{
-        position:absolute;
-        top:0;
-        bottom:0;
-        left:0;
-        right:0;
-        width:100%;
-        z-index:50;
-      }
-      .mobile-only{ display:inline-flex; }
+    .incoming.show, .activeCall.show{ display:block; }
+    audio{
+      width:100%;
+      margin-top:10px;
+    }
+    .small{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:8px;
+    }
+    @media (max-width:720px){
+      .grid{ grid-template-columns:1fr; }
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <div class="topbar">
-      <div class="right">
-        <button id="menuBtn" class="secondary mobile-only">المستخدمون</button>
-        <div class="brand">
-          <div class="title">غرفة الدردشة: <span id="roomName">main</span></div>
-          <div class="sub">
-            أنت: <span id="userName"></span> · المتصلون: <span id="userCount">0</span>
-          </div>
-        </div>
+    <h1>الاتصال الصوتي</h1>
+
+    <div class="grid">
+      <div class="card">
+        <label>اسمك</label>
+        <input id="nameInput" placeholder="مثال: سجاد" />
       </div>
 
-      <div class="left">
-        <button id="themeBtn" class="secondary">الوضع الليلي</button>
-        <button id="copyBtn" class="secondary">نسخ الرابط</button>
-        <button id="shareBtn" class="secondary">مشاركة</button>
-        <button id="leaveBtn" class="danger">خروج</button>
+      <div class="card">
+        <label>اسم الغرفة</label>
+        <input id="roomInput" placeholder="main" value="main" />
+      </div>
+
+      <div class="card">
+        <label>معرّف الطرف الآخر (Target User ID)</label>
+        <input id="targetIdInput" placeholder="اكتب userId الخاص بالطرف الآخر" />
+      </div>
+
+      <div class="card">
+        <label>اسم الطرف الآخر</label>
+        <input id="targetNameInput" placeholder="اختياري" />
+      </div>
+    </div>
+
+    <div class="row">
+      <button id="joinBtn">دخول الغرفة</button>
+      <button id="callBtn">اتصال</button>
+      <button id="hangupBtn" class="danger" disabled>إنهاء</button>
+      <button id="muteBtn" class="secondary" disabled>كتم الميكروفون</button>
+    </div>
+
+    <div id="incomingBox" class="incoming">
+      <b>مكالمة واردة</b>
+      <div id="incomingText" style="margin-top:8px;"></div>
+      <div class="row">
+        <button id="acceptBtn" class="success">قبول</button>
+        <button id="rejectBtn" class="danger">رفض</button>
       </div>
     </div>
 
-    <div class="main">
-      <aside id="sidebar" class="sidebar hidden">
-        <div class="panel-head">
-          <span>المستخدمون المتصلون</span>
-          <button id="closeSidebarBtn" class="secondary mobile-only">إغلاق</button>
-        </div>
-        <div id="usersList" class="users-list"></div>
-      </aside>
-
-      <section class="chat">
-        <div id="messages" class="messages"></div>
-        <div id="typing" class="typing"></div>
-
-        <div class="composer">
-          <input type="text" id="msgInput" placeholder="اكتب رسالة..." autocomplete="off" />
-          <button id="sendBtn">إرسال</button>
-          <button id="imgBtn" class="secondary">صورة</button>
-          <button id="audioBtn" class="secondary">🎤</button>
-          <button id="usersBtn" class="secondary">المستخدمون</button>
-          <input type="file" id="fileInput" accept="image/*" hidden />
-        </div>
-      </section>
+    <div id="activeBox" class="activeCall">
+      <b>المكالمة نشطة</b>
+      <div id="activeText" style="margin-top:8px;"></div>
+      <audio id="remoteAudio" autoplay></audio>
     </div>
-  </div>
 
-  <div id="incomingOverlay" class="overlay">
-    <div class="modal">
-      <div class="head">
-        <span>مكالمة واردة</span>
-        <button id="rejectCallBtn" class="danger">رفض</button>
-      </div>
-      <div class="body">
-        <div>المتصل: <b id="incomingCallerName">-</b></div>
-        <div class="row">
-          <button id="acceptCallBtn" class="success">قبول</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="activeCallOverlay" class="overlay">
-    <div class="modal">
-      <div class="head">
-        <span>المكالمة</span>
-        <button id="hangupBtn" class="danger">إنهاء</button>
-      </div>
-      <div class="body call-box">
-        <div class="call-status" id="callStatus">جاري الاتصال...</div>
-        <div class="small" id="callParty">-</div>
-        <div class="audio-meter"><div id="audioMeterFill"></div></div>
-        <audio id="remoteAudio" autoplay></audio>
-      </div>
+    <div id="status" class="status">جاهز.</div>
+    <div class="small">
+      ملاحظة: هذا الكود يعتمد على WebRTC للصوت، وFirebase فقط لتبادل بيانات الاتصال.
     </div>
   </div>
 
@@ -486,11 +185,11 @@
       ref,
       set,
       push,
+      update,
       onValue,
       onChildAdded,
       onDisconnect,
-      remove,
-      update
+      remove
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
     const firebaseConfig = {
@@ -507,63 +206,34 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const room = new URLSearchParams(location.search).get("room") || "main";
-    const userName = localStorage.getItem("chat_user_name") || ("User_" + Math.floor(Math.random() * 1000));
-    const userId = localStorage.getItem("chat_user_id") || (Date.now() + "_" + Math.floor(Math.random() * 99999));
-    localStorage.setItem("chat_user_name", userName);
-    localStorage.setItem("chat_user_id", userId);
-
-    const roomNameEl = document.getElementById("roomName");
-    const userNameEl = document.getElementById("userName");
-    const userCountEl = document.getElementById("userCount");
-    const messagesEl = document.getElementById("messages");
-    const typingEl = document.getElementById("typing");
-    const msgInput = document.getElementById("msgInput");
-    const sendBtn = document.getElementById("sendBtn");
-    const imgBtn = document.getElementById("imgBtn");
-    const audioBtn = document.getElementById("audioBtn");
-    const usersBtn = document.getElementById("usersBtn");
-    const menuBtn = document.getElementById("menuBtn");
-    const closeSidebarBtn = document.getElementById("closeSidebarBtn");
-    const sidebar = document.getElementById("sidebar");
-    const usersListEl = document.getElementById("usersList");
-    const fileInput = document.getElementById("fileInput");
-    const themeBtn = document.getElementById("themeBtn");
-    const copyBtn = document.getElementById("copyBtn");
-    const shareBtn = document.getElementById("shareBtn");
-    const leaveBtn = document.getElementById("leaveBtn");
-
-    const incomingOverlay = document.getElementById("incomingOverlay");
-    const incomingCallerName = document.getElementById("incomingCallerName");
-    const acceptCallBtn = document.getElementById("acceptCallBtn");
-    const rejectCallBtn = document.getElementById("rejectCallBtn");
-
-    const activeCallOverlay = document.getElementById("activeCallOverlay");
+    const nameInput = document.getElementById("nameInput");
+    const roomInput = document.getElementById("roomInput");
+    const targetIdInput = document.getElementById("targetIdInput");
+    const targetNameInput = document.getElementById("targetNameInput");
+    const joinBtn = document.getElementById("joinBtn");
+    const callBtn = document.getElementById("callBtn");
     const hangupBtn = document.getElementById("hangupBtn");
-    const callStatus = document.getElementById("callStatus");
-    const callParty = document.getElementById("callParty");
+    const muteBtn = document.getElementById("muteBtn");
+    const incomingBox = document.getElementById("incomingBox");
+    const incomingText = document.getElementById("incomingText");
+    const acceptBtn = document.getElementById("acceptBtn");
+    const rejectBtn = document.getElementById("rejectBtn");
+    const activeBox = document.getElementById("activeBox");
+    const activeText = document.getElementById("activeText");
+    const statusEl = document.getElementById("status");
     const remoteAudio = document.getElementById("remoteAudio");
-    const audioMeterFill = document.getElementById("audioMeterFill");
 
-    const userRef = ref(db, `rooms/${room}/users/${userId}`);
-    const usersRef = ref(db, `rooms/${room}/users`);
-    const messagesRef = ref(db, `rooms/${room}/messages`);
-    const typingRef = ref(db, `rooms/${room}/typing/${userId}`);
-    const callsRef = ref(db, `rooms/${room}/calls`);
-
-    let usersMap = {};
-    let typingTimer = null;
-    let mediaRecorder = null;
-    let recording = false;
-    let audioChunks = [];
+    let room = localStorage.getItem("voice_room") || roomInput.value || "main";
+    let userName = localStorage.getItem("voice_name") || nameInput.value || "";
+    let userId = localStorage.getItem("voice_user_id") || `${Date.now()}_${Math.floor(Math.random()*99999)}`;
+    let joined = false;
 
     let pc = null;
     let localStream = null;
     let callId = null;
-    let currentCallData = null;
-    let currentIncomingCallId = null;
-    let currentIncomingCallData = null;
-    let isCaller = false;
+    let currentIncoming = null;
+    let isMuted = false;
+    let currentRole = null; // caller | callee
 
     const rtcConfig = {
       iceServers: [
@@ -572,327 +242,36 @@
       ]
     };
 
-    roomNameEl.textContent = room;
-    userNameEl.textContent = userName;
-
-    const savedTheme = localStorage.getItem("chat_theme") || "dark";
-    document.documentElement.setAttribute("data-theme", savedTheme);
-    themeBtn.textContent = savedTheme === "dark" ? "الوضع النهاري" : "الوضع الليلي";
-
-    function setTheme(next) {
-      document.documentElement.setAttribute("data-theme", next);
-      localStorage.setItem("chat_theme", next);
-      themeBtn.textContent = next === "dark" ? "الوضع النهاري" : "الوضع الليلي";
+    function setStatus(text) {
+      statusEl.textContent = text;
     }
 
-    function timeStr(ts) {
-      return new Date(ts).toLocaleTimeString("ar-IQ", { hour: "2-digit", minute: "2-digit" });
+    function showIncoming(data, id) {
+      currentIncoming = { data, id };
+      incomingText.textContent = `من: ${data.callerName || "مستخدم"}\nالمعرف: ${data.callerId || "-"}`;
+      incomingBox.classList.add("show");
     }
 
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+    function hideIncoming() {
+      incomingBox.classList.remove("show");
+      currentIncoming = null;
     }
 
-    function scrollBottom() {
-      messagesEl.scrollTop = messagesEl.scrollHeight;
+    function showActive(text) {
+      activeText.textContent = text;
+      activeBox.classList.add("show");
+      hangupBtn.disabled = false;
+      muteBtn.disabled = false;
+      callBtn.disabled = true;
     }
 
-    function renderMessage(msg) {
-      const wrap = document.createElement("div");
-      wrap.className = "msg" + (msg.senderId === userId ? " me" : "");
-
-      let content = "";
-      if (msg.type === "image") {
-        content = `<img src="${msg.text}" alt="image">`;
-      } else if (msg.type === "audio") {
-        content = `<audio controls src="${msg.text}"></audio>`;
-      } else {
-        content = `<div class="text">${escapeHtml(msg.text || "")}</div>`;
-      }
-
-      wrap.innerHTML = `
-        <div class="sender">${escapeHtml(msg.sender || "مستخدم")}</div>
-        ${content}
-        <div class="time">${msg.timestamp ? timeStr(msg.timestamp) : ""}</div>
-      `;
-
-      messagesEl.appendChild(wrap);
-      scrollBottom();
-    }
-
-    function renderUsers() {
-      const entries = Object.entries(usersMap);
-      userCountEl.textContent = entries.length;
-      usersListEl.innerHTML = "";
-
-      if (entries.length === 0) {
-        usersListEl.innerHTML = `<div class="small" style="padding:10px;">لا يوجد مستخدمون الآن</div>`;
-        return;
-      }
-
-      entries.forEach(([id, u]) => {
-        const item = document.createElement("div");
-        item.className = "user-item";
-        item.innerHTML = `
-          <div class="user-info">
-            <div class="user-name">${escapeHtml(u?.name || "مستخدم")}${id === userId ? " (أنت)" : ""}</div>
-            <div class="user-meta">${u?.joinedAt ? "متصل الآن" : ""}</div>
-          </div>
-          <div class="user-actions">
-            ${id !== userId ? `<button class="secondary" data-call="${id}">اتصال</button>` : ""}
-          </div>
-        `;
-        usersListEl.appendChild(item);
-      });
-
-      usersListEl.querySelectorAll("button[data-call]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const targetId = btn.getAttribute("data-call");
-          const target = usersMap[targetId];
-          if (!target) return;
-          await startOutgoingCall(targetId, target.name || "مستخدم");
-        });
-      });
-    }
-
-    async function sendMessage(payload) {
-      const msg = payload || { type: "text", text: msgInput.value.trim() };
-      if (msg.type === "text" && !msg.text) return;
-
-      const messageRef = push(messagesRef);
-      await set(messageRef, {
-        sender: userName,
-        senderId: userId,
-        type: msg.type || "text",
-        text: msg.text || "",
-        timestamp: Date.now()
-      });
-
-      msgInput.value = "";
-      await remove(typingRef);
-    }
-
-    async function initUser() {
-      await set(userRef, {
-        name: userName,
-        joinedAt: Date.now()
-      });
-
-      onDisconnect(userRef).remove();
-      onDisconnect(typingRef).remove();
-
-      await set(ref(db, `rooms/${room}/messages/${Date.now()}_${userId}_system`), {
-        sender: "نظام",
-        senderId: "system",
-        type: "text",
-        text: `${userName} دخل الغرفة`,
-        timestamp: Date.now()
-      });
-    }
-
-    onValue(usersRef, snap => {
-      usersMap = snap.val() || {};
-      renderUsers();
-    });
-
-    onChildAdded(messagesRef, snap => {
-      renderMessage(snap.val());
-    });
-
-    onValue(ref(db, `rooms/${room}/typing`), snap => {
-      const data = snap.val() || {};
-      const typingUsers = Object.keys(data).filter(id => id !== userId && data[id] === true);
-      typingEl.textContent = typingUsers.length ? "مستخدم يكتب الآن..." : "";
-    });
-
-    msgInput.addEventListener("input", async () => {
-      await set(typingRef, true);
-      clearTimeout(typingTimer);
-      typingTimer = setTimeout(async () => {
-        await remove(typingRef);
-      }, 1200);
-    });
-
-    msgInput.addEventListener("keydown", e => {
-      if (e.key === "Enter") sendBtn.click();
-    });
-
-    sendBtn.addEventListener("click", () => sendMessage());
-
-    imgBtn.addEventListener("click", () => fileInput.click());
-
-    fileInput.addEventListener("change", () => {
-      const file = fileInput.files?.[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        await sendMessage({ type: "image", text: e.target.result });
-        fileInput.value = "";
-      };
-      reader.readAsDataURL(file);
-    });
-
-    audioBtn.addEventListener("click", async () => {
-      try {
-        if (!recording) {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
-          audioChunks = [];
-
-          mediaRecorder.ondataavailable = e => {
-            if (e.data.size > 0) audioChunks.push(e.data);
-          };
-
-          mediaRecorder.onstop = async () => {
-            const blob = new Blob(audioChunks, { type: "audio/webm" });
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-              await sendMessage({ type: "audio", text: e.target.result });
-            };
-            reader.readAsDataURL(blob);
-            stream.getTracks().forEach(t => t.stop());
-          };
-
-          mediaRecorder.start();
-          recording = true;
-          audioBtn.textContent = "⏹";
-          audioBtn.classList.add("danger");
-        } else {
-          mediaRecorder.stop();
-          recording = false;
-          audioBtn.textContent = "🎤";
-          audioBtn.classList.remove("danger");
-        }
-      } catch (err) {
-        alert("تعذر الوصول إلى الميكروفون");
-        console.error(err);
-      }
-    });
-
-    function openSidebar() {
-      sidebar.classList.remove("hidden");
-    }
-
-    function closeSidebar() {
-      sidebar.classList.add("hidden");
-    }
-
-    usersBtn.addEventListener("click", () => {
-      if (window.innerWidth <= 920) {
-        sidebar.classList.toggle("hidden");
-      } else {
-        sidebar.classList.remove("hidden");
-      }
-    });
-
-    menuBtn.addEventListener("click", openSidebar);
-    closeSidebarBtn.addEventListener("click", closeSidebar);
-
-    themeBtn.addEventListener("click", () => {
-      const current = document.documentElement.getAttribute("data-theme") || "dark";
-      setTheme(current === "dark" ? "light" : "dark");
-    });
-
-    copyBtn.addEventListener("click", async () => {
-      await navigator.clipboard.writeText(location.href);
-      copyBtn.textContent = "تم النسخ";
-      setTimeout(() => copyBtn.textContent = "نسخ الرابط", 1200);
-    });
-
-    shareBtn.addEventListener("click", async () => {
-      try {
-        if (navigator.share) {
-          await navigator.share({ title: "Chat Room", url: location.href });
-        } else {
-          await navigator.clipboard.writeText(location.href);
-          alert("تم نسخ الرابط");
-        }
-      } catch {}
-    });
-
-    leaveBtn.addEventListener("click", async () => {
-      const ok = confirm("هل تريد الخروج من الغرفة؟");
-      if (!ok) return;
-      await leaveRoom();
-      location.href = "index.html";
-    });
-
-    window.addEventListener("beforeunload", async () => {
-      try {
-        await leaveRoom();
-      } catch {}
-    });
-
-    async function leaveRoom() {
-      await remove(userRef);
-      await remove(typingRef);
-      if (callId) {
-        try {
-          await update(ref(db, `rooms/${room}/calls/${callId}`), { status: "ended" });
-        } catch {}
-      }
-    }
-
-    function showIncomingCall(callerName, callId, data) {
-      currentIncomingCallId = callId;
-      currentIncomingCallData = data;
-      incomingCallerName.textContent = callerName || "مستخدم";
-      incomingOverlay.classList.add("show");
-    }
-
-    function hideIncomingCall() {
-      incomingOverlay.classList.remove("show");
-      currentIncomingCallId = null;
-      currentIncomingCallData = null;
-    }
-
-    function showActiveCall(partyText) {
-      callParty.textContent = partyText || "";
-      activeCallOverlay.classList.add("show");
-    }
-
-    function hideActiveCall() {
-      activeCallOverlay.classList.remove("show");
-      callStatus.textContent = "جاري الاتصال...";
-      callParty.textContent = "-";
-      audioMeterFill.style.width = "0%";
-    }
-
-    function setupAudioMeter(stream) {
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        const ctx = new AudioCtx();
-        const source = ctx.createMediaStreamSource(stream);
-        const analyser = ctx.createAnalyser();
-        analyser.fftSize = 256;
-        source.connect(analyser);
-
-        const data = new Uint8Array(analyser.frequencyBinCount);
-        let raf = null;
-
-        const loop = () => {
-          analyser.getByteFrequencyData(data);
-          let sum = 0;
-          for (const v of data) sum += v;
-          const avg = sum / data.length;
-          audioMeterFill.style.width = Math.min(100, Math.max(5, avg / 2)) + "%";
-          raf = requestAnimationFrame(loop);
-        };
-        loop();
-
-        return () => {
-          if (raf) cancelAnimationFrame(raf);
-          try { ctx.close(); } catch {}
-        };
-      } catch {
-        return () => {};
-      }
+    function hideActive() {
+      activeBox.classList.remove("show");
+      hangupBtn.disabled = true;
+      muteBtn.disabled = true;
+      callBtn.disabled = false;
+      muteBtn.textContent = "كتم الميكروفون";
+      isMuted = false;
     }
 
     async function createPeerConnection() {
@@ -902,186 +281,251 @@
         remoteAudio.srcObject = event.streams[0];
       };
 
+      pc.onconnectionstatechange = () => {
+        setStatus(`حالة الاتصال: ${pc.connectionState}`);
+      };
+
       return pc;
     }
 
-    async function startOutgoingCall(targetId, targetName) {
-      try {
-        if (callId) return;
+    async function getLocalAudio() {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      localStream = stream;
+      return stream;
+    }
 
-        isCaller = true;
-        callId = push(ref(db, `rooms/${room}/calls`)).key;
-        const callRef = ref(db, `rooms/${room}/calls/${callId}`);
-        const callerCandidatesRef = ref(db, `rooms/${room}/calls/${callId}/callerCandidates`);
-        const calleeCandidatesRef = ref(db, `rooms/${room}/calls/${callId}/calleeCandidates`);
+    async function joinRoom() {
+      room = roomInput.value.trim() || "main";
+      userName = nameInput.value.trim();
 
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const stopMeter = setupAudioMeter(localStream);
-
-        await createPeerConnection();
-        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-
-        pc.onicecandidate = async (event) => {
-          if (event.candidate) {
-            await push(callerCandidatesRef, event.candidate.toJSON());
-          }
-        };
-
-        await set(callRef, {
-          callerId: userId,
-          callerName: userName,
-          targetId,
-          targetName,
-          status: "ringing",
-          createdAt: Date.now()
-        });
-
-        showActiveCall(`الاتصال إلى: ${targetName}`);
-        callStatus.textContent = "جارٍ الرنين...";
-
-        onValue(ref(db, `rooms/${room}/calls/${callId}/answer`), async (snap) => {
-          const answer = snap.val();
-          if (!answer || !pc) return;
-          try {
-            await pc.setRemoteDescription(new RTCSessionDescription(answer));
-            callStatus.textContent = "المكالمة متصلة";
-          } catch (e) {
-            console.error(e);
-          }
-        });
-
-        onChildAdded(calleeCandidatesRef, async (snap) => {
-          const candidate = snap.val();
-          if (!candidate || !pc) return;
-          try {
-            await pc.addIceCandidate(new RTCIceCandidate(candidate));
-          } catch (e) {
-            console.error(e);
-          }
-        });
-
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-
-        await update(callRef, {
-          offer: {
-            type: offer.type,
-            sdp: offer.sdp
-          },
-          status: "ringing"
-        });
-      } catch (err) {
-        console.error(err);
-        alert("تعذر بدء المكالمة");
-        endCall(false);
+      if (!userName) {
+        alert("اكتب اسمك أولاً");
+        return;
       }
+
+      localStorage.setItem("voice_room", room);
+      localStorage.setItem("voice_name", userName);
+      localStorage.setItem("voice_user_id", userId);
+
+      document.title = `Voice Call - ${room}`;
+
+      const userRef = ref(db, `rooms/${room}/users/${userId}`);
+      await set(userRef, {
+        name: userName,
+        joinedAt: Date.now()
+      });
+
+      onDisconnect(userRef).remove();
+      joined = true;
+      setStatus(`دخلت الغرفة: ${room}`);
+      joinBtn.disabled = true;
+
+      const callsRef = ref(db, `rooms/${room}/calls`);
+
+      onChildAdded(callsRef, (snap) => {
+        const data = snap.val();
+        const id = snap.key;
+
+        if (!data) return;
+        if (data.status === "ended") return;
+
+        // استقبال مكالمة واردة
+        if (data.targetId === userId && data.status === "ringing") {
+          if (!currentIncoming || currentIncoming.id !== id) {
+            showIncoming(data, id);
+            setStatus(`هناك مكالمة واردة من ${data.callerName || "مستخدم"}`);
+          }
+        }
+      });
+    }
+
+    async function startOutgoingCall() {
+      if (!joined) {
+        alert("ادخل الغرفة أولاً");
+        return;
+      }
+
+      const targetId = targetIdInput.value.trim();
+      const targetName = targetNameInput.value.trim() || "مستخدم";
+
+      if (!targetId) {
+        alert("اكتب معرف الطرف الآخر");
+        return;
+      }
+
+      if (targetId === userId) {
+        alert("لا يمكنك الاتصال بنفسك");
+        return;
+      }
+
+      if (pc) return;
+
+      currentRole = "caller";
+      callId = push(ref(db, `rooms/${room}/calls`)).key;
+
+      const callRef = ref(db, `rooms/${room}/calls/${callId}`);
+      const callerCandidatesRef = ref(db, `rooms/${room}/calls/${callId}/callerCandidates`);
+      const calleeCandidatesRef = ref(db, `rooms/${room}/calls/${callId}/calleeCandidates`);
+      const answerRef = ref(db, `rooms/${room}/calls/${callId}/answer`);
+
+      await getLocalAudio();
+      await createPeerConnection();
+
+      localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+      pc.onicecandidate = async (event) => {
+        if (event.candidate) {
+          await push(callerCandidatesRef, event.candidate.toJSON());
+        }
+      };
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      await set(callRef, {
+        callerId: userId,
+        callerName: userName,
+        targetId,
+        targetName,
+        offer: {
+          type: offer.type,
+          sdp: offer.sdp
+        },
+        status: "ringing",
+        createdAt: Date.now()
+      });
+
+      setStatus(`جارٍ الاتصال بـ ${targetName}...`);
+      showActive(`المتصل: ${targetName}`);
+
+      onValue(answerRef, async (snap) => {
+        const answer = snap.val();
+        if (!answer || !pc) return;
+
+        try {
+          await pc.setRemoteDescription(new RTCSessionDescription(answer));
+          setStatus("تم قبول المكالمة، جاري الاتصال...");
+        } catch (err) {
+          console.error(err);
+        }
+      });
+
+      onChildAdded(calleeCandidatesRef, async (snap) => {
+        const candidate = snap.val();
+        if (!candidate || !pc) return;
+        try {
+          await pc.addIceCandidate(new RTCIceCandidate(candidate));
+        } catch (err) {
+          console.error(err);
+        }
+      });
     }
 
     async function acceptIncomingCall() {
-      try {
-        if (!currentIncomingCallId || !currentIncomingCallData) return;
+      if (!currentIncoming) return;
+      if (pc) return;
 
-        isCaller = false;
-        callId = currentIncomingCallId;
+      const { data, id } = currentIncoming;
+      const callRef = ref(db, `rooms/${room}/calls/${id}`);
+      const callerCandidatesRef = ref(db, `rooms/${room}/calls/${id}/callerCandidates`);
+      const calleeCandidatesRef = ref(db, `rooms/${room}/calls/${id}/calleeCandidates`);
 
-        const callRef = ref(db, `rooms/${room}/calls/${callId}`);
-        const callerCandidatesRef = ref(db, `rooms/${room}/calls/${callId}/callerCandidates`);
-        const calleeCandidatesRef = ref(db, `rooms/${room}/calls/${callId}/calleeCandidates`);
+      currentRole = "callee";
+      callId = id;
 
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const stopMeter = setupAudioMeter(localStream);
+      await getLocalAudio();
+      await createPeerConnection();
 
-        await createPeerConnection();
-        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+      localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 
-        pc.onicecandidate = async (event) => {
-          if (event.candidate) {
-            await push(calleeCandidatesRef, event.candidate.toJSON());
-          }
-        };
+      pc.onicecandidate = async (event) => {
+        if (event.candidate) {
+          await push(calleeCandidatesRef, event.candidate.toJSON());
+        }
+      };
 
-        onChildAdded(callerCandidatesRef, async (snap) => {
-          const candidate = snap.val();
-          if (!candidate || !pc) return;
-          try {
-            await pc.addIceCandidate(new RTCIceCandidate(candidate));
-          } catch (e) {
-            console.error(e);
-          }
-        });
+      onChildAdded(callerCandidatesRef, async (snap) => {
+        const candidate = snap.val();
+        if (!candidate || !pc) return;
+        try {
+          await pc.addIceCandidate(new RTCIceCandidate(candidate));
+        } catch (err) {
+          console.error(err);
+        }
+      });
 
-        await pc.setRemoteDescription(new RTCSessionDescription(currentIncomingCallData.offer));
-        const answer = await pc.createAnswer();
-        await pc.setLocalDescription(answer);
+      await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
 
-        await update(callRef, {
-          answer: {
-            type: answer.type,
-            sdp: answer.sdp
-          },
-          status: "connected"
-        });
+      await update(callRef, {
+        answer: {
+          type: answer.type,
+          sdp: answer.sdp
+        },
+        status: "connected"
+      });
 
-        hideIncomingCall();
-        showActiveCall(`مكالمة مع: ${currentIncomingCallData.callerName || "مستخدم"}`);
-        callStatus.textContent = "المكالمة متصلة";
-      } catch (err) {
-        console.error(err);
-        alert("تعذر قبول المكالمة");
-        endCall(false);
-      }
+      hideIncoming();
+      showActive(`المتصل: ${data.callerName || "مستخدم"}`);
+      setStatus("المكالمة متصلة");
     }
 
-    function endCall(updateRemote = true) {
-      try {
-        if (pc) {
-          pc.close();
-          pc = null;
-        }
-        if (localStream) {
-          localStream.getTracks().forEach(t => t.stop());
-          localStream = null;
-        }
-        remoteAudio.srcObject = null;
-        hideIncomingCall();
-        hideActiveCall();
-        if (updateRemote && callId) {
-          update(ref(db, `rooms/${room}/calls/${callId}`), { status: "ended" }).catch(() => {});
-        }
-      } catch {}
+    async function rejectIncomingCall() {
+      if (!currentIncoming) return;
+      const { id } = currentIncoming;
+
+      await update(ref(db, `rooms/${room}/calls/${id}`), {
+        status: "rejected"
+      });
+
+      hideIncoming();
+      setStatus("تم رفض المكالمة");
+    }
+
+    async function hangup() {
+      if (callId) {
+        try {
+          await update(ref(db, `rooms/${room}/calls/${callId}`), {
+            status: "ended"
+          });
+        } catch {}
+      }
+
+      if (pc) {
+        pc.close();
+        pc = null;
+      }
+
+      if (localStream) {
+        localStream.getTracks().forEach(t => t.stop());
+        localStream = null;
+      }
+
+      remoteAudio.srcObject = null;
       callId = null;
-      currentIncomingCallId = null;
-      currentIncomingCallData = null;
-      isCaller = false;
+      currentRole = null;
+      hideActive();
+      hideIncoming();
+      setStatus("تم إنهاء المكالمة");
     }
 
-    rejectCallBtn.addEventListener("click", () => {
-      if (currentIncomingCallId) {
-        update(ref(db, `rooms/${room}/calls/${currentIncomingCallId}`), { status: "rejected" }).catch(() => {});
-      }
-      hideIncomingCall();
-      currentIncomingCallId = null;
-      currentIncomingCallData = null;
-    });
+    function toggleMute() {
+      if (!localStream) return;
+      isMuted = !isMuted;
+      localStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
+      muteBtn.textContent = isMuted ? "إلغاء الكتم" : "كتم الميكروفون";
+    }
 
-    acceptCallBtn.addEventListener("click", acceptIncomingCall);
-    hangupBtn.addEventListener("click", () => endCall(true));
+    joinBtn.addEventListener("click", joinRoom);
+    callBtn.addEventListener("click", startOutgoingCall);
+    acceptBtn.addEventListener("click", acceptIncomingCall);
+    rejectBtn.addEventListener("click", rejectIncomingCall);
+    hangupBtn.addEventListener("click", hangup);
+    muteBtn.addEventListener("click", toggleMute);
 
-    onChildAdded(callsRef, (snap) => {
-      const data = snap.val();
-      const id = snap.key;
-      if (!data || data.status === "ended") return;
-
-      if (data.targetId === userId && data.callerId !== userId && data.status === "ringing") {
-        showIncomingCall(data.callerName, id, data);
-      }
-    });
-
-    window.addEventListener("offline", () => {
-      typingEl.textContent = "لا يوجد اتصال بالإنترنت";
-    });
-
-    initUser();
+    if (userName) nameInput.value = userName;
+    if (room) roomInput.value = room;
   </script>
 </body>
 </html>
