@@ -6,6 +6,9 @@
     <title>اسهل حل | روم الدردشة</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -132,7 +135,7 @@
             background: var(--primary);
             color: white;
         }
-        /* هيرو أصغر */
+        /* هيرو */
         .hero {
             padding: 30px 0 20px;
             text-align: center;
@@ -149,64 +152,68 @@
             max-width: 600px;
             margin: 0 auto;
         }
-        /* بطاقات أقل ارتفاعاً */
+        /* بطاقات أفقية من اليمين إلى اليسار (horizontal scroll) */
         .features {
             padding: 20px 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
         }
         .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-        }
-        @media (max-width: 700px) {
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        @media (max-width: 450px) {
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            direction: rtl; /* من اليمين إلى اليسار */
+            justify-content: flex-start;
+            padding: 5px 5px 10px; /* لإظهار الظل دون قص */
         }
         .feature-card {
             background: var(--card-bg);
             backdrop-filter: blur(8px);
-            border-radius: 30px;
-            padding: 20px 15px;
+            border-radius: 24px;
+            padding: 20px 12px;
             text-align: center;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
             transition: 0.2s;
+            /* شكل عرضي: نسبة العرض إلى الارتفاع 3:2 */
+            flex: 0 0 auto;
+            width: 160px;
+            aspect-ratio: 3 / 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         .feature-card:hover {
             transform: translateY(-3px);
             border-color: var(--primary);
         }
         .feature-icon {
-            width: 60px;
-            height: 60px;
+            width: 55px;
+            height: 55px;
             background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 10px;
+            margin: 0 auto 8px;
         }
         .feature-icon i {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: white;
         }
         .feature-card h3 {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             color: var(--dark);
         }
         .feature-card p {
             color: var(--gray);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
-        /* كلمة اليوم مدمجة */
+        /* كلمة اليوم */
         .tip-card {
             background: var(--card-bg);
             backdrop-filter: blur(8px);
@@ -241,7 +248,7 @@
             color: var(--gray);
             font-size: 0.9rem;
         }
-        /* مربع الموافقة أصغر */
+        /* مربع الموافقة */
         .terms-agreement {
             background: var(--card-bg);
             backdrop-filter: blur(8px);
@@ -282,7 +289,7 @@
             align-items: center;
             gap: 4px;
         }
-        /* زر الدخول معطل افتراضياً */
+        /* زر الدخول */
         .enter-section {
             text-align: center;
             margin: 10px 0 20px;
@@ -310,7 +317,7 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 16px rgba(67, 97, 238, 0.4);
         }
-        /* فوتر مضغوط */
+        /* فوتر */
         .footer {
             background: var(--card-bg);
             backdrop-filter: blur(8px);
@@ -409,7 +416,7 @@
                 <label for="agreeTerms">أوافق على <a href="terms.html" target="_blank">الشروط</a></label>
             </div>
             <div class="terms-updated">
-                <i class="fas fa-calendar-alt"></i> آخر تحديث: 2026-03-19
+                <i class="fas fa-calendar-alt"></i> آخر تحديث: 2026-03-20
             </div>
         </div>
     </div>
@@ -447,6 +454,20 @@
     </footer>
 
     <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+            authDomain: "zio3-8ffdd.firebaseapp.com",
+            databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+            projectId: "zio3-8ffdd",
+            storageBucket: "zio3-8ffdd.firebasestorage.app",
+            messagingSenderId: "560939348415",
+            appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+            measurementId: "G-CVN2B2D0RD"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const analytics = firebase.analytics();
+
         // الوضع الليلي
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
@@ -470,7 +491,7 @@
             }
         });
 
-        // تفعيل زر الدخول عند الموافقة على الشروط
+        // تفعيل زر الدخول
         const agreeCheckbox = document.getElementById('agreeTerms');
         const startBtn = document.getElementById('startChatBtn');
 
@@ -484,7 +505,6 @@
             }
         });
 
-        // الانتقال إلى login.html عند الضغط مع الموافقة
         startBtn.addEventListener('click', function() {
             if (agreeCheckbox.checked) {
                 window.location.href = 'login.html';
