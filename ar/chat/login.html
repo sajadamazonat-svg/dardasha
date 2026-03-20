@@ -3,28 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>اسهل حل | دخول</title>
+    <title>دخول - اسهل حل</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         :root {
             --primary: #4361ee;
             --primary-dark: #2c3e9e;
             --primary-light: #6c7ffa;
             --secondary: #06d6a0;
-            --secondary-dark: #05b386;
             --accent-1: #ff6b6b;
             --accent-2: #ffb703;
-            --accent-3: #a463f5;
             --dark: #1e1e2f;
             --light: #f4f7fb;
             --gray: #6b7280;
@@ -40,10 +32,8 @@
             --primary-dark: #4054b2;
             --primary-light: #8a9cff;
             --secondary: #06d6a0;
-            --secondary-dark: #05b386;
             --accent-1: #ff8a8a;
             --accent-2: #ffca3a;
-            --accent-3: #b47aff;
             --dark: #f0f0fa;
             --light: #2a2a3c;
             --gray: #a0a0b0;
@@ -62,13 +52,7 @@
             flex-direction: column;
             transition: background 0.3s, color 0.3s;
         }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 15px;
-            width: 100%;
-        }
-        /* هيدر مضغوط */
+        .container { max-width: 500px; margin: 0 auto; padding: 0 15px; width: 100%; }
         .header {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
@@ -95,10 +79,7 @@
             color: var(--primary);
             text-decoration: none;
         }
-        .logo i {
-            color: var(--primary-dark);
-            font-size: 1.7rem;
-        }
+        .logo i { color: var(--primary-dark); font-size: 1.7rem; }
         .nav-links {
             display: flex;
             align-items: center;
@@ -115,9 +96,7 @@
             gap: 3px;
             font-size: 0.9rem;
         }
-        .nav-links a:hover {
-            color: var(--primary);
-        }
+        .nav-links a:hover { color: var(--primary); }
         .theme-toggle-btn {
             background: transparent;
             border: 2px solid var(--primary);
@@ -132,45 +111,30 @@
             transition: 0.2s;
             font-size: 1rem;
         }
-        .theme-toggle-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-        /* بطاقة الدخول (من الصفحة المرسلة) */
+        .theme-toggle-btn:hover { background: var(--primary); color: white; }
         .login-card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border-radius: 36px;
-            padding: 28px 20px;
-            box-shadow: var(--shadow);
+            backdrop-filter: blur(8px);
+            border-radius: 30px;
+            padding: 30px;
+            margin: 40px 0;
             border: 1px solid var(--border);
-            text-align: center;
-            max-width: 420px;
-            margin: 40px auto;
+            box-shadow: var(--shadow);
         }
-        .login-logo {
-            font-size: 2.2rem;
-            font-weight: 800;
+        .login-card h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
             color: var(--primary);
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            margin-bottom: 10px;
         }
-        .login-logo i { font-size: 2rem; color: var(--primary-dark); }
-        .tagline {
+        .login-card p {
             color: var(--gray);
-            margin-bottom: 24px;
-            font-size: 0.9rem;
+            margin-bottom: 20px;
         }
-        .input-group {
-            margin-bottom: 16px;
-            text-align: right;
-        }
-        .input-group label {
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
             font-weight: 600;
             color: var(--dark);
             font-size: 0.85rem;
@@ -202,16 +166,12 @@
             font-size: 0.95rem;
         }
         .input-wrapper input:focus { outline: none; }
-        .input-wrapper input::placeholder {
-            color: var(--gray);
-            opacity: 0.7;
-        }
         .random-room {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            margin-top: 6px;
+            margin-top: 8px;
             color: var(--primary);
             cursor: pointer;
             font-size: 0.85rem;
@@ -247,11 +207,11 @@
             min-height: 20px;
         }
         .info-message {
+            text-align: center;
             color: var(--gray);
             font-size: 0.8rem;
-            margin-top: 12px;
+            margin-top: 16px;
         }
-        /* فوتر */
         .footer {
             background: var(--card-bg);
             backdrop-filter: blur(8px);
@@ -290,91 +250,57 @@
 <body>
     <header class="header">
         <div class="container header-content">
-            <a href="index.html" class="logo">
-                <i class="fas fa-comment-dots"></i>
-                <span>اسهل حل</span>
-            </a>
+            <a href="welcome.html" class="logo"><i class="fas fa-comment-dots"></i><span>اسهل حل</span></a>
             <nav class="nav-links">
                 <a href="help.html"><i class="fas fa-question-circle"></i> المساعدة</a>
                 <a href="about.html"><i class="fas fa-info-circle"></i> حول</a>
-                <div class="theme-toggle-btn" id="themeToggle">
-                    <i class="fas fa-sun" id="themeIcon"></i>
-                </div>
+                <a href="settings.html"><i class="fas fa-cog"></i> الإعدادات</a>
+                <div class="theme-toggle-btn" id="themeToggle"><i class="fas fa-sun" id="themeIcon"></i></div>
             </nav>
         </div>
     </header>
 
     <div class="container">
         <div class="login-card">
-            <div class="login-logo">
-                <i class="fas fa-comment-dots"></i>
-                <span>اسهل حل</span>
-            </div>
-            <div class="tagline">دردشة حقيقية، بسيطة وآمنة</div>
-
-            <div class="input-group">
-                <label>اسم المستخدم (اختياري)</label>
+            <h2>مرحباً بك</h2>
+            <p>اختر اسماً مستعاراً ورقم الغرفة للدخول إلى الدردشة</p>
+            <div class="form-group">
+                <label>الاسم المستعار (اختياري)</label>
                 <div class="input-wrapper">
                     <i class="fas fa-user"></i>
-                    <input type="text" id="username" placeholder="سيتم توليد اسم تلقائي" autocomplete="off">
+                    <input type="text" id="nickname" placeholder="سيتم توليد اسم تلقائي">
                 </div>
             </div>
-
-            <div class="input-group">
-                <label>رقم الغرفة</label>
+            <div class="form-group">
+                <label>رقم الغرفة (اختياري)</label>
                 <div class="input-wrapper">
                     <i class="fas fa-door-open"></i>
-                    <input type="text" id="room" placeholder="أدخل 5 أرقام" maxlength="5" pattern="\d*" inputmode="numeric">
+                    <input type="text" id="room" placeholder="سيتم توليد غرفة عشوائية">
                 </div>
                 <div class="random-room" id="randomRoomBtn">
                     <i class="fas fa-dice"></i>
                     <span>إنشاء غرفة عشوائية (5 أرقام)</span>
                 </div>
             </div>
-
-            <button class="enter-btn" id="enterBtn">
-                <i class="fas fa-sign-in-alt"></i>
-                دخول
-            </button>
-
+            <button class="enter-btn" id="enterBtn"><i class="fas fa-sign-in-alt"></i> دخول</button>
             <div class="error-message" id="errorMessage"></div>
-
-            <div class="info-message">
-                <i class="fas fa-lock"></i> جميع المحادثات مشفرة
-            </div>
+            <div class="info-message"><i class="fas fa-lock"></i> جميع المحادثات مشفرة</div>
         </div>
     </div>
 
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
-                <div class="footer-col">
-                    <h4>اسهل حل</h4>
-                    <p style="color: var(--gray); font-size:0.8rem;">دردشة سريعة وآمنة</p>
-                </div>
-                <div class="footer-col">
-                    <h4>الدعم</h4>
-                    <a href="help.html">المساعدة</a>
-                    <a href="about.html">حول</a>
-                </div>
-                <div class="footer-col">
-                    <h4>القانوني</h4>
-                    <a href="privacy.html">الخصوصية</a>
-                    <a href="terms.html">الشروط</a>
-                </div>
-                <div class="footer-col">
-                    <h4>روابط</h4>
-                    <a href="login.html">الدخول</a>
-                </div>
+                <div class="footer-col"><h4>اسهل حل</h4><p style="color: var(--gray); font-size:0.8rem;">دردشة سريعة وآمنة</p></div>
+                <div class="footer-col"><h4>الدعم</h4><a href="help.html">المساعدة</a><a href="about.html">حول</a></div>
+                <div class="footer-col"><h4>القانوني</h4><a href="privacy.html">الخصوصية</a><a href="terms.html">الشروط</a></div>
+                <div class="footer-col"><h4>روابط</h4><a href="login.html">الدخول</a></div>
             </div>
-            <div class="copyright">
-                <p>© 2026 اسهل حل</p>
-            </div>
+            <div class="copyright"><p>© 2026 اسهل حل</p></div>
         </div>
     </footer>
 
     <script>
-        // Firebase تهيئة
         const firebaseConfig = {
             apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
             authDomain: "zio3-8ffdd.firebaseapp.com",
@@ -388,7 +314,6 @@
         firebase.initializeApp(firebaseConfig);
         const analytics = firebase.analytics();
 
-        // الوضع الليلي (زر منفصل في الهيدر)
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
         if (localStorage.getItem('darkMode') === 'true') {
@@ -411,22 +336,19 @@
             }
         });
 
-        // عناصر الإدخال
-        const usernameInput = document.getElementById('username');
+        const nicknameInput = document.getElementById('nickname');
         const roomInput = document.getElementById('room');
         const enterBtn = document.getElementById('enterBtn');
-        const errorMessage = document.getElementById('errorMessage');
         const randomRoomBtn = document.getElementById('randomRoomBtn');
+        const errorMsg = document.getElementById('errorMessage');
 
-        // توليد رقم غرفة عشوائي مكون من 5 أرقام
         function generateRandomRoom() {
             return Math.floor(10000 + Math.random() * 90000).toString();
         }
-
-        // توليد اسم عشوائي (مثل "زائر1234")
-        function generateRandomUsername() {
+        function generateRandomName() {
+            const prefixes = ['زائر', 'مسافر', 'عابر', 'صديق', 'مجهول'];
             const randomNum = Math.floor(1000 + Math.random() * 9000);
-            return `زائر${randomNum}`;
+            return prefixes[Math.floor(Math.random() * prefixes.length)] + randomNum;
         }
 
         randomRoomBtn.addEventListener('click', () => {
@@ -434,40 +356,33 @@
         });
 
         enterBtn.addEventListener('click', () => {
-            let username = usernameInput.value.trim();
-            const room = roomInput.value.trim();
+            let nickname = nicknameInput.value.trim();
+            let room = roomInput.value.trim();
 
-            // إذا لم يدخل المستخدم اسماً، نولد اسماً عشوائياً
-            if (!username) {
-                username = generateRandomUsername();
+            if (!nickname) {
+                nickname = generateRandomName();
+                errorMsg.textContent = `تم توليد اسم: ${nickname}`;
+                setTimeout(() => { errorMsg.textContent = ''; }, 3000);
             }
-
             if (!room) {
-                errorMessage.textContent = 'الرجاء إدخال رقم الغرفة';
-                return;
+                room = generateRandomRoom();
+                errorMsg.textContent = `تم إنشاء غرفة جديدة: ${room}`;
+                setTimeout(() => { errorMsg.textContent = ''; }, 3000);
+            } else if (!/^\d{5}$/.test(room)) {
+                errorMsg.textContent = 'تنبيه: رقم الغرفة الأفضل أن يكون 5 أرقام.';
+                setTimeout(() => { errorMsg.textContent = ''; }, 3000);
             }
 
-            // التحقق من أن رقم الغرفة مكون من 5 أرقام
-            if (!/^\d{5}$/.test(room)) {
-                errorMessage.textContent = 'رقم الغرفة يجب أن يكون 5 أرقام';
-                return;
-            }
-
-            // حفظ البيانات في localStorage (متوافق مع room.html)
-            localStorage.setItem('nickname', username);
-            localStorage.setItem('userColor', '#4361ee'); // لون افتراضي
+            localStorage.setItem('nickname', nickname);
+            localStorage.setItem('userColor', '#4361ee');
             localStorage.setItem('chatRoom', room);
 
-            // الانتقال إلى صفحة الدردشة (room.html مع معرف الغرفة)
-            window.location.href = `room.html?room=${room}`;
+            window.location.href = `chat.html?room=${encodeURIComponent(room)}`;
         });
 
-        // السماح بالدخول بالضغط على Enter
-        [usernameInput, roomInput].forEach(input => {
+        [nicknameInput, roomInput].forEach(input => {
             input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    enterBtn.click();
-                }
+                if (e.key === 'Enter') enterBtn.click();
             });
         });
     </script>
