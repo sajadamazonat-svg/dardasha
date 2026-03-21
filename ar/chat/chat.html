@@ -997,58 +997,6 @@
             display: none;
             font-size: 0.9rem;
         }
-
-        .login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 30000;
-            backdrop-filter: blur(8px);
-        }
-
-        .login-card {
-            background: var(--card-bg);
-            border-radius: 48px;
-            padding: 24px;
-            width: 90%;
-            max-width: 350px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            border: 1px solid var(--border);
-            text-align: center;
-        }
-
-        .login-card h3 {
-            margin-bottom: 20px;
-            color: var(--primary);
-        }
-
-        .login-card input {
-            width: 100%;
-            padding: 12px 16px;
-            margin-bottom: 12px;
-            border: 1px solid var(--border);
-            border-radius: 40px;
-            background: var(--light);
-            color: var(--dark);
-            font-size: 1rem;
-        }
-
-        .login-card button {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 40px;
-            font-size: 1rem;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -1182,15 +1130,6 @@
     </div>
 
     <audio id="ring" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto" loop></audio>
-
-    <div id="login-modal" style="display: none;" class="login-overlay">
-        <div class="login-card">
-            <h3><i class="fas fa-comment"></i> اسهل حل</h3>
-            <input type="text" id="login-room" placeholder="رقم الغرفة (مثال: 123)">
-            <input type="text" id="login-name" placeholder="اسم المستخدم">
-            <button id="login-submit">دخول</button>
-        </div>
-    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -1918,7 +1857,10 @@
             document.removeEventListener('mousemove', resetInactivityTimer);
             document.removeEventListener('keypress', resetInactivityTimer);
             currentRoom = currentUser = userId = messagesRef = null;
-            document.getElementById('login-modal').style.display = 'flex';
+            // إعادة الدخول ببيانات عشوائية جديدة
+            const newRoom = Math.floor(1000 + Math.random() * 9000).toString();
+            const newUser = "زائر" + Math.floor(Math.random() * 10000);
+            enterChat(newRoom, newUser);
         }
         function confirmLeave() { confirmDialog.classList.add('active'); }
         confirmYes.addEventListener('click', () => { confirmDialog.classList.remove('active'); leaveRoom(); });
@@ -2146,18 +2088,10 @@
                 }
             }
             if (!room || !user) {
-                document.getElementById('login-modal').style.display = 'flex';
-                document.getElementById('login-submit').onclick = () => {
-                    const roomVal = document.getElementById('login-room').value.trim();
-                    const userVal = document.getElementById('login-name').value.trim();
-                    if (roomVal && userVal) {
-                        localStorage.setItem('chatRoom', roomVal);
-                        localStorage.setItem('chatUser', userVal);
-                        window.location.reload();
-                    } else {
-                        alert('يرجى إدخال رقم الغرفة واسم المستخدم');
-                    }
-                };
+                // توليد رقم غرفة عشوائي واسم مستخدم عشوائي
+                const randomRoom = Math.floor(1000 + Math.random() * 9000).toString();
+                const randomUser = "زائر" + Math.floor(Math.random() * 10000);
+                await enterChat(randomRoom, randomUser);
                 return;
             }
             localStorage.removeItem('chatRoom');
