@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -268,14 +269,14 @@
                 <label>الاسم المستعار (اختياري)</label>
                 <div class="input-wrapper">
                     <i class="fas fa-user"></i>
-                    <input type="text" id="nickname" placeholder="سيتم توليد اسم تلقائي">
+                    <input type="text" id="nickname" placeholder="سيتم توليد اسم تلقائي" maxlength="30">
                 </div>
             </div>
             <div class="form-group">
                 <label>رقم الغرفة (اختياري)</label>
                 <div class="input-wrapper">
                     <i class="fas fa-door-open"></i>
-                    <input type="text" id="room" placeholder="سيتم توليد غرفة عشوائية">
+                    <input type="text" id="room" placeholder="سيتم توليد غرفة عشوائية" maxlength="20">
                 </div>
                 <div class="random-room" id="randomRoomBtn">
                     <i class="fas fa-dice"></i>
@@ -301,6 +302,7 @@
     </footer>
 
     <script>
+        // Firebase Config (نفس الإعدادات الموجودة في chat.html)
         const firebaseConfig = {
             apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
             authDomain: "zio3-8ffdd.firebaseapp.com",
@@ -314,6 +316,7 @@
         firebase.initializeApp(firebaseConfig);
         const analytics = firebase.analytics();
 
+        // Theme Toggle
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
         if (localStorage.getItem('darkMode') === 'true') {
@@ -336,12 +339,14 @@
             }
         });
 
+        // DOM Elements
         const nicknameInput = document.getElementById('nickname');
         const roomInput = document.getElementById('room');
         const enterBtn = document.getElementById('enterBtn');
         const randomRoomBtn = document.getElementById('randomRoomBtn');
         const errorMsg = document.getElementById('errorMessage');
 
+        // Helper functions
         function generateRandomRoom() {
             return Math.floor(10000 + Math.random() * 90000).toString();
         }
@@ -350,36 +355,55 @@
             const randomNum = Math.floor(1000 + Math.random() * 9000);
             return prefixes[Math.floor(Math.random() * prefixes.length)] + randomNum;
         }
+        function sanitizeInput(str) {
+            // منع الأحرف الخطيرة التي قد تسبب مشاكل في Firebase
+            return str.replace(/[.#$[\]]/g, '_').trim();
+        }
 
+        // Random room button
         randomRoomBtn.addEventListener('click', () => {
             roomInput.value = generateRandomRoom();
         });
 
-        enterBtn.addEventListener('click', () => {
+        // Enter button
+        enterBtn.addEventListener('click', async () => {
             let nickname = nicknameInput.value.trim();
             let room = roomInput.value.trim();
 
+            // توليد اسم تلقائي إذا كان فارغاً
             if (!nickname) {
                 nickname = generateRandomName();
                 errorMsg.textContent = `تم توليد اسم: ${nickname}`;
-                setTimeout(() => { errorMsg.textContent = ''; }, 3000);
+                setTimeout(() => errorMsg.textContent = '', 3000);
+            } else {
+                // تنظيف الاسم من الرموز غير المسموحة
+                nickname = sanitizeInput(nickname);
+                if (nickname.length > 30) nickname = nickname.substring(0, 30);
             }
+
+            // توليد غرفة تلقائية إذا كانت فارغة
             if (!room) {
                 room = generateRandomRoom();
                 errorMsg.textContent = `تم إنشاء غرفة جديدة: ${room}`;
-                setTimeout(() => { errorMsg.textContent = ''; }, 3000);
-            } else if (!/^\d{5}$/.test(room)) {
-                errorMsg.textContent = 'تنبيه: رقم الغرفة الأفضل أن يكون 5 أرقام.';
-                setTimeout(() => { errorMsg.textContent = ''; }, 3000);
+                setTimeout(() => errorMsg.textContent = '', 3000);
+            } else {
+                room = sanitizeInput(room);
+                // التحقق من أن رقم الغرفة لا يحتوي على مسافات أو رموز خطيرة
+                if (room.includes(' ') || room.length === 0) {
+                    errorMsg.textContent = 'رقم الغرفة غير صالح، يرجى استخدام أرقام أو حروف فقط بدون مسافات.';
+                    return;
+                }
             }
 
-            localStorage.setItem('nickname', nickname);
-            localStorage.setItem('userColor', '#4361ee');
-            localStorage.setItem('chatRoom', room);
+            // تخزين البيانات في sessionStorage لتكون متاحة في صفحة الدردشة
+            sessionStorage.setItem('chatRoom', room);
+            sessionStorage.setItem('chatUser', nickname);
 
-            window.location.href = `chat.html?room=${encodeURIComponent(room)}`;
+            // الانتقال إلى صفحة الدردشة
+            window.location.href = `chat.html?room=${encodeURIComponent(room)}&user=${encodeURIComponent(nickname)}`;
         });
 
+        // دعم الضغط على Enter
         [nicknameInput, roomInput].forEach(input => {
             input.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') enterBtn.click();
