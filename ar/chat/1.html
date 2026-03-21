@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-<title>غرفة صوتية محسنة</title>
+<title>غرفة صوتية - نسخة مستقرة</title>
 <style>
   :root{
     --bg:#0f172a;
@@ -211,7 +211,7 @@
 <body>
 <div class="wrap">
   <div class="topbar">
-    <h1>غرفة صوتية محسنة</h1>
+    <h1>غرفة صوتية</h1>
     <div class="badge">نسخة موبايل + WebRTC + Firebase</div>
   </div>
 
@@ -501,7 +501,7 @@ async function startMic(){
     state.localStream = stream;
     audioStateEl.textContent = 'يعمل';
     setState('الميكروفون جاهز', 'ok');
-    setStatus('المicrophone مفعّل');
+    setStatus('الميكروفون مفعّل');
     log('تم تشغيل الميكروفون');
     setButtons();
 
@@ -749,7 +749,7 @@ acceptBtn.onclick = async () => {
   await acceptCall(snap.val());
 };
 
-rejectBtn.onclick = async () => {
+rejectBtn.onclick = () => {
   hideIncoming();
   setState('تم الرفض', 'bad');
   setStatus('تم رفض المكالمة الواردة');
