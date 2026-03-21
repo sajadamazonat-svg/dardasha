@@ -1,89 +1,569 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Call Room</title>
-<style>
-body { font-family: Arial; text-align: center; }
-#chat { height: 200px; overflow-y: scroll; border: 1px solid #ccc; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Peer Chat + Call (No Server)</title>
+  <style>
+    :root{
+      --bg:#07111f;
+      --card:#0f1b2e;
+      --card2:#14233a;
+      --text:#eaf1ff;
+      --muted:#93a7c7;
+      --accent:#4f8cff;
+      --good:#23c483;
+      --danger:#ff5f73;
+      --border:rgba(255,255,255,.08);
+      --shadow:0 14px 35px rgba(0,0,0,.28);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100svh;
+      background:radial-gradient(circle at top, #18305a 0%, var(--bg) 48%, #050913 100%);
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      padding:14px;
+    }
+    .app{
+      max-width:1100px;
+      margin:0 auto;
+      display:grid;
+      gap:14px;
+    }
+    .top{
+      background:rgba(15,27,46,.92);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .top h1{
+      margin:0 0 4px;
+      font-size:1.05rem;
+    }
+    .top p{
+      margin:0;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+    .status{
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .grid{
+      display:grid;
+      gap:14px;
+    }
+    @media (min-width: 960px){
+      .grid{
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .card{
+      background:rgba(15,27,46,.92);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+      backdrop-filter: blur(10px);
+    }
+    .title{
+      margin:0 0 12px;
+      font-size:1rem;
+    }
+    .note{
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.5;
+      margin:0 0 14px;
+    }
+    .row{
+      display:grid;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    input, textarea, button{
+      width:100%;
+      border:none;
+      outline:none;
+      border-radius:16px;
+      padding:14px 16px;
+      font-size:1rem;
+    }
+    input, textarea{
+      background:var(--card2);
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+    textarea{
+      min-height:160px;
+      resize:vertical;
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:.92rem;
+      line-height:1.45;
+    }
+    input::placeholder, textarea::placeholder{
+      color:#8194b8;
+    }
+    .btns{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    button{
+      background:var(--accent);
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+      transition:.15s transform ease, .15s opacity ease;
+    }
+    button:active{ transform:scale(.98); }
+    button.secondary{ background:#243754; }
+    button.good{ background:var(--good); }
+    button.danger{ background:var(--danger); }
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    .split{
+      display:grid;
+      gap:14px;
+    }
+    .box{
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--border);
+      border-radius:18px;
+      overflow:hidden;
+    }
+    .messages{
+      min-height:320px;
+      max-height:42vh;
+      overflow:auto;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .msg{
+      max-width:88%;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--border);
+      word-break:break-word;
+    }
+    .msg.me{
+      align-self:flex-end;
+      background:rgba(79,140,255,.18);
+      border-color:rgba(79,140,255,.35);
+    }
+    .meta{
+      font-size:.78rem;
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+    .chatbar{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+      padding:12px;
+      border-top:1px solid var(--border);
+    }
+    .remoteAudio{
+      width:100%;
+      margin-top:12px;
+    }
+    .small{
+      color:var(--muted);
+      font-size:.88rem;
+      line-height:1.45;
+      margin-top:10px;
+    }
+    .pill{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      color:var(--muted);
+      font-size:.8rem;
+      margin-bottom:10px;
+    }
+    .divider{
+      height:1px;
+      background:var(--border);
+      margin:14px 0;
+    }
+    .inline{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .inline button{
+      width:auto;
+      flex:1;
+      min-width:140px;
+    }
+  </style>
 </head>
 <body>
+  <div class="app">
+    <div class="top">
+      <div>
+        <h1>Peer Chat + Audio Call</h1>
+        <p>Mobile-friendly WebRTC app with no backend server.</p>
+      </div>
+      <div class="status" id="status">Idle</div>
+    </div>
 
-<h2>Join Room</h2>
-<input id="roomId" placeholder="Room ID">
-<button onclick="joinRoom()">Join</button>
+    <div class="grid">
+      <div class="card">
+        <h2 class="title">Offer / Answer</h2>
+        <p class="note">
+          One side presses <b>Create Offer</b>, copies the code, and sends it to the other side.
+          The other side pastes it, presses <b>Create Answer</b>, then sends the answer back.
+        </p>
 
-<div id="app" style="display:none;">
-  <h3>Room: <span id="roomName"></span></h3>
+        <div class="row">
+          <input id="nameInput" placeholder="Your name" value="Guest" />
+        </div>
 
-  <button onclick="startCall()">Start Call</button>
+        <div class="btns">
+          <button class="good" id="createOfferBtn">Create Offer</button>
+          <button class="secondary" id="applyAnswerBtn">Apply Answer</button>
+        </div>
 
-  <h4>Chat</h4>
-  <div id="chat"></div>
-  <input id="msg" placeholder="Message">
-  <button onclick="sendMsg()">Send</button>
-</div>
+        <div class="divider"></div>
 
-<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+        <div class="row">
+          <textarea id="localDesc" placeholder="Your local offer/answer will appear here..."></textarea>
+        </div>
 
-<script>
-let peer = new Peer();
-let conn;
-let call;
-let localStream;
+        <div class="inline">
+          <button class="secondary" id="copyLocalBtn">Copy My Code</button>
+          <button class="danger" id="hangupBtn" disabled>Hang Up</button>
+        </div>
 
-function joinRoom() {
-  let room = document.getElementById("roomId").value;
-  document.getElementById("roomName").innerText = room;
-  document.getElementById("app").style.display = "block";
+        <div class="divider"></div>
 
-  peer.on('open', id => {
-    console.log("My ID:", id);
-  });
+        <div class="pill">Remote code</div>
+        <div class="row">
+          <textarea id="remoteDesc" placeholder="Paste the other person's code here..."></textarea>
+        </div>
 
-  peer.on('connection', connection => {
-    conn = connection;
-    conn.on('data', data => addMsg("Friend: " + data));
-  });
+        <button class="good" id="createAnswerBtn">Create Answer</button>
 
-  peer.on('call', incomingCall => {
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-      incomingCall.answer(stream);
-      incomingCall.on('stream', remoteStream => {
-        console.log("Connected");
+        <div class="small">
+          For stronger internet traversal you normally use STUN/TURN, but this version stays serverless.
+        </div>
+      </div>
+
+      <div class="split">
+        <div class="card">
+          <h2 class="title">Chat</h2>
+          <div class="box">
+            <div class="messages" id="messages"></div>
+            <div class="chatbar">
+              <input id="msgInput" placeholder="Type a message..." />
+              <button id="sendBtn" disabled>Send</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="title">Audio Call</h2>
+          <p class="note">Allow microphone access when prompted.</p>
+          <audio id="remoteAudio" class="remoteAudio" autoplay playsinline controls></audio>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const localDescEl = document.getElementById("localDesc");
+    const remoteDescEl = document.getElementById("remoteDesc");
+    const messagesEl = document.getElementById("messages");
+    const msgInput = document.getElementById("msgInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const createOfferBtn = document.getElementById("createOfferBtn");
+    const createAnswerBtn = document.getElementById("createAnswerBtn");
+    const applyAnswerBtn = document.getElementById("applyAnswerBtn");
+    const copyLocalBtn = document.getElementById("copyLocalBtn");
+    const hangupBtn = document.getElementById("hangupBtn");
+    const remoteAudio = document.getElementById("remoteAudio");
+    const nameInput = document.getElementById("nameInput");
+
+    let pc = null;
+    let dc = null;
+    let localStream = null;
+    let remoteStream = new MediaStream();
+    let currentRole = "";
+    let connected = false;
+    let myName = "Guest";
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function addMessage({ name, message, me = false, time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) }) {
+      const div = document.createElement("div");
+      div.className = "msg" + (me ? " me" : "");
+      div.innerHTML = `<div class="meta">${escapeHtml(name)} • ${escapeHtml(time)}</div><div>${escapeHtml(message)}</div>`;
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function updateConnectedState(isOn) {
+      connected = isOn;
+      sendBtn.disabled = !isOn;
+      hangupBtn.disabled = !pc;
+    }
+
+    function waitForIceGatheringComplete(peer) {
+      return new Promise((resolve) => {
+        if (peer.iceGatheringState === "complete") {
+          resolve();
+          return;
+        }
+        function check() {
+          if (peer.iceGatheringState === "complete") {
+            peer.removeEventListener("icegatheringstatechange", check);
+            resolve();
+          }
+        }
+        peer.addEventListener("icegatheringstatechange", check);
       });
+    }
+
+    async function ensureLocalAudio() {
+      if (localStream) return localStream;
+      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      return localStream;
+    }
+
+    function createPeer() {
+      pc = new RTCPeerConnection({
+        iceServers: [] // serverless mode
+      });
+
+      remoteStream = new MediaStream();
+      remoteAudio.srcObject = remoteStream;
+
+      pc.onicecandidate = (e) => {
+        if (e.candidate) {
+          // We wait for ICE gathering to finish before showing the final code.
+        }
+      };
+
+      pc.ontrack = (e) => {
+        e.streams[0].getTracks().forEach(track => remoteStream.addTrack(track));
+      };
+
+      pc.ondatachannel = (e) => {
+        dc = e.channel;
+        bindDataChannel();
+      };
+
+      pc.onconnectionstatechange = () => {
+        if (!pc) return;
+        if (pc.connectionState === "connected") {
+          setStatus("Connected");
+          updateConnectedState(true);
+          addMessage({ name: "System", message: "Connection established." });
+        } else if (pc.connectionState === "failed" || pc.connectionState === "disconnected" || pc.connectionState === "closed") {
+          if (pc.connectionState !== "closed") {
+            setStatus("Connection lost");
+          }
+          updateConnectedState(false);
+        }
+      };
+    }
+
+    function bindDataChannel() {
+      if (!dc) return;
+      dc.onopen = () => {
+        setStatus("Data channel open");
+        updateConnectedState(true);
+        addMessage({ name: "System", message: "Chat channel is ready." });
+      };
+      dc.onclose = () => {
+        updateConnectedState(false);
+      };
+      dc.onmessage = (e) => {
+        addMessage({ name: "Peer", message: e.data });
+      };
+    }
+
+    async function createOffer() {
+      try {
+        myName = nameInput.value.trim() || "Guest";
+        currentRole = "offerer";
+        hangUp(false);
+
+        createPeer();
+        dc = pc.createDataChannel("chat");
+        bindDataChannel();
+
+        const stream = await ensureLocalAudio();
+        stream.getAudioTracks().forEach(track => pc.addTrack(track, stream));
+
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        await waitForIceGatheringComplete(pc);
+
+        localDescEl.value = JSON.stringify(pc.localDescription, null, 2);
+        remoteDescEl.value = "";
+        setStatus("Offer ready — copy and send it");
+        addMessage({ name: "System", message: "Offer created. Send it to the other person." });
+        hangupBtn.disabled = false;
+      } catch (err) {
+        console.error(err);
+        setStatus("Error creating offer");
+        addMessage({ name: "System", message: "Could not create offer. Mic permission or browser support may be blocked." });
+      }
+    }
+
+    async function createAnswer() {
+      try {
+        myName = nameInput.value.trim() || "Guest";
+        currentRole = "answerer";
+        hangUp(false);
+
+        const remoteText = remoteDescEl.value.trim();
+        if (!remoteText) {
+          addMessage({ name: "System", message: "Paste the offer first." });
+          return;
+        }
+
+        createPeer();
+
+        const remoteDescription = JSON.parse(remoteText);
+        await pc.setRemoteDescription(remoteDescription);
+
+        const stream = await ensureLocalAudio();
+        stream.getAudioTracks().forEach(track => pc.addTrack(track, stream));
+
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        await waitForIceGatheringComplete(pc);
+
+        localDescEl.value = JSON.stringify(pc.localDescription, null, 2);
+        setStatus("Answer ready — send it back");
+        addMessage({ name: "System", message: "Answer created. Send it back to the other person." });
+        hangupBtn.disabled = false;
+      } catch (err) {
+        console.error(err);
+        setStatus("Error creating answer");
+        addMessage({ name: "System", message: "Could not create answer. Check the pasted offer." });
+      }
+    }
+
+    async function applyAnswer() {
+      try {
+        if (!pc) {
+          addMessage({ name: "System", message: "Create the offer first." });
+          return;
+        }
+        const remoteText = remoteDescEl.value.trim();
+        if (!remoteText) {
+          addMessage({ name: "System", message: "Paste the answer first." });
+          return;
+        }
+        const answer = JSON.parse(remoteText);
+        await pc.setRemoteDescription(answer);
+        setStatus("Answer applied");
+        addMessage({ name: "System", message: "Remote answer applied." });
+      } catch (err) {
+        console.error(err);
+        setStatus("Failed to apply answer");
+        addMessage({ name: "System", message: "Invalid answer code." });
+      }
+    }
+
+    function sendMessage() {
+      const message = msgInput.value.trim();
+      if (!message || !dc || dc.readyState !== "open") return;
+      dc.send(message);
+      addMessage({ name: myName, message, me: true });
+      msgInput.value = "";
+    }
+
+    function hangUp(keepNotice = true) {
+      if (dc) {
+        try { dc.close(); } catch {}
+        dc = null;
+      }
+      if (pc) {
+        try { pc.close(); } catch {}
+        pc = null;
+      }
+      if (localStream) {
+        localStream.getTracks().forEach(t => t.stop());
+        localStream = null;
+      }
+      remoteAudio.srcObject = null;
+      remoteStream = new MediaStream();
+      updateConnectedState(false);
+      if (keepNotice) {
+        setStatus("Idle");
+        addMessage({ name: "System", message: "Call ended." });
+      }
+    }
+
+    createOfferBtn.addEventListener("click", createOffer);
+    createAnswerBtn.addEventListener("click", createAnswer);
+    applyAnswerBtn.addEventListener("click", applyAnswer);
+    copyLocalBtn.addEventListener("click", async () => {
+      const text = localDescEl.value.trim();
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        setStatus("Code copied");
+      } catch {
+        localDescEl.select();
+        document.execCommand("copy");
+        setStatus("Code copied");
+      }
     });
-  });
-}
+    hangupBtn.addEventListener("click", () => hangUp(true));
+    sendBtn.addEventListener("click", sendMessage);
 
-function connectToUser(id) {
-  conn = peer.connect(id);
-  conn.on('data', data => addMsg("Friend: " + data));
-}
-
-function sendMsg() {
-  let msg = document.getElementById("msg").value;
-  conn.send(msg);
-  addMsg("Me: " + msg);
-}
-
-function addMsg(msg) {
-  let div = document.getElementById("chat");
-  div.innerHTML += "<p>" + msg + "</p>";
-}
-
-function startCall() {
-  navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-    localStream = stream;
-    let userId = prompt("Enter friend ID:");
-    call = peer.call(userId, stream);
-    call.on('stream', remoteStream => {
-      console.log("Call started");
+    msgInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMessage();
     });
-  });
-}
-</script>
 
+    remoteDescEl.addEventListener("paste", () => {
+      setTimeout(() => {
+        setStatus("Code pasted");
+      }, 0);
+    });
+
+    addMessage({
+      name: "System",
+      message: "Ready. Create an offer on one phone, then exchange the codes."
+    });
+  </script>
 </body>
 </html>
