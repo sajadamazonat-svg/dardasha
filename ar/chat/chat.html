@@ -997,6 +997,58 @@
             display: none;
             font-size: 0.9rem;
         }
+
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 30000;
+            backdrop-filter: blur(8px);
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border-radius: 48px;
+            padding: 24px;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .login-card h3 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            background: var(--light);
+            color: var(--dark);
+            font-size: 1rem;
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -1130,6 +1182,15 @@
     </div>
 
     <audio id="ring" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto" loop></audio>
+
+    <div id="login-modal" style="display: none;" class="login-overlay">
+        <div class="login-card">
+            <h3><i class="fas fa-comment"></i> اسهل حل</h3>
+            <input type="text" id="login-room" placeholder="رقم الغرفة (مثال: 123)">
+            <input type="text" id="login-name" placeholder="اسم المستخدم">
+            <button id="login-submit">دخول</button>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -1532,7 +1593,6 @@
                     if (pinnedMessages.has(msgId)) { pinnedMessages.delete(msgId); await set(ref(db, `rooms/${currentRoom}/pinned/${msgId}`), null); }
                     else { pinnedMessages.add(msgId); await set(ref(db, `rooms/${currentRoom}/pinned/${msgId}`), true); }
                     div.classList.toggle('pinned');
-                    // update badge
                     const usernameDiv = div.querySelector('.username');
                     if (usernameDiv) {
                         const existingBadge = usernameDiv.querySelector('.pinned-badge');
@@ -1583,7 +1643,6 @@
             if (botEnabled && !isOwn && !isSystem && msg.text && msg.text.includes('بوت')) {
                 setTimeout(() => { const botMsgKey = `${Date.now()}_bot`; set(ref(db, `rooms/${currentRoom}/messages/${botMsgKey}`), { sender: 'بوت', text: 'مرحباً! أنا بوت الغرفة.', timestamp: Date.now() }); }, 1000);
             }
-            // Hide no results if search active
             if (searchBox.classList.contains('active') && searchInput.value.trim() !== '') {
                 const term = searchInput.value.trim().toLowerCase();
                 const anyVisible = Array.from(document.querySelectorAll('.message')).some(msg => msg.textContent.toLowerCase().includes(term));
@@ -1680,8 +1739,7 @@
             };
             pc.onicecandidate = (event) => {
                 if (!event.candidate) return;
-                // دفع المرشحات إلى مسار خاص بالطرف الذي أنشأها (Caller يدفع إلى callerCandidates، Callee يدفع إلى calleeCandidates)
-                const path = currentCallId ? (pc.localDescription?.type === 'offer' ? 'callerCandidates' : 'calleeCandidates') : null;
+                const path = pc.localDescription?.type === 'offer' ? 'callerCandidates' : 'calleeCandidates';
                 if (path && currentRoom && currentCallId) {
                     push(ref(db, `calls/${currentRoom}/${currentCallId}/${path}`), event.candidate.toJSON());
                 }
@@ -1699,9 +1757,8 @@
                 await setupLocalStream();
                 pc = createPeerConnection();
                 currentCallId = 'call_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-                // إضافة مستمع لاستقبال مرشحات الطرف الآخر (calleeCandidates)
-                if (callerCandidatesListener) off(ref(db, `calls/${currentRoom}/${currentCallId}/calleeCandidates`), callerCandidatesListener);
-                callerCandidatesListener = onChildAdded(ref(db, `calls/${currentRoom}/${currentCallId}/calleeCandidates`), (snap) => {
+                if (calleeCandidatesListener) off(ref(db, `calls/${currentRoom}/${currentCallId}/calleeCandidates`), calleeCandidatesListener);
+                calleeCandidatesListener = onChildAdded(ref(db, `calls/${currentRoom}/${currentCallId}/calleeCandidates`), (snap) => {
                     const candidate = new RTCIceCandidate(snap.val());
                     pc.addIceCandidate(candidate).catch(console.error);
                 });
@@ -1722,9 +1779,8 @@
             try {
                 await setupLocalStream();
                 pc = createPeerConnection();
-                // إضافة مستمع لاستقبال مرشحات الطالب (callerCandidates)
-                if (calleeCandidatesListener) off(ref(db, `calls/${currentRoom}/${currentCallId}/callerCandidates`), calleeCandidatesListener);
-                calleeCandidatesListener = onChildAdded(ref(db, `calls/${currentRoom}/${currentCallId}/callerCandidates`), (snap) => {
+                if (callerCandidatesListener) off(ref(db, `calls/${currentRoom}/${currentCallId}/callerCandidates`), callerCandidatesListener);
+                callerCandidatesListener = onChildAdded(ref(db, `calls/${currentRoom}/${currentCallId}/callerCandidates`), (snap) => {
                     const candidate = new RTCIceCandidate(snap.val());
                     pc.addIceCandidate(candidate).catch(console.error);
                 });
@@ -1745,8 +1801,8 @@
             if (pc) { pc.close(); pc = null; }
             if (screenShareStream) { screenShareStream.getTracks().forEach(t => t.stop()); screenShareStream = null; }
             if (currentRoom && currentCallId) { remove(ref(db, `calls/${currentRoom}/${currentCallId}`)); }
-            if (callerCandidatesListener && currentRoom && currentCallId) off(ref(db, `calls/${currentRoom}/${currentCallId}/calleeCandidates`), callerCandidatesListener);
-            if (calleeCandidatesListener && currentRoom && currentCallId) off(ref(db, `calls/${currentRoom}/${currentCallId}/callerCandidates`), calleeCandidatesListener);
+            if (callerCandidatesListener && currentRoom && currentCallId) off(ref(db, `calls/${currentRoom}/${currentCallId}/callerCandidates`), callerCandidatesListener);
+            if (calleeCandidatesListener && currentRoom && currentCallId) off(ref(db, `calls/${currentRoom}/${currentCallId}/calleeCandidates`), calleeCandidatesListener);
             callerCandidatesListener = calleeCandidatesListener = null;
             currentCallId = null; incomingOffer = null;
             callContainer.classList.remove('active'); incomingPanel.classList.remove('active');
@@ -1853,8 +1909,8 @@
             if (firebaseListeners.usersRemoved && currentRoom) off(ref(db, `rooms/${currentRoom}/users`), firebaseListeners.usersRemoved);
             if (firebaseListeners.typing && currentRoom) off(ref(db, `rooms/${currentRoom}/typing`), firebaseListeners.typing);
             if (callsListener && currentRoom) off(ref(db, `calls/${currentRoom}`), callsListener);
-            if (callerCandidatesListener && currentRoom && currentCallId) off(ref(db, `calls/${currentRoom}/${currentCallId}/calleeCandidates`), callerCandidatesListener);
-            if (calleeCandidatesListener && currentRoom && currentCallId) off(ref(db, `calls/${currentRoom}/${currentCallId}/callerCandidates`), calleeCandidatesListener);
+            if (callerCandidatesListener && currentRoom && currentCallId) off(ref(db, `calls/${currentRoom}/${currentCallId}/callerCandidates`), callerCandidatesListener);
+            if (calleeCandidatesListener && currentRoom && currentCallId) off(ref(db, `calls/${currentRoom}/${currentCallId}/calleeCandidates`), calleeCandidatesListener);
             firebaseListeners.messages = firebaseListeners.usersAdded = firebaseListeners.usersRemoved = firebaseListeners.typing = null;
             removedMessagesListener = pinnedListener = callsListener = callerCandidatesListener = calleeCandidatesListener = null;
             displayedMessages.clear(); messagesContainer.innerHTML = ''; usersMap = {};
@@ -1862,7 +1918,7 @@
             document.removeEventListener('mousemove', resetInactivityTimer);
             document.removeEventListener('keypress', resetInactivityTimer);
             currentRoom = currentUser = userId = messagesRef = null;
-            window.location.href = 'login.html';
+            document.getElementById('login-modal').style.display = 'flex';
         }
         function confirmLeave() { confirmDialog.classList.add('active'); }
         confirmYes.addEventListener('click', () => { confirmDialog.classList.remove('active'); leaveRoom(); });
@@ -2045,7 +2101,7 @@
         shareRoomBtn.addEventListener('click', () => {
             if (currentRoom) {
                 const shareText = `انضم إلي في غرفة ${currentRoom}`;
-                const shareUrl = `${location.origin}${location.pathname.replace('chat.html', 'login.html')}?room=${currentRoom}`;
+                const shareUrl = `${location.origin}${location.pathname}?room=${currentRoom}&user=${currentUser}`;
                 if (navigator.share) { navigator.share({ title: 'اسهل حل', text: shareText, url: shareUrl }).catch(() => { copyToClipboard(shareUrl).then(success => { showNotification(success ? 'تم نسخ الرابط' : 'فشل', success ? 'success' : 'danger'); }); }); }
                 else { copyToClipboard(shareUrl).then(success => { showNotification(success ? 'تم نسخ الرابط' : 'فشل', success ? 'success' : 'danger'); }); }
                 sideMenu.classList.remove('show');
@@ -2076,12 +2132,40 @@
         termsBtn.addEventListener('click', () => showNotification('شروط الاستخدام', 'info'));
 
         if (localStorage.getItem('darkMode') === 'true') document.documentElement.setAttribute('data-theme', 'dark');
-        (async function init() {
-            const room = localStorage.getItem('chatRoom');
-            const user = localStorage.getItem('chatUser');
-            if (room && user) { localStorage.removeItem('chatRoom'); localStorage.removeItem('chatUser'); await enterChat(room, user); }
-            else { window.location.href = 'login.html'; }
-        })();
+
+        async function initChat() {
+            let room = localStorage.getItem('chatRoom');
+            let user = localStorage.getItem('chatUser');
+            if (!room || !user) {
+                const urlParams = new URLSearchParams(window.location.search);
+                room = urlParams.get('room');
+                user = urlParams.get('user');
+                if (room && user) {
+                    const newUrl = window.location.pathname;
+                    window.history.replaceState({}, document.title, newUrl);
+                }
+            }
+            if (!room || !user) {
+                document.getElementById('login-modal').style.display = 'flex';
+                document.getElementById('login-submit').onclick = () => {
+                    const roomVal = document.getElementById('login-room').value.trim();
+                    const userVal = document.getElementById('login-name').value.trim();
+                    if (roomVal && userVal) {
+                        localStorage.setItem('chatRoom', roomVal);
+                        localStorage.setItem('chatUser', userVal);
+                        window.location.reload();
+                    } else {
+                        alert('يرجى إدخال رقم الغرفة واسم المستخدم');
+                    }
+                };
+                return;
+            }
+            localStorage.removeItem('chatRoom');
+            localStorage.removeItem('chatUser');
+            await enterChat(room, user);
+        }
+        initChat();
+
         document.getElementById('closeModalBtn').addEventListener('click', () => { document.getElementById('mediaModal').classList.remove('active'); });
         document.addEventListener('click', (e) => { if (!mentionPopup.contains(e.target) && e.target !== messageInput) mentionPopup.style.display = 'none'; });
         document.addEventListener('click', (e) => {
