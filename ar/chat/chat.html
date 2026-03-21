@@ -1157,7 +1157,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Configuration
         const GITHUB_USERNAME = "ashlhl";
         const GITHUB_REPO = "ashlhl";
         const GITHUB_TOKEN_PATH = "2026";
@@ -1167,7 +1166,7 @@
         const MAX_MSGS = 20;
         const INACTIVITY_TIMEOUT = 30 * 60 * 1000;
 
-        // DOM Elements
+        // DOM elements
         const roomNameSpan = document.getElementById('room-name-display');
         const userCountSpan = document.getElementById('user-count');
         const currentUserNameSpan = document.getElementById('current-user-name');
@@ -1233,7 +1232,7 @@
         const termsBtn = document.getElementById('terms-btn');
         const noResultsDiv = document.getElementById('no-results');
 
-        // State variables
+        // State
         let currentRoom = null, currentUser = null, userId = null, messagesRef = null, typingTimeout = null;
         let displayedMessages = new Set();
         let oldestMessageKey = null, allMessagesLoaded = false, loadingMore = false;
@@ -1242,12 +1241,12 @@
         let audioContext = null, analyser = null, visualizerAnimation = null;
         let localStream = null, pc = null, connected = false;
         let currentCallId = null, callTimeout = null, incomingOffer = null, remoteAudioElement = null, screenShareStream = null;
+        let currentCallTargetId = null;
         let inactivityTimer = null;
         let pinnedMessages = new Set();
         let botEnabled = true;
         window.audioPlayers = new Map();
 
-        // Listeners references
         const firebaseListeners = { messages: null, usersAdded: null, usersRemoved: null, typing: null };
         let pinnedListener = null;
         let removedMessagesListener = null;
@@ -1670,22 +1669,61 @@
             });
             await loadMoreMessages();
         }
-        async function setupLocalStream() { if (localStream) return localStream; try { localStream = await navigator.mediaDevices.getUserMedia({ audio: true }); showNotification('الميكروفون جاهز'); return localStream; } catch (err) { showNotification('تعذر الوصول إلى الميكروفون', 'danger'); throw err; } }
-        function closeLocalStream() { if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; } }
+
+        // WebRTC audio functions (fixed)
+        async function setupLocalStream() {
+            if (localStream) return localStream;
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    } 
+                });
+                showNotification('الميكروفون جاهز');
+                return localStream;
+            } catch (err) {
+                showNotification('تعذر الوصول إلى الميكروفون', 'danger');
+                throw err;
+            }
+        }
+
         function createPeerConnection() {
             const pc = new RTCPeerConnection(configuration);
-            if (localStream) { localStream.getTracks().forEach(track => { pc.addTrack(track, localStream); }); }
+            
+            if (localStream) {
+                localStream.getTracks().forEach(track => {
+                    pc.addTrack(track, localStream);
+                });
+            } else {
+                pc.addTransceiver('audio', { direction: 'sendrecv' });
+            }
+            
             pc.ontrack = (event) => {
-                if (event.streams && event.streams[0]) {
+                console.log('Received remote track:', event.track.kind);
+                if (event.track.kind === 'audio') {
                     if (remoteAudioElement) remoteAudioElement.remove();
                     remoteAudioElement = document.createElement('audio');
                     remoteAudioElement.srcObject = event.streams[0];
                     remoteAudioElement.autoplay = true;
+                    remoteAudioElement.controls = false;
                     remoteAudioElement.style.display = 'none';
                     document.body.appendChild(remoteAudioElement);
+                    
+                    remoteAudioElement.play().catch(e => {
+                        console.warn('Auto-play failed, waiting for user interaction', e);
+                        showNotification('انقر في أي مكان لتشغيل الصوت', 'info');
+                        const playHandler = () => {
+                            remoteAudioElement.play().catch(console.warn);
+                            document.removeEventListener('click', playHandler);
+                        };
+                        document.addEventListener('click', playHandler);
+                    });
                     callInfo.textContent = 'جاري التحدث...';
                 }
             };
+            
             pc.onicecandidate = (event) => {
                 if (!event.candidate) return;
                 const path = pc.localDescription?.type === 'offer' ? 'callerCandidates' : 'calleeCandidates';
@@ -1693,58 +1731,141 @@
                     push(ref(db, `calls/${currentRoom}/${currentCallId}/${path}`), event.candidate.toJSON());
                 }
             };
-            pc.onconnectionstatechange = () => {
-                if (pc.connectionState === 'connected') { connected = true; callContainer.classList.add('active'); incomingPanel.classList.remove('active'); if (callTimeout) clearTimeout(callTimeout); }
-                else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed' || pc.connectionState === 'closed') { connected = false; endCall(); }
+            
+            pc.onicecandidateerror = (error) => {
+                console.error('ICE candidate error:', error);
             };
+            
+            pc.onconnectionstatechange = () => {
+                console.log('Connection state:', pc.connectionState);
+                if (pc.connectionState === 'connected') {
+                    connected = true;
+                    callContainer.classList.add('active');
+                    incomingPanel.classList.remove('active');
+                    if (callTimeout) clearTimeout(callTimeout);
+                    showNotification('المكالمة متصلة', 'success');
+                } else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed' || pc.connectionState === 'closed') {
+                    connected = false;
+                    endCall();
+                }
+            };
+            
+            pc.onnegotiationneeded = async () => {
+                try {
+                    await pc.setLocalDescription(await pc.createOffer());
+                    if (currentRoom && currentCallId && pc.localDescription.type === 'offer') {
+                        await set(ref(db, `calls/${currentRoom}/${currentCallId}/offer`), {
+                            type: pc.localDescription.type,
+                            sdp: pc.localDescription.sdp,
+                            from: userId,
+                            name: currentUser,
+                            targetId: currentCallTargetId,
+                            ts: Date.now()
+                        });
+                    }
+                } catch (err) {
+                    console.error('Negotiation needed failed', err);
+                }
+            };
+            
             return pc;
         }
+
         async function startCall(targetUserId) {
             if (!currentRoom || !userId) return;
             if (pc) { showNotification('هناك مكالمة قائمة', 'warning'); return; }
             try {
+                showLoading('جاري الاتصال...');
                 await setupLocalStream();
                 pc = createPeerConnection();
                 currentCallId = 'call_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+                currentCallTargetId = targetUserId;
+                
                 if (calleeCandidatesListener) off(ref(db, `calls/${currentRoom}/${currentCallId}/calleeCandidates`), calleeCandidatesListener);
                 calleeCandidatesListener = onChildAdded(ref(db, `calls/${currentRoom}/${currentCallId}/calleeCandidates`), (snap) => {
                     const candidate = new RTCIceCandidate(snap.val());
                     pc.addIceCandidate(candidate).catch(console.error);
                 });
+                
                 const offer = await pc.createOffer();
                 await pc.setLocalDescription(offer);
-                await set(ref(db, `calls/${currentRoom}/${currentCallId}/offer`), { type: offer.type, sdp: offer.sdp, from: userId, name: currentUser, targetId: targetUserId, ts: Date.now() });
+                await set(ref(db, `calls/${currentRoom}/${currentCallId}/offer`), {
+                    type: offer.type,
+                    sdp: offer.sdp,
+                    from: userId,
+                    name: currentUser,
+                    targetId: targetUserId,
+                    ts: Date.now()
+                });
+                
                 callInfo.textContent = `الاتصال بـ ${usersMap[targetUserId] || 'المستخدم'}...`;
                 callContainer.classList.add('active');
                 callAvatar.innerHTML = '<i class="fas fa-phone"></i>';
                 muteCallBtn.innerHTML = '<i class="fas fa-microphone"></i>';
                 incomingPanel.classList.remove('active');
-                callTimeout = setTimeout(() => { if (pc && pc.connectionState !== 'connected') { endCall(); showNotification('لم يجب الطرف الآخر', 'danger'); } }, 30000);
-            } catch (err) { console.error(err); showNotification('فشل بدء المكالمة', 'danger'); endCall(); }
+                
+                callTimeout = setTimeout(() => {
+                    if (pc && pc.connectionState !== 'connected') {
+                        endCall();
+                        showNotification('لم يجب الطرف الآخر', 'danger');
+                    }
+                }, 30000);
+                hideLoading();
+            } catch (err) {
+                console.error(err);
+                hideLoading();
+                showNotification('فشل بدء المكالمة', 'danger');
+                endCall();
+            }
         }
+
         async function acceptCall() {
             if (!incomingOffer || !currentRoom || !userId || !currentCallId) return;
             if (pc) { showNotification('هناك مكالمة قائمة', 'warning'); return; }
             try {
+                showLoading('جاري الرد...');
                 await setupLocalStream();
                 pc = createPeerConnection();
+                currentCallTargetId = incomingOffer.from;
+                
                 if (callerCandidatesListener) off(ref(db, `calls/${currentRoom}/${currentCallId}/callerCandidates`), callerCandidatesListener);
                 callerCandidatesListener = onChildAdded(ref(db, `calls/${currentRoom}/${currentCallId}/callerCandidates`), (snap) => {
                     const candidate = new RTCIceCandidate(snap.val());
                     pc.addIceCandidate(candidate).catch(console.error);
                 });
+                
                 await pc.setRemoteDescription(new RTCSessionDescription({ type: incomingOffer.type, sdp: incomingOffer.sdp }));
                 const answer = await pc.createAnswer();
                 await pc.setLocalDescription(answer);
-                await set(ref(db, `calls/${currentRoom}/${currentCallId}/answer`), { type: answer.type, sdp: answer.sdp, from: userId, name: currentUser, ts: Date.now() });
+                await set(ref(db, `calls/${currentRoom}/${currentCallId}/answer`), {
+                    type: answer.type,
+                    sdp: answer.sdp,
+                    from: userId,
+                    name: currentUser,
+                    ts: Date.now()
+                });
+                
                 callInfo.textContent = `تتحدث مع ${incomingOffer.name}`;
                 callContainer.classList.add('active');
                 callAvatar.innerHTML = '<i class="fas fa-user"></i>';
                 incomingPanel.classList.remove('active');
                 if (callTimeout) clearTimeout(callTimeout);
                 ring.pause(); ring.currentTime = 0;
-            } catch (err) { console.error(err); showNotification('فشل قبول المكالمة', 'danger'); endCall(); }
+                hideLoading();
+                
+                setTimeout(() => {
+                    if (remoteAudioElement && remoteAudioElement.paused) {
+                        remoteAudioElement.play().catch(console.warn);
+                    }
+                }, 1000);
+            } catch (err) {
+                console.error(err);
+                hideLoading();
+                showNotification('فشل قبول المكالمة', 'danger');
+                endCall();
+            }
         }
+
         function endCall() {
             if (callTimeout) clearTimeout(callTimeout);
             if (pc) { pc.close(); pc = null; }
@@ -1753,11 +1874,12 @@
             if (callerCandidatesListener && currentRoom && currentCallId) off(ref(db, `calls/${currentRoom}/${currentCallId}/callerCandidates`), callerCandidatesListener);
             if (calleeCandidatesListener && currentRoom && currentCallId) off(ref(db, `calls/${currentRoom}/${currentCallId}/calleeCandidates`), calleeCandidatesListener);
             callerCandidatesListener = calleeCandidatesListener = null;
-            currentCallId = null; incomingOffer = null;
+            currentCallId = null; incomingOffer = null; currentCallTargetId = null;
             callContainer.classList.remove('active'); incomingPanel.classList.remove('active');
             callInfo.textContent = '...';
             if (remoteAudioElement) { remoteAudioElement.remove(); remoteAudioElement = null; }
         }
+
         function toggleMute() {
             if (!localStream) return;
             const track = localStream.getAudioTracks()[0];
@@ -1804,6 +1926,105 @@
                 onChildRemoved(ref(db, `calls/${currentRoom}/${callId}`), () => { if (currentCallId === callId) { endCall(); showNotification('تم إنهاء المكالمة', 'info'); incomingPanel.classList.remove('active'); ring.pause(); ring.currentTime = 0; } });
             });
         }
+
+        // File and recording functions (unchanged, but kept)
+        async function handleFileUpload(file, type) {
+            if (!currentRoom) { showNotification('أنت لست في غرفة', 'danger'); return; }
+            if (type === 'video' && file.size > 25 * 1024 * 1024) {
+                showNotification('الفيديو كبير جداً (الحد الأقصى 25 ميجابايت)', 'danger');
+                return;
+            }
+            const taskId = Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+            try {
+                progressDiv.style.display = 'block';
+                if (type === 'image') { try { file = await compressImage(file); } catch (e) {} }
+                const ext = file.name.split('.').pop() || (type === 'image' ? 'jpg' : type === 'video' ? 'mp4' : 'mp4');
+                const fname = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '.' + ext;
+                const url = await uploadToGitHubWithProgress(file, fname, type, (percent) => updateProgressUI(taskId, file.name, percent));
+                if (currentRoom && messagesRef) {
+                    const msgKey = `${Date.now()}_${userId}`;
+                    await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), { sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser, text: url, type, timestamp: Date.now() });
+                    showNotification('تم الإرسال');
+                } else { showNotification('تم الرفع ولكنك غادرت', 'warning'); }
+            } catch (e) { showNotification(e.toString(), 'danger'); } finally { if (progressDiv.children.length === 0) progressDiv.style.display = 'none'; }
+        }
+
+        function updateProgressUI(taskId, fileName, percent) {
+            let item = document.getElementById(`progress-${taskId}`);
+            if (!item) {
+                item = document.createElement('div');
+                item.id = `progress-${taskId}`;
+                item.className = 'progress-item';
+                item.innerHTML = `<span>${fileName}</span><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div><span class="progress-percent">0%</span>`;
+                progressDiv.appendChild(item);
+            }
+            const fill = item.querySelector('.progress-fill');
+            const percentSpan = item.querySelector('.progress-percent');
+            fill.style.width = percent * 100 + '%';
+            percentSpan.textContent = Math.round(percent * 100) + '%';
+            if (percent >= 1) setTimeout(() => item.remove(), 1000);
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        channelCount: 1,
+                        sampleRate: 48000,
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    }
+                });
+                const options = { mimeType: 'audio/webm;codecs=opus', bitsPerSecond: 128000 };
+                mediaRecorder = new MediaRecorder(stream, options);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+                mediaRecorder.onstop = () => {
+                    if (audioChunks.length > 0) {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/mp4' });
+                        const audioFile = new File([audioBlob], 'audio_' + Date.now() + '.mp4', { type: 'audio/mp4' });
+                        handleFileUpload(audioFile, 'audio');
+                        audioChunks = [];
+                    }
+                    stream.getTracks().forEach(t => t.stop());
+                };
+                audioContext = new AudioContext();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 32;
+                audioContext.createMediaStreamSource(stream).connect(analyser);
+                voiceVisualizer.innerHTML = '';
+                for (let i = 0; i < 16; i++) voiceVisualizer.innerHTML += '<div class="voice-bar"></div>';
+                mediaRecorder.start();
+                recordingStartTime = Date.now();
+                recordingTimerInterval = setInterval(() => { 
+                    let e = Math.floor((Date.now() - recordingStartTime) / 1000); 
+                    voiceTimer.textContent = `${Math.floor(e / 60).toString().padStart(2, '0')}:${(e % 60).toString().padStart(2, '0')}`; 
+                }, 1000);
+                voiceRecordingBar.classList.add('active');
+                const updateVis = () => {
+                    if (!analyser || !voiceRecordingBar.classList.contains('active')) return;
+                    const data = new Uint8Array(analyser.frequencyBinCount);
+                    analyser.getByteFrequencyData(data);
+                    voiceVisualizer.querySelectorAll('.voice-bar').forEach((b, i) => { b.style.height = (10 + (data[i] / 255) * 20) + 'px'; });
+                    visualizerAnimation = requestAnimationFrame(updateVis);
+                };
+                updateVis();
+                showNotification('بدأ التسجيل (جودة عالية)');
+            } catch { showNotification('تعذر الوصول إلى الميكروفون', 'danger'); }
+        }
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                clearInterval(recordingTimerInterval);
+                audioContext?.close();
+                if (visualizerAnimation) cancelAnimationFrame(visualizerAnimation);
+                voiceRecordingBar.classList.remove('active');
+                voiceTimer.textContent = '00:00';
+            }
+        }
+
+        // Enter/Leave chat
         async function enterChat(room, name) {
             showLoading('جاري الدخول...');
             try {
@@ -1872,99 +2093,9 @@
         function confirmLeave() { confirmDialog.classList.add('active'); }
         confirmYes.addEventListener('click', () => { confirmDialog.classList.remove('active'); leaveRoom(); });
         confirmNo.addEventListener('click', () => { confirmDialog.classList.remove('active'); });
-        function updateProgressUI(taskId, fileName, percent) {
-            let item = document.getElementById(`progress-${taskId}`);
-            if (!item) {
-                item = document.createElement('div');
-                item.id = `progress-${taskId}`;
-                item.className = 'progress-item';
-                item.innerHTML = `<span>${fileName}</span><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div><span class="progress-percent">0%</span>`;
-                progressDiv.appendChild(item);
-            }
-            const fill = item.querySelector('.progress-fill');
-            const percentSpan = item.querySelector('.progress-percent');
-            fill.style.width = percent * 100 + '%';
-            percentSpan.textContent = Math.round(percent * 100) + '%';
-            if (percent >= 1) setTimeout(() => item.remove(), 1000);
-        }
-        async function handleFileUpload(file, type) {
-            if (!currentRoom) { showNotification('أنت لست في غرفة', 'danger'); return; }
-            if (type === 'video' && file.size > 25 * 1024 * 1024) {
-                showNotification('الفيديو كبير جداً (الحد الأقصى 25 ميجابايت)', 'danger');
-                return;
-            }
-            const taskId = Date.now() + '-' + Math.random().toString(36).substr(2, 5);
-            try {
-                progressDiv.style.display = 'block';
-                if (type === 'image') { try { file = await compressImage(file); } catch (e) {} }
-                const ext = file.name.split('.').pop() || (type === 'image' ? 'jpg' : type === 'video' ? 'mp4' : 'mp4');
-                const fname = Date.now() + '_' + Math.random().toString(36).substring(2, 8) + '.' + ext;
-                const url = await uploadToGitHubWithProgress(file, fname, type, (percent) => updateProgressUI(taskId, file.name, percent));
-                if (currentRoom && messagesRef) {
-                    const msgKey = `${Date.now()}_${userId}`;
-                    await set(ref(db, `rooms/${currentRoom}/messages/${msgKey}`), { sender: currentUser === ADMIN_DISPLAY ? ADMIN_LOGIN : currentUser, text: url, type, timestamp: Date.now() });
-                    showNotification('تم الإرسال');
-                } else { showNotification('تم الرفع ولكنك غادرت', 'warning'); }
-            } catch (e) { showNotification(e.toString(), 'danger'); } finally { if (progressDiv.children.length === 0) progressDiv.style.display = 'none'; }
-        }
-        async function startRecording() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    audio: {
-                        channelCount: 1,
-                        sampleRate: 48000,
-                        echoCancellation: true,
-                        noiseSuppression: true,
-                        autoGainControl: true
-                    }
-                });
-                const options = { mimeType: 'audio/webm;codecs=opus', bitsPerSecond: 128000 };
-                mediaRecorder = new MediaRecorder(stream, options);
-                audioChunks = [];
-                mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
-                mediaRecorder.onstop = () => {
-                    if (audioChunks.length > 0) {
-                        const audioBlob = new Blob(audioChunks, { type: 'audio/mp4' });
-                        const audioFile = new File([audioBlob], 'audio_' + Date.now() + '.mp4', { type: 'audio/mp4' });
-                        handleFileUpload(audioFile, 'audio');
-                        audioChunks = [];
-                    }
-                    stream.getTracks().forEach(t => t.stop());
-                };
-                audioContext = new AudioContext();
-                analyser = audioContext.createAnalyser();
-                analyser.fftSize = 32;
-                audioContext.createMediaStreamSource(stream).connect(analyser);
-                voiceVisualizer.innerHTML = '';
-                for (let i = 0; i < 16; i++) voiceVisualizer.innerHTML += '<div class="voice-bar"></div>';
-                mediaRecorder.start();
-                recordingStartTime = Date.now();
-                recordingTimerInterval = setInterval(() => { 
-                    let e = Math.floor((Date.now() - recordingStartTime) / 1000); 
-                    voiceTimer.textContent = `${Math.floor(e / 60).toString().padStart(2, '0')}:${(e % 60).toString().padStart(2, '0')}`; 
-                }, 1000);
-                voiceRecordingBar.classList.add('active');
-                const updateVis = () => {
-                    if (!analyser || !voiceRecordingBar.classList.contains('active')) return;
-                    const data = new Uint8Array(analyser.frequencyBinCount);
-                    analyser.getByteFrequencyData(data);
-                    voiceVisualizer.querySelectorAll('.voice-bar').forEach((b, i) => { b.style.height = (10 + (data[i] / 255) * 20) + 'px'; });
-                    visualizerAnimation = requestAnimationFrame(updateVis);
-                };
-                updateVis();
-                showNotification('بدأ التسجيل (جودة عالية)');
-            } catch { showNotification('تعذر الوصول إلى الميكروفون', 'danger'); }
-        }
-        function stopRecording() {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-                clearInterval(recordingTimerInterval);
-                audioContext?.close();
-                if (visualizerAnimation) cancelAnimationFrame(visualizerAnimation);
-                voiceRecordingBar.classList.remove('active');
-                voiceTimer.textContent = '00:00';
-            }
-        }
+        function closeLocalStream() { if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; } }
+
+        // UI event handlers
         sendBtn.addEventListener('click', async () => {
             const text = messageInput.value.trim();
             if (!text || !currentRoom) return;
@@ -2088,33 +2219,26 @@
         if (localStorage.getItem('darkMode') === 'true') document.documentElement.setAttribute('data-theme', 'dark');
 
         async function initChat() {
-            // قراءة البيانات من sessionStorage أو URL
             let room = sessionStorage.getItem('chatRoom');
             let user = sessionStorage.getItem('chatUser');
-
             if (!room || !user) {
                 const urlParams = new URLSearchParams(window.location.search);
                 room = urlParams.get('room');
                 user = urlParams.get('user');
                 if (room && user) {
-                    // تخزين في sessionStorage للاستخدام اللاحق
                     sessionStorage.setItem('chatRoom', room);
                     sessionStorage.setItem('chatUser', user);
-                    // إزالة المعاملات من URL لتنظيفه
                     const newUrl = window.location.pathname;
                     window.history.replaceState({}, document.title, newUrl);
                 }
             }
-
             if (!room || !user) {
                 showNotification('الرجاء تسجيل الدخول أولاً', 'danger');
                 setTimeout(() => { window.location.href = 'login.html'; }, 1000);
                 return;
             }
-
             await enterChat(room, user);
         }
-
         initChat();
 
         document.getElementById('closeModalBtn').addEventListener('click', () => { document.getElementById('mediaModal').classList.remove('active'); });
