@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Call Room</title>
+<style>
+body { font-family: Arial; text-align: center; }
+#chat { height: 200px; overflow-y: scroll; border: 1px solid #ccc; }
+</style>
+</head>
+<body>
+
+<h2>Join Room</h2>
+<input id="roomId" placeholder="Room ID">
+<button onclick="joinRoom()">Join</button>
+
+<div id="app" style="display:none;">
+  <h3>Room: <span id="roomName"></span></h3>
+
+  <button onclick="startCall()">Start Call</button>
+
+  <h4>Chat</h4>
+  <div id="chat"></div>
+  <input id="msg" placeholder="Message">
+  <button onclick="sendMsg()">Send</button>
+</div>
+
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
+<script>
+let peer = new Peer();
+let conn;
+let call;
+let localStream;
+
+function joinRoom() {
+  let room = document.getElementById("roomId").value;
+  document.getElementById("roomName").innerText = room;
+  document.getElementById("app").style.display = "block";
+
+  peer.on('open', id => {
+    console.log("My ID:", id);
+  });
+
+  peer.on('connection', connection => {
+    conn = connection;
+    conn.on('data', data => addMsg("Friend: " + data));
+  });
+
+  peer.on('call', incomingCall => {
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+      incomingCall.answer(stream);
+      incomingCall.on('stream', remoteStream => {
+        console.log("Connected");
+      });
+    });
+  });
+}
+
+function connectToUser(id) {
+  conn = peer.connect(id);
+  conn.on('data', data => addMsg("Friend: " + data));
+}
+
+function sendMsg() {
+  let msg = document.getElementById("msg").value;
+  conn.send(msg);
+  addMsg("Me: " + msg);
+}
+
+function addMsg(msg) {
+  let div = document.getElementById("chat");
+  div.innerHTML += "<p>" + msg + "</p>";
+}
+
+function startCall() {
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+    localStream = stream;
+    let userId = prompt("Enter friend ID:");
+    call = peer.call(userId, stream);
+    call.on('stream', remoteStream => {
+      console.log("Call started");
+    });
+  });
+}
+</script>
+
+</body>
+</html>
