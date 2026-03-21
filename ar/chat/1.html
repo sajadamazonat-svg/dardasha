@@ -1,40 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Peer Chat + Call (No Server)</title>
+  <title>صفحة دردشة واتصال</title>
   <style>
     :root{
-      --bg:#07111f;
-      --card:#0f1b2e;
-      --card2:#14233a;
+      --bg:#0b1220;
+      --card:#111b2f;
+      --card2:#16233d;
       --text:#eaf1ff;
-      --muted:#93a7c7;
+      --muted:#8fa3c7;
       --accent:#4f8cff;
-      --good:#23c483;
-      --danger:#ff5f73;
+      --good:#25c47d;
+      --danger:#ff5d73;
       --border:rgba(255,255,255,.08);
-      --shadow:0 14px 35px rgba(0,0,0,.28);
+      --shadow:0 10px 30px rgba(0,0,0,.28);
       --radius:22px;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
-      min-height:100svh;
-      background:radial-gradient(circle at top, #18305a 0%, var(--bg) 48%, #050913 100%);
-      color:var(--text);
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:radial-gradient(circle at top, #18305a 0%, var(--bg) 50%, #050913 100%);
+      color:var(--text);
+      min-height:100svh;
       padding:14px;
     }
     .app{
-      max-width:1100px;
+      max-width:980px;
       margin:0 auto;
       display:grid;
       gap:14px;
     }
-    .top{
-      background:rgba(15,27,46,.92);
+    .topbar{
+      background:rgba(17,27,47,.95);
       border:1px solid var(--border);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
@@ -45,14 +45,14 @@
       gap:12px;
       flex-wrap:wrap;
     }
-    .top h1{
+    .topbar h1{
       margin:0 0 4px;
       font-size:1.05rem;
     }
-    .top p{
+    .topbar p{
       margin:0;
       color:var(--muted);
-      font-size:.92rem;
+      font-size:.9rem;
     }
     .status{
       padding:10px 14px;
@@ -66,13 +66,13 @@
       display:grid;
       gap:14px;
     }
-    @media (min-width: 960px){
+    @media (min-width: 900px){
       .grid{
         grid-template-columns: 1fr 1fr;
       }
     }
     .card{
-      background:rgba(15,27,46,.92);
+      background:rgba(17,27,47,.95);
       border:1px solid var(--border);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
@@ -107,15 +107,12 @@
       color:var(--text);
       border:1px solid var(--border);
     }
-    textarea{
-      min-height:160px;
-      resize:vertical;
-      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
-      font-size:.92rem;
-      line-height:1.45;
-    }
     input::placeholder, textarea::placeholder{
-      color:#8194b8;
+      color:#8092b7;
+    }
+    textarea{
+      min-height:150px;
+      resize:vertical;
     }
     .btns{
       display:grid;
@@ -124,27 +121,18 @@
     }
     button{
       background:var(--accent);
-      color:white;
+      color:#fff;
       font-weight:700;
       cursor:pointer;
       transition:.15s transform ease, .15s opacity ease;
     }
     button:active{ transform:scale(.98); }
-    button.secondary{ background:#243754; }
+    button.secondary{ background:#233755; }
     button.good{ background:var(--good); }
     button.danger{ background:var(--danger); }
-    button:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-    }
-    .split{
-      display:grid;
-      gap:14px;
-    }
-    .box{
-      background:rgba(255,255,255,.03);
-      border:1px solid var(--border);
-      border-radius:18px;
+    .chat{
+      display:flex;
+      flex-direction:column;
       overflow:hidden;
     }
     .messages{
@@ -155,6 +143,9 @@
       display:flex;
       flex-direction:column;
       gap:10px;
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--border);
+      border-radius:18px;
     }
     .msg{
       max-width:88%;
@@ -178,18 +169,23 @@
       display:grid;
       grid-template-columns:1fr auto;
       gap:10px;
-      padding:12px;
-      border-top:1px solid var(--border);
-    }
-    .remoteAudio{
-      width:100%;
       margin-top:12px;
     }
-    .small{
+    .callBox{
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:14px;
+    }
+    .callStatus{
+      font-size:.95rem;
       color:var(--muted);
-      font-size:.88rem;
-      line-height:1.45;
-      margin-top:10px;
+      margin-bottom:12px;
+    }
+    .callControls{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
     }
     .pill{
       display:inline-block;
@@ -201,368 +197,113 @@
       font-size:.8rem;
       margin-bottom:10px;
     }
-    .divider{
-      height:1px;
-      background:var(--border);
-      margin:14px 0;
-    }
-    .inline{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .inline button{
-      width:auto;
-      flex:1;
-      min-width:140px;
-    }
   </style>
 </head>
 <body>
   <div class="app">
-    <div class="top">
+    <div class="topbar">
       <div>
-        <h1>Peer Chat + Audio Call</h1>
-        <p>Mobile-friendly WebRTC app with no backend server.</p>
+        <h1>صفحة دردشة واتصال</h1>
+        <p>مثال واجهة مناسب للهواتف.</p>
       </div>
-      <div class="status" id="status">Idle</div>
+      <div class="status" id="status">غير متصل</div>
     </div>
 
     <div class="grid">
       <div class="card">
-        <h2 class="title">Offer / Answer</h2>
-        <p class="note">
-          One side presses <b>Create Offer</b>, copies the code, and sends it to the other side.
-          The other side pastes it, presses <b>Create Answer</b>, then sends the answer back.
-        </p>
+        <h2 class="title">الدردشة</h2>
+        <p class="note">اكتب رسالة وسيتم عرضها مباشرة داخل الصفحة كمثال.</p>
 
-        <div class="row">
-          <input id="nameInput" placeholder="Your name" value="Guest" />
-        </div>
+        <div class="chat">
+          <div class="messages" id="messages">
+            <div class="msg">
+              <div class="meta">النظام</div>
+              <div>أهلاً بك داخل صفحة الدردشة.</div>
+            </div>
+          </div>
 
-        <div class="btns">
-          <button class="good" id="createOfferBtn">Create Offer</button>
-          <button class="secondary" id="applyAnswerBtn">Apply Answer</button>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="row">
-          <textarea id="localDesc" placeholder="Your local offer/answer will appear here..."></textarea>
-        </div>
-
-        <div class="inline">
-          <button class="secondary" id="copyLocalBtn">Copy My Code</button>
-          <button class="danger" id="hangupBtn" disabled>Hang Up</button>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="pill">Remote code</div>
-        <div class="row">
-          <textarea id="remoteDesc" placeholder="Paste the other person's code here..."></textarea>
-        </div>
-
-        <button class="good" id="createAnswerBtn">Create Answer</button>
-
-        <div class="small">
-          For stronger internet traversal you normally use STUN/TURN, but this version stays serverless.
+          <div class="chatbar">
+            <input id="msgInput" placeholder="اكتب رسالة..." />
+            <button id="sendBtn">إرسال</button>
+          </div>
         </div>
       </div>
 
-      <div class="split">
-        <div class="card">
-          <h2 class="title">Chat</h2>
-          <div class="box">
-            <div class="messages" id="messages"></div>
-            <div class="chatbar">
-              <input id="msgInput" placeholder="Type a message..." />
-              <button id="sendBtn" disabled>Send</button>
-            </div>
+      <div class="card">
+        <h2 class="title">الاتصال</h2>
+        <span class="pill">مثال واجهة فقط</span>
+
+        <div class="callBox">
+          <div class="callStatus" id="callStatus">لا توجد مكالمة حالياً</div>
+          <div class="callControls">
+            <button class="good" id="callBtn">بدء اتصال</button>
+            <button class="danger" id="endBtn" disabled>إنهاء</button>
           </div>
         </div>
 
-        <div class="card">
-          <h2 class="title">Audio Call</h2>
-          <p class="note">Allow microphone access when prompted.</p>
-          <audio id="remoteAudio" class="remoteAudio" autoplay playsinline controls></audio>
+        <div class="row" style="margin-top:14px;">
+          <input id="nameInput" placeholder="اسمك" value="مستخدم" />
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const statusEl = document.getElementById("status");
-    const localDescEl = document.getElementById("localDesc");
-    const remoteDescEl = document.getElementById("remoteDesc");
-    const messagesEl = document.getElementById("messages");
+    const messages = document.getElementById("messages");
     const msgInput = document.getElementById("msgInput");
     const sendBtn = document.getElementById("sendBtn");
-    const createOfferBtn = document.getElementById("createOfferBtn");
-    const createAnswerBtn = document.getElementById("createAnswerBtn");
-    const applyAnswerBtn = document.getElementById("applyAnswerBtn");
-    const copyLocalBtn = document.getElementById("copyLocalBtn");
-    const hangupBtn = document.getElementById("hangupBtn");
-    const remoteAudio = document.getElementById("remoteAudio");
+    const callBtn = document.getElementById("callBtn");
+    const endBtn = document.getElementById("endBtn");
+    const statusEl = document.getElementById("status");
+    const callStatus = document.getElementById("callStatus");
     const nameInput = document.getElementById("nameInput");
 
-    let pc = null;
-    let dc = null;
-    let localStream = null;
-    let remoteStream = new MediaStream();
-    let currentRole = "";
-    let connected = false;
-    let myName = "Guest";
+    let inCall = false;
 
-    function setStatus(text) {
-      statusEl.textContent = text;
+    function timeNow() {
+      return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
 
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function addMessage({ name, message, me = false, time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) }) {
+    function addMessage(name, text, me = false) {
       const div = document.createElement("div");
       div.className = "msg" + (me ? " me" : "");
-      div.innerHTML = `<div class="meta">${escapeHtml(name)} • ${escapeHtml(time)}</div><div>${escapeHtml(message)}</div>`;
-      messagesEl.appendChild(div);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
+      div.innerHTML = `
+        <div class="meta">${name} • ${timeNow()}</div>
+        <div>${text}</div>
+      `;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
     }
 
-    function updateConnectedState(isOn) {
-      connected = isOn;
-      sendBtn.disabled = !isOn;
-      hangupBtn.disabled = !pc;
-    }
-
-    function waitForIceGatheringComplete(peer) {
-      return new Promise((resolve) => {
-        if (peer.iceGatheringState === "complete") {
-          resolve();
-          return;
-        }
-        function check() {
-          if (peer.iceGatheringState === "complete") {
-            peer.removeEventListener("icegatheringstatechange", check);
-            resolve();
-          }
-        }
-        peer.addEventListener("icegatheringstatechange", check);
-      });
-    }
-
-    async function ensureLocalAudio() {
-      if (localStream) return localStream;
-      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-      return localStream;
-    }
-
-    function createPeer() {
-      pc = new RTCPeerConnection({
-        iceServers: [] // serverless mode
-      });
-
-      remoteStream = new MediaStream();
-      remoteAudio.srcObject = remoteStream;
-
-      pc.onicecandidate = (e) => {
-        if (e.candidate) {
-          // We wait for ICE gathering to finish before showing the final code.
-        }
-      };
-
-      pc.ontrack = (e) => {
-        e.streams[0].getTracks().forEach(track => remoteStream.addTrack(track));
-      };
-
-      pc.ondatachannel = (e) => {
-        dc = e.channel;
-        bindDataChannel();
-      };
-
-      pc.onconnectionstatechange = () => {
-        if (!pc) return;
-        if (pc.connectionState === "connected") {
-          setStatus("Connected");
-          updateConnectedState(true);
-          addMessage({ name: "System", message: "Connection established." });
-        } else if (pc.connectionState === "failed" || pc.connectionState === "disconnected" || pc.connectionState === "closed") {
-          if (pc.connectionState !== "closed") {
-            setStatus("Connection lost");
-          }
-          updateConnectedState(false);
-        }
-      };
-    }
-
-    function bindDataChannel() {
-      if (!dc) return;
-      dc.onopen = () => {
-        setStatus("Data channel open");
-        updateConnectedState(true);
-        addMessage({ name: "System", message: "Chat channel is ready." });
-      };
-      dc.onclose = () => {
-        updateConnectedState(false);
-      };
-      dc.onmessage = (e) => {
-        addMessage({ name: "Peer", message: e.data });
-      };
-    }
-
-    async function createOffer() {
-      try {
-        myName = nameInput.value.trim() || "Guest";
-        currentRole = "offerer";
-        hangUp(false);
-
-        createPeer();
-        dc = pc.createDataChannel("chat");
-        bindDataChannel();
-
-        const stream = await ensureLocalAudio();
-        stream.getAudioTracks().forEach(track => pc.addTrack(track, stream));
-
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-        await waitForIceGatheringComplete(pc);
-
-        localDescEl.value = JSON.stringify(pc.localDescription, null, 2);
-        remoteDescEl.value = "";
-        setStatus("Offer ready — copy and send it");
-        addMessage({ name: "System", message: "Offer created. Send it to the other person." });
-        hangupBtn.disabled = false;
-      } catch (err) {
-        console.error(err);
-        setStatus("Error creating offer");
-        addMessage({ name: "System", message: "Could not create offer. Mic permission or browser support may be blocked." });
-      }
-    }
-
-    async function createAnswer() {
-      try {
-        myName = nameInput.value.trim() || "Guest";
-        currentRole = "answerer";
-        hangUp(false);
-
-        const remoteText = remoteDescEl.value.trim();
-        if (!remoteText) {
-          addMessage({ name: "System", message: "Paste the offer first." });
-          return;
-        }
-
-        createPeer();
-
-        const remoteDescription = JSON.parse(remoteText);
-        await pc.setRemoteDescription(remoteDescription);
-
-        const stream = await ensureLocalAudio();
-        stream.getAudioTracks().forEach(track => pc.addTrack(track, stream));
-
-        const answer = await pc.createAnswer();
-        await pc.setLocalDescription(answer);
-        await waitForIceGatheringComplete(pc);
-
-        localDescEl.value = JSON.stringify(pc.localDescription, null, 2);
-        setStatus("Answer ready — send it back");
-        addMessage({ name: "System", message: "Answer created. Send it back to the other person." });
-        hangupBtn.disabled = false;
-      } catch (err) {
-        console.error(err);
-        setStatus("Error creating answer");
-        addMessage({ name: "System", message: "Could not create answer. Check the pasted offer." });
-      }
-    }
-
-    async function applyAnswer() {
-      try {
-        if (!pc) {
-          addMessage({ name: "System", message: "Create the offer first." });
-          return;
-        }
-        const remoteText = remoteDescEl.value.trim();
-        if (!remoteText) {
-          addMessage({ name: "System", message: "Paste the answer first." });
-          return;
-        }
-        const answer = JSON.parse(remoteText);
-        await pc.setRemoteDescription(answer);
-        setStatus("Answer applied");
-        addMessage({ name: "System", message: "Remote answer applied." });
-      } catch (err) {
-        console.error(err);
-        setStatus("Failed to apply answer");
-        addMessage({ name: "System", message: "Invalid answer code." });
-      }
-    }
-
-    function sendMessage() {
-      const message = msgInput.value.trim();
-      if (!message || !dc || dc.readyState !== "open") return;
-      dc.send(message);
-      addMessage({ name: myName, message, me: true });
-      msgInput.value = "";
-    }
-
-    function hangUp(keepNotice = true) {
-      if (dc) {
-        try { dc.close(); } catch {}
-        dc = null;
-      }
-      if (pc) {
-        try { pc.close(); } catch {}
-        pc = null;
-      }
-      if (localStream) {
-        localStream.getTracks().forEach(t => t.stop());
-        localStream = null;
-      }
-      remoteAudio.srcObject = null;
-      remoteStream = new MediaStream();
-      updateConnectedState(false);
-      if (keepNotice) {
-        setStatus("Idle");
-        addMessage({ name: "System", message: "Call ended." });
-      }
-    }
-
-    createOfferBtn.addEventListener("click", createOffer);
-    createAnswerBtn.addEventListener("click", createAnswer);
-    applyAnswerBtn.addEventListener("click", applyAnswer);
-    copyLocalBtn.addEventListener("click", async () => {
-      const text = localDescEl.value.trim();
+    sendBtn.addEventListener("click", () => {
+      const text = msgInput.value.trim();
+      const name = nameInput.value.trim() || "مستخدم";
       if (!text) return;
-      try {
-        await navigator.clipboard.writeText(text);
-        setStatus("Code copied");
-      } catch {
-        localDescEl.select();
-        document.execCommand("copy");
-        setStatus("Code copied");
-      }
+
+      addMessage(name, text, true);
+      msgInput.value = "";
     });
-    hangupBtn.addEventListener("click", () => hangUp(true));
-    sendBtn.addEventListener("click", sendMessage);
 
     msgInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") sendMessage();
+      if (e.key === "Enter") sendBtn.click();
     });
 
-    remoteDescEl.addEventListener("paste", () => {
-      setTimeout(() => {
-        setStatus("Code pasted");
-      }, 0);
+    callBtn.addEventListener("click", () => {
+      inCall = true;
+      statusEl.textContent = "متصل";
+      callStatus.textContent = "تم بدء الاتصال بنجاح";
+      callBtn.disabled = true;
+      endBtn.disabled = false;
+      addMessage("النظام", "تم بدء الاتصال.", false);
     });
 
-    addMessage({
-      name: "System",
-      message: "Ready. Create an offer on one phone, then exchange the codes."
+    endBtn.addEventListener("click", () => {
+      inCall = false;
+      statusEl.textContent = "غير متصل";
+      callStatus.textContent = "لا توجد مكالمة حالياً";
+      callBtn.disabled = false;
+      endBtn.disabled = true;
+      addMessage("النظام", "تم إنهاء الاتصال.", false);
     });
   </script>
 </body>
