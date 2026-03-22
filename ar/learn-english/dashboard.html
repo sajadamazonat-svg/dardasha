@@ -9,7 +9,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -220,12 +219,14 @@
             background: var(--card-bg);
             backdrop-filter: blur(8px);
             border-radius: 32px;
-            padding: 20px;
+            padding: 30px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
+            text-decoration: none;
+            display: block;
         }
 
         .skill-card:hover {
@@ -240,101 +241,21 @@
         .skill-card[data-skill="speaking"] .skill-icon { color: #ec489a; }
 
         .skill-icon {
-            font-size: 2.8rem;
+            font-size: 3rem;
             margin-bottom: 12px;
         }
 
         .skill-title {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 700;
             margin-bottom: 8px;
+            color: var(--dark);
         }
 
         .skill-level {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--gray);
             margin-top: 8px;
-        }
-
-        /* Modal styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .skill-modal {
-            background: var(--card-bg);
-            border-radius: 40px;
-            width: 90%;
-            max-width: 700px;
-            max-height: 85vh;
-            overflow-y: auto;
-            padding: 24px;
-            border: 1px solid var(--border);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-        }
-
-        .close-modal {
-            background: var(--light);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-
-        .action-btn {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 40px;
-            cursor: pointer;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-
-        .quiz-option {
-            background: var(--light);
-            padding: 8px 12px;
-            margin: 5px 0;
-            border-radius: 30px;
-            cursor: pointer;
-            border: 1px solid var(--border);
-        }
-
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border-radius: 24px;
-            border: 1px solid var(--border);
-            background: var(--light);
-            color: var(--dark);
-            margin-top: 10px;
         }
 
         .toast {
@@ -402,36 +323,26 @@
         </div>
 
         <div class="skills-grid">
-            <div class="skill-card" data-skill="reading">
+            <a href="reading.html" class="skill-card" data-skill="reading">
                 <div class="skill-icon"><i class="fas fa-book-open"></i></div>
                 <div class="skill-title">القراءة</div>
                 <div class="skill-level">المستوى <span id="reading-level">1</span> / 10</div>
-            </div>
-            <div class="skill-card" data-skill="writing">
+            </a>
+            <a href="writing.html" class="skill-card" data-skill="writing">
                 <div class="skill-icon"><i class="fas fa-pen-fancy"></i></div>
                 <div class="skill-title">الكتابة</div>
                 <div class="skill-level">المستوى <span id="writing-level">1</span> / 10</div>
-            </div>
-            <div class="skill-card" data-skill="listening">
+            </a>
+            <a href="listening.html" class="skill-card" data-skill="listening">
                 <div class="skill-icon"><i class="fas fa-headphones"></i></div>
                 <div class="skill-title">الاستماع</div>
                 <div class="skill-level">المستوى <span id="listening-level">1</span> / 10</div>
-            </div>
-            <div class="skill-card" data-skill="speaking">
+            </a>
+            <a href="speaking.html" class="skill-card" data-skill="speaking">
                 <div class="skill-icon"><i class="fas fa-microphone-alt"></i></div>
                 <div class="skill-title">النطق</div>
                 <div class="skill-level">المستوى <span id="speaking-level">1</span> / 10</div>
-            </div>
-        </div>
-    </div>
-
-    <div id="skill-modal" class="modal-overlay">
-        <div class="skill-modal">
-            <div class="modal-header">
-                <h3 id="modal-title"></h3>
-                <div class="close-modal" id="close-modal-btn"><i class="fas fa-times"></i></div>
-            </div>
-            <div id="modal-content"></div>
+            </a>
         </div>
     </div>
 
@@ -451,42 +362,8 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        const storage = firebase.storage();
 
-        // Admin email
         const ADMIN_EMAIL = "ashlhl.iq@gmail.com";
-
-        // Skill content (simplified but with 10 levels each)
-        const readingLevels = [];
-        for (let i = 1; i <= 10; i++) {
-            readingLevels.push({
-                level: i,
-                text: `This is reading passage for level ${i}. Practice comprehension.`,
-                questions: [
-                    { question: "What is the main topic?", options: ["Education", "Practice", "Reading", "Level"], correct: 2 },
-                    { question: "What level is this?", options: ["1", i.toString(), "10", "5"], correct: 1 }
-                ]
-            });
-        }
-        const writingPrompts = [];
-        for (let i = 1; i <= 10; i++) {
-            writingPrompts.push(`Write 3-5 sentences about a topic related to level ${i}.`);
-        }
-        const listeningLevels = [];
-        for (let i = 1; i <= 10; i++) {
-            listeningLevels.push({
-                level: i,
-                text: `This is listening text for level ${i}.`,
-                question: "What did you hear?",
-                options: ["Option A", "Option B", "Option C", "Option D"],
-                correct: 0
-            });
-        }
-        const speakingPrompts = [];
-        for (let i = 1; i <= 10; i++) {
-            speakingPrompts.push(`Record your voice about a topic related to level ${i}.`);
-        }
-
         let currentUser = null;
         let userProgress = {
             reading: { level: 1, completed: [] },
@@ -495,7 +372,6 @@
             speaking: { level: 1, completed: [] }
         };
 
-        // DOM elements
         const userNameSpan = document.getElementById('user-name');
         const globalLevelSpan = document.getElementById('global-level');
         const progressFill = document.getElementById('progress-fill');
@@ -508,10 +384,6 @@
         const logoutBtn = document.getElementById('logout-btn');
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
-        const modal = document.getElementById('skill-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalContent = document.getElementById('modal-content');
-        const closeModalBtn = document.getElementById('close-modal-btn');
         const toast = document.getElementById('toast');
 
         function showToast(msg, isError = false) {
@@ -521,61 +393,36 @@
             setTimeout(() => toast.style.display = 'none', 3000);
         }
 
-        // Compute global level from 1 to 100 based on total completed sub-levels
         function computeGlobalLevel() {
             let totalCompleted = 0;
             for (let skill in userProgress) {
                 totalCompleted += (userProgress[skill].completed?.length || 0);
             }
-            // total max = 40 (10 per skill)
             let level = Math.floor((totalCompleted / 40) * 100) + 1;
             if (level > 100) level = 100;
             if (level < 1) level = 1;
             return { level, percent: (totalCompleted / 40) * 100 };
         }
 
-        // Update UI progress (global level, per-skill levels, progress bar)
         function updateUIProgress() {
-            // Update per-skill levels
             readingLevelSpan.innerText = userProgress.reading.level;
             writingLevelSpan.innerText = userProgress.writing.level;
             listeningLevelSpan.innerText = userProgress.listening.level;
             speakingLevelSpan.innerText = userProgress.speaking.level;
 
-            // Compute global level
             const global = computeGlobalLevel();
             globalLevelSpan.innerText = `المستوى: ${global.level}`;
-            levelBadgeSpan.innerText = `المستوى العالمي: ${global.level}`;
+            levelBadgeSpan.innerText = `المستوى الإجمالي: ${global.level}`;
             progressFill.style.width = global.percent + '%';
             progressPercentSpan.innerText = Math.round(global.percent) + '%';
         }
 
-        // Save progress to Firebase
-        async function saveSkillProgress(skill, completedLevel) {
-            if (!currentUser) return;
-            const skillData = userProgress[skill];
-            if (!skillData.completed.includes(completedLevel)) {
-                skillData.completed.push(completedLevel);
-                skillData.level = Math.min(skillData.level + 1, 10);
-                await db.ref(`users/${currentUser.uid}/progress/${skill}`).set(skillData);
-                updateUIProgress();
-                showToast(`🎉 تم إكمال المستوى ${completedLevel} في ${getSkillName(skill)}!`);
-            }
-        }
-
-        function getSkillName(skill) {
-            const names = { reading: 'القراءة', writing: 'الكتابة', listening: 'الاستماع', speaking: 'النطق' };
-            return names[skill];
-        }
-
-        // Load user data
         async function loadUserData(uid) {
             const progressRef = db.ref(`users/${uid}/progress`);
             const snapshot = await progressRef.get();
             if (snapshot.exists()) {
                 userProgress = snapshot.val();
             } else {
-                // Initialize default progress
                 userProgress = {
                     reading: { level: 1, completed: [] },
                     writing: { level: 1, completed: [] },
@@ -587,196 +434,30 @@
             updateUIProgress();
         }
 
-        // Open modal for skill
-        async function openSkill(skill) {
-            const currentLevel = userProgress[skill].level;
-            const completed = userProgress[skill].completed;
-            modalTitle.innerText = `${getSkillName(skill)} - المستوى ${currentLevel} / 10`;
-
-            if (skill === 'reading') {
-                const levelData = readingLevels[currentLevel-1] || readingLevels[0];
-                let html = `<div class="reading-passage" style="background:var(--light); padding:15px; border-radius:24px; margin-bottom:15px;"><p>${levelData.text}</p></div>`;
-                levelData.questions.forEach((q, idx) => {
-                    html += `<div class="quiz-question"><p><strong>${idx+1}. ${q.question}</strong></p><div class="quiz-options">`;
-                    q.options.forEach((opt, optIdx) => {
-                        html += `<div class="quiz-option" data-q="${idx}" data-opt="${optIdx}">${opt}</div>`;
-                    });
-                    html += `</div><div id="fb-${idx}" style="margin-top:5px;"></div></div>`;
-                });
-                html += `<button id="submit-reading" class="action-btn">إرسال الإجابات</button>`;
-                modalContent.innerHTML = html;
-
-                let answers = {};
-                document.querySelectorAll('.quiz-option').forEach(opt => {
-                    opt.addEventListener('click', () => {
-                        const qIdx = parseInt(opt.dataset.q);
-                        const optIdx = parseInt(opt.dataset.opt);
-                        answers[qIdx] = optIdx;
-                        opt.parentElement.querySelectorAll('.quiz-option').forEach(o => o.style.background = '');
-                        opt.style.background = 'var(--primary-light)';
-                    });
-                });
-                document.getElementById('submit-reading').onclick = async () => {
-                    let correct = 0;
-                    levelData.questions.forEach((q, idx) => {
-                        const fb = document.getElementById(`fb-${idx}`);
-                        if (answers[idx] === q.correct) {
-                            correct++;
-                            fb.innerHTML = '<span style="color:green;">✅ صحيح</span>';
-                        } else {
-                            fb.innerHTML = `<span style="color:red;">❌ خطأ. الإجابة: ${q.options[q.correct]}</span>`;
-                        }
-                    });
-                    if (correct === levelData.questions.length && !completed.includes(currentLevel)) {
-                        await saveSkillProgress(skill, currentLevel);
-                        setTimeout(() => openSkill(skill), 1500);
-                    }
-                };
-            }
-            else if (skill === 'writing') {
-                const prompt = writingPrompts[currentLevel-1] || "اكتب 3 جمل عن موضوعك المفضل.";
-                modalContent.innerHTML = `
-                    <p><strong>✍️ الموضوع:</strong> ${prompt}</p>
-                    <textarea id="writing-answer" rows="6" placeholder="اكتب إجابتك هنا..."></textarea>
-                    <button id="submit-writing" class="action-btn">تسليم الإجابة</button>
-                `;
-                document.getElementById('submit-writing').onclick = async () => {
-                    const answer = document.getElementById('writing-answer').value.trim();
-                    if (answer.length < 10) {
-                        showToast("يرجى كتابة إجابة أطول (10 أحرف على الأقل)", true);
-                        return;
-                    }
-                    if (!completed.includes(currentLevel)) {
-                        await saveSkillProgress(skill, currentLevel);
-                        setTimeout(() => openSkill(skill), 1500);
-                    }
-                };
-            }
-            else if (skill === 'listening') {
-                const levelData = listeningLevels[currentLevel-1] || listeningLevels[0];
-                modalContent.innerHTML = `
-                    <button id="play-audio" class="action-btn"><i class="fas fa-play"></i> استمع للنص</button>
-                    <div id="listening-question" style="margin-top:20px;"></div>
-                `;
-                const playBtn = document.getElementById('play-audio');
-                const utterance = new SpeechSynthesisUtterance(levelData.text);
-                utterance.lang = 'en-US';
-                playBtn.onclick = () => {
-                    window.speechSynthesis.cancel();
-                    window.speechSynthesis.speak(utterance);
-                    setTimeout(() => {
-                        const qDiv = document.getElementById('listening-question');
-                        qDiv.innerHTML = `
-                            <p><strong>${levelData.question}</strong></p>
-                            <div class="quiz-options">
-                                ${levelData.options.map((opt, idx) => `<div class="quiz-option" data-opt="${idx}">${opt}</div>`).join('')}
-                            </div>
-                            <div id="listening-feedback" style="margin-top:10px;"></div>
-                            <button id="submit-listening" class="action-btn">تحقق</button>
-                        `;
-                        let selected = null;
-                        document.querySelectorAll('#listening-question .quiz-option').forEach(opt => {
-                            opt.onclick = () => {
-                                selected = parseInt(opt.dataset.opt);
-                                opt.parentElement.querySelectorAll('.quiz-option').forEach(o => o.style.background = '');
-                                opt.style.background = 'var(--primary-light)';
-                            };
-                        });
-                        document.getElementById('submit-listening').onclick = async () => {
-                            const fb = document.getElementById('listening-feedback');
-                            if (selected === undefined) fb.innerHTML = '<span style="color:red;">⚠️ اختر إجابة</span>';
-                            else if (selected === levelData.correct) {
-                                fb.innerHTML = '<span style="color:green;">✅ صحيح</span>';
-                                if (!completed.includes(currentLevel)) {
-                                    await saveSkillProgress(skill, currentLevel);
-                                    setTimeout(() => openSkill(skill), 1500);
-                                }
-                            } else {
-                                fb.innerHTML = `<span style="color:red;">❌ خطأ. الإجابة: ${levelData.options[levelData.correct]}</span>`;
-                            }
-                        };
-                    }, 500);
-                };
-            }
-            else if (skill === 'speaking') {
-                const prompt = speakingPrompts[currentLevel-1] || "سجل صوتك عن الموضوع.";
-                modalContent.innerHTML = `
-                    <p><strong>🎤 الموضوع:</strong> ${prompt}</p>
-                    <button id="start-record" class="action-btn"><i class="fas fa-microphone"></i> بدء التسجيل</button>
-                    <button id="stop-record" class="action-btn" disabled><i class="fas fa-stop"></i> إيقاف</button>
-                    <button id="upload-record" class="action-btn" disabled><i class="fas fa-upload"></i> رفع التسجيل</button>
-                    <audio id="audio-preview" controls style="width:100%; margin-top:10px;"></audio>
-                    <div id="speaking-status" style="margin-top:10px;"></div>
-                `;
-                let mediaRecorder;
-                let audioChunks = [];
-                let audioBlob;
-                const startBtn = document.getElementById('start-record');
-                const stopBtn = document.getElementById('stop-record');
-                const uploadBtn = document.getElementById('upload-record');
-                const preview = document.getElementById('audio-preview');
-                const statusDiv = document.getElementById('speaking-status');
-
-                startBtn.onclick = async () => {
-                    try {
-                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                        mediaRecorder = new MediaRecorder(stream);
-                        audioChunks = [];
-                        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                        mediaRecorder.onstop = () => {
-                            audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                            const url = URL.createObjectURL(audioBlob);
-                            preview.src = url;
-                            uploadBtn.disabled = false;
-                            stream.getTracks().forEach(t => t.stop());
-                            statusDiv.innerHTML = '<span style="color:green;">✅ تم التسجيل، يمكنك الرفع</span>';
-                        };
-                        mediaRecorder.start();
-                        startBtn.disabled = true;
-                        stopBtn.disabled = false;
-                        statusDiv.innerHTML = '<span>🔴 جاري التسجيل...</span>';
-                    } catch (err) {
-                        showToast("لا يمكن الوصول إلى الميكروفون", true);
-                    }
-                };
-                stopBtn.onclick = () => {
-                    if (mediaRecorder && mediaRecorder.state === 'recording') {
-                        mediaRecorder.stop();
-                        startBtn.disabled = false;
-                        stopBtn.disabled = true;
-                    }
-                };
-                uploadBtn.onclick = async () => {
-                    if (!audioBlob) return;
-                    statusDiv.innerHTML = '<span>📤 جاري الرفع...</span>';
-                    const filePath = `users/${currentUser.uid}/speaking/level_${currentLevel}_${Date.now()}.webm`;
-                    const fileRef = storage.ref(filePath);
-                    try {
-                        await fileRef.put(audioBlob);
-                        const url = await fileRef.getDownloadURL();
-                        await db.ref(`users/${currentUser.uid}/speaking_submissions/${currentLevel}`).set({ url, timestamp: Date.now() });
-                        if (!completed.includes(currentLevel)) {
-                            await saveSkillProgress(skill, currentLevel);
-                            setTimeout(() => openSkill(skill), 1500);
-                        }
-                    } catch (err) {
-                        showToast("فشل الرفع: " + err.message, true);
-                    }
-                };
-            }
-            modal.classList.add('active');
+        // Theme
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
         }
-
-        // Close modal
-        function closeModal() {
-            modal.classList.remove('active');
-            if (window.speechSynthesis) window.speechSynthesis.cancel();
-        }
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('darkMode', 'false');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('darkMode', 'true');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
 
         // Logout with confirmation
         async function logout() {
-            const confirmed = confirm("هل أنت متأكد من تسجيل الخروج؟");
-            if (confirmed) {
+            if (confirm("هل أنت متأكد من تسجيل الخروج؟")) {
                 await auth.signOut();
                 window.location.href = 'login.html';
             }
@@ -790,7 +471,6 @@
                 const name = userData.val()?.name || user.displayName || user.email.split('@')[0];
                 userNameSpan.innerText = name;
                 await loadUserData(user.uid);
-                // If admin, unlock all levels
                 if (user.email === ADMIN_EMAIL) {
                     const isAdmin = userData.val()?.isAdmin;
                     if (!isAdmin) {
@@ -812,16 +492,6 @@
         });
 
         logoutBtn.addEventListener('click', logout);
-        closeModalBtn.addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-
-        // Attach skill card listeners
-        document.querySelectorAll('.skill-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const skill = card.dataset.skill;
-                openSkill(skill);
-            });
-        });
     </script>
 </body>
 </html>
