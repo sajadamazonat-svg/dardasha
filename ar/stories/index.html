@@ -1,122 +1,545 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>قصة افتراضية</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<title>قصة متحركة</title>
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #111;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+  :root{
+    --bg1:#0b0f14;
+    --bg2:#161b24;
+    --card:#ffffff;
+    --text:#ffffff;
+    --shadow: rgba(0,0,0,.35);
+    --flip-speed: .85s;
   }
 
-  .book {
-    position: relative;
-    width: 90%;
-    max-width: 480px;
-    aspect-ratio: 3/4;
-    perspective: 2000px;
+  *{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .page {
-    position: absolute;
-    inset: 0;
-    background: url('page1.jpg') center/cover no-repeat;
-    border-radius: 20px;
-    overflow: hidden;
-    transform-origin: left;
-    transform-style: preserve-3d;
-    transition: transform 0.8s cubic-bezier(.22,.61,.18,1);
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    color: #fff;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.7);
-    padding: 20px;
-    box-sizing: border-box;
+  html, body{
+    margin:0;
+    width:100%;
+    min-height:100%;
+    font-family: Arial, Tahoma, sans-serif;
+    background:
+      radial-gradient(circle at top, #1c2430 0%, var(--bg1) 45%, #05070a 100%);
+    color:var(--text);
+    overflow-x:hidden;
   }
 
-  .page.flipped {
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:
+      calc(12px + env(safe-area-inset-top))
+      12px
+      calc(16px + env(safe-area-inset-bottom))
+      12px;
+  }
+
+  .app{
+    width:100%;
+    max-width:520px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    align-items:center;
+  }
+
+  .header{
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    padding:0 4px;
+  }
+
+  .header h1{
+    margin:0;
+    font-size:clamp(18px, 5vw, 28px);
+    line-height:1.2;
+  }
+
+  .header p{
+    margin:6px 0 0;
+    font-size:12px;
+    color:#b8c2cf;
+    line-height:1.6;
+  }
+
+  .counter{
+    min-width:76px;
+    text-align:center;
+    padding:9px 12px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.08);
+    backdrop-filter: blur(8px);
+    font-size:13px;
+  }
+
+  .stage{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    perspective: 1800px;
+    touch-action: pan-y;
+  }
+
+  .book{
+    position:relative;
+    width:min(94vw, 430px);
+    aspect-ratio: 3 / 4.4;
+    transform-style:preserve-3d;
+    filter: drop-shadow(0 24px 36px rgba(0,0,0,.55));
+    user-select:none;
+  }
+
+  .book::before{
+    content:"";
+    position:absolute;
+    inset:-8px -10px;
+    border-radius:22px;
+    background:
+      linear-gradient(90deg, rgba(255,255,255,.07), transparent 18%, transparent 82%, rgba(0,0,0,.16)),
+      linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.18));
+    transform: translateZ(-30px);
+    pointer-events:none;
+  }
+
+  .spine{
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:50%;
+    width:14px;
+    transform:translateX(-50%) translateZ(1px);
+    border-radius:10px;
+    background: linear-gradient(180deg, #8a6340, #4a2f1d 42%, #23140d 100%);
+    box-shadow: inset 0 0 10px rgba(255,255,255,.08);
+    opacity:.9;
+    z-index:2;
+  }
+
+  .sheet{
+    position:absolute;
+    inset:0;
+    transform-origin: left center;
+    transform-style:preserve-3d;
+    transition: transform var(--flip-speed) cubic-bezier(.22,.61,.18,1);
+    border-radius:22px;
+    overflow:hidden;
+    z-index:1;
+  }
+
+  .sheet.flipped{
     transform: rotateY(-180deg);
-    z-index: 0;
   }
 
-  .caption {
-    font-size: 18px;
-    line-height: 1.5;
-    text-align: center;
-    background: rgba(0,0,0,0.4);
-    padding: 12px;
-    border-radius: 12px;
+  .face{
+    position:absolute;
+    inset:0;
+    backface-visibility:hidden;
+    overflow:hidden;
+    border-radius:22px;
   }
 
-  .controls {
-    margin-top: 20px;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
+  .front{
+    background:#efe6d8;
+    position:relative;
   }
 
-  .btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 10px;
-    background: #fff;
-    font-weight: bold;
-    cursor: pointer;
+  .front .img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transform: scale(1.02);
   }
 
+  .front::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.36) 55%, rgba(0,0,0,.72)),
+      radial-gradient(circle at 50% 15%, rgba(255,255,255,.18), transparent 35%);
+    z-index:1;
+    pointer-events:none;
+  }
+
+  .caption{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:3;
+    padding:16px;
+    text-align:right;
+    color:#fff;
+  }
+
+  .caption .title{
+    margin:0 0 6px;
+    font-size:clamp(17px, 4.4vw, 22px);
+    line-height:1.35;
+    font-weight:700;
+    text-shadow:0 3px 10px rgba(0,0,0,.6);
+  }
+
+  .caption .text{
+    margin:0;
+    font-size:clamp(12px, 3.3vw, 14px);
+    line-height:1.7;
+    color:rgba(255,255,255,.92);
+    text-shadow:0 2px 8px rgba(0,0,0,.5);
+  }
+
+  .back{
+    transform: rotateY(180deg);
+    background: linear-gradient(135deg, #fdfaf4 0%, #f3eadb 100%);
+  }
+
+  .paper-lines{
+    position:absolute;
+    inset:0;
+    background-image: linear-gradient(to bottom, rgba(70,54,34,.08) 1px, transparent 1px);
+    background-size: 100% 28px;
+    opacity:.85;
+  }
+
+  .back-content{
+    position:absolute;
+    inset:0;
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    color:#222;
+    text-align:right;
+    z-index:2;
+  }
+
+  .mini{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:12px;
+    color:#736657;
+  }
+
+  .story-note{
+    margin-top:auto;
+    font-size:clamp(15px, 4vw, 18px);
+    line-height:1.9;
+    font-weight:700;
+    color:#222;
+  }
+
+  .hint{
+    margin-top:10px;
+    font-size:12px;
+    line-height:1.7;
+    color:#7a6c5b;
+  }
+
+  .sheen{
+    position:absolute;
+    inset:0;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.14) 48%, rgba(255,255,255,0) 100%);
+    transform: translateX(-120%);
+    opacity:0;
+    z-index:2;
+    pointer-events:none;
+  }
+
+  .sheet.flipped .sheen{
+    opacity:1;
+    animation:sheenMove var(--flip-speed) ease;
+  }
+
+  @keyframes sheenMove{
+    0%{ transform: translateX(-120%); opacity:0; }
+    35%{ opacity:.7; }
+    100%{ transform: translateX(120%); opacity:0; }
+  }
+
+  .controls{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:2px;
+  }
+
+  button{
+    border:none;
+    border-radius:14px;
+    padding:12px 18px;
+    min-width:110px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+  }
+
+  .btn-main{
+    background:rgba(255,255,255,.94);
+    color:#111;
+    box-shadow:0 10px 24px rgba(0,0,0,.22);
+  }
+
+  .btn-alt{
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    border:1px solid rgba(255,255,255,.14);
+  }
+
+  .footer{
+    width:100%;
+    text-align:center;
+    font-size:12px;
+    color:#b8c2cf;
+    line-height:1.8;
+    padding:0 8px;
+  }
+
+  @media (max-width: 420px){
+    .header{
+      flex-direction:column;
+      align-items:stretch;
+    }
+
+    .counter{
+      align-self:flex-start;
+    }
+
+    .book{
+      width:96vw;
+    }
+
+    .caption{
+      padding:14px;
+    }
+
+    button{
+      min-width:102px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .sheet,
+    .sheen{
+      transition:none !important;
+      animation:none !important;
+    }
+  }
 </style>
 </head>
 <body>
 
-<div class="book" id="book">
-  <div class="page" id="page1">
-    <div class="caption">في مدينة هادئة، كان هناك كتاب قديم على رف خشبي منذ سنوات. هذا الكتاب سيغير حياة ليلى للأبد.</div>
+<div class="app">
+  <div class="header">
+    <div>
+      <h1>قصة متحركة</h1>
+      <p>تعمل على الهاتف — صورة واحدة <b>page1.jpg</b> والنص فوقها</p>
+    </div>
+    <div class="counter" id="counter">1 / 1</div>
   </div>
-  <div class="page" id="page2">
-    <div class="caption">في إحدى الليالي، فتحت ليلى الكتاب ووجدت رسالة مكتوبة بخط صغير تقول: "اتّبعي الضوء الذي لا يراه أحد."</div>
-  </div>
-  <div class="page" id="page3">
-    <div class="caption">خرجت ليلى من البيت، وسارت في الأزقة حتى وصلت إلى بوابة قديمة مضاءة بمصابيح خافتة، وكأن المكان ينتظرها.</div>
-  </div>
-  <div class="page" id="page4">
-    <div class="caption">عند دفع الباب، انفتح على ممر طويل مضاء، وفي نهايته وجدت صندوق صغير يحتوي مفتاحًا وورقة تقول: "لقد عثرتِ على شجاعتك."</div>
-  </div>
-</div>
 
-<div class="controls">
-  <button class="btn" id="prev">السابق</button>
-  <button class="btn" id="next">التالي</button>
+  <div class="stage">
+    <div class="book" id="book">
+      <div class="spine"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn-alt" id="prevBtn">السابق</button>
+    <button class="btn-main" id="nextBtn">التالي</button>
+  </div>
+
+  <div class="footer">
+    اسحب يمين أو يسار على الهاتف، أو استخدم الأزرار.  
+    كل الصفحات تستخدم نفس الصورة <b>page1.jpg</b>.
+  </div>
 </div>
 
 <script>
-const pages = [...document.querySelectorAll('.page')];
-let current = 0;
+  const pages = [
+    {
+      title: "بداية القصة",
+      text: "في مدينةٍ هادئة، عاشت ليلى في بيت صغير يطل على شارعٍ قديم، وكانت تحب الجلوس قرب النافذة وقراءة القصص.",
+      note: "الصفحة الأولى"
+    },
+    {
+      title: "السر الصغير",
+      text: "في يومٍ ممطر، وجدت ليلى رسالةً داخل كتاب قديم، وكان مكتوبًا فيها: اتّبعي الضوء الذي يظهر عند الغروب.",
+      note: "الصفحة الثانية"
+    },
+    {
+      title: "الطريق",
+      text: "خرجت ليلى من البيت، ومشت بين الأزقة حتى وصلت إلى بابٍ خشبي كبير لم تره من قبل.",
+      note: "الصفحة الثالثة"
+    },
+    {
+      title: "الباب المفتوح",
+      text: "دفعت الباب ببطء، فظهر ممر طويل مضاء بمصابيح خافتة، وكأن المكان كان ينتظرها منذ زمن.",
+      note: "الصفحة الرابعة"
+    },
+    {
+      title: "النهاية",
+      text: "في النهاية وجدت صندوقًا صغيرًا بداخله مفتاحًا وورقة تقول: الشجاعة تبدأ من خطوة واحدة.",
+      note: "الصفحة الخامسة"
+    }
+  ];
 
-function showPage(index) {
-  pages.forEach((p, i) => {
-    if(i <= index) p.classList.add('flipped');
-    else p.classList.remove('flipped');
+  const book = document.getElementById("book");
+  const counter = document.getElementById("counter");
+  const nextBtn = document.getElementById("nextBtn");
+  const prevBtn = document.getElementById("prevBtn");
+
+  let current = 0;
+  let busy = false;
+
+  function renderSheets(){
+    pages.forEach((p, i) => {
+      const sheet = document.createElement("div");
+      sheet.className = "sheet";
+      sheet.dataset.index = i;
+      sheet.style.zIndex = (pages.length - i) * 10;
+
+      sheet.innerHTML = `
+        <div class="face front">
+          <img class="img" src="page1.jpg" alt="${p.title}">
+          <div class="caption">
+            <p class="title">${p.title}</p>
+            <p class="text">${p.text}</p>
+          </div>
+          <div class="sheen"></div>
+        </div>
+
+        <div class="face back">
+          <div class="paper-lines"></div>
+          <div class="back-content">
+            <div class="mini">
+              <span>stories</span>
+              <span>${i + 1} / ${pages.length}</span>
+            </div>
+            <div>
+              <div class="story-note">${p.note}</div>
+              <div class="hint">اضغط أو اسحب للتقليب بين الصفحات</div>
+            </div>
+            <div class="mini">
+              <span>كتاب 3D</span>
+              <span>mobile</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      sheet.addEventListener("click", () => {
+        if (i === current) nextPage();
+        else if (i === current - 1) prevPage();
+      });
+
+      book.appendChild(sheet);
+    });
+
+    updateState(false);
+  }
+
+  function allSheets(){
+    return [...document.querySelectorAll(".sheet")];
+  }
+
+  function updateState(animate = true){
+    const sheets = allSheets();
+
+    sheets.forEach((sheet, i) => {
+      sheet.style.transitionDuration = animate ? "var(--flip-speed)" : "0s";
+
+      if (i < current) {
+        sheet.classList.add("flipped");
+        sheet.style.zIndex = i + 1;
+      } else {
+        sheet.classList.remove("flipped");
+        sheet.style.zIndex = (pages.length - i) + 20;
+      }
+    });
+
+    if (sheets[current]) {
+      sheets[current].style.zIndex = 999;
+    }
+
+    counter.textContent = `${Math.min(current + 1, pages.length)} / ${pages.length}`;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === pages.length - 1;
+
+    prevBtn.style.opacity = current === 0 ? .5 : 1;
+    nextBtn.style.opacity = current === pages.length - 1 ? .5 : 1;
+  }
+
+  function nextPage(){
+    if (busy || current >= pages.length - 1) return;
+    busy = true;
+
+    current += 1;
+    updateState(true);
+
+    setTimeout(() => {
+      busy = false;
+      updateState(true);
+    }, 850);
+  }
+
+  function prevPage(){
+    if (busy || current <= 0) return;
+    busy = true;
+
+    current -= 1;
+    updateState(true);
+
+    setTimeout(() => {
+      busy = false;
+      updateState(true);
+    }, 850);
+  }
+
+  nextBtn.addEventListener("click", nextPage);
+  prevBtn.addEventListener("click", prevPage);
+
+  // سحب للموبايل
+  let startX = 0;
+  let endX = 0;
+
+  book.addEventListener("touchstart", (e) => {
+    startX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  book.addEventListener("touchend", (e) => {
+    endX = e.changedTouches[0].screenX;
+    const diff = startX - endX;
+
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) nextPage();
+      else prevPage();
+    }
+  }, { passive: true });
+
+  // أسهم الكيبورد
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") nextPage();
+    if (e.key === "ArrowLeft") prevPage();
   });
-}
 
-document.getElementById('next').addEventListener('click', () => {
-  if(current < pages.length - 1) current++;
-  showPage(current);
-});
-
-document.getElementById('prev').addEventListener('click', () => {
-  if(current > 0) current--;
-  showPage(current);
-});
-
-showPage(current);
+  renderSheets();
 </script>
 
 </body>
