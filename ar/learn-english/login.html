@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>اسهل حل | تسجيل الدخول</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent-yellow: #fbbf24;
+            --accent-green: #34d399;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --bg-gradient: linear-gradient(135deg, #fbbf24 0%, #10b981 50%, #6366f1 100%);
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --border: rgba(0, 0, 0, 0.15);
+            --shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        [data-theme="dark"] {
+            --primary: #818cf8;
+            --primary-dark: #6366f1;
+            --secondary: #34d399;
+            --accent-yellow: #fbbf24;
+            --accent-green: #10b981;
+            --danger: #f87171;
+            --dark: #f3f4f6;
+            --light: #1f2937;
+            --gray: #9ca3af;
+            --bg-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            --card-bg: rgba(17, 24, 39, 0.95);
+            --border: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.15);
+            padding: 8px 0;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            text-decoration: none;
+            flex-wrap: wrap;
+        }
+
+        .logo-main {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo-main i {
+            font-size: 1.6rem;
+        }
+
+        .logo-sub {
+            font-size: 0.7rem;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .theme-toggle-btn {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(0,0,0,0.4);
+            color: white;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.1rem;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 40px;
+            padding: 28px 24px;
+            margin: 40px 0;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .auth-card h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-yellow), var(--accent-green), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 6px;
+        }
+
+        .auth-card p {
+            color: var(--gray);
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.85rem;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: var(--light);
+            border: 1.5px solid rgba(0, 0, 0, 0.15);
+            border-radius: 60px;
+            padding: 4px 18px;
+            transition: all 0.2s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .input-wrapper i:first-child {
+            color: var(--primary);
+            font-size: 1rem;
+            margin-left: 8px;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 12px 0;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+        }
+
+        .toggle-pwd {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-google {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid rgba(0, 0, 0, 0.15);
+            border-radius: 60px;
+            background: var(--card-bg);
+            color: var(--dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn-google:hover {
+            background: var(--light);
+            border-color: var(--primary);
+        }
+
+        .guest-btn {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid rgba(0, 0, 0, 0.15);
+            border-radius: 60px;
+            background: var(--card-bg);
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .guest-btn:hover {
+            background: var(--light);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--gray);
+            font-size: 0.75rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+        }
+
+        .divider span {
+            padding: 0 12px;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.85rem;
+        }
+
+        .signup-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .loader {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            z-index: 2000;
+            display: none;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 550px) {
+            .auth-card {
+                padding: 20px;
+                margin: 30px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <div class="logo-main">
+                    <i class="fas fa-chalkboard-user"></i>
+                    <span>اسهل حل</span>
+                </div>
+                <div class="logo-sub">تعلم الإنجليزية</div>
+            </div>
+            <div class="theme-toggle-btn" id="themeToggle">
+                <i class="fas fa-sun" id="themeIcon"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="auth-card">
+            <h2>مرحباً بعودتك</h2>
+            <p>سجل دخولك لتواصل رحلتك في تعلم الإنجليزية</p>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="your@email.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                        <button type="button" class="toggle-pwd" id="toggle-password"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <button type="submit" id="submit-btn" class="btn-primary">
+                    <span>تسجيل الدخول</span>
+                    <div id="loader" class="loader"></div>
+                </button>
+            </form>
+
+            <div class="divider"><span>أو</span></div>
+
+            <button id="google-login" class="btn-google">
+                <i class="fab fa-google"></i> تسجيل الدخول بجوجل
+            </button>
+
+            <button id="guest-login" class="guest-btn">
+                <i class="fas fa-user-friends"></i> دخول سريع (ضيف)
+            </button>
+
+            <div class="signup-link">
+                ليس لديك حساب؟ <a href="signup.html">إنشاء حساب جديد</a>
+            </div>
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+            authDomain: "zio3-8ffdd.firebaseapp.com",
+            databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+            projectId: "zio3-8ffdd",
+            storageBucket: "zio3-8ffdd.firebasestorage.app",
+            messagingSenderId: "560939348415",
+            appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+            measurementId: "G-CVN2B2D0RD"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+        const provider = new firebase.auth.GoogleAuthProvider();
+
+        const ADMIN_EMAIL = "ashlhl.iq@gmail.com";
+        const ADMIN_PASSWORD = "sgadalyasiri";
+
+        // DOM elements
+        const form = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('toggle-password');
+        const submitBtn = document.getElementById('submit-btn');
+        const loader = document.getElementById('loader');
+        const errorMsgDiv = document.getElementById('errorMessage');
+        const googleBtn = document.getElementById('google-login');
+        const guestBtn = document.getElementById('guest-login');
+        const toast = document.getElementById('toast');
+
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        }
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('darkMode', 'false');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('darkMode', 'true');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+
+        // Toggle password visibility
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            togglePassword.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+
+        function showToast(message, isError = false) {
+            toast.textContent = message;
+            toast.style.backgroundColor = isError ? '#ef4444' : '#10b981';
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        function setLoading(loading) {
+            if (loading) {
+                loader.style.display = 'inline-block';
+                submitBtn.disabled = true;
+                googleBtn.disabled = true;
+                guestBtn.disabled = true;
+            } else {
+                loader.style.display = 'none';
+                submitBtn.disabled = false;
+                googleBtn.disabled = false;
+                guestBtn.disabled = false;
+            }
+        }
+
+        // Create guest user data if not exists
+        async function ensureGuestUser(uid, name) {
+            const snapshot = await db.ref(`users/${uid}`).once('value');
+            if (!snapshot.exists()) {
+                await db.ref(`users/${uid}`).set({
+                    name: name,
+                    email: 'guest@easysolution.com',
+                    isGuest: true,
+                    createdAt: Date.now()
+                });
+                await db.ref(`users/${uid}/progress`).set({
+                    reading: { level: 1, completed: [] },
+                    writing: { level: 1, completed: [] },
+                    listening: { level: 1, completed: [] },
+                    speaking: { level: 1, completed: [] }
+                });
+            }
+        }
+
+        // Email login
+        async function handleEmailLogin(e) {
+            e.preventDefault();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showToast('يرجى إدخال البريد الإلكتروني وكلمة المرور', true);
+                return;
+            }
+
+            setLoading(true);
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                showToast('تم تسجيل الدخول بنجاح! جاري التوجيه...');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } catch (error) {
+                let msg = error.message;
+                if (msg.includes('user-not-found')) msg = 'المستخدم غير موجود';
+                else if (msg.includes('wrong-password')) msg = 'كلمة المرور غير صحيحة';
+                else if (msg.includes('invalid-email')) msg = 'البريد الإلكتروني غير صالح';
+                showToast(msg, true);
+                setLoading(false);
+            }
+        }
+
+        // Google login
+        async function handleGoogleLogin() {
+            setLoading(true);
+            try {
+                const result = await auth.signInWithPopup(provider);
+                const user = result.user;
+                // Check if user exists in DB, if not create
+                const snapshot = await db.ref(`users/${user.uid}`).once('value');
+                if (!snapshot.exists()) {
+                    await db.ref(`users/${user.uid}`).set({
+                        name: user.displayName || user.email.split('@')[0],
+                        email: user.email,
+                        isGuest: false,
+                        createdAt: Date.now()
+                    });
+                    await db.ref(`users/${user.uid}/progress`).set({
+                        reading: { level: 1, completed: [] },
+                        writing: { level: 1, completed: [] },
+                        listening: { level: 1, completed: [] },
+                        speaking: { level: 1, completed: [] }
+                    });
+                }
+                showToast('تم تسجيل الدخول عبر جوجل بنجاح!');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } catch (error) {
+                showToast(error.message, true);
+                setLoading(false);
+            }
+        }
+
+        // Guest login (anonymous)
+        async function handleGuestLogin() {
+            setLoading(true);
+            try {
+                const result = await auth.signInAnonymously();
+                const user = result.user;
+                const guestName = `زائر_${Math.floor(Math.random() * 10000)}`;
+                await ensureGuestUser(user.uid, guestName);
+                showToast('تم الدخول كضيف. سيتم حفظ تقدمك مؤقتاً');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } catch (error) {
+                showToast('فشل الدخول كضيف: ' + error.message, true);
+                setLoading(false);
+            }
+        }
+
+        form.addEventListener('submit', handleEmailLogin);
+        googleBtn.addEventListener('click', handleGoogleLogin);
+        guestBtn.addEventListener('click', handleGuestLogin);
+    </script>
+</body>
+</html>
