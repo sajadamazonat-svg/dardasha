@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>اسهل حل | المكتبة التفاعلية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -11,270 +11,269 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #2c3e9e;
+            --primary-light: #6c7ffa;
+            --secondary: #06d6a0;
+            --accent-1: #ff6b6b;
+            --accent-2: #ffb703;
+            --dark: #1e1e2f;
+            --light: #f4f7fb;
+            --gray: #6b7280;
+            --bg-gradient: linear-gradient(145deg, #ffffff 0%, #f0f4fa 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border: #d1d5db;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            --font-base: 14px;
+            --transition: all 0.2s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary: #5f7df2;
+            --primary-dark: #4054b2;
+            --primary-light: #8a9cff;
+            --secondary: #06d6a0;
+            --accent-1: #ff8a8a;
+            --accent-2: #ffca3a;
+            --dark: #f0f0fa;
+            --light: #2a2a3c;
+            --gray: #a0a0b0;
+            --bg-gradient: linear-gradient(145deg, #12121c 0%, #1e1e2e 100%);
+            --card-bg: rgba(28, 28, 42, 0.98);
+            --border: #4a4a60;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
         }
 
         body {
+            background: var(--bg-gradient);
+            color: var(--dark);
             font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-size: var(--font-base);
+            line-height: 1.5;
             min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* عناصر زخرفية خلفية */
-        body::before {
-            content: '';
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            top: -100px;
-            right: -100px;
-            animation: float 20s infinite;
-        }
-
-        body::after {
-            content: '';
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 50%;
-            bottom: -200px;
-            left: -200px;
-            animation: float 15s infinite reverse;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(30px, 20px) rotate(10deg); }
+            flex-direction: column;
+            transition: background 0.3s, color 0.3s;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 16px;
             width: 100%;
-            position: relative;
-            z-index: 1;
         }
 
-        /* الهيدر */
+        /* Header */
+        .header {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            box-shadow: var(--shadow);
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 1.6rem;
+            color: var(--primary-dark);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.85rem;
+            padding: 6px 0;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .theme-toggle-btn {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+
+        .theme-toggle-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Hero */
         .hero {
             text-align: center;
-            margin-bottom: 50px;
-            animation: fadeInDown 0.8s ease;
+            margin: 32px 0 24px;
         }
 
         .hero h1 {
-            font-size: clamp(2rem, 6vw, 3.5rem);
-            color: white;
+            font-size: 1.8rem;
             font-weight: 800;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            margin-bottom: 15px;
-        }
-
-        .hero h1 i {
-            margin-left: 15px;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+            color: var(--primary);
+            margin-bottom: 8px;
         }
 
         .hero p {
-            color: rgba(255,255,255,0.9);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
+            color: var(--gray);
+            font-size: 0.9rem;
         }
 
         /* بطاقات الكتب */
         .books-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 32px;
         }
 
         .book-card {
-            background: white;
-            border-radius: 30px;
+            background: var(--card-bg);
+            border-radius: 28px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
-            animation: fadeInUp 0.6s ease;
-            animation-fill-mode: both;
         }
 
-        .book-card:nth-child(1) { animation-delay: 0.1s; }
-        .book-card:nth-child(2) { animation-delay: 0.2s; }
-        .book-card:nth-child(3) { animation-delay: 0.3s; }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .book-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 30px 50px rgba(0,0,0,0.3);
+        .book-card:active {
+            transform: scale(0.98);
         }
 
         .book-cover {
-            position: relative;
-            height: 280px;
+            width: 100%;
+            height: 180px;
+            background: var(--light);
             overflow: hidden;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
 
         .book-cover img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .book-card:hover .book-cover img {
-            transform: scale(1.1);
-        }
-
-        .book-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(102,126,234,0.8), rgba(118,75,162,0.8));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .book-card:hover .book-overlay {
-            opacity: 1;
-        }
-
-        .read-icon {
-            width: 60px;
-            height: 60px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            color: #667eea;
-            transition: transform 0.3s ease;
-        }
-
-        .book-card:hover .read-icon {
-            transform: scale(1.2);
         }
 
         .book-info {
-            padding: 25px;
-            text-align: center;
+            padding: 20px;
         }
 
         .book-info h3 {
-            font-size: 1.5rem;
-            color: #2d3748;
-            margin-bottom: 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
         }
 
         .book-info p {
-            color: #718096;
-            line-height: 1.6;
-            margin-bottom: 15px;
+            font-size: 0.85rem;
+            color: var(--gray);
+            line-height: 1.5;
+            margin-bottom: 12px;
         }
 
         .book-meta {
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
+            gap: 16px;
+            margin-bottom: 16px;
         }
 
         .book-meta span {
-            font-size: 0.85rem;
-            color: #a0aec0;
-        }
-
-        .book-meta i {
-            margin-left: 5px;
-            color: #667eea;
+            font-size: 0.7rem;
+            color: var(--gray);
         }
 
         .btn-read {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 40px;
-            font-size: 1rem;
+            padding: 12px;
+            border-radius: 60px;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
+            transition: opacity 0.2s;
+            display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
         }
 
-        .btn-read:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(102,126,234,0.4);
+        .btn-read:active {
+            opacity: 0.8;
         }
 
-        /* بطاقة إضافية */
+        /* ميزات إضافية */
         .feature-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 40px;
+            background: var(--card-bg);
+            border-radius: 28px;
+            padding: 24px;
+            margin: 8px 0 32px;
+            border: 1px solid var(--border);
             text-align: center;
-            margin-top: 30px;
-            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .feature-card h3 {
-            color: white;
-            font-size: 1.8rem;
-            margin-bottom: 15px;
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 12px;
         }
 
         .feature-card p {
-            color: rgba(255,255,255,0.9);
-            max-width: 500px;
-            margin: 0 auto 25px;
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 20px;
         }
 
         .feature-stats {
             display: flex;
             justify-content: center;
-            gap: 40px;
+            gap: 24px;
             flex-wrap: wrap;
         }
 
@@ -283,143 +282,225 @@
         }
 
         .stat .number {
-            font-size: 2rem;
+            font-size: 1.2rem;
             font-weight: 800;
-            color: #ffd700;
+            color: var(--accent-2);
         }
 
         .stat .label {
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.8);
+            font-size: 0.7rem;
+            color: var(--gray);
         }
 
-        /* تذييل */
+        /* Footer */
         .footer {
-            text-align: center;
-            margin-top: 50px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            color: rgba(255,255,255,0.7);
-            font-size: 0.85rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            padding: 28px 0 20px;
+            margin-top: auto;
+            border-top: 1px solid var(--border);
         }
 
-        @media (max-width: 768px) {
-            .books-grid {
-                grid-template-columns: 1fr;
+        .footer-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .footer-col h4 {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            border-right: 3px solid var(--primary);
+            padding-right: 8px;
+            color: var(--dark);
+        }
+
+        .footer-col a {
+            display: block;
+            color: var(--gray);
+            text-decoration: none;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: var(--primary);
+        }
+
+        .footer-col p {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            color: var(--gray);
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 450px) {
+            .container {
+                padding: 0 12px;
             }
-            .feature-stats {
-                gap: 20px;
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+            .book-info {
+                padding: 16px;
             }
         }
     </style>
 </head>
 <body>
+    <header class="header">
+        <div class="container header-content">
+            <a href="index.html" class="logo"><i class="fas fa-book-open"></i><span>اسهل حل</span></a>
+            <nav class="nav-links">
+                <a href="login.html"><i class="fas fa-sign-in-alt"></i> دخول</a>
+                <a href="help.html"><i class="fas fa-question-circle"></i> المساعدة</a>
+                <a href="about.html"><i class="fas fa-info-circle"></i> حول</a>
+                <div class="theme-toggle-btn" id="themeToggle"><i class="fas fa-sun" id="themeIcon"></i></div>
+            </nav>
+        </div>
+    </header>
+
     <div class="container">
         <div class="hero">
-            <h1><i class="fas fa-book-open"></i> المكتبة التفاعلية</h1>
-            <p>اكتشف عالماً من القصص الملهمة والحكايات المشوقة بتجربة قراءة فريدة</p>
+            <h1>المكتبة التفاعلية</h1>
+            <p>اكتشف عالماً من القصص الملهمة بتجربة قراءة ثلاثية الأبعاد</p>
         </div>
 
         <div class="books-grid">
-            <!-- الكتاب الأول -->
             <div class="book-card" onclick="openBook('قصص ملهمة')">
                 <div class="book-cover">
-                    <img src="page1.jpg" alt="قصص ملهمة" onerror="this.src='https://placehold.co/600x400/667eea/white?text=صورة+غير+موجودة'">
-                    <div class="book-overlay">
-                        <div class="read-icon">
-                            <i class="fas fa-play"></i>
-                        </div>
-                    </div>
+                    <img src="page1.jpg" alt="قصص ملهمة" onerror="this.style.display='none'; this.parentElement.style.background='var(--light)'; this.parentElement.innerHTML='<div style=\"display:flex;align-items:center;justify-content:center;height:100%;color:var(--gray);\">صورة غير متوفرة</div>'">
                 </div>
                 <div class="book-info">
                     <h3>قصص ملهمة</h3>
                     <p>مجموعة من أجمل القصص التي تمنحك الأمل وتحفزك على تحقيق أحلامك</p>
                     <div class="book-meta">
-                        <span><i class="fas fa-pagelines"></i> 6 صفحات</span>
-                        <span><i class="fas fa-clock"></i> 5 دقائق</span>
+                        <span>6 صفحات</span>
+                        <span>5 دقائق قراءة</span>
                     </div>
-                    <button class="btn-read" onclick="openBook('قصص ملهمة')">
-                        <i class="fas fa-book-open"></i> اقرأ الآن
-                    </button>
+                    <button class="btn-read">اقرأ الكتاب</button>
                 </div>
             </div>
 
-            <!-- الكتاب الثاني -->
             <div class="book-card" onclick="openBook('حكايات النجاح')">
                 <div class="book-cover">
-                    <img src="page1.jpg" alt="حكايات النجاح" onerror="this.src='https://placehold.co/600x400/764ba2/white?text=صورة+غير+موجودة'">
-                    <div class="book-overlay">
-                        <div class="read-icon">
-                            <i class="fas fa-play"></i>
-                        </div>
-                    </div>
+                    <img src="page1.jpg" alt="حكايات النجاح" onerror="this.style.display='none'; this.parentElement.style.background='var(--light)'; this.parentElement.innerHTML='<div style=\"display:flex;align-items:center;justify-content:center;height:100%;color:var(--gray);\">صورة غير متوفرة</div>'">
                 </div>
                 <div class="book-info">
                     <h3>حكايات النجاح</h3>
                     <p>قصص واقعية لأشخاص تحدوا الصعاب وحققوا المستحيل</p>
                     <div class="book-meta">
-                        <span><i class="fas fa-pagelines"></i> 8 صفحات</span>
-                        <span><i class="fas fa-clock"></i> 7 دقائق</span>
+                        <span>8 صفحات</span>
+                        <span>7 دقائق قراءة</span>
                     </div>
-                    <button class="btn-read" onclick="openBook('حكايات النجاح')">
-                        <i class="fas fa-book-open"></i> اقرأ الآن
-                    </button>
+                    <button class="btn-read">اقرأ الكتاب</button>
                 </div>
             </div>
 
-            <!-- الكتاب الثالث -->
             <div class="book-card" onclick="openBook('حكم وعبر')">
                 <div class="book-cover">
-                    <img src="page1.jpg" alt="حكم وعبر" onerror="this.src='https://placehold.co/600x400/06d6a0/white?text=صورة+غير+موجودة'">
-                    <div class="book-overlay">
-                        <div class="read-icon">
-                            <i class="fas fa-play"></i>
-                        </div>
-                    </div>
+                    <img src="page1.jpg" alt="حكم وعبر" onerror="this.style.display='none'; this.parentElement.style.background='var(--light)'; this.parentElement.innerHTML='<div style=\"display:flex;align-items:center;justify-content:center;height:100%;color:var(--gray);\">صورة غير متوفرة</div>'">
                 </div>
                 <div class="book-info">
                     <h3>حكم وعبر</h3>
                     <p>خواطر وأقوال مأثورة تلهمك في رحلة حياتك</p>
                     <div class="book-meta">
-                        <span><i class="fas fa-pagelines"></i> 5 صفحات</span>
-                        <span><i class="fas fa-clock"></i> 4 دقائق</span>
+                        <span>5 صفحات</span>
+                        <span>4 دقائق قراءة</span>
                     </div>
-                    <button class="btn-read" onclick="openBook('حكم وعبر')">
-                        <i class="fas fa-book-open"></i> اقرأ الآن
-                    </button>
+                    <button class="btn-read">اقرأ الكتاب</button>
                 </div>
             </div>
         </div>
 
         <div class="feature-card">
-            <h3><i class="fas fa-magic"></i> تجربة قراءة مميزة</h3>
-            <p>تصفح الكتاب بتقنية ثلاثية الأبعاد، مع تأثيرات قلب الصفحات الواقعية</p>
+            <h3>تجربة قراءة مميزة</h3>
+            <p>تصفح الكتاب بتقنية ثلاثية الأبعاد مع تأثيرات قلب الصفحات الواقعية</p>
             <div class="feature-stats">
                 <div class="stat">
                     <div class="number">3D</div>
                     <div class="label">تقليب واقعي</div>
                 </div>
                 <div class="stat">
-                    <div class="number">📱</div>
-                    <div class="label">متجاوب مع الجوال</div>
+                    <div class="number">يدعم اللمس</div>
+                    <div class="label">سحب وضغط</div>
                 </div>
                 <div class="stat">
-                    <div class="number">🖱️</div>
-                    <div class="label">سحب وضغط</div>
+                    <div class="number">متجاوب</div>
+                    <div class="label">لجميع الأجهزة</div>
                 </div>
             </div>
         </div>
-
-        <div class="footer">
-            <p>© 2026 اسهل حل | جميع الحقوق محفوظة</p>
-        </div>
     </div>
 
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>اسهل حل</h4>
+                    <p>دردشة سريعة وآمنة</p>
+                </div>
+                <div class="footer-col">
+                    <h4>الدعم</h4>
+                    <a href="help.html">المساعدة</a>
+                    <a href="about.html">حول</a>
+                </div>
+                <div class="footer-col">
+                    <h4>القانوني</h4>
+                    <a href="privacy.html">الخصوصية</a>
+                    <a href="terms.html">الشروط</a>
+                </div>
+                <div class="footer-col">
+                    <h4>روابط</h4>
+                    <a href="login.html">الدخول</a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2026 اسهل حل</p>
+            </div>
+        </div>
+    </footer>
+
     <script>
+        // الثيم المظلم
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        }
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('darkMode', 'false');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('darkMode', 'true');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+
         function openBook(bookTitle) {
-            // تخزين عنوان الكتاب في sessionStorage
             sessionStorage.setItem('bookTitle', bookTitle);
-            // الانتقال إلى صفحة الكتاب
             window.location.href = 'book.html';
         }
     </script>
