@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>اسهل حل | تعلم الإنجليزية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent-yellow: #fbbf24;
+            --accent-green: #34d399;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --bg-gradient: linear-gradient(135deg, #fbbf24 0%, #10b981 50%, #6366f1 100%);
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --border: rgba(0, 0, 0, 0.2);
+            --shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.25);
+            --font-base: 14px;
+        }
+
+        [data-theme="dark"] {
+            --primary: #818cf8;
+            --primary-dark: #6366f1;
+            --secondary: #34d399;
+            --accent-yellow: #fbbf24;
+            --accent-green: #10b981;
+            --danger: #f87171;
+            --dark: #f3f4f6;
+            --light: #1f2937;
+            --gray: #9ca3af;
+            --bg-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            --card-bg: rgba(17, 24, 39, 0.95);
+            --border: rgba(255, 255, 255, 0.2);
+            --shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--dark);
+            font-size: var(--font-base);
+            line-height: 1.4;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+            padding: 8px 0;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            text-decoration: none;
+            flex-wrap: wrap;
+        }
+
+        .logo-main {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo-main i {
+            font-size: 1.6rem;
+        }
+
+        .logo-sub {
+            font-size: 0.7rem;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .theme-toggle-btn {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(0,0,0,0.4);
+            color: white;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.1rem;
+        }
+
+        .theme-toggle-btn:hover {
+            background: rgba(0,0,0,0.5);
+            transform: scale(1.05);
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 40px;
+            padding: 20px 22px;
+            margin: 20px 0 0;
+            border: 2px solid rgba(0, 0, 0, 0.15);
+            box-shadow: var(--shadow);
+        }
+
+        .auth-card h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-yellow), var(--accent-green), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .auth-card p {
+            color: var(--gray);
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.8rem;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: var(--light);
+            border: 1.5px solid rgba(0, 0, 0, 0.2);
+            border-radius: 60px;
+            padding: 4px 16px;
+            transition: all 0.2s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .input-wrapper i:first-child {
+            color: var(--primary);
+            font-size: 0.9rem;
+            margin-left: 8px;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 9px 0;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+        }
+
+        .toggle-pwd {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .strength-meter {
+            margin-top: 5px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        #password-strength {
+            width: 0%;
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .strength-text {
+            font-size: 0.65rem;
+            margin-top: 3px;
+            text-align: right;
+        }
+
+        .match-message {
+            font-size: 0.65rem;
+            margin-top: 3px;
+            text-align: right;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-google {
+            width: 100%;
+            padding: 10px;
+            border: 1.5px solid rgba(0, 0, 0, 0.2);
+            border-radius: 60px;
+            background: var(--card-bg);
+            color: var(--dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn-google:hover {
+            background: var(--light);
+            border-color: var(--primary);
+        }
+
+        .guest-btn {
+            width: 100%;
+            padding: 10px;
+            border: 1.5px solid rgba(0, 0, 0, 0.2);
+            border-radius: 60px;
+            background: var(--card-bg);
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            font-size: 0.9rem;
+        }
+
+        .guest-btn:hover {
+            background: var(--light);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 16px 0;
+            color: var(--gray);
+            font-size: 0.7rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        }
+
+        .divider span {
+            padding: 0 12px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(16, 185, 129, 0.1));
+            border-radius: 28px;
+            padding: 12px 14px;
+            margin: 16px 0 12px;
+            border-right: 4px solid var(--accent-yellow);
+            border-left: 1px solid rgba(0, 0, 0, 0.1);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .info-box h4 {
+            color: var(--primary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .info-box p {
+            margin-bottom: 5px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            color: var(--dark);
+        }
+
+        .info-box i {
+            color: var(--accent-green);
+            margin-top: 2px;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.8rem;
+        }
+
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.75rem;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .loader {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            padding: 10px 0 6px;
+            margin-top: 16px;
+            border-top: 2px solid rgba(0, 0, 0, 0.15);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .footer-col h4 {
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+            border-right: 3px solid var(--accent-yellow);
+            padding-right: 6px;
+            color: white;
+        }
+
+        .footer-col a {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            margin-bottom: 2px;
+            font-size: 0.65rem;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 5px;
+            border-top: 1px solid rgba(0,0,0,0.2);
+            color: rgba(255,255,255,0.6);
+            font-size: 0.6rem;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 550px) {
+            .auth-card {
+                padding: 16px;
+                margin: 15px 0 0;
+            }
+            .logo-main {
+                font-size: 1.3rem;
+            }
+            .logo-sub {
+                font-size: 0.65rem;
+            }
+            .footer {
+                margin-top: 12px;
+                padding: 8px 0 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <div class="logo-main">
+                    <i class="fas fa-chalkboard-user"></i>
+                    <span>اسهل حل</span>
+                </div>
+                <div class="logo-sub">تعلم الإنجليزية</div>
+            </div>
+            <div class="theme-toggle-btn" id="themeToggle">
+                <i class="fas fa-sun" id="themeIcon"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="auth-card">
+            <h2>ابدأ رحلتك</h2>
+            <p>سجل الآن لتتعلم الإنجليزية بطريقة ذكية</p>
+
+            <form id="register-form">
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="full-name" placeholder="أدخل اسمك الثلاثي" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="your@email.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                        <button type="button" class="toggle-pwd" id="toggle-password"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <div class="strength-meter">
+                        <div id="password-strength"></div>
+                    </div>
+                    <div class="strength-text" id="strength-text"></div>
+                </div>
+                <div class="form-group">
+                    <label>تأكيد كلمة المرور</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-check-circle"></i>
+                        <input type="password" id="confirm-password" placeholder="••••••••" required>
+                        <button type="button" class="toggle-pwd" id="toggle-confirm"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <div class="match-message" id="match-message"></div>
+                </div>
+                <button type="submit" id="submit-btn" class="btn-primary">
+                    <span>إنشاء حساب</span>
+                    <div id="loader" class="loader"></div>
+                </button>
+            </form>
+
+            <div class="divider"><span>أو</span></div>
+
+            <button id="google-signup" class="btn-google">
+                <i class="fab fa-google"></i> التسجيل بحساب Google
+            </button>
+
+            <button id="guest-login" class="guest-btn">
+                <i class="fas fa-user-friends"></i> دخول سريع (ضيف)
+            </button>
+
+            <div class="info-box">
+                <h4><i class="fas fa-graduation-cap"></i> كيف يعمل نظام التعلم؟</h4>
+                <p><i class="fas fa-check-circle"></i> بعد إنشاء حساب، سيتم حفظ تقدمك تلقائياً في 4 مهارات: القراءة، الكتابة، الاستماع، النطق.</p>
+                <p><i class="fas fa-chart-line"></i> كل مهارة تحتوي على 10 مستويات متدرجة، تزداد صعوبة مع تقدمك.</p>
+                <p><i class="fas fa-trophy"></i> عند إكمال مستوى بنجاح، يتم رفع مستواك ويظهر تقدمك في الشاشة الرئيسية.</p>
+                <p><i class="fas fa-sync-alt"></i> يمكنك العودة لاستكمال المستويات في أي وقت، وسيتم حفظ إنجازاتك.</p>
+            </div>
+
+            <div class="login-link">
+                لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a>
+            </div>
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col"><h4>اسهل حل</h4><p style="color: rgba(255,255,255,0.7); font-size:0.65rem;">تعلم الإنجليزية بذكاء</p></div>
+                <div class="footer-col"><h4>الدعم</h4><a href="help.html">المساعدة</a><a href="about.html">حول</a></div>
+                <div class="footer-col"><h4>القانوني</h4><a href="privacy.html">الخصوصية</a><a href="terms.html">الشروط</a></div>
+                <div class="footer-col"><h4>روابط</h4><a href="signup.html">إنشاء حساب</a></div>
+            </div>
+            <div class="copyright"><p>© 2026 اسهل حل - تعلم الإنجليزية بذكاء</p></div>
+        </div>
+    </footer>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+            authDomain: "zio3-8ffdd.firebaseapp.com",
+            databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+            projectId: "zio3-8ffdd",
+            storageBucket: "zio3-8ffdd.firebasestorage.app",
+            messagingSenderId: "560939348415",
+            appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+            measurementId: "G-CVN2B2D0RD"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+        const provider = new firebase.auth.GoogleAuthProvider();
+
+        // Admin credentials (only these will grant admin access)
+        const ADMIN_EMAIL = "ashlhl.iq@gmail.com";
+        const ADMIN_PASSWORD = "sgadalyasiri";
+
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        }
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('darkMode', 'false');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('darkMode', 'true');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+
+        // DOM elements
+        const form = document.getElementById('register-form');
+        const nameInput = document.getElementById('full-name');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmInput = document.getElementById('confirm-password');
+        const togglePassword = document.getElementById('toggle-password');
+        const toggleConfirm = document.getElementById('toggle-confirm');
+        const passwordStrength = document.getElementById('password-strength');
+        const strengthText = document.getElementById('strength-text');
+        const matchMessage = document.getElementById('match-message');
+        const googleBtn = document.getElementById('google-signup');
+        const submitBtn = document.getElementById('submit-btn');
+        const loader = document.getElementById('loader');
+        const errorMsgDiv = document.getElementById('errorMessage');
+        const guestBtn = document.getElementById('guest-login');
+
+        function showError(message) {
+            errorMsgDiv.textContent = message;
+            setTimeout(() => { errorMsgDiv.textContent = ''; }, 4000);
+        }
+
+        function setLoading(loading) {
+            if (loading) {
+                loader.style.display = 'inline-block';
+                submitBtn.disabled = true;
+                googleBtn.disabled = true;
+                guestBtn.disabled = true;
+            } else {
+                loader.style.display = 'none';
+                submitBtn.disabled = false;
+                googleBtn.disabled = false;
+                guestBtn.disabled = false;
+            }
+        }
+
+        // Password strength meter
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 6) strength++;
+            if (password.match(/[a-z]/)) strength++;
+            if (password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            
+            const percent = (strength / 5) * 100;
+            passwordStrength.style.width = percent + '%';
+            
+            if (percent <= 20) {
+                passwordStrength.style.background = '#ef4444';
+                strengthText.textContent = 'ضعيفة جداً';
+                strengthText.style.color = '#ef4444';
+            } else if (percent <= 40) {
+                passwordStrength.style.background = '#f59e0b';
+                strengthText.textContent = 'ضعيفة';
+                strengthText.style.color = '#f59e0b';
+            } else if (percent <= 60) {
+                passwordStrength.style.background = '#10b981';
+                strengthText.textContent = 'جيدة';
+                strengthText.style.color = '#10b981';
+            } else if (percent <= 80) {
+                passwordStrength.style.background = '#6366f1';
+                strengthText.textContent = 'قوية';
+                strengthText.style.color = '#6366f1';
+            } else {
+                passwordStrength.style.background = '#10b981';
+                strengthText.textContent = 'قوية جداً';
+                strengthText.style.color = '#10b981';
+            }
+            return strength >= 3;
+        }
+
+        // Check password match
+        function checkPasswordMatch() {
+            const password = passwordInput.value;
+            const confirm = confirmInput.value;
+            if (confirm === '') {
+                matchMessage.textContent = '';
+                return false;
+            }
+            if (password === confirm) {
+                matchMessage.innerHTML = '<i class="fas fa-check-circle"></i> كلمة المرور متطابقة';
+                matchMessage.style.color = '#10b981';
+                return true;
+            } else {
+                matchMessage.innerHTML = '<i class="fas fa-exclamation-circle"></i> كلمة المرور غير متطابقة';
+                matchMessage.style.color = '#ef4444';
+                return false;
+            }
+        }
+
+        passwordInput.addEventListener('input', () => {
+            checkPasswordStrength(passwordInput.value);
+            checkPasswordMatch();
+        });
+        confirmInput.addEventListener('input', checkPasswordMatch);
+
+        // Toggle password visibility
+        function toggleVisibility(input, toggleBtn) {
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            toggleBtn.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        }
+        togglePassword.addEventListener('click', () => toggleVisibility(passwordInput, togglePassword));
+        toggleConfirm.addEventListener('click', () => toggleVisibility(confirmInput, toggleConfirm));
+
+        // Email validation
+        function isValidEmail(email) {
+            return /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(email);
+        }
+
+        // Save user data to database
+        async function saveUserToDB(userId, name, email, isGuest = false, isAdmin = false) {
+            await db.ref(`users/${userId}`).set({
+                name: name,
+                email: email,
+                isGuest: isGuest,
+                isAdmin: isAdmin,
+                createdAt: Date.now()
+            });
+            const progress = isAdmin ? {
+                reading: { level: 10, completed: [1,2,3,4,5,6,7,8,9,10] },
+                writing: { level: 10, completed: [1,2,3,4,5,6,7,8,9,10] },
+                listening: { level: 10, completed: [1,2,3,4,5,6,7,8,9,10] },
+                speaking: { level: 10, completed: [1,2,3,4,5,6,7,8,9,10] }
+            } : {
+                reading: { level: 1, completed: [] },
+                writing: { level: 1, completed: [] },
+                listening: { level: 1, completed: [] },
+                speaking: { level: 1, completed: [] }
+            };
+            await db.ref(`users/${userId}/progress`).set(progress);
+        }
+
+        // Email signup
+        async function handleEmailSignup(e) {
+            e.preventDefault();
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            const confirm = confirmInput.value;
+
+            if (!name || !email || !password) {
+                showError('يرجى ملء جميع الحقول');
+                return;
+            }
+            if (!isValidEmail(email)) {
+                showError('البريد الإلكتروني غير صالح');
+                return;
+            }
+            if (password !== confirm) {
+                showError('كلمة المرور غير متطابقة');
+                return;
+            }
+            if (password.length < 6) {
+                showError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+            if (!checkPasswordStrength(password)) {
+                showError('كلمة المرور ضعيفة جداً. استخدم حروف كبيرة وصغيرة وأرقام ورموز');
+                return;
+            }
+
+            setLoading(true);
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                await user.updateProfile({ displayName: name });
+                // Check if this is the admin credentials
+                const isAdmin = (email === ADMIN_EMAIL && password === ADMIN_PASSWORD);
+                await saveUserToDB(user.uid, name, email, false, isAdmin);
+                showError('تم إنشاء الحساب بنجاح! جاري التوجيه...');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } catch (error) {
+                let msg = error.message;
+                if (msg.includes('email-already-in-use')) msg = 'البريد الإلكتروني مستخدم بالفعل';
+                else if (msg.includes('weak-password')) msg = 'كلمة المرور ضعيفة جداً';
+                showError(msg);
+                setLoading(false);
+            }
+        }
+
+        // Google signup
+        async function handleGoogleSignup() {
+            setLoading(true);
+            try {
+                const result = await auth.signInWithPopup(provider);
+                const user = result.user;
+                const snapshot = await db.ref(`users/${user.uid}`).once('value');
+                if (!snapshot.exists()) {
+                    await saveUserToDB(user.uid, user.displayName || user.email.split('@')[0], user.email, false, false);
+                }
+                showError('تم التسجيل بنجاح عبر جوجل!');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } catch (error) {
+                showError(error.message);
+                setLoading(false);
+            }
+        }
+
+        // Guest login (anonymous)
+        async function handleGuestLogin() {
+            setLoading(true);
+            try {
+                const result = await auth.signInAnonymously();
+                const user = result.user;
+                const guestName = `زائر_${Math.floor(Math.random() * 10000)}`;
+                await saveUserToDB(user.uid, guestName, 'guest@easysolution.com', true, false);
+                showError('تم الدخول كضيف. سيتم حفظ تقدمك مؤقتاً');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } catch (error) {
+                showError('فشل الدخول كضيف: ' + error.message);
+                setLoading(false);
+            }
+        }
+
+        form.addEventListener('submit', handleEmailSignup);
+        googleBtn.addEventListener('click', handleGoogleSignup);
+        guestBtn.addEventListener('click', handleGuestLogin);
+    </script>
+</body>
+</html>
