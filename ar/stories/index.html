@@ -7,10 +7,8 @@
   <style>
     :root{
       --bg1:#0b0f14;
-      --bg2:#151a22;
       --paper:#fbf7ef;
       --ink:#1d1d1d;
-      --shadow: rgba(0,0,0,.35);
       --flip-speed: .95s;
     }
 
@@ -148,6 +146,7 @@
     }
 
     .front{
+      position:relative;
       background:#efe6d8;
     }
 
@@ -165,7 +164,7 @@
       position:absolute;
       inset:0;
       background:
-        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.52) 72%, rgba(0,0,0,.72)),
+        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.42) 58%, rgba(0,0,0,.72)),
         radial-gradient(circle at 50% 15%, rgba(255,255,255,.18), transparent 35%);
       pointer-events:none;
     }
@@ -175,7 +174,7 @@
       left:0;
       right:0;
       bottom:0;
-      z-index:2;
+      z-index:3;
       padding:18px 18px 16px;
       text-align:right;
       color:#fff;
@@ -186,15 +185,15 @@
       font-size:20px;
       font-weight:700;
       line-height:1.3;
-      text-shadow:0 3px 10px rgba(0,0,0,.5);
+      text-shadow:0 3px 10px rgba(0,0,0,.6);
     }
 
     .caption .story-sub{
       margin:0;
       font-size:13px;
-      color:rgba(255,255,255,.86);
+      color:rgba(255,255,255,.9);
       line-height:1.6;
-      text-shadow:0 2px 8px rgba(0,0,0,.45);
+      text-shadow:0 2px 8px rgba(0,0,0,.5);
     }
 
     .back{
@@ -254,6 +253,7 @@
       transform: translateX(-120%);
       pointer-events:none;
       opacity:0;
+      z-index:2;
     }
 
     .sheet.flipped .sheen{
@@ -338,7 +338,7 @@
   <div class="topbar">
     <div class="titlebox">
       <h1>كتاب صور 3D</h1>
-      <p>تقليب واقعي يمين ويسار — الصور داخل نفس مجلد stories</p>
+      <p>النص فوق الصورة، وكل الصفحات تستخدم page1.jpg</p>
     </div>
     <div class="counter" id="counter">1 / 1</div>
   </div>
@@ -355,20 +355,20 @@
   </div>
 
   <div class="footer">
-    ضع الصور داخل مجلد <b>stories</b> ثم غيّر الأسماء داخل المصفوفة بالأسفل.
+    ضع صورة واحدة فقط باسم <b>page1.jpg</b> داخل مجلد stories.
     <br>
-    السحب يمين/يسار يعمل على الهاتف، والنقر على الكتاب يقلب الصفحة أيضًا.
+    جميع الصفحات ستستخدم نفس الصورة مع نص مختلف فوقها.
   </div>
 </div>
 
 <script>
   const pages = [
-    { image: "cover.jpg", title: "غلاف القصة", sub: "رحلة تبدأ من الغلاف", note: "في مدينةٍ هادئة، كان هناك كتاب قديم ينام على رفٍ خشبي منذ سنوات." },
+    { image: "page1.jpg", title: "غلاف القصة", sub: "رحلة تبدأ من الغلاف", note: "في مدينةٍ هادئة، كان هناك كتاب قديم ينام على رفٍ خشبي منذ سنوات." },
     { image: "page1.jpg", title: "الصفحة الأولى", sub: "الليلة التي تغيّر فيها كل شيء", note: "في إحدى الليالي، فتحت ليلى الكتاب ووجدت بين صفحاته رسالةً مكتوبة بخطٍ صغير." },
-    { image: "page2.jpg", title: "الصفحة الثانية", sub: "الرسالة الغامضة", note: "قالت الرسالة: إذا أردتِ معرفة الحقيقة، فاتّبعي الضوء الذي لا يراه أحد." },
-    { image: "page3.jpg", title: "الصفحة الثالثة", sub: "البداية نحو المجهول", note: "خرجت ليلى من البيت، وسارت في الأزقة حتى وصلت إلى بوابة قديمة خلف الحديقة." },
-    { image: "page4.jpg", title: "الصفحة الرابعة", sub: "الباب السري", note: "عندما دفعت الباب، انفتح على ممرٍ طويل مضاءٍ بمصابيح خافتة، وكأن المكان ينتظرها." },
-    { image: "page5.jpg", title: "الصفحة الخامسة", sub: "النهاية الجميلة", note: "في نهاية الممر وجدت صندوقًا صغيرًا بداخله مفتاحًا وورقةً تقول: لقد عثرتِ على شجاعتك." }
+    { image: "page1.jpg", title: "الصفحة الثانية", sub: "الرسالة الغامضة", note: "قالت الرسالة: إذا أردتِ معرفة الحقيقة، فاتّبعي الضوء الذي لا يراه أحد." },
+    { image: "page1.jpg", title: "الصفحة الثالثة", sub: "البداية نحو المجهول", note: "خرجت ليلى من البيت، وسارت في الأزقة حتى وصلت إلى بوابة قديمة خلف الحديقة." },
+    { image: "page1.jpg", title: "الصفحة الرابعة", sub: "الباب السري", note: "عندما دفعت الباب، انفتح على ممرٍ طويل مضاءٍ بمصابيح خافتة، وكأن المكان ينتظرها." },
+    { image: "page1.jpg", title: "الصفحة الخامسة", sub: "النهاية الجميلة", note: "في نهاية الممر وجدت صندوقًا صغيرًا بداخله مفتاحًا وورقةً تقول: لقد عثرتِ على شجاعتك." }
   ];
 
   const book = document.getElementById("book");
