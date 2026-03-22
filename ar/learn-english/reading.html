@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>اسهل حل | القراءة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        :root {
+            --primary: #1e40af;
+            --primary-dark: #1e3a8a;
+            --primary-light: #3b82f6;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #111827;
+            --light: #f9fafb;
+            --gray: #4b5563;
+            --gray-light: #e5e7eb;
+            --bg-gradient: linear-gradient(135deg, #f3f4f6 0%, #e0e7ff 100%);
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+        }
+
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --secondary: #34d399;
+            --accent: #fbbf24;
+            --danger: #f87171;
+            --dark: #f3f4f6;
+            --light: #1f2937;
+            --gray: #9ca3af;
+            --gray-light: #374151;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --card-bg: #1f2937;
+            --border: #374151;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 8px 0;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+        [data-theme="dark"] .header {
+            background: rgba(31, 41, 55, 0.9);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            text-decoration: none;
+            flex-wrap: wrap;
+        }
+
+        .logo-main {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo-main i {
+            font-size: 1.6rem;
+            color: var(--primary);
+        }
+
+        .logo-sub {
+            font-size: 0.7rem;
+            background: var(--primary-light);
+            padding: 2px 8px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .user-panel {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--gray-light);
+            padding: 5px 15px;
+            border-radius: 60px;
+        }
+        [data-theme="dark"] .user-panel {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .user-name {
+            color: var(--dark);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .user-level {
+            background: var(--accent);
+            color: #111827;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+
+        .back-btn {
+            background: var(--primary-light);
+            border: none;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+        }
+
+        .theme-toggle-btn {
+            background: var(--gray-light);
+            border: 1px solid var(--border);
+            color: var(--dark);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.1rem;
+        }
+
+        .page-title {
+            margin: 20px 0 10px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .progress-card {
+            background: var(--card-bg);
+            border-radius: 32px;
+            padding: 16px 20px;
+            margin: 10px 0 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .progress-bar-bg {
+            background: var(--gray-light);
+            border-radius: 20px;
+            height: 12px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: var(--secondary);
+            width: 0%;
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.3s;
+        }
+
+        .level-text {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .lesson-card {
+            background: var(--card-bg);
+            border-radius: 28px;
+            padding: 20px;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .lesson-card.completed {
+            border-right: 4px solid var(--secondary);
+            background: linear-gradient(135deg, var(--card-bg), rgba(16, 185, 129, 0.05));
+        }
+
+        .lesson-card.current {
+            border-right: 4px solid var(--accent);
+            background: linear-gradient(135deg, var(--card-bg), rgba(245, 158, 11, 0.05));
+        }
+
+        .lesson-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+            filter: grayscale(0.1);
+        }
+
+        .lesson-card:hover:not(.locked) {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        .lesson-number {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .lesson-status {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 2px 10px;
+            border-radius: 30px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .status-current {
+            background: var(--accent);
+            color: white;
+        }
+
+        .status-locked {
+            background: var(--gray);
+            color: white;
+        }
+
+        .lock-icon {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: var(--gray);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            z-index: 2000;
+            display: none;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 700px) {
+            .lessons-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .user-panel {
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <div class="logo-main">
+                    <i class="fas fa-chalkboard-user"></i>
+                    <span>اسهل حل</span>
+                </div>
+                <div class="logo-sub">تعلم الإنجليزية</div>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <div class="user-panel">
+                    <i class="fas fa-user-circle" style="color:var(--primary);"></i>
+                    <span class="user-name" id="user-name"></span>
+                    <span class="user-level" id="global-level">المستوى: 1</span>
+                    <a href="dashboard.html" class="back-btn"><i class="fas fa-arrow-right"></i> العودة</a>
+                </div>
+                <div class="theme-toggle-btn" id="themeToggle">
+                    <i class="fas fa-sun" id="themeIcon"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="page-title"><i class="fas fa-book-open"></i> القراءة</h1>
+
+        <div class="progress-card">
+            <div class="progress-header">
+                <span>التقدم في القراءة</span>
+                <span id="reading-percent">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-fill" id="reading-progress-fill"></div>
+            </div>
+            <div class="level-text" id="reading-level-text">المستوى الحالي: 1 من 10</div>
+        </div>
+
+        <div class="lessons-grid" id="lessons-grid"></div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+            authDomain: "zio3-8ffdd.firebaseapp.com",
+            databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+            projectId: "zio3-8ffdd",
+            storageBucket: "zio3-8ffdd.firebasestorage.app",
+            messagingSenderId: "560939348415",
+            appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+            measurementId: "G-CVN2B2D0RD"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        let currentUser = null;
+        let readingData = { level: 1, completed: [] };
+        let userProgress = {};
+
+        const userNameSpan = document.getElementById('user-name');
+        const globalLevelSpan = document.getElementById('global-level');
+        const readingPercentSpan = document.getElementById('reading-percent');
+        const readingProgressFill = document.getElementById('reading-progress-fill');
+        const readingLevelText = document.getElementById('reading-level-text');
+        const lessonsGrid = document.getElementById('lessons-grid');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const toast = document.getElementById('toast');
+
+        function showToast(msg, isError = false) {
+            toast.textContent = msg;
+            toast.style.backgroundColor = isError ? '#ef4444' : '#10b981';
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+
+        function computeGlobalLevel() {
+            let totalCompleted = 0;
+            for (let skill in userProgress) {
+                totalCompleted += (userProgress[skill]?.completed?.length || 0);
+            }
+            let level = Math.floor((totalCompleted / 40) * 100) + 1;
+            if (level > 100) level = 100;
+            if (level < 1) level = 1;
+            return level;
+        }
+
+        function updateUI() {
+            // Update reading specific
+            const completedCount = readingData.completed.length;
+            const percent = (completedCount / 10) * 100;
+            readingPercentSpan.innerText = Math.round(percent) + '%';
+            readingProgressFill.style.width = percent + '%';
+            readingLevelText.innerText = `المستوى الحالي: ${readingData.level} من 10`;
+
+            // Update global level in header
+            const globalLevel = computeGlobalLevel();
+            globalLevelSpan.innerText = `المستوى: ${globalLevel}`;
+
+            // Generate lessons grid
+            let html = '';
+            for (let i = 1; i <= 10; i++) {
+                const isCompleted = readingData.completed.includes(i);
+                const isCurrent = (i === readingData.level && !isCompleted);
+                const isLocked = (i > readingData.level && !isCompleted);
+
+                let statusClass = '';
+                let statusText = '';
+                let lockIcon = '';
+                let clickable = true;
+
+                if (isCompleted) {
+                    statusClass = 'completed';
+                    statusText = '<span class="lesson-status status-completed"><i class="fas fa-check-circle"></i> مكتمل</span>';
+                } else if (isCurrent) {
+                    statusClass = 'current';
+                    statusText = '<span class="lesson-status status-current"><i class="fas fa-play-circle"></i> المستوى الحالي</span>';
+                } else if (isLocked) {
+                    statusClass = 'locked';
+                    statusText = '<span class="lesson-status status-locked"><i class="fas fa-lock"></i> مقفل</span>';
+                    lockIcon = '<i class="fas fa-lock lock-icon"></i>';
+                    clickable = false;
+                }
+
+                html += `
+                    <div class="lesson-card ${statusClass}" data-level="${i}" data-clickable="${clickable}">
+                        ${lockIcon}
+                        <div class="lesson-number">المستوى ${i}</div>
+                        <div>${statusText}</div>
+                    </div>
+                `;
+            }
+            lessonsGrid.innerHTML = html;
+
+            // Add click handlers
+            document.querySelectorAll('.lesson-card').forEach(card => {
+                const level = parseInt(card.dataset.level);
+                const clickable = card.dataset.clickable === 'true';
+                card.addEventListener('click', () => {
+                    if (!clickable) {
+                        showToast('هذا المستوى مقفل، أكمل المستويات السابقة أولاً', true);
+                        return;
+                    }
+                    // Since user asked not to add content, just show a message
+                    showToast(`سيتم إضافة محتوى المستوى ${level} قريباً`, false);
+                });
+            });
+        }
+
+        async function loadUserData(uid) {
+            const progressRef = db.ref(`users/${uid}/progress`);
+            const snapshot = await progressRef.get();
+            if (snapshot.exists()) {
+                userProgress = snapshot.val();
+                readingData = userProgress.reading || { level: 1, completed: [] };
+            } else {
+                userProgress = {
+                    reading: { level: 1, completed: [] },
+                    writing: { level: 1, completed: [] },
+                    listening: { level: 1, completed: [] },
+                    speaking: { level: 1, completed: [] }
+                };
+                readingData = userProgress.reading;
+                await db.ref(`users/${uid}/progress`).set(userProgress);
+            }
+            updateUI();
+        }
+
+        // Theme
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        }
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('darkMode', 'false');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('darkMode', 'true');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+
+        // Auth state
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                const userData = await db.ref(`users/${user.uid}`).once('value');
+                const name = userData.val()?.name || user.displayName || user.email.split('@')[0];
+                userNameSpan.innerText = name;
+                await loadUserData(user.uid);
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>
