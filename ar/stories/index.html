@@ -362,14 +362,13 @@
 </div>
 
 <script>
-  // غيّر أسماء الصور هنا حسب ملفاتك داخل مجلد stories
   const pages = [
-    { image: "cover.jpg", title: "غلاف القصة", sub: "ابدأ من هنا", note: "صفحة الغلاف" },
-    { image: "page1.jpg", title: "الصفحة الأولى", sub: "صورة + إحساس كتاب", note: "اقرأ الصفحة الأولى" },
-    { image: "page2.jpg", title: "الصفحة الثانية", sub: "تقليب 3D واقعي", note: "اقرأ الصفحة الثانية" },
-    { image: "page3.jpg", title: "الصفحة الثالثة", sub: "نفس التأثير لكل صورة", note: "اقرأ الصفحة الثالثة" },
-    { image: "page4.jpg", title: "الصفحة الرابعة", sub: "يمكنك إضافة صفحات أكثر", note: "اقرأ الصفحة الرابعة" },
-    { image: "page5.jpg", title: "الصفحة الخامسة", sub: "سهل التعديل والتطوير", note: "اقرأ الصفحة الخامسة" }
+    { image: "cover.jpg", title: "غلاف القصة", sub: "رحلة تبدأ من الغلاف", note: "في مدينةٍ هادئة، كان هناك كتاب قديم ينام على رفٍ خشبي منذ سنوات." },
+    { image: "page1.jpg", title: "الصفحة الأولى", sub: "الليلة التي تغيّر فيها كل شيء", note: "في إحدى الليالي، فتحت ليلى الكتاب ووجدت بين صفحاته رسالةً مكتوبة بخطٍ صغير." },
+    { image: "page2.jpg", title: "الصفحة الثانية", sub: "الرسالة الغامضة", note: "قالت الرسالة: إذا أردتِ معرفة الحقيقة، فاتّبعي الضوء الذي لا يراه أحد." },
+    { image: "page3.jpg", title: "الصفحة الثالثة", sub: "البداية نحو المجهول", note: "خرجت ليلى من البيت، وسارت في الأزقة حتى وصلت إلى بوابة قديمة خلف الحديقة." },
+    { image: "page4.jpg", title: "الصفحة الرابعة", sub: "الباب السري", note: "عندما دفعت الباب، انفتح على ممرٍ طويل مضاءٍ بمصابيح خافتة، وكأن المكان ينتظرها." },
+    { image: "page5.jpg", title: "الصفحة الخامسة", sub: "النهاية الجميلة", note: "في نهاية الممر وجدت صندوقًا صغيرًا بداخله مفتاحًا وورقةً تقول: لقد عثرتِ على شجاعتك." }
   ];
 
   const book = document.getElementById("book");
@@ -500,7 +499,6 @@
   nextBtn.addEventListener("click", nextPage);
   prevBtn.addEventListener("click", prevPage);
 
-  // دعم السحب للموبايل
   let touchStartX = 0;
   let touchEndX = 0;
 
@@ -518,7 +516,6 @@
     }
   }, { passive: true });
 
-  // دعم الأسهم من الكيبورد
   document.addEventListener("keydown", (e) => {
     if (e.key === "ArrowRight") nextPage();
     if (e.key === "ArrowLeft") prevPage();
