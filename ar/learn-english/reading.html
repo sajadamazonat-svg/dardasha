@@ -42,15 +42,16 @@
         .progress-fill { height:100%; width:0%; background:var(--primary); border-radius:20px; transition:width 0.4s; }
         .current-level-text { margin-top:0.8rem; text-align:center; font-size:0.9rem; color:var(--text-sec); }
         .groups-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.5rem; margin-top:1rem; }
-        .group-card { background:var(--card); border-radius:28px; padding:1.5rem; border:1px solid var(--border); transition:0.2s; box-shadow:var(--shadow); }
+        .group-card { background:var(--card); border-radius:28px; padding:1.5rem; border:1px solid var(--border); transition:0.2s; box-shadow:var(--shadow); position:relative; overflow:hidden; }
         .group-card:hover { transform:translateY(-5px); }
-        .group-number { font-size:2rem; font-weight:800; display:inline-block; background:var(--primary); color:white; width:50px; height:50px; line-height:50px; text-align:center; border-radius:30px; margin-bottom:1rem; }
+        .group-cover { width:100%; height:120px; object-fit:cover; border-radius:20px; margin-bottom:1rem; background:#f0e5d8; }
+        .group-number { font-size:2rem; font-weight:800; display:inline-block; background:var(--primary); color:white; width:50px; height:50px; line-height:50px; text-align:center; border-radius:30px; margin-bottom:0.5rem; }
         .group-status { display:inline-block; padding:0.2rem 0.8rem; border-radius:30px; font-size:0.7rem; font-weight:bold; margin-right:0.5rem; }
         .status-completed { background:var(--completed); color:white; }
         .status-current { background:var(--current); color:#1f2937; }
         .status-locked { background:var(--locked); color:white; }
-        .group-title { font-size:1.2rem; font-weight:700; margin:0.8rem 0; }
-        .btn-group { width:100%; padding:0.7rem; margin-top:1rem; border:none; border-radius:40px; background:var(--primary); color:white; font-weight:bold; cursor:pointer; transition:0.2s; }
+        .group-title { font-size:1.2rem; font-weight:700; margin:0.5rem 0; }
+        .btn-group { width:100%; padding:0.7rem; margin-top:0.5rem; border:none; border-radius:40px; background:var(--primary); color:white; font-weight:bold; cursor:pointer; transition:0.2s; }
         .btn-group:disabled { background:var(--locked); cursor:not-allowed; opacity:0.6; }
         .btn-group:not(:disabled):hover { background:var(--primary-hover); transform:scale(0.98); }
         .word-list { display:flex; flex-direction:column; gap:1rem; }
@@ -108,6 +109,12 @@
         <div class="admin-toggle" id="adminToggle">🔧 لوحة الإدارة</div>
         <div id="adminContent" class="admin-content">
             <div class="admin-form">
+                <h4>صورة الغلاف للمجموعة</h4>
+                <select id="groupCoverSelect"></select>
+                <input type="file" id="groupCoverUpload" accept="image/*">
+                <button id="uploadGroupCoverBtn">رفع صورة الغلاف</button>
+                <hr>
+                <h4>إدارة الكلمات</h4>
                 <select id="groupSelect"></select>
                 <select id="wordSelect"></select>
                 <div id="sentenceSection">
@@ -116,7 +123,7 @@
                     <button id="saveSentenceBtn">حفظ الجملة</button>
                 </div>
                 <input type="file" id="imageUpload" accept="image/*">
-                <button id="uploadImageBtn">رفع صورة جديدة</button>
+                <button id="uploadImageBtn">رفع صورة جديدة للكلمة</button>
                 <div id="existingImages" class="image-list"></div>
             </div>
         </div>
@@ -141,6 +148,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database(), storage = firebase.storage(), auth = firebase.auth();
     const STORAGE_PATH = "ashlhl/images/";
+    const GROUP_COVER_PATH = "ashlhl/covers/";
 
     const groups = [
         { name: "المجموعة 1 - الأساسيات", words: ["Apple","Cat","Dog","House","Car","Sun","Moon","Water","Book","Tree"] },
@@ -195,6 +203,10 @@
     updateUnlocked();
 
     let currentUser=null, isAdmin=false;
+
+    async function getGroupCover(groupIndex){
+        try{ let snap=await db.ref(`groupCovers/${groupIndex}`).once("value"); return snap.val() || ""; }catch(e){ return ""; }
+    }
     async function getSentence(w){
         try{ let snap=await db.ref(`sentences/${w}`).once("value"); let d=snap.val(); if(d&&d.en&&d.ar) return d; }catch(e){}
         return defaultSentences[w]||{en:"",ar:""};
@@ -204,7 +216,7 @@
         return [];
     }
 
-    function renderGroups(){
+    async function renderGroups(){
         let grid=document.getElementById("groupsGrid");
         grid.innerHTML="";
         for(let i=1;i<=groups.length;i++){
@@ -214,8 +226,14 @@
             if(comp){ cls="status-completed"; txt="مكتمل"; }
             else if(unlock){ cls="status-current"; txt="متاح"; }
             else{ cls="status-locked"; txt="مقفل"; dis=true; }
+            let cover = await getGroupCover(i);
             let card=document.createElement("div"); card.className="group-card";
-            card.innerHTML=`<div><span class="group-number">${i}</span><span class="group-status ${cls}">${txt}</span></div><div class="group-title">${groups[i-1].name}</div><button class="btn-group" data-group="${i}" ${dis?"disabled":""}>عرض الكلمات والصور</button>`;
+            card.innerHTML=`
+                ${cover ? `<img class="group-cover" src="${cover}" alt="صورة المجموعة">` : '<div class="group-cover" style="background:#f0e5d8;"></div>'}
+                <div><span class="group-number">${i}</span><span class="group-status ${cls}">${txt}</span></div>
+                <div class="group-title">${groups[i-1].name}</div>
+                <button class="btn-group" data-group="${i}" ${dis?"disabled":""}>عرض الكلمات والصور</button>
+            `;
             grid.appendChild(card);
         }
         document.querySelectorAll(".btn-group:not([disabled])").forEach(btn=>btn.addEventListener("click",()=>showGroupWords(parseInt(btn.getAttribute("data-group")))));
@@ -248,6 +266,7 @@
         document.getElementById("wordModal").classList.add("active");
     }
 
+    // ========== TEST SYSTEM (working) ==========
     let curTestGroup=null, curAns={}, helpUsed=false;
     function startTest(num){
         let group=groups[num-1];
@@ -319,29 +338,40 @@
         } else { showToast(`❌ لم تنجح: ${correct} من ${qs.length} صحيحة. تحتاج إلى 9 للإجتياز.`); }
     }
 
-    // Admin functions
-    async function uploadImage(w,f){
+    // ========== ADMIN FUNCTIONS ==========
+    async function uploadGroupCover(groupIdx, file){
         if(!isAdmin) return;
-        let ts=Date.now(), ext=f.name.split('.').pop();
-        let ref=storage.ref(`${STORAGE_PATH}${w}_${ts}.${ext}`);
+        let ref=storage.ref(`${GROUP_COVER_PATH}group_${groupIdx}`);
         try{
-            await ref.put(f);
+            await ref.put(file);
             let url=await ref.getDownloadURL();
-            let snap=await db.ref(`images/${w}`).once("value");
+            await db.ref(`groupCovers/${groupIdx}`).set(url);
+            showToast(`تم رفع صورة الغلاف للمجموعة ${groupIdx}`);
+            renderGroups();
+        }catch(e){ showToast("خطأ: "+e.message); }
+    }
+    async function uploadWordImage(word, file){
+        if(!isAdmin) return;
+        let ts=Date.now(), ext=file.name.split('.').pop();
+        let ref=storage.ref(`${STORAGE_PATH}${word}_${ts}.${ext}`);
+        try{
+            await ref.put(file);
+            let url=await ref.getDownloadURL();
+            let snap=await db.ref(`images/${word}`).once("value");
             let arr=snap.val();
             if(!Array.isArray(arr)) arr=arr?[arr]:[];
             arr.push(url);
-            await db.ref(`images/${w}`).set(arr);
-            showToast(`تم رفع صورة لكلمة ${w}`);
+            await db.ref(`images/${word}`).set(arr);
+            showToast(`تم رفع صورة لكلمة ${word}`);
         }catch(e){ showToast("خطأ: "+e.message); }
     }
-    async function saveSentence(w,en,ar){
+    async function saveSentence(word, en, ar){
         if(!isAdmin) return;
-        await db.ref(`sentences/${w}`).set({en,ar});
-        showToast(`تم حفظ الجملة لكلمة ${w}`);
+        await db.ref(`sentences/${word}`).set({en,ar});
+        showToast(`تم حفظ الجملة لكلمة ${word}`);
     }
-    async function loadImages(w){
-        let imgs=await getImages(w);
+    async function loadImages(word){
+        let imgs=await getImages(word);
         let cont=document.getElementById("existingImages");
         cont.innerHTML="";
         if(imgs.length===0){ cont.innerHTML="<span>لا توجد صور لهذه الكلمة</span>"; return; }
@@ -353,16 +383,16 @@
                 if(confirm("حذف الصورة؟")){
                     let newArr=[...imgs];
                     newArr.splice(i,1);
-                    await db.ref(`images/${w}`).set(newArr.length?newArr:null);
-                    loadImages(w);
+                    await db.ref(`images/${word}`).set(newArr.length?newArr:null);
+                    loadImages(word);
                     showToast("تم حذف الصورة");
                 }
             };
             wrap.appendChild(img); wrap.appendChild(del); cont.appendChild(wrap);
         });
     }
-    async function loadSentenceUI(w){
-        let sent=await getSentence(w);
+    async function loadSentenceUI(word){
+        let sent=await getSentence(word);
         document.getElementById("sentenceEn").value=sent.en;
         document.getElementById("sentenceAr").value=sent.ar;
     }
@@ -372,12 +402,24 @@
         groups.forEach((g,i)=>{ let opt=document.createElement("option"); opt.value=i; opt.textContent=g.name; gs.appendChild(opt); });
         gs.onchange=updateWordSelect;
         updateWordSelect();
+
+        let groupCoverSelect=document.getElementById("groupCoverSelect");
+        groupCoverSelect.innerHTML="";
+        groups.forEach((g,i)=>{ let opt=document.createElement("option"); opt.value=i+1; opt.textContent=g.name; groupCoverSelect.appendChild(opt); });
+        document.getElementById("uploadGroupCoverBtn").onclick=async()=>{
+            let file=document.getElementById("groupCoverUpload").files[0];
+            if(!file){ showToast("اختر صورة"); return; }
+            let groupIdx=parseInt(groupCoverSelect.value);
+            await uploadGroupCover(groupIdx, file);
+            document.getElementById("groupCoverUpload").value="";
+        };
+
         document.getElementById("uploadImageBtn").onclick=async()=>{
             let file=document.getElementById("imageUpload").files[0];
             if(!file){ showToast("اختر صورة"); return; }
             let gIdx=parseInt(gs.value), wIdx=parseInt(document.getElementById("wordSelect").value);
             let word=groups[gIdx].words[wIdx];
-            await uploadImage(word,file);
+            await uploadWordImage(word,file);
             document.getElementById("imageUpload").value="";
             await loadImages(word);
         };
@@ -404,7 +446,7 @@
         };
     }
 
-    // Auth – no login button, only logout for admin
+    // Auth
     function initAuth(){
         auth.onAuthStateChanged(async(user)=>{
             if(user && user.email==="ashlhl.iq@gmail.com"){
