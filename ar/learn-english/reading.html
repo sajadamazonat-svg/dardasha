@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>اسهل حل - مهارة القراءة</title>
-    <!-- Google Fonts (Cairo) -->
+    <title>تعلم الإنجليزية - القراءة المركزة مع الصور</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6 (Free Icons) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -19,8 +16,6 @@
             box-sizing: border-box;
             font-family: 'Cairo', sans-serif;
         }
-
-        /* CSS Variables - Light Mode (default) */
         :root {
             --bg-gradient-start: #f3f4f6;
             --bg-gradient-end: #e0e7ff;
@@ -33,14 +28,12 @@
             --completed: #10b981;
             --current: #f59e0b;
             --locked: #6b7280;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
             --toast-bg: #1f2937;
             --toast-text: #f9fafb;
             --modal-overlay: rgba(0,0,0,0.5);
             --progress-bg: #e5e7eb;
         }
-
-        /* Dark Mode */
         [data-theme="dark"] {
             --bg-gradient-start: #0f172a;
             --bg-gradient-end: #1e1b4b;
@@ -53,13 +46,12 @@
             --completed: #34d399;
             --current: #fbbf24;
             --locked: #9ca3af;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -2px rgba(0,0,0,0.2);
             --toast-bg: #111827;
             --toast-text: #f3f4f6;
             --modal-overlay: rgba(0,0,0,0.7);
             --progress-bg: #374151;
         }
-
         body {
             background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
             color: var(--text-primary);
@@ -67,14 +59,10 @@
             padding: 1.5rem;
             transition: background 0.3s, color 0.3s;
         }
-
-        /* Container */
         .container {
             max-width: 1280px;
             margin: 0 auto;
         }
-
-        /* Header */
         .header {
             display: flex;
             flex-wrap: wrap;
@@ -86,10 +74,8 @@
             padding: 1rem 1.5rem;
             border-radius: 40px;
             box-shadow: var(--shadow);
-            backdrop-filter: blur(4px);
             border: 1px solid var(--border-color);
         }
-
         .logo h1 {
             font-size: 1.8rem;
             font-weight: 800;
@@ -102,20 +88,11 @@
             font-size: 0.8rem;
             color: var(--text-secondary);
         }
-
         .user-info {
             display: flex;
             align-items: center;
             gap: 1rem;
             flex-wrap: wrap;
-        }
-        .user-name {
-            font-weight: 600;
-            background: var(--primary);
-            color: white;
-            padding: 0.4rem 1rem;
-            border-radius: 40px;
-            font-size: 0.9rem;
         }
         .global-level {
             background: var(--current);
@@ -144,8 +121,6 @@
             color: white;
             border-color: var(--primary);
         }
-
-        /* Progress Card */
         .progress-card {
             background: var(--card-bg);
             border-radius: 32px;
@@ -179,28 +154,24 @@
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
-
-        /* Lessons Grid */
-        .lessons-grid {
+        .groups-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
             margin-top: 1rem;
         }
-        .lesson-card {
+        .group-card {
             background: var(--card-bg);
             border-radius: 28px;
             padding: 1.5rem;
             border: 1px solid var(--border-color);
             transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
         }
-        .lesson-card:hover {
+        .group-card:hover {
             transform: translateY(-5px);
         }
-        .lesson-number {
+        .group-number {
             font-size: 2rem;
             font-weight: 800;
             display: inline-block;
@@ -213,7 +184,7 @@
             border-radius: 30px;
             margin-bottom: 1rem;
         }
-        .lesson-status {
+        .group-status {
             display: inline-block;
             padding: 0.2rem 0.8rem;
             border-radius: 30px;
@@ -224,12 +195,12 @@
         .status-completed { background: var(--completed); color: white; }
         .status-current { background: var(--current); color: #1f2937; }
         .status-locked { background: var(--locked); color: white; }
-        .lesson-title {
+        .group-title {
             font-size: 1.2rem;
             font-weight: 700;
             margin: 0.8rem 0;
         }
-        .btn-study {
+        .btn-group {
             width: 100%;
             padding: 0.7rem;
             margin-top: 1rem;
@@ -241,31 +212,70 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .btn-study:disabled {
+        .btn-group:disabled {
             background: var(--locked);
             cursor: not-allowed;
             opacity: 0.6;
         }
-        .btn-study:not(:disabled):hover {
+        .btn-group:not(:disabled):hover {
             background: var(--primary-hover);
             transform: scale(0.98);
         }
-
-        /* Modal */
-        .modal {
-            display: none;
+        /* Word list with gallery */
+        .word-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .word-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--progress-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .word-info {
+            flex: 1;
+            min-width: 150px;
+        }
+        .word-en {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .word-ar {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        .image-gallery {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .gallery-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+        }
+        .modal, .admin-modal {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: var(--modal-overlay);
+            display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
             backdrop-filter: blur(4px);
         }
-        .modal.active {
+        .modal.active, .admin-modal.active {
             display: flex;
         }
         .modal-content {
@@ -294,54 +304,74 @@
             cursor: pointer;
             color: var(--text-secondary);
         }
-        .passage {
-            background: var(--progress-bg);
-            padding: 1rem;
-            border-radius: 20px;
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-        .question-item {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            background: var(--progress-bg);
-            border-radius: 20px;
-        }
-        .question-text {
-            font-weight: 700;
-            margin-bottom: 0.8rem;
-        }
-        .options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-        }
-        .option {
+        .admin-panel {
+            margin-top: 2rem;
             background: var(--card-bg);
+            border-radius: 32px;
+            padding: 1rem;
             border: 1px solid var(--border-color);
-            padding: 0.5rem 1rem;
-            border-radius: 40px;
+        }
+        .admin-toggle {
+            text-align: center;
             cursor: pointer;
-            transition: 0.2s;
+            color: var(--primary);
+            font-weight: bold;
+            padding: 0.5rem;
         }
-        .option.selected {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
+        .admin-content {
+            display: none;
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 0.5rem;
         }
-        .btn-evaluate {
-            background: var(--completed);
-            color: #1f2937;
-            border: none;
+        .admin-content.active {
+            display: block;
+        }
+        .admin-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .admin-form select, .admin-form input, .admin-form button {
             padding: 0.8rem;
             border-radius: 40px;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 1rem;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+        .admin-form button {
+            background: var(--primary);
+            color: white;
             cursor: pointer;
         }
-
-        /* Toast */
+        .image-list {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin: 0.5rem 0;
+            align-items: center;
+        }
+        .image-list img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        .quiz-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .btn-evaluate, .btn-hint {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-evaluate { background: var(--completed); color: #1f2937; }
+        .btn-hint { background: var(--primary); color: white; }
         .toast {
             position: fixed;
             bottom: 20px;
@@ -350,400 +380,388 @@
             color: var(--toast-text);
             padding: 0.8rem 1.5rem;
             border-radius: 50px;
-            box-shadow: var(--shadow);
             z-index: 1100;
             transform: translateX(120%);
             transition: transform 0.3s ease;
-            font-size: 0.9rem;
         }
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        /* Responsive */
+        .toast.show { transform: translateX(0); }
         @media (max-width: 640px) {
             body { padding: 1rem; }
-            .header { flex-direction: column; align-items: stretch; text-align: center; }
+            .header { flex-direction: column; text-align: center; }
             .user-info { justify-content: center; }
+            .word-item { flex-direction: column; align-items: stretch; }
+            .quiz-buttons { flex-direction: column; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="logo">
-                <h1>اسهل حل</h1>
-                <p>تعلم الإنجليزية بسهولة</p>
-            </div>
-            <div class="user-info">
-                <span class="user-name" id="userName">مرحباً !</span>
-                <span class="global-level" id="globalLevel">المستوى: --</span>
-                <button class="btn-icon" id="backDashboardBtn"><i class="fas fa-arrow-right"></i> لوحة التحكم</button>
-                <button class="btn-icon" id="darkModeToggle"><i class="fas fa-moon"></i> ليلي</button>
-            </div>
-        </div>
-
-        <!-- Progress Card -->
-        <div class="progress-card">
-            <div class="progress-title">
-                <span><i class="fas fa-book-open"></i> التقدم في القراءة</span>
-                <span id="progressPercent">0%</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="readingProgressFill"></div>
-            </div>
-            <div class="current-level-text" id="currentLevelText">المستوى الحالي: 1 من 10</div>
-        </div>
-
-        <!-- Lessons Grid -->
-        <h2 style="margin-bottom: 1rem;"><i class="fas fa-layer-group"></i> الدروس المتاحة</h2>
-        <div class="lessons-grid" id="lessonsGrid">
-            <!-- ستتم تعبئتها بواسطة JS -->
-            <div style="text-align: center; grid-column: 1/-1;">جارٍ تحميل الدروس...</div>
+<div class="container">
+    <div class="header">
+        <div class="logo"><h1>تعلم الإنجليزية</h1><p>القراءة المركزة - كلمات مع صور متعددة</p></div>
+        <div class="user-info">
+            <span class="global-level" id="globalLevel">المستوى: --</span>
+            <button class="btn-icon" id="darkModeToggle"><i class="fas fa-moon"></i> ليلي</button>
+            <button class="btn-icon" id="resetBtn"><i class="fas fa-undo"></i> إعادة تعيين</button>
         </div>
     </div>
-
-    <!-- Modal for Lesson -->
-    <div id="lessonModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle">عنوان الدرس</h3>
-                <button class="close-modal" id="closeModalBtn">&times;</button>
-            </div>
-            <div id="modalBody">
-                <!-- dynamic content -->
+    <div class="progress-card">
+        <div class="progress-title"><span><i class="fas fa-layer-group"></i> تقدم المجموعات</span><span id="progressPercent">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="current-level-text" id="currentLevelText">المجموعة الحالية: 1 من 5</div>
+    </div>
+    <div class="groups-grid" id="groupsGrid"></div>
+    <div class="admin-panel">
+        <div class="admin-toggle" id="adminToggle">🔧 لوحة الإدارة (للمدير فقط)</div>
+        <div id="adminContent" class="admin-content">
+            <div class="admin-form">
+                <input type="password" id="adminPassword" placeholder="كلمة المرور">
+                <button id="adminLoginBtn">تسجيل الدخول</button>
+                <div id="adminTools" style="display: none;">
+                    <select id="groupSelect"></select>
+                    <select id="wordSelect"></select>
+                    <input type="file" id="imageUpload" accept="image/*">
+                    <button id="uploadImageBtn">رفع صورة جديدة</button>
+                    <div id="existingImages" class="image-list"></div>
+                    <div id="uploadStatus"></div>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Toast -->
-    <div id="toast" class="toast">رسالة</div>
+<!-- Modal for word list -->
+<div id="wordModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="wordModalTitle">كلمات المجموعة</h3><button class="close-modal" id="closeWordModal">&times;</button></div>
+        <div id="wordModalBody"></div>
+        <button class="btn-group" id="startTestFromModal">بدء الاختبار</button>
+    </div>
+</div>
 
-    <script>
-        // ======================== FIREBASE CONFIG (استبدل ببيانات مشروعك) ========================
-        const firebaseConfig = {
-            apiKey: "AIzaSyB3xXxXxXxXxXxXxXxXxXxXxXxXxXxX", // استبدل
-            authDomain: "your-project.firebaseapp.com",
-            databaseURL: "https://your-project-default-rtdb.firebaseio.com",
-            projectId: "your-project",
-            storageBucket: "your-project.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcdef123456"
+<!-- Modal for test -->
+<div id="testModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header"><h3 id="testModalTitle">اختبار المجموعة</h3><button class="close-modal" id="closeTestModal">&times;</button></div>
+        <div id="testModalBody"></div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    // Firebase Config
+    const firebaseConfig = {
+        apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+        authDomain: "zio3-8ffdd.firebaseapp.com",
+        databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+        projectId: "zio3-8ffdd",
+        storageBucket: "zio3-8ffdd.firebasestorage.app",
+        messagingSenderId: "560939348415",
+        appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+        measurementId: "G-CVN2B2D0RD"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const storage = firebase.storage();
+    const STORAGE_PATH = "ashlhl/images/";
+
+    // Data
+    const groups = [
+        { name: "المجموعة 1 - الأساسيات", words: ["Apple","Cat","Dog","House","Car","Sun","Moon","Water","Book","Tree"] },
+        { name: "المجموعة 2 - الحياة اليومية", words: ["Bread","Milk","School","Teacher","Friend","Family","Work","Sleep","Eat","Drink"] },
+        { name: "المجموعة 3 - المشاعر والأفعال", words: ["Happy","Sad","Big","Small","Run","Walk","Love","Help","Play","Learn"] },
+        { name: "المجموعة 4 - الطبيعة والبيئة", words: ["Sky","River","Mountain","Flower","Bird","Fish","Wind","Rain","Snow","Star"] },
+        { name: "المجموعة 5 - المدرسة والمستقبل", words: ["Study","Exam","Success","Future","Dream","Goal","Smart","Strong","Kind","Brave"] }
+    ];
+    const arabicMeanings = {
+        "Apple":"تفاحة","Cat":"قطة","Dog":"كلب","House":"منزل","Car":"سيارة","Sun":"شمس","Moon":"قمر","Water":"ماء","Book":"كتاب","Tree":"شجرة",
+        "Bread":"خبز","Milk":"حليب","School":"مدرسة","Teacher":"معلم","Friend":"صديق","Family":"عائلة","Work":"عمل","Sleep":"نوم","Eat":"أكل","Drink":"شرب",
+        "Happy":"سعيد","Sad":"حزين","Big":"كبير","Small":"صغير","Run":"يركض","Walk":"يمشي","Love":"حب","Help":"مساعدة","Play":"لعب","Learn":"تعلم",
+        "Sky":"سماء","River":"نهر","Mountain":"جبل","Flower":"زهرة","Bird":"طائر","Fish":"سمكة","Wind":"ريح","Rain":"مطر","Snow":"ثلج","Star":"نجم",
+        "Study":"دراسة","Exam":"امتحان","Success":"نجاح","Future":"مستقبل","Dream":"حلم","Goal":"هدف","Smart":"ذكي","Strong":"قوي","Kind":"لطيف","Brave":"شجاع"
+    };
+
+    let progress = JSON.parse(localStorage.getItem("reading_center_progress_v3")) || { unlockedGroups: 1, completedGroups: [] };
+    function saveProgress() { localStorage.setItem("reading_center_progress_v3", JSON.stringify(progress)); }
+    function updateUnlocked() {
+        let maxCompleted = 0;
+        for (let i=1; i<=groups.length; i++) if (progress.completedGroups.includes(i)) maxCompleted = i;
+        progress.unlockedGroups = maxCompleted + 1;
+        if (progress.unlockedGroups > groups.length) progress.unlockedGroups = groups.length;
+        saveProgress();
+    }
+    updateUnlocked();
+
+    function renderGroups() {
+        const grid = document.getElementById("groupsGrid");
+        grid.innerHTML = "";
+        for (let i=1; i<=groups.length; i++) {
+            const isCompleted = progress.completedGroups.includes(i);
+            const isUnlocked = i <= progress.unlockedGroups;
+            let statusClass = "", statusText = "", disabled = false;
+            if (isCompleted) { statusClass = "status-completed"; statusText = "مكتمل"; }
+            else if (isUnlocked) { statusClass = "status-current"; statusText = "متاح"; }
+            else { statusClass = "status-locked"; statusText = "مقفل"; disabled = true; }
+            const card = document.createElement("div"); card.className = "group-card";
+            card.innerHTML = `
+                <div><span class="group-number">${i}</span><span class="group-status ${statusClass}">${statusText}</span></div>
+                <div class="group-title">${groups[i-1].name}</div>
+                <button class="btn-group" data-group="${i}" ${disabled ? "disabled" : ""}>عرض الكلمات والصور</button>
+            `;
+            grid.appendChild(card);
+        }
+        document.querySelectorAll(".btn-group:not([disabled])").forEach(btn => {
+            btn.addEventListener("click", () => showGroupWords(parseInt(btn.getAttribute("data-group"))));
+        });
+        const completedCount = progress.completedGroups.length;
+        const percent = (completedCount / groups.length) * 100;
+        document.getElementById("progressFill").style.width = percent + "%";
+        document.getElementById("progressPercent").innerText = Math.floor(percent) + "%";
+        document.getElementById("currentLevelText").innerHTML = `المجموعة الحالية: ${progress.unlockedGroups} من ${groups.length}`;
+        const globalLevel = Math.floor((completedCount / groups.length) * 100);
+        document.getElementById("globalLevel").innerHTML = `المستوى الإجمالي: ${globalLevel}`;
+    }
+
+    // Get image URLs for a word (array)
+    async function getWordImages(word) {
+        try {
+            const snapshot = await database.ref(`images/${word}`).once("value");
+            const data = snapshot.val();
+            if (Array.isArray(data)) return data;
+            if (typeof data === "string") return [data];
+            return [];
+        } catch(e) { console.warn(e); return []; }
+    }
+
+    async function showGroupWords(groupNum) {
+        const group = groups[groupNum-1];
+        document.getElementById("wordModalTitle").innerText = `كلمات ${group.name}`;
+        const body = document.getElementById("wordModalBody");
+        body.innerHTML = '<div class="word-list"></div>';
+        const list = body.querySelector(".word-list");
+        for (let word of group.words) {
+            const images = await getWordImages(word);
+            const wordDiv = document.createElement("div"); wordDiv.className = "word-item";
+            let galleryHtml = '<div class="image-gallery">';
+            if (images.length === 0) galleryHtml += '<img class="gallery-img" src="https://placehold.co/80x80?text=صورة" alt="لا توجد صور">';
+            else images.forEach(img => galleryHtml += `<img class="gallery-img" src="${img}" alt="${word}" onerror="this.src='https://placehold.co/80x80?text=خطأ'">`);
+            galleryHtml += '</div>';
+            wordDiv.innerHTML = `
+                <div class="word-info"><div class="word-en">${word}</div><div class="word-ar">${arabicMeanings[word]}</div></div>
+                ${galleryHtml}
+            `;
+            list.appendChild(wordDiv);
+        }
+        document.getElementById("startTestFromModal").onclick = () => { closeWordModal(); startTest(groupNum); };
+        document.getElementById("wordModal").classList.add("active");
+    }
+
+    // Test logic
+    let currentTestGroup = null, currentAnswers = {}, helpUsed = false;
+    function startTest(groupNum) {
+        const group = groups[groupNum-1];
+        currentTestGroup = groupNum;
+        currentAnswers = {};
+        helpUsed = false;
+        const questions = group.words.map((word, idx) => {
+            const correctAr = arabicMeanings[word];
+            let otherWords = group.words.filter(w => w !== word).map(w => arabicMeanings[w]);
+            while (otherWords.length < 3) otherWords.push("???");
+            let shuffled = [...otherWords];
+            for (let j=shuffled.length-1; j>0; j--) { const r=Math.floor(Math.random()*(j+1)); [shuffled[j], shuffled[r]] = [shuffled[r], shuffled[j]]; }
+            const options = [correctAr, ...shuffled.slice(0,3)];
+            for (let j=options.length-1; j>0; j--) { const r=Math.floor(Math.random()*(j+1)); [options[j], options[r]] = [options[r], options[j]]; }
+            const correctIndex = options.indexOf(correctAr);
+            return { text: `ما معنى كلمة "${word}"؟`, options, correct: correctIndex };
+        });
+        showTestModal(questions);
+    }
+    function showTestModal(questions) {
+        document.getElementById("testModalTitle").innerHTML = `اختبار ${groups[currentTestGroup-1].name}`;
+        const body = document.getElementById("testModalBody");
+        let html = "";
+        questions.forEach((q, idx) => {
+            html += `<div class="question-item" data-qidx="${idx}"><div class="question-text">${idx+1}. ${q.text}</div><div class="options">`;
+            q.options.forEach((opt, optIdx) => html += `<div class="option" data-q="${idx}" data-opt="${optIdx}">${opt}</div>`);
+            html += `</div></div>`;
+        });
+        html += `<div class="quiz-buttons"><button class="btn-evaluate" id="evaluateBtn">تقييم الإجابات</button><button class="btn-hint" id="hintBtn">مساعدة (مرة واحدة)</button></div><div id="helpUsedMsg" style="margin-top:0.5rem; font-size:0.8rem;"></div>`;
+        body.innerHTML = html;
+        // Attach option click handlers
+        document.querySelectorAll(".option").forEach(opt => {
+            opt.addEventListener("click", (e) => {
+                const qIdx = parseInt(opt.getAttribute("data-q"));
+                const optIdx = parseInt(opt.getAttribute("data-opt"));
+                opt.closest(".question-item").querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
+                opt.classList.add("selected");
+                currentAnswers[qIdx] = optIdx;
+            });
+        });
+        const evaluateBtn = document.getElementById("evaluateBtn");
+        const hintBtn = document.getElementById("hintBtn");
+        evaluateBtn.onclick = () => evaluateTest(questions);
+        hintBtn.onclick = () => useHint(questions);
+        document.getElementById("helpUsedMsg").innerText = helpUsed ? "تم استخدام المساعدة." : "يمكنك استخدام مساعدة واحدة.";
+        document.getElementById("testModal").classList.add("active");
+    }
+    function useHint(questions) {
+        if (helpUsed) { showToast("لا يمكن استخدام المساعدة أكثر من مرة."); return; }
+        const unanswered = [];
+        for (let i=0; i<questions.length; i++) if (currentAnswers[i] === undefined) unanswered.push(i);
+        if (unanswered.length === 0) { showToast("لقد أجبت على جميع الأسئلة."); return; }
+        const randomIdx = unanswered[Math.floor(Math.random() * unanswered.length)];
+        const correct = questions[randomIdx].correct;
+        const questionDiv = document.querySelector(`.question-item[data-qidx="${randomIdx}"]`);
+        if (!questionDiv) return;
+        const options = questionDiv.querySelectorAll(".option");
+        if (!options[correct]) return;
+        options[correct].click(); // triggers the option click handler
+        helpUsed = true;
+        const hintBtn = document.getElementById("hintBtn");
+        if (hintBtn) hintBtn.disabled = true;
+        document.getElementById("helpUsedMsg").innerText = "تم استخدام المساعدة.";
+        showToast(`تم توفير الإجابة الصحيحة للسؤال ${randomIdx+1}.`);
+    }
+    function evaluateTest(questions) {
+        let correct = 0;
+        for (let i=0; i<questions.length; i++) {
+            if (currentAnswers[i] !== undefined && currentAnswers[i] === questions[i].correct) correct++;
+        }
+        if (correct >= 9) {
+            if (!progress.completedGroups.includes(currentTestGroup)) {
+                progress.completedGroups.push(currentTestGroup);
+                updateUnlocked();
+                saveProgress();
+                renderGroups();
+                showToast(`🎉 نجحت! أكملت المجموعة ${currentTestGroup}.`);
+                closeTestModal();
+            } else { showToast("هذه المجموعة مكتملة بالفعل."); closeTestModal(); }
+        } else {
+            showToast(`❌ لم تنجح: ${correct} من ${questions.length} صحيحة. تحتاج إلى 9 للإجتياز.`);
+        }
+    }
+
+    // Admin functions (multiple images per word)
+    let isAdmin = false;
+    async function uploadImageForWord(word, file) {
+        if (!isAdmin) return false;
+        const timestamp = Date.now();
+        const ext = file.name.split('.').pop();
+        const fileName = `${word}_${timestamp}.${ext}`;
+        const storageRef = storage.ref(`${STORAGE_PATH}${fileName}`);
+        try {
+            await storageRef.put(file);
+            const url = await storageRef.getDownloadURL();
+            // Get existing images array
+            const snap = await database.ref(`images/${word}`).once("value");
+            let images = snap.val();
+            if (!Array.isArray(images)) images = images ? [images] : [];
+            images.push(url);
+            await database.ref(`images/${word}`).set(images);
+            showToast(`تم رفع صورة لكلمة ${word}`);
+            return true;
+        } catch(e) { showToast("خطأ في الرفع: "+e.message); return false; }
+    }
+    async function loadExistingImages(word) {
+        const images = await getWordImages(word);
+        const container = document.getElementById("existingImages");
+        container.innerHTML = "";
+        if (images.length === 0) { container.innerHTML = "<span>لا توجد صور لهذه الكلمة</span>"; return; }
+        images.forEach((url, idx) => {
+            const wrapper = document.createElement("div");
+            wrapper.style.display = "inline-flex";
+            wrapper.style.flexDirection = "column";
+            wrapper.style.alignItems = "center";
+            const img = document.createElement("img");
+            img.src = url;
+            img.style.width = "60px";
+            img.style.height = "60px";
+            img.style.objectFit = "cover";
+            img.style.borderRadius = "12px";
+            const deleteBtn = document.createElement("button");
+            deleteBtn.innerText = "🗑️";
+            deleteBtn.style.margin = "5px 0 0";
+            deleteBtn.style.background = "none";
+            deleteBtn.style.border = "none";
+            deleteBtn.style.cursor = "pointer";
+            deleteBtn.style.fontSize = "1rem";
+            deleteBtn.onclick = async () => {
+                if (confirm("هل تريد حذف هذه الصورة؟")) {
+                    let newImages = [...images];
+                    newImages.splice(idx, 1);
+                    await database.ref(`images/${word}`).set(newImages.length ? newImages : null);
+                    loadExistingImages(word);
+                    showToast("تم حذف الصورة");
+                }
+            };
+            wrapper.appendChild(img);
+            wrapper.appendChild(deleteBtn);
+            container.appendChild(wrapper);
+        });
+    }
+    function initAdmin() {
+        const toggle = document.getElementById("adminToggle");
+        const content = document.getElementById("adminContent");
+        toggle.onclick = () => content.classList.toggle("active");
+        document.getElementById("adminLoginBtn").onclick = () => {
+            const pass = document.getElementById("adminPassword").value;
+            if (pass === "admin123") {
+                isAdmin = true;
+                document.getElementById("adminTools").style.display = "block";
+                showToast("تم الدخول كمدير");
+                populateAdminSelects();
+            } else { showToast("كلمة المرور غير صحيحة"); }
         };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database();
-
-        // ---------- Global Variables ----------
-        let currentUser = null;
-        let readingProgress = { level: 1, completed: [] };      // level = current unlocked level (next to study)
-        let otherProgress = { writing: { level:1, completed:[] }, listening:{ level:1, completed:[] }, speaking:{ level:1, completed:[] } };
-        let userName = "";
-
-        // ---------- Lesson Data (Levels 1-3 have real content, others placeholder) ----------
-        const lessonsData = {
-            1: {
-                title: "A New Friend",
-                passage: "My name is Tom. I am from London. I have a new friend. His name is Ahmed. He is from Cairo. We study together. Tom likes football. Ahmed likes reading. They are good friends.",
-                questions: [
-                    { text: "Where is Tom from?", options: ["Cairo", "London", "Paris", "Dubai"], correct: 1 },
-                    { text: "What does Ahmed like?", options: ["Football", "Reading", "Swimming", "Music"], correct: 1 },
-                    { text: "Are Tom and Ahmed friends?", options: ["Yes", "No", "Maybe", "Not mentioned"], correct: 0 }
-                ]
-            },
-            2: {
-                title: "My Daily Routine",
-                passage: "I wake up at 7 o'clock. I eat breakfast at 7:30. I go to school at 8. I have lunch at 12. I come back home at 3. I do my homework at 4. I watch TV at 7. I go to bed at 9.",
-                questions: [
-                    { text: "What time does he wake up?", options: ["6:00", "7:00", "8:00", "9:00"], correct: 1 },
-                    { text: "When does he have lunch?", options: ["11:00", "12:00", "1:00", "2:00"], correct: 1 },
-                    { text: "What does he do at 4 o'clock?", options: ["Watch TV", "Homework", "Play", "Sleep"], correct: 1 }
-                ]
-            },
-            3: {
-                title: "The Market",
-                passage: "There is a market near my house. It opens at 8 AM and closes at 8 PM. You can buy fruits, vegetables, and clothes. I go there every Friday with my mother. We buy apples and oranges.",
-                questions: [
-                    { text: "When does the market close?", options: ["6 PM", "7 PM", "8 PM", "9 PM"], correct: 2 },
-                    { text: "What do they buy?", options: ["Meat", "Apples and oranges", "Bread", "Milk"], correct: 1 },
-                    { text: "Who goes to the market with the child?", options: ["Father", "Mother", "Sister", "Brother"], correct: 1 }
-                ]
-            },
-            // Levels 4-10 (placeholder)
-            4: { title: "Coming Soon", passage: "سيتم إضافة محتوى هذا المستوى قريباً.", questions: [] },
-            5: { title: "Coming Soon", passage: "سيتم إضافة محتوى هذا المستوى قريباً.", questions: [] },
-            6: { title: "Coming Soon", passage: "سيتم إضافة محتوى هذا المستوى قريباً.", questions: [] },
-            7: { title: "Coming Soon", passage: "سيتم إضافة محتوى هذا المستوى قريباً.", questions: [] },
-            8: { title: "Coming Soon", passage: "سيتم إضافة محتوى هذا المستوى قريباً.", questions: [] },
-            9: { title: "Coming Soon", passage: "سيتم إضافة محتوى هذا المستوى قريباً.", questions: [] },
-            10: { title: "Coming Soon", passage: "سيتم إضافة محتوى هذا المستوى قريباً.", questions: [] }
+    }
+    function populateAdminSelects() {
+        const groupSelect = document.getElementById("groupSelect");
+        groupSelect.innerHTML = "";
+        groups.forEach((g, idx) => { const opt = document.createElement("option"); opt.value = idx; opt.textContent = g.name; groupSelect.appendChild(opt); });
+        groupSelect.onchange = () => updateWordSelect();
+        updateWordSelect();
+        document.getElementById("uploadImageBtn").onclick = async () => {
+            const fileInput = document.getElementById("imageUpload");
+            if (!fileInput.files.length) { showToast("اختر صورة أولاً"); return; }
+            const groupIdx = parseInt(groupSelect.value);
+            const wordIdx = parseInt(document.getElementById("wordSelect").value);
+            const word = groups[groupIdx].words[wordIdx];
+            await uploadImageForWord(word, fileInput.files[0]);
+            fileInput.value = "";
+            await loadExistingImages(word);
         };
+    }
+    async function updateWordSelect() {
+        const groupIdx = parseInt(document.getElementById("groupSelect").value);
+        const words = groups[groupIdx].words;
+        const wordSelect = document.getElementById("wordSelect");
+        wordSelect.innerHTML = "";
+        words.forEach((w, idx) => { const opt = document.createElement("option"); opt.value = idx; opt.textContent = `${w} - ${arabicMeanings[w]}`; wordSelect.appendChild(opt); });
+        const selectedWord = words[parseInt(wordSelect.value)];
+        if (selectedWord) await loadExistingImages(selectedWord);
+        wordSelect.onchange = async () => {
+            const newWord = words[parseInt(wordSelect.value)];
+            if (newWord) await loadExistingImages(newWord);
+        };
+        if (words[0]) await loadExistingImages(words[0]);
+    }
 
-        // Helper: show toast message
-        function showToast(msg, duration = 3000) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), duration);
-        }
+    // UI helpers
+    function closeWordModal() { document.getElementById("wordModal").classList.remove("active"); }
+    function closeTestModal() { document.getElementById("testModal").classList.remove("active"); }
+    function showToast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 3000); }
+    function resetProgress() { if (confirm("إعادة تعيين كل التقدم؟")) { progress = { unlockedGroups: 1, completedGroups: [] }; saveProgress(); updateUnlocked(); renderGroups(); showToast("تم إعادة التعيين"); } }
+    function initDarkMode() { if (localStorage.getItem("theme") === "dark") { document.documentElement.setAttribute("data-theme","dark"); document.getElementById("darkModeToggle").innerHTML='<i class="fas fa-sun"></i> نهاري'; } else { document.documentElement.removeAttribute("data-theme"); document.getElementById("darkModeToggle").innerHTML='<i class="fas fa-moon"></i> ليلي'; } }
+    function toggleDarkMode() { if (document.documentElement.hasAttribute("data-theme")) { document.documentElement.removeAttribute("data-theme"); localStorage.setItem("theme","light"); document.getElementById("darkModeToggle").innerHTML='<i class="fas fa-moon"></i> ليلي'; } else { document.documentElement.setAttribute("data-theme","dark"); localStorage.setItem("theme","dark"); document.getElementById("darkModeToggle").innerHTML='<i class="fas fa-sun"></i> نهاري'; } }
 
-        // Compute global level (1-100) based on completed levels across four skills (each 10 levels max)
-        function computeGlobalLevel() {
-            const readingCount = readingProgress.completed.length;
-            const writingCount = otherProgress.writing.completed.length;
-            const listeningCount = otherProgress.listening.completed.length;
-            const speakingCount = otherProgress.speaking.completed.length;
-            const totalCompleted = readingCount + writingCount + listeningCount + speakingCount; // max 40
-            // Map 0-40 to 0-100
-            let global = Math.floor((totalCompleted / 40) * 100);
-            global = Math.min(100, Math.max(1, global));
-            return global;
-        }
-
-        // Update UI: progress bar, current level text, global level in header
-        function updateUI() {
-            // reading progress
-            const completedCount = readingProgress.completed.length;
-            const percent = (completedCount / 10) * 100;
-            document.getElementById('progressPercent').innerText = Math.floor(percent) + '%';
-            document.getElementById('readingProgressFill').style.width = percent + '%';
-            document.getElementById('currentLevelText').innerHTML = `المستوى الحالي: ${readingProgress.level} من 10`;
-            // global level
-            const globalLvl = computeGlobalLevel();
-            document.getElementById('globalLevel').innerHTML = `المستوى الإجمالي: ${globalLvl}`;
-            // user name
-            if (userName) document.getElementById('userName').innerHTML = `مرحباً ${userName}`;
-        }
-
-        // Render lessons grid based on readingProgress
-        function renderLessons() {
-            const grid = document.getElementById('lessonsGrid');
-            grid.innerHTML = '';
-            for (let i = 1; i <= 10; i++) {
-                const isCompleted = readingProgress.completed.includes(i);
-                const isCurrent = (i === readingProgress.level);
-                const isLocked = (!isCompleted && !isCurrent && i > readingProgress.level);
-                let statusClass = '', statusText = '', disabled = false;
-                if (isCompleted) { statusClass = 'status-completed'; statusText = 'مكتمل'; }
-                else if (isCurrent) { statusClass = 'status-current'; statusText = 'الحالي'; }
-                else { statusClass = 'status-locked'; statusText = 'مقفل'; disabled = true; }
-
-                const lessonTitle = lessonsData[i]?.title || `مستوى ${i}`;
-                const card = document.createElement('div');
-                card.className = 'lesson-card';
-                card.innerHTML = `
-                    <div>
-                        <span class="lesson-number">${i}</span>
-                        <span class="lesson-status ${statusClass}">${statusText}</span>
-                    </div>
-                    <div class="lesson-title">${lessonTitle}</div>
-                    <button class="btn-study" data-level="${i}" ${disabled ? 'disabled' : ''}>ادرس الآن <i class="fas fa-arrow-left"></i></button>
-                `;
-                grid.appendChild(card);
-            }
-            // attach event listeners to study buttons
-            document.querySelectorAll('.btn-study:not([disabled])').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const level = parseInt(btn.getAttribute('data-level'));
-                    openLesson(level);
-                });
-            });
-        }
-
-        // Open lesson modal
-        let currentLessonLevel = null;
-        let selectedAnswers = {}; // { questionIndex: selectedOptionIndex }
-
-        function openLesson(level) {
-            const lesson = lessonsData[level];
-            if (!lesson) {
-                showToast("الدرس غير موجود");
-                return;
-            }
-            if (lesson.questions.length === 0 && level > 3) {
-                showToast("هذا المستوى قيد الإعداد، سيتم إضافته قريباً.");
-                return;
-            }
-            currentLessonLevel = level;
-            selectedAnswers = {};
-            document.getElementById('modalTitle').innerText = `المستوى ${level} - ${lesson.title}`;
-            const modalBody = document.getElementById('modalBody');
-            // Build content
-            let html = `<div class="passage">${lesson.passage}</div>`;
-            if (lesson.questions.length > 0) {
-                lesson.questions.forEach((q, idx) => {
-                    html += `
-                        <div class="question-item" data-qidx="${idx}">
-                            <div class="question-text">${idx+1}. ${q.text}</div>
-                            <div class="options">
-                                ${q.options.map((opt, optIdx) => `<div class="option" data-q="${idx}" data-opt="${optIdx}">${opt}</div>`).join('')}
-                            </div>
-                        </div>
-                    `;
-                });
-                html += `<button class="btn-evaluate" id="evaluateBtn">تقييم الإجابات</button>`;
-            } else {
-                html += `<p style="text-align:center">لا توجد أسئلة بعد، سيتم إضافتها قريباً.</p>`;
-            }
-            modalBody.innerHTML = html;
-            // attach option click handlers
-            document.querySelectorAll('.option').forEach(opt => {
-                opt.addEventListener('click', (e) => {
-                    const qIdx = parseInt(opt.getAttribute('data-q'));
-                    const optIdx = parseInt(opt.getAttribute('data-opt'));
-                    // remove selected class from same question options
-                    const parent = opt.closest('.question-item');
-                    parent.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-                    opt.classList.add('selected');
-                    selectedAnswers[qIdx] = optIdx;
-                });
-            });
-            if (lesson.questions.length > 0) {
-                document.getElementById('evaluateBtn').addEventListener('click', () => evaluateLesson());
-            }
-            document.getElementById('lessonModal').classList.add('active');
-        }
-
-        function evaluateLesson() {
-            const lesson = lessonsData[currentLessonLevel];
-            if (!lesson || lesson.questions.length === 0) {
-                showToast("لا توجد أسئلة لتقييمها.");
-                return;
-            }
-            let correctCount = 0;
-            lesson.questions.forEach((q, idx) => {
-                if (selectedAnswers[idx] !== undefined && selectedAnswers[idx] === q.correct) {
-                    correctCount++;
-                }
-            });
-            if (correctCount === lesson.questions.length) {
-                // All correct -> complete level
-                completeLevel(currentLessonLevel);
-                showToast(`🎉 أحسنت! أكملت المستوى ${currentLessonLevel} بنجاح.`);
-                document.getElementById('lessonModal').classList.remove('active');
-            } else {
-                showToast(`❌ الإجابات الصحيحة: ${correctCount} من ${lesson.questions.length}. حاول مرة أخرى.`);
-            }
-        }
-
-        async function completeLevel(level) {
-            if (!currentUser) return;
-            // Don't complete if already completed
-            if (readingProgress.completed.includes(level)) return;
-            // Add to completed
-            readingProgress.completed.push(level);
-            // Increase current level if next level not completed and <=10
-            if (level + 1 <= 10 && !readingProgress.completed.includes(level+1)) {
-                readingProgress.level = level + 1;
-            } else {
-                // find next incomplete level
-                let next = readingProgress.level;
-                for (let i = 1; i <= 10; i++) {
-                    if (!readingProgress.completed.includes(i)) {
-                        next = i;
-                        break;
-                    }
-                }
-                readingProgress.level = next;
-            }
-            await saveReadingProgress();
-            // Also update global level after completing
-            await fetchAllProgress(); // re-fetch other skills to update global level
-            updateUI();
-            renderLessons();
-        }
-
-        async function saveReadingProgress() {
-            if (!currentUser) return;
-            await db.ref(`users/${currentUser.uid}/progress/reading`).set({
-                level: readingProgress.level,
-                completed: readingProgress.completed
-            });
-        }
-
-        async function fetchAllProgress() {
-            if (!currentUser) return;
-            try {
-                const snapshot = await db.ref(`users/${currentUser.uid}/progress`).once('value');
-                const data = snapshot.val() || {};
-                // reading
-                if (data.reading) {
-                    readingProgress.level = data.reading.level || 1;
-                    readingProgress.completed = data.reading.completed || [];
-                } else {
-                    readingProgress = { level: 1, completed: [] };
-                    await saveReadingProgress();
-                }
-                // other skills (for global level)
-                otherProgress.writing = data.writing || { level: 1, completed: [] };
-                otherProgress.listening = data.listening || { level: 1, completed: [] };
-                otherProgress.speaking = data.speaking || { level: 1, completed: [] };
-            } catch (error) {
-                console.error(error);
-                showToast("حدث خطأ في تحميل البيانات");
-            }
-        }
-
-        // Dark mode
-        function initDarkMode() {
-            const saved = localStorage.getItem('theme');
-            if (saved === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                document.getElementById('darkModeToggle').innerHTML = '<i class="fas fa-sun"></i> نهاري';
-            } else {
-                document.documentElement.removeAttribute('data-theme');
-                document.getElementById('darkModeToggle').innerHTML = '<i class="fas fa-moon"></i> ليلي';
-            }
-        }
-        function toggleDarkMode() {
-            if (document.documentElement.hasAttribute('data-theme')) {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'light');
-                document.getElementById('darkModeToggle').innerHTML = '<i class="fas fa-moon"></i> ليلي';
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-                document.getElementById('darkModeToggle').innerHTML = '<i class="fas fa-sun"></i> نهاري';
-            }
-        }
-
-        // Fetch user name
-        async function fetchUserName(uid) {
-            const snap = await db.ref(`users/${uid}/name`).once('value');
-            userName = snap.val() || 'مستخدم';
-            document.getElementById('userName').innerHTML = `مرحباً ${userName}`;
-        }
-
-        // Authentication
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                currentUser = user;
-                await fetchUserName(user.uid);
-                await fetchAllProgress();
-                updateUI();
-                renderLessons();
-            } else {
-                // Redirect to login
-                window.location.href = 'login.html';
-            }
-        });
-
-        // Event Listeners
-        document.getElementById('backDashboardBtn').addEventListener('click', () => {
-            window.location.href = 'dashboard.html';
-        });
-        document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
-        document.getElementById('closeModalBtn').addEventListener('click', () => {
-            document.getElementById('lessonModal').classList.remove('active');
-        });
-        window.addEventListener('click', (e) => {
-            const modal = document.getElementById('lessonModal');
-            if (e.target === modal) modal.classList.remove('active');
-        });
-
-        initDarkMode();
-    </script>
+    // Event listeners
+    document.getElementById("darkModeToggle").onclick = toggleDarkMode;
+    document.getElementById("resetBtn").onclick = resetProgress;
+    document.getElementById("closeWordModal").onclick = closeWordModal;
+    document.getElementById("closeTestModal").onclick = closeTestModal;
+    window.onclick = (e) => { if (e.target === document.getElementById("wordModal")) closeWordModal(); if (e.target === document.getElementById("testModal")) closeTestModal(); };
+    initDarkMode();
+    initAdmin();
+    renderGroups();
+</script>
 </body>
 </html>
