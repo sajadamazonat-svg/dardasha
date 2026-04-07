@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>اسهل حل · تطبيق قائمة تسوقي - تسجيل دخول Google</title>
+    <title>اسهل حل · تطبيق قائمة تسوقي - إدارة الصور للمدير</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -66,7 +66,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* منطقة تسجيل الدخول */
         .auth-section {
             display: flex;
             align-items: center;
@@ -103,11 +102,8 @@
             cursor: pointer;
             font-family: 'Tajawal', sans-serif;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            transition: 0.2s;
         }
-        .google-btn:hover {
-            background: var(--light-gray);
-        }
+        .google-btn:hover { background: var(--light-gray); }
         .logout-btn {
             background: transparent;
             border: 1px solid var(--accent);
@@ -136,15 +132,9 @@
             border-radius: 2px;
             transition: all 0.3s;
         }
-        .menu-toggle.active span:nth-child(1) {
-            transform: translateY(8px) rotate(45deg);
-        }
-        .menu-toggle.active span:nth-child(2) {
-            opacity: 0;
-        }
-        .menu-toggle.active span:nth-child(3) {
-            transform: translateY(-8px) rotate(-45deg);
-        }
+        .menu-toggle.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .menu-toggle.active span:nth-child(2) { opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
         .sidebar {
             display: none;
@@ -161,9 +151,7 @@
             z-index: 999;
             direction: rtl;
         }
-        .sidebar.active {
-            display: block;
-        }
+        .sidebar.active { display: block; }
         .sidebar-links {
             list-style: none;
             display: flex;
@@ -187,12 +175,7 @@
             color: var(--accent);
         }
 
-        .app-hero {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 1rem;
-            text-align: center;
-        }
+        .app-hero { max-width: 1000px; margin: 2rem auto; padding: 1rem; text-align: center; }
         .app-card {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(12px);
@@ -212,22 +195,9 @@
             justify-content: center;
             overflow: hidden;
         }
-        .app-icon img {
-            width: 80%;
-            height: auto;
-            object-fit: contain;
-        }
-        .app-name {
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--primary);
-        }
-        .app-tagline {
-            font-size: 1rem;
-            color: var(--text-light);
-            max-width: 500px;
-            margin: 0.5rem auto;
-        }
+        .app-icon img { width: 80%; height: auto; object-fit: contain; }
+        .app-name { font-size: 2rem; font-weight: 900; color: var(--primary); }
+        .app-tagline { font-size: 1rem; color: var(--text-light); max-width: 500px; margin: 0.5rem auto; }
         .download-btn {
             display: inline-block;
             background: var(--accent);
@@ -241,10 +211,7 @@
             box-shadow: 0 6px 14px rgba(230,126,34,0.3);
             transition: 0.2s;
         }
-        .download-btn:hover {
-            background: #d35400;
-            transform: scale(0.98);
-        }
+        .download-btn:hover { background: #d35400; transform: scale(0.98); }
         .features {
             display: flex;
             flex-wrap: wrap;
@@ -260,12 +227,7 @@
             font-weight: 600;
             color: var(--primary);
         }
-        .screenshots-title {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
+        .screenshots-title { font-size: 1.2rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem; }
         .screenshot-grid {
             display: flex;
             flex-wrap: wrap;
@@ -286,6 +248,34 @@
             box-shadow: 0 6px 12px -6px rgba(0,0,0,0.1);
             background: #e2e8f0;
         }
+        .admin-panel {
+            background: rgba(230,126,34,0.1);
+            border: 1px dashed var(--accent);
+            border-radius: 20px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        .admin-panel h4 { color: var(--accent); margin-bottom: 0.5rem; font-size: 1rem; }
+        .upload-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin: 0.3rem;
+        }
+        .reset-btn {
+            background: var(--text-light);
+            color: white;
+            border: none;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
         .legal-section {
             background: rgba(255, 255, 255, 0.75);
             border-radius: 24px;
@@ -302,11 +292,7 @@
             padding-right: 0.8rem;
             margin-bottom: 0.8rem;
         }
-        .legal-section p, .legal-section li {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            line-height: 1.6;
-        }
+        .legal-section p, .legal-section li { font-size: 0.85rem; color: var(--text-light); line-height: 1.6; }
         .footer {
             background: rgba(255, 255, 255, 0.9);
             padding: 0.8rem;
@@ -319,7 +305,6 @@
         @media (max-width: 640px) {
             .app-name { font-size: 1.6rem; }
             .screenshot-card { width: 140px; }
-            .nav-container { justify-content: space-between; }
         }
     </style>
 </head>
@@ -329,7 +314,6 @@
     <div class="nav-container">
         <div class="logo"><span class="logo-text">اسهل حل · قائمة تسوقي</span></div>
         <div style="display: flex; align-items: center; gap: 0.8rem;">
-            <!-- منطقة تسجيل الدخول بجوجل -->
             <div id="authWidget" class="auth-section">
                 <div id="userInfo" style="display: none;" class="user-info">
                     <img id="userAvatar" class="user-avatar" src="" alt="">
@@ -362,6 +346,37 @@
             <h1 class="app-name">قائمة تسوقي</h1>
             <p class="app-tagline">نظم مشترياتك بذكاء، شارك القوائم مع العائلة، واستمتع بتسوق سهل وسريع.</p>
             <a href="https://github.com/sajadamazonat-svg/dardasha/raw/main/%D9%82%D8%A7%D8%A6%D9%85%D8%A9%20%D8%AA%D8%B3%D9%88%D9%82%D9%8A.apk" class="download-btn" id="downloadBtn">تحميل تطبيق قائمة تسوقي (APK)</a>
+            
+            <!-- لوحة تحكم المدير (تظهر فقط عند تسجيل الدخول بالبريد المحدد) -->
+            <div id="adminPanel" style="display: none;" class="admin-panel">
+                <h4>لوحة تحكم المدير - تغيير صور التطبيق</h4>
+                <div>
+                    <label style="font-size:0.8rem;">أيقونة التطبيق:</label>
+                    <input type="file" id="uploadIcon" accept="image/*" style="display:none;">
+                    <button id="chooseIconBtn" class="upload-btn">اختيار أيقونة</button>
+                    <button id="resetIconBtn" class="reset-btn">استعادة الأيقونة الافتراضية</button>
+                </div>
+                <div style="margin-top: 10px;">
+                    <label style="font-size:0.8rem;">لقطة شاشة 1:</label>
+                    <input type="file" id="uploadScreenshot1" accept="image/*" style="display:none;">
+                    <button id="chooseSs1Btn" class="upload-btn">رفع لقطة 1</button>
+                    <button id="resetSs1Btn" class="reset-btn">استعادة</button>
+                </div>
+                <div>
+                    <label style="font-size:0.8rem;">لقطة شاشة 2:</label>
+                    <input type="file" id="uploadScreenshot2" accept="image/*" style="display:none;">
+                    <button id="chooseSs2Btn" class="upload-btn">رفع لقطة 2</button>
+                    <button id="resetSs2Btn" class="reset-btn">استعادة</button>
+                </div>
+                <div>
+                    <label style="font-size:0.8rem;">لقطة شاشة 3:</label>
+                    <input type="file" id="uploadScreenshot3" accept="image/*" style="display:none;">
+                    <button id="chooseSs3Btn" class="upload-btn">رفع لقطة 3</button>
+                    <button id="resetSs3Btn" class="reset-btn">استعادة</button>
+                </div>
+                <p style="font-size:0.7rem; margin-top:8px;">سيتم حفظ الصور في متصفحك (تظهر لكل الزوار في هذا الجهاز).</p>
+            </div>
+
             <div class="features">
                 <span class="feature">قوائم غير محدودة</span>
                 <span class="feature">مشاركة فورية</span>
@@ -375,7 +390,6 @@
                     <div class="screenshot-card"><img id="screenImg2" src="https://placehold.co/200x350/e2e8f0/64748b?text=صورة+2" alt="لقطة 2"></div>
                     <div class="screenshot-card"><img id="screenImg3" src="https://placehold.co/200x350/e2e8f0/64748b?text=صورة+3" alt="لقطة 3"></div>
                 </div>
-                <p style="font-size: 0.7rem; margin-top: 0.8rem; color: var(--accent);">يمكنك وضع روابط صورك في المتغيرات داخل كود JavaScript</p>
             </div>
         </div>
     </div>
@@ -406,7 +420,6 @@
 </footer>
 
 <script type="module">
-    // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -433,82 +446,144 @@
     const userNameSpan = document.getElementById('userName');
     const userAvatarImg = document.getElementById('userAvatar');
     const logoutBtn = document.getElementById('logoutButton');
+    const adminPanel = document.getElementById('adminPanel');
     
-    // تحديث واجهة المستخدم بناءً على حالة تسجيل الدخول
+    // الصور وعناصرها
+    const appIconImg = document.getElementById('appIconImg');
+    const screenImg1 = document.getElementById('screenImg1');
+    const screenImg2 = document.getElementById('screenImg2');
+    const screenImg3 = document.getElementById('screenImg3');
+    
+    // الصور الافتراضية
+    const defaultIcon = "https://cdn-icons-png.flaticon.com/512/2838/2838912.png";
+    const defaultScreenshots = [
+        "https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+1",
+        "https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+2",
+        "https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+3"
+    ];
+    
+    // تحميل الصور المحفوظة من localStorage (إن وجدت)
+    function loadSavedImages() {
+        const savedIcon = localStorage.getItem('app_icon');
+        if (savedIcon) appIconImg.src = savedIcon;
+        const savedSs1 = localStorage.getItem('app_ss1');
+        if (savedSs1) screenImg1.src = savedSs1;
+        const savedSs2 = localStorage.getItem('app_ss2');
+        if (savedSs2) screenImg2.src = savedSs2;
+        const savedSs3 = localStorage.getItem('app_ss3');
+        if (savedSs3) screenImg3.src = savedSs3;
+    }
+    
+    // حفظ صورة معينة
+    function saveImage(key, src) {
+        localStorage.setItem(key, src);
+    }
+    
+    // رفع الصورة وتحويلها إلى base64
+    function uploadImage(fileInput, imgElement, storageKey, defaultSrc) {
+        const file = fileInput.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const base64 = e.target.result;
+            imgElement.src = base64;
+            saveImage(storageKey, base64);
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    // استعادة الصورة الافتراضية
+    function resetImage(imgElement, storageKey, defaultSrc) {
+        imgElement.src = defaultSrc;
+        localStorage.removeItem(storageKey);
+    }
+    
+    // إعداد أزرار الرفع للمدير
+    function setupAdminControls() {
+        // أيقونة
+        const iconInput = document.getElementById('uploadIcon');
+        const chooseIconBtn = document.getElementById('chooseIconBtn');
+        const resetIconBtn = document.getElementById('resetIconBtn');
+        chooseIconBtn.addEventListener('click', () => iconInput.click());
+        iconInput.addEventListener('change', () => uploadImage(iconInput, appIconImg, 'app_icon', defaultIcon));
+        resetIconBtn.addEventListener('click', () => resetImage(appIconImg, 'app_icon', defaultIcon));
+        
+        // لقطة 1
+        const ss1Input = document.getElementById('uploadScreenshot1');
+        const chooseSs1 = document.getElementById('chooseSs1Btn');
+        const resetSs1 = document.getElementById('resetSs1Btn');
+        chooseSs1.addEventListener('click', () => ss1Input.click());
+        ss1Input.addEventListener('change', () => uploadImage(ss1Input, screenImg1, 'app_ss1', defaultScreenshots[0]));
+        resetSs1.addEventListener('click', () => resetImage(screenImg1, 'app_ss1', defaultScreenshots[0]));
+        
+        // لقطة 2
+        const ss2Input = document.getElementById('uploadScreenshot2');
+        const chooseSs2 = document.getElementById('chooseSs2Btn');
+        const resetSs2 = document.getElementById('resetSs2Btn');
+        chooseSs2.addEventListener('click', () => ss2Input.click());
+        ss2Input.addEventListener('change', () => uploadImage(ss2Input, screenImg2, 'app_ss2', defaultScreenshots[1]));
+        resetSs2.addEventListener('click', () => resetImage(screenImg2, 'app_ss2', defaultScreenshots[1]));
+        
+        // لقطة 3
+        const ss3Input = document.getElementById('uploadScreenshot3');
+        const chooseSs3 = document.getElementById('chooseSs3Btn');
+        const resetSs3 = document.getElementById('resetSs3Btn');
+        chooseSs3.addEventListener('click', () => ss3Input.click());
+        ss3Input.addEventListener('change', () => uploadImage(ss3Input, screenImg3, 'app_ss3', defaultScreenshots[2]));
+        resetSs3.addEventListener('click', () => resetImage(screenImg3, 'app_ss3', defaultScreenshots[2]));
+    }
+    
+    // تحديث واجهة المدير بناءً على البريد
+    function updateAdminUI(user) {
+        if (user && user.email === "ashlhl.iq@gmail.com") {
+            adminPanel.style.display = "block";
+            setupAdminControls(); // ربط الأزرار (مرة واحدة فقط)
+        } else {
+            adminPanel.style.display = "none";
+        }
+    }
+    
+    // تحديث واجهة تسجيل الدخول
     function updateUI(user) {
         if (user) {
-            // مستخدم مسجل الدخول
             googleBtn.style.display = 'none';
             userInfoDiv.style.display = 'flex';
             userNameSpan.textContent = user.displayName || user.email || 'مستخدم';
-            if (user.photoURL) {
-                userAvatarImg.src = user.photoURL;
-            } else {
-                userAvatarImg.src = 'https://ui-avatars.com/api/?background=e67e22&color=fff&name=' + (user.displayName || 'U');
-            }
-            // تسجيل حدث تسجيل دخول في التحليلات
+            userAvatarImg.src = user.photoURL || `https://ui-avatars.com/api/?background=e67e22&color=fff&name=${encodeURIComponent(user.displayName || 'U')}`;
             logEvent(analytics, 'login', { method: 'google' });
+            updateAdminUI(user);
         } else {
-            // لا يوجد مستخدم
             googleBtn.style.display = 'flex';
             userInfoDiv.style.display = 'none';
-            userNameSpan.textContent = '';
-            userAvatarImg.src = '';
+            adminPanel.style.display = 'none';
         }
     }
     
-    // مراقبة حالة المصادقة
     onAuthStateChanged(auth, (user) => {
         updateUI(user);
-        if (user) {
-            console.log('مستخدم مسجل:', user.email);
-        } else {
-            console.log('زائر');
-        }
+        if (user) console.log('مستخدم مسجل:', user.email);
+        else console.log('زائر');
     });
     
-    // تسجيل الدخول بجوجل
     googleBtn.addEventListener('click', async () => {
         try {
-            const result = await signInWithPopup(auth, provider);
-            const user = result.user;
-            console.log('تم تسجيل الدخول:', user.displayName);
-            // يمكن إضافة رسالة ترحيب اختيارية
+            await signInWithPopup(auth, provider);
         } catch (error) {
-            console.error('خطأ في تسجيل الدخول:', error);
-            alert('حدث خطأ أثناء محاولة تسجيل الدخول. تأكد من اتصال الإنترنت وحاول مرة أخرى.');
+            console.error(error);
+            alert('حدث خطأ في تسجيل الدخول.');
         }
     });
     
-    // تسجيل الخروج
     logoutBtn.addEventListener('click', async () => {
-        try {
-            await signOut(auth);
-            console.log('تم تسجيل الخروج');
-        } catch (error) {
-            console.error('خطأ في تسجيل الخروج:', error);
-        }
+        await signOut(auth);
     });
     
-    // باقي وظائف الصفحة (القائمة الجانبية، الصور، التنقل)
+    // تحميل الصور المحفوظة عند بدء الصفحة (لأي زائر)
+    loadSavedImages();
+    
+    // باقي العناصر: القائمة الجانبية، السنة، التحميل
     document.getElementById('current-year').textContent = new Date().getFullYear();
     
-    // معرض الصور (تحديث الروابط)
-    const appImages = {
-        icon: "https://cdn-icons-png.flaticon.com/512/2838/2838912.png",
-        screenshots: [
-            "https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+1",
-            "https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+2",
-            "https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+3"
-        ]
-    };
-    document.getElementById('appIconImg').src = appImages.icon;
-    for (let i = 0; i < appImages.screenshots.length && i < 3; i++) {
-        const imgEl = document.getElementById(`screenImg${i+1}`);
-        if (imgEl) imgEl.src = appImages.screenshots[i];
-    }
-    
-    // القائمة الجانبية
     const menuToggle = document.getElementById('menuToggle');
     const sidebar = document.getElementById('sidebar');
     function closeSidebar() { sidebar.classList.remove('active'); menuToggle.classList.remove('active'); }
@@ -517,7 +592,6 @@
     document.querySelectorAll('.sidebar-links a').forEach(link => link.addEventListener('click', closeSidebar));
     document.addEventListener('click', (e) => { if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) closeSidebar(); });
     
-    // تنقل سلس
     document.querySelectorAll('.sidebar-links a').forEach(anchor => {
         anchor.addEventListener('click', (e) => {
             const hash = anchor.getAttribute('href');
@@ -529,12 +603,9 @@
         });
     });
     
-    // زر التحميل
     const downloadBtn = document.getElementById('downloadBtn');
     downloadBtn.href = "https://github.com/sajadamazonat-svg/dardasha/raw/main/%D9%82%D8%A7%D8%A6%D9%85%D8%A9%20%D8%AA%D8%B3%D9%88%D9%82%D9%8A.apk";
-    
-    // تسجيل حدث مشاهدة الصفحة
-    logEvent(analytics, 'page_view', { page_title: 'تطبيق قائمة تسوقي - مع تسجيل Google' });
+    logEvent(analytics, 'page_view', { page_title: 'تطبيق قائمة تسوقي - مدير الصور' });
 </script>
 </body>
 </html>
