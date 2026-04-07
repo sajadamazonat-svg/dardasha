@@ -245,7 +245,7 @@
             aspect-ratio: 9 / 16;
             object-fit: cover;
             box-shadow: 0 6px 12px -6px rgba(0,0,0,0.1);
-            background: #e2e8f0;
+            background: #f1f5f9;
         }
 
         .legal-section {
@@ -301,7 +301,7 @@
         <li><a href="#privacy-policy">سياسة الخصوصية</a></li>
         <li><a href="#terms-of-service">شروط الخدمة</a></li>
         <li><a href="#downloadBtn">تحميل التطبيق</a></li>
-        <li><a href="#screenshots-gallery">معرض الصور</a></li>
+        <li><a href="#screenshots-gallery">لقطات الشاشة</a></li>
     </ul>
 </aside>
 
@@ -309,7 +309,7 @@
     <div class="app-hero" id="app-top">
         <div class="app-card">
             <div class="app-icon" id="appIconContainer">
-                <img id="appIconImg" src="https://cdn-icons-png.flaticon.com/512/2838/2838912.png" alt="أيقونة التطبيق">
+                <img id="appIconImg" src="" alt="أيقونة التطبيق">
             </div>
             <h1 class="app-name">قائمة تسوقي</h1>
             <p class="app-tagline">نظم مشترياتك بذكاء، شارك القوائم مع العائلة، واستمتع بتسوق سهل وسريع.</p>
@@ -323,11 +323,9 @@
             <div class="screenshots" id="screenshots-gallery">
                 <div class="screenshots-title">لقطات من التطبيق</div>
                 <div class="screenshot-grid" id="screenshotGrid">
-                    <div class="screenshot-card"><img id="screenImg1" src="https://placehold.co/200x350/e2e8f0/64748b?text=صورة+1" alt="لقطة 1"></div>
-                    <div class="screenshot-card"><img id="screenImg2" src="https://placehold.co/200x350/e2e8f0/64748b?text=صورة+2" alt="لقطة 2"></div>
-                    <div class="screenshot-card"><img id="screenImg3" src="https://placehold.co/200x350/e2e8f0/64748b?text=صورة+3" alt="لقطة 3"></div>
+                    <!-- سيتم إضافة لقطات الشاشة ديناميكياً بواسطة JavaScript -->
                 </div>
-                <p style="font-size: 0.7rem; margin-top: 0.8rem; color: var(--accent);">يمكنك وضع روابط صورك في المتغيرات داخل كود JavaScript</p>
+                <p style="font-size: 0.7rem; margin-top: 0.8rem; color: var(--accent);">ضع روابط لقطات الشاشة في متغير appImages.screenshots</p>
             </div>
         </div>
     </div>
@@ -358,32 +356,57 @@
 </footer>
 
 <script>
-    // ========================
-    // ضع هنا روابط صور التطبيق الخاصة بك (أيقونة + لقطات شاشة)
-    // ========================
+    // =====================================================
+    // ضع هنا روابط الصور الخاصة بك (أيقونة التطبيق + لقطات الشاشة)
+    // =====================================================
     const appImages = {
         // رابط أيقونة التطبيق (يفضل صورة مربعة)
-        icon: "https://cdn-icons-png.flaticon.com/512/2838/2838912.png",  // غير هذا الرابط إلى رابط صورتك
+        icon: "https://cdn-icons-png.flaticon.com/512/2838/2838912.png",   // <--- استبدل برابط أيقونتك
         
-        // لقطات الشاشة (3 صور على الأقل)
+        // لقطات الشاشة: ضع روابط الصور التي رفعتها (يمكنك وضع 3 صور أو أكثر)
         screenshots: [
-            "https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+1",   // استبدل برابط الصورة الأولى
-            "https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+2",   // استبدل برابط الصورة الثانية
-            "https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+3"    // استبدل برابط الصورة الثالثة
+            "https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+شاشة+1",   // <--- استبدل برابط الصورة الأولى
+            "https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+شاشة+2",   // <--- استبدل برابط الصورة الثانية
+            "https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+شاشة+3"    // <--- استبدل برابط الصورة الثالثة
         ]
     };
 
-    // تطبيق الصور على الصفحة
-    document.getElementById('appIconImg').src = appImages.icon;
-    for (let i = 0; i < appImages.screenshots.length && i < 3; i++) {
-        const imgElement = document.getElementById(`screenImg${i+1}`);
-        if (imgElement) imgElement.src = appImages.screenshots[i];
+    // تطبيق الأيقونة
+    const iconImg = document.getElementById('appIconImg');
+    if (appImages.icon) iconImg.src = appImages.icon;
+    else iconImg.src = "";
+
+    // إنشاء معرض لقطات الشاشة ديناميكياً (بدون أي صور افتراضية)
+    const screenshotGrid = document.getElementById('screenshotGrid');
+    screenshotGrid.innerHTML = ""; // مسح أي محتوى سابق
+
+    if (appImages.screenshots && appImages.screenshots.length > 0) {
+        appImages.screenshots.forEach((src, index) => {
+            if (src && src.trim() !== "") {
+                const card = document.createElement('div');
+                card.className = 'screenshot-card';
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = `لقطة شاشة ${index + 1}`;
+                card.appendChild(img);
+                screenshotGrid.appendChild(card);
+            }
+        });
     }
 
-    // ======================== الباقي: القائمة والتحليلات والتنقل ========================
+    // إذا لم يتم إضافة أي صورة، نعرض رسالة للمستخدم
+    if (screenshotGrid.children.length === 0) {
+        const msg = document.createElement('p');
+        msg.style.textAlign = "center";
+        msg.style.color = "var(--text-light)";
+        msg.style.fontSize = "0.8rem";
+        msg.innerText = "لم يتم إضافة لقطات شاشة بعد. يرجى وضع روابط الصور في متغير appImages.screenshots.";
+        screenshotGrid.appendChild(msg);
+    }
+
+    // ======================== بقية الكود: القائمة والتنقل ========================
     document.getElementById('current-year').textContent = new Date().getFullYear();
 
-    // القائمة الجانبية
     const menuToggle = document.getElementById('menuToggle');
     const sidebar = document.getElementById('sidebar');
     function closeSidebar() { sidebar.classList.remove('active'); menuToggle.classList.remove('active'); }
@@ -392,7 +415,6 @@
     document.querySelectorAll('.sidebar-links a').forEach(link => link.addEventListener('click', closeSidebar));
     document.addEventListener('click', (e) => { if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) closeSidebar(); });
 
-    // تنقل سلس
     document.querySelectorAll('.sidebar-links a').forEach(anchor => {
         anchor.addEventListener('click', (e) => {
             const hash = anchor.getAttribute('href');
@@ -404,7 +426,6 @@
         });
     });
 
-    // تحميل APK
     const downloadBtn = document.getElementById('downloadBtn');
     downloadBtn.href = "https://github.com/sajadamazonat-svg/dardasha/raw/main/%D9%82%D8%A7%D8%A6%D9%85%D8%A9%20%D8%AA%D8%B3%D9%88%D9%82%D9%8A.apk";
 </script>
