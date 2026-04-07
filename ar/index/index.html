@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>اسهل حل · تطبيق قائمة تسوقي</title>
+    <title>اسهل حل · تطبيق قائمة تسوقي - تسجيل دخول Google</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -54,6 +54,8 @@
             justify-content: space-between;
             align-items: center;
             direction: rtl;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .logo-text {
@@ -64,6 +66,58 @@
             -webkit-text-fill-color: transparent;
         }
 
+        /* منطقة تسجيل الدخول */
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.5);
+            padding: 0.2rem 0.6rem;
+            border-radius: 60px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .google-btn {
+            background: var(--white);
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--primary);
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: 0.2s;
+        }
+        .google-btn:hover {
+            background: var(--light-gray);
+        }
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
         .menu-toggle {
             display: flex;
             flex-direction: column;
@@ -75,7 +129,6 @@
             cursor: pointer;
             padding: 0;
         }
-
         .menu-toggle span {
             width: 100%;
             height: 2.5px;
@@ -83,7 +136,6 @@
             border-radius: 2px;
             transition: all 0.3s;
         }
-
         .menu-toggle.active span:nth-child(1) {
             transform: translateY(8px) rotate(45deg);
         }
@@ -109,18 +161,15 @@
             z-index: 999;
             direction: rtl;
         }
-
         .sidebar.active {
             display: block;
         }
-
         .sidebar-links {
             list-style: none;
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
         }
-
         .sidebar-links li a {
             display: block;
             padding: 0.6rem 0.8rem;
@@ -132,132 +181,146 @@
             font-size: 0.85rem;
             text-align: center;
         }
-
         .sidebar-links li a:hover {
             background: var(--white);
             border: 1px solid var(--accent);
             color: var(--accent);
         }
 
-        .user-status {
-            background: var(--accent);
-            color: white;
-            border-radius: 12px;
-            padding: 0.5rem;
-            margin-bottom: 0.8rem;
+        .app-hero {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 1rem;
             text-align: center;
-            font-size: 0.8rem;
         }
-
-        .logout-btn {
-            background: #c0392b;
-            margin-top: 0.3rem;
-        }
-
-        /* النماذج المنبثقة (مودالات) */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal.active {
-            display: flex;
-        }
-        .modal-content {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 28px;
-            padding: 1.8rem;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            direction: rtl;
-            box-shadow: 0 20px 30px rgba(0,0,0,0.2);
-        }
-        .modal-content h3 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-        .modal-content input {
-            width: 100%;
-            padding: 0.7rem;
-            margin: 0.5rem 0;
-            border: 1px solid #ccc;
-            border-radius: 40px;
-            font-family: 'Tajawal', sans-serif;
-            background: rgba(255,255,255,0.8);
-        }
-        .modal-content button {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 40px;
-            font-weight: bold;
-            margin-top: 0.5rem;
-            width: 100%;
-            cursor: pointer;
-        }
-        .modal-content button:hover { background: #d35400; }
-        .close-modal {
-            background: #95a5a6;
-            margin-top: 0.3rem;
-        }
-        .switch-link {
-            color: var(--accent);
-            cursor: pointer;
-            margin-top: 0.8rem;
-            display: inline-block;
-            font-size: 0.8rem;
-        }
-        .message {
-            font-size: 0.75rem;
-            margin-top: 0.5rem;
-            color: #e67e22;
-        }
-
-        .app-hero, .legal-section { max-width: 1000px; margin: 2rem auto; padding: 1rem; }
         .app-card {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(12px);
             border-radius: 32px;
             padding: 2rem 1.5rem;
-            text-align: center;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.9);
         }
         .app-icon {
-            width: 110px; height: 110px;
+            width: 110px;
+            height: 110px;
             background: linear-gradient(145deg, var(--primary), var(--primary-dark));
             border-radius: 24px;
             margin: 0 auto 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
-        .app-icon img { width: 80%; height: auto; filter: brightness(0) invert(1); }
-        .app-name { font-size: 2rem; font-weight: 900; color: var(--primary); }
+        .app-icon img {
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+        .app-name {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+        .app-tagline {
+            font-size: 1rem;
+            color: var(--text-light);
+            max-width: 500px;
+            margin: 0.5rem auto;
+        }
         .download-btn {
-            display: inline-block; background: var(--accent); color: white;
-            padding: 0.7rem 2rem; border-radius: 60px; text-decoration: none;
-            font-weight: 800; margin: 1rem 0;
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.7rem 2rem;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1rem;
+            margin: 1rem 0 1.5rem;
+            box-shadow: 0 6px 14px rgba(230,126,34,0.3);
+            transition: 0.2s;
         }
-        .features { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem; margin: 2rem 0; }
-        .feature { background: rgba(255,255,255,0.7); border-radius: 60px; padding: 0.4rem 1.2rem; font-size: 0.8rem; font-weight: 600; }
-        .screenshot-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
-        .screenshot-card { background: rgba(255,255,255,0.5); border-radius: 20px; padding: 0.8rem; width: 180px; }
-        .screenshot-card img { width: 100%; border-radius: 16px; aspect-ratio: 9/16; object-fit: cover; }
-        .legal-section { background: rgba(255,255,255,0.75); border-radius: 24px; padding: 1.5rem; text-align: right; }
-        .legal-section h2 { border-right: 4px solid var(--accent); padding-right: 0.8rem; margin-bottom: 0.8rem; }
-        .footer { background: rgba(255,255,255,0.9); padding: 0.8rem; text-align: center; font-size: 0.7rem; margin-top: 1rem; }
-        @media (max-width:640px) { .screenshot-card { width: 140px; } }
+        .download-btn:hover {
+            background: #d35400;
+            transform: scale(0.98);
+        }
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem;
+            margin: 2rem 0;
+        }
+        .feature {
+            background: rgba(255,255,255,0.7);
+            border-radius: 60px;
+            padding: 0.4rem 1.2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .screenshots-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .screenshot-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .screenshot-card {
+            background: rgba(255,255,255,0.5);
+            border-radius: 20px;
+            padding: 0.8rem;
+            width: 180px;
+        }
+        .screenshot-card img {
+            width: 100%;
+            border-radius: 16px;
+            aspect-ratio: 9 / 16;
+            object-fit: cover;
+            box-shadow: 0 6px 12px -6px rgba(0,0,0,0.1);
+            background: #e2e8f0;
+        }
+        .legal-section {
+            background: rgba(255, 255, 255, 0.75);
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 1000px;
+            text-align: right;
+        }
+        .legal-section h2 {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--primary);
+            border-right: 4px solid var(--accent);
+            padding-right: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+        .legal-section p, .legal-section li {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+        .footer {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.8rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-top: 1rem;
+        }
+        .footer span { color: var(--accent); font-weight: 700; }
+        @media (max-width: 640px) {
+            .app-name { font-size: 1.6rem; }
+            .screenshot-card { width: 140px; }
+            .nav-container { justify-content: space-between; }
+        }
     </style>
 </head>
 <body>
@@ -265,106 +328,88 @@
 <nav class="navbar">
     <div class="nav-container">
         <div class="logo"><span class="logo-text">اسهل حل · قائمة تسوقي</span></div>
-        <button class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></button>
+        <div style="display: flex; align-items: center; gap: 0.8rem;">
+            <!-- منطقة تسجيل الدخول بجوجل -->
+            <div id="authWidget" class="auth-section">
+                <div id="userInfo" style="display: none;" class="user-info">
+                    <img id="userAvatar" class="user-avatar" src="" alt="">
+                    <span id="userName"></span>
+                    <button id="logoutButton" class="logout-btn">تسجيل خروج</button>
+                </div>
+                <button id="googleSignInBtn" class="google-btn">تسجيل دخول بجوجل</button>
+            </div>
+            <button class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></button>
+        </div>
     </div>
 </nav>
 
 <aside class="sidebar" id="sidebar">
-    <div id="userStatusSidebar" class="user-status">يرجى تسجيل الدخول</div>
     <ul class="sidebar-links">
         <li><a href="#app-top">الرئيسية</a></li>
-        <li><a href="#" id="showLoginModalLink">تسجيل الدخول</a></li>
-        <li><a href="#" id="showSignupModalLink">إنشاء حساب جديد</a></li>
-        <li><a href="#" id="showResetModalLink">استعادة كلمة المرور</a></li>
         <li><a href="#privacy-policy">سياسة الخصوصية</a></li>
         <li><a href="#terms-of-service">شروط الخدمة</a></li>
         <li><a href="#downloadBtn">تحميل التطبيق</a></li>
         <li><a href="#screenshots-gallery">معرض الصور</a></li>
-        <li><a href="#" id="logoutSidebarBtn" style="background:#c0392b; color:white;">تسجيل خروج</a></li>
     </ul>
 </aside>
-
-<!-- مودال تسجيل الدخول -->
-<div id="loginModal" class="modal">
-    <div class="modal-content">
-        <h3>تسجيل الدخول</h3>
-        <input type="email" id="loginEmail" placeholder="البريد الإلكتروني">
-        <input type="password" id="loginPassword" placeholder="كلمة المرور">
-        <button id="doLoginBtn">دخول</button>
-        <div class="message" id="loginMessage"></div>
-        <span class="switch-link" id="switchToSignup">ليس لديك حساب؟ إنشاء حساب</span>
-        <button class="close-modal" id="closeLoginModal">إغلاق</button>
-    </div>
-</div>
-
-<!-- مودال إنشاء حساب -->
-<div id="signupModal" class="modal">
-    <div class="modal-content">
-        <h3>إنشاء حساب جديد</h3>
-        <input type="email" id="signupEmail" placeholder="البريد الإلكتروني">
-        <input type="password" id="signupPassword" placeholder="كلمة المرور">
-        <button id="doSignupBtn">إنشاء حساب</button>
-        <div class="message" id="signupMessage"></div>
-        <span class="switch-link" id="switchToLogin">لديك حساب؟ تسجيل الدخول</span>
-        <button class="close-modal" id="closeSignupModal">إغلاق</button>
-    </div>
-</div>
-
-<!-- مودال استعادة كلمة المرور -->
-<div id="resetModal" class="modal">
-    <div class="modal-content">
-        <h3>استعادة كلمة المرور</h3>
-        <input type="email" id="resetEmail" placeholder="بريدك الإلكتروني">
-        <button id="doResetBtn">إرسال رابط إعادة التعيين</button>
-        <div class="message" id="resetMessage"></div>
-        <button class="close-modal" id="closeResetModal">إغلاق</button>
-    </div>
-</div>
 
 <main>
     <div class="app-hero" id="app-top">
         <div class="app-card">
-            <div class="app-icon"><img id="appIconImg" src="https://cdn-icons-png.flaticon.com/512/2838/2838912.png" alt="أيقونة"></div>
+            <div class="app-icon" id="appIconContainer">
+                <img id="appIconImg" src="https://cdn-icons-png.flaticon.com/512/2838/2838912.png" alt="أيقونة التطبيق">
+            </div>
             <h1 class="app-name">قائمة تسوقي</h1>
-            <p class="app-tagline">نظم مشترياتك بذكاء، شارك القوائم مع العائلة</p>
+            <p class="app-tagline">نظم مشترياتك بذكاء، شارك القوائم مع العائلة، واستمتع بتسوق سهل وسريع.</p>
             <a href="https://github.com/sajadamazonat-svg/dardasha/raw/main/%D9%82%D8%A7%D8%A6%D9%85%D8%A9%20%D8%AA%D8%B3%D9%88%D9%82%D9%8A.apk" class="download-btn" id="downloadBtn">تحميل تطبيق قائمة تسوقي (APK)</a>
             <div class="features">
                 <span class="feature">قوائم غير محدودة</span>
                 <span class="feature">مشاركة فورية</span>
                 <span class="feature">إشعارات ذكية</span>
+                <span class="feature">تصميم عربي بسيط</span>
             </div>
             <div class="screenshots" id="screenshots-gallery">
                 <div class="screenshots-title">لقطات من التطبيق</div>
-                <div class="screenshot-grid">
-                    <div class="screenshot-card"><img id="screenImg1" src="https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+1" alt="لقطة"></div>
-                    <div class="screenshot-card"><img id="screenImg2" src="https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+2" alt="لقطة"></div>
-                    <div class="screenshot-card"><img id="screenImg3" src="https://placehold.co/200x350/e2e8f0/64748b?text=لقطة+3" alt="لقطة"></div>
+                <div class="screenshot-grid" id="screenshotGrid">
+                    <div class="screenshot-card"><img id="screenImg1" src="https://placehold.co/200x350/e2e8f0/64748b?text=صورة+1" alt="لقطة 1"></div>
+                    <div class="screenshot-card"><img id="screenImg2" src="https://placehold.co/200x350/e2e8f0/64748b?text=صورة+2" alt="لقطة 2"></div>
+                    <div class="screenshot-card"><img id="screenImg3" src="https://placehold.co/200x350/e2e8f0/64748b?text=صورة+3" alt="لقطة 3"></div>
                 </div>
+                <p style="font-size: 0.7rem; margin-top: 0.8rem; color: var(--accent);">يمكنك وضع روابط صورك في المتغيرات داخل كود JavaScript</p>
             </div>
         </div>
     </div>
 
     <section class="legal-section" id="privacy-policy">
         <h2>سياسة الخصوصية</h2>
-        <p>نحن في اسهل حل نلتزم بحماية خصوصية مستخدمي تطبيق "قائمة تسوقي". لا نقوم بجمع بيانات شخصية حساسة دون موافقة. جميع القوائم تُخزن محلياً على جهازك. يتم استخدام Firebase Auth فقط لتسجيل الدخول والمصادقة.</p>
-        <p>للاستفسارات: privacy@as3lhal.com</p>
+        <p>نحن في اسهل حل نلتزم بحماية خصوصية مستخدمي تطبيق "قائمة تسوقي". لا نقوم بجمع أي بيانات شخصية حساسة دون موافقة صريحة. جميع القوائم والمعلومات التي تدخلها في التطبيق تُخزن محلياً على جهازك فقط، ولا يتم مشاركتها مع أي طرف ثالث.</p>
+        <p>قد يستخدم التطبيق اتصالاً بالإنترنت فقط لتحديث المحتوى أو للتحقق من الإصدارات الجديدة، ولكن لا يتم إرسال أي بيانات تعريفية. نحن لا نستخدم خدمات تحليلات تجمع معلوماتك الشخصية. إذا قمت بمشاركة قائمة مع مستخدمين آخرين عبر خاصية المشاركة، فإن البيانات تنتقل بشكل مشفر ولا تخزن على خوادمنا.</p>
+        <p>لأي استفسار حول الخصوصية، يمكنك التواصل معنا عبر البريد الإلكتروني: privacy@as3lhal.com</p>
     </section>
 
     <section class="legal-section" id="terms-of-service">
         <h2>شروط الخدمة</h2>
-        <p>باستخدام التطبيق أنت توافق على الالتزام بالشروط: التطبيق مجاني، يمنع إساءة الاستخدام، جميع الحقوق محفوظة لاسهل حل. آخر تحديث: 7 أبريل 2026.</p>
+        <p>باستخدام تطبيق "قائمة تسوقي"، فإنك توافق على الالتزام بالشروط التالية:</p>
+        <ul>
+            <li>التطبيق مجاني بالكامل ولا يتطلب أي اشتراكات مدفوعة حالياً.</li>
+            <li>يمنع استخدام التطبيق لأي غرض غير قانوني أو إساءة استخدام خاصية المشاركة لنشر محتوى ضار.</li>
+            <li>جميع حقوق الملكية الفكرية للتطبيق تعود لشركة اسهل حل، ولا يسمح بتعديل الكود أو إعادة توزيعه دون إذن.</li>
+            <li>نحن لا نتحمل مسؤولية أي فقدان للبيانات ناتج عن إزالة التطبيق أو إعادة ضبط الجهاز، وننصح بعمل نسخ احتياطية دورية.</li>
+            <li>قد نقوم بتحديث الشروط من وقت لآخر، وسيتم إشعارك عبر التطبيق أو الموقع.</li>
+        </ul>
+        <p>تاريخ آخر تحديث: 7 أبريل 2026</p>
     </section>
 </main>
 
 <footer class="footer">
-    <p>جميع الحقوق محفوظة © <span id="current-year"></span> اسهل حل · قائمة تسوقي</p>
+    <p>جميع الحقوق محفوظة © <span id="current-year"></span> اسهل حل · تطبيق "قائمة تسوقي"</p>
 </footer>
 
-<!-- إضافة Firebase SDKs -->
 <script type="module">
+    // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     
     const firebaseConfig = {
         apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
@@ -376,92 +421,79 @@
         appId: "1:560939348415:web:c854e9e214e498ad2d310a",
         measurementId: "G-CVN2B2D0RD"
     };
+    
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
     
-    // عناصر واجهة المستخدم
-    const userStatusDiv = document.getElementById('userStatusSidebar');
-    const logoutBtnSide = document.getElementById('logoutSidebarBtn');
+    // عناصر الواجهة
+    const googleBtn = document.getElementById('googleSignInBtn');
+    const userInfoDiv = document.getElementById('userInfo');
+    const userNameSpan = document.getElementById('userName');
+    const userAvatarImg = document.getElementById('userAvatar');
+    const logoutBtn = document.getElementById('logoutButton');
     
-    // نماذج
-    const loginModal = document.getElementById('loginModal');
-    const signupModal = document.getElementById('signupModal');
-    const resetModal = document.getElementById('resetModal');
-    
-    function closeAllModals() {
-        loginModal.classList.remove('active');
-        signupModal.classList.remove('active');
-        resetModal.classList.remove('active');
+    // تحديث واجهة المستخدم بناءً على حالة تسجيل الدخول
+    function updateUI(user) {
+        if (user) {
+            // مستخدم مسجل الدخول
+            googleBtn.style.display = 'none';
+            userInfoDiv.style.display = 'flex';
+            userNameSpan.textContent = user.displayName || user.email || 'مستخدم';
+            if (user.photoURL) {
+                userAvatarImg.src = user.photoURL;
+            } else {
+                userAvatarImg.src = 'https://ui-avatars.com/api/?background=e67e22&color=fff&name=' + (user.displayName || 'U');
+            }
+            // تسجيل حدث تسجيل دخول في التحليلات
+            logEvent(analytics, 'login', { method: 'google' });
+        } else {
+            // لا يوجد مستخدم
+            googleBtn.style.display = 'flex';
+            userInfoDiv.style.display = 'none';
+            userNameSpan.textContent = '';
+            userAvatarImg.src = '';
+        }
     }
     
-    // فتح المودالات
-    document.getElementById('showLoginModalLink').addEventListener('click', (e) => { e.preventDefault(); closeAllModals(); loginModal.classList.add('active'); });
-    document.getElementById('showSignupModalLink').addEventListener('click', (e) => { e.preventDefault(); closeAllModals(); signupModal.classList.add('active'); });
-    document.getElementById('showResetModalLink').addEventListener('click', (e) => { e.preventDefault(); closeAllModals(); resetModal.classList.add('active'); });
-    
-    // إغلاق المودالات
-    document.getElementById('closeLoginModal').onclick = () => loginModal.classList.remove('active');
-    document.getElementById('closeSignupModal').onclick = () => signupModal.classList.remove('active');
-    document.getElementById('closeResetModal').onclick = () => resetModal.classList.remove('active');
-    // التبديل بين المودالات
-    document.getElementById('switchToSignup').onclick = () => { loginModal.classList.remove('active'); signupModal.classList.add('active'); };
-    document.getElementById('switchToLogin').onclick = () => { signupModal.classList.remove('active'); loginModal.classList.add('active'); };
-    
-    // تسجيل الدخول
-    document.getElementById('doLoginBtn').addEventListener('click', async () => {
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-        const msg = document.getElementById('loginMessage');
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            msg.innerText = 'تم تسجيل الدخول بنجاح';
-            setTimeout(() => { loginModal.classList.remove('active'); msg.innerText = ''; }, 1000);
-        } catch (err) { msg.innerText = err.message; }
-    });
-    
-    // إنشاء حساب
-    document.getElementById('doSignupBtn').addEventListener('click', async () => {
-        const email = document.getElementById('signupEmail').value;
-        const password = document.getElementById('signupPassword').value;
-        const msg = document.getElementById('signupMessage');
-        try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            msg.innerText = 'تم إنشاء الحساب بنجاح';
-            setTimeout(() => { signupModal.classList.remove('active'); msg.innerText = ''; }, 1000);
-        } catch (err) { msg.innerText = err.message; }
-    });
-    
-    // استعادة كلمة المرور
-    document.getElementById('doResetBtn').addEventListener('click', async () => {
-        const email = document.getElementById('resetEmail').value;
-        const msg = document.getElementById('resetMessage');
-        if (!email) { msg.innerText = 'أدخل بريدك الإلكتروني'; return; }
-        try {
-            await sendPasswordResetEmail(auth, email);
-            msg.innerText = 'تم إرسال رابط إعادة التعيين إلى بريدك';
-        } catch (err) { msg.innerText = err.message; }
-    });
-    
-    // مراقبة حالة المستخدم
+    // مراقبة حالة المصادقة
     onAuthStateChanged(auth, (user) => {
+        updateUI(user);
         if (user) {
-            userStatusDiv.innerHTML = `مرحباً ${user.email}<br><button id="logoutSidebarInner" style="background:#c0392b; border:none; color:white; padding:0.2rem 0.8rem; border-radius:30px; margin-top:0.3rem;">تسجيل خروج</button>`;
-            const innerLogout = document.getElementById('logoutSidebarInner');
-            if (innerLogout) innerLogout.onclick = () => signOut(auth);
-            logoutBtnSide.style.display = 'none';
+            console.log('مستخدم مسجل:', user.email);
         } else {
-            userStatusDiv.innerHTML = 'يرجى تسجيل الدخول';
-            logoutBtnSide.style.display = 'block';
+            console.log('زائر');
         }
     });
     
-    logoutBtnSide.addEventListener('click', (e) => { e.preventDefault(); signOut(auth); closeAllModals(); });
+    // تسجيل الدخول بجوجل
+    googleBtn.addEventListener('click', async () => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            console.log('تم تسجيل الدخول:', user.displayName);
+            // يمكن إضافة رسالة ترحيب اختيارية
+        } catch (error) {
+            console.error('خطأ في تسجيل الدخول:', error);
+            alert('حدث خطأ أثناء محاولة تسجيل الدخول. تأكد من اتصال الإنترنت وحاول مرة أخرى.');
+        }
+    });
     
-    // تحديث سنة حقوق النشر
+    // تسجيل الخروج
+    logoutBtn.addEventListener('click', async () => {
+        try {
+            await signOut(auth);
+            console.log('تم تسجيل الخروج');
+        } catch (error) {
+            console.error('خطأ في تسجيل الخروج:', error);
+        }
+    });
+    
+    // باقي وظائف الصفحة (القائمة الجانبية، الصور، التنقل)
     document.getElementById('current-year').textContent = new Date().getFullYear();
     
-    // معاينة الصور (يمكن تغيير الروابط لاحقاً)
+    // معرض الصور (تحديث الروابط)
     const appImages = {
         icon: "https://cdn-icons-png.flaticon.com/512/2838/2838912.png",
         screenshots: [
@@ -471,18 +503,38 @@
         ]
     };
     document.getElementById('appIconImg').src = appImages.icon;
-    for (let i=0; i<3; i++) document.getElementById(`screenImg${i+1}`).src = appImages.screenshots[i];
+    for (let i = 0; i < appImages.screenshots.length && i < 3; i++) {
+        const imgEl = document.getElementById(`screenImg${i+1}`);
+        if (imgEl) imgEl.src = appImages.screenshots[i];
+    }
     
     // القائمة الجانبية
     const menuToggle = document.getElementById('menuToggle');
     const sidebar = document.getElementById('sidebar');
     function closeSidebar() { sidebar.classList.remove('active'); menuToggle.classList.remove('active'); }
-    menuToggle.addEventListener('click', (e) => { e.stopPropagation(); sidebar.classList.toggle('active'); menuToggle.classList.toggle('active'); });
-    document.addEventListener('click', (e) => { if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) closeSidebar(); });
+    function toggleSidebar() { sidebar.classList.toggle('active'); menuToggle.classList.toggle('active'); }
+    menuToggle.addEventListener('click', (e) => { e.stopPropagation(); toggleSidebar(); });
     document.querySelectorAll('.sidebar-links a').forEach(link => link.addEventListener('click', closeSidebar));
+    document.addEventListener('click', (e) => { if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) closeSidebar(); });
     
-    // تحليل الحدث
-    logEvent(analytics, 'page_view', { page_title: 'الصفحة الرئيسية مع المصادقة' });
+    // تنقل سلس
+    document.querySelectorAll('.sidebar-links a').forEach(anchor => {
+        anchor.addEventListener('click', (e) => {
+            const hash = anchor.getAttribute('href');
+            if (hash && hash !== '#') {
+                e.preventDefault();
+                const target = document.querySelector(hash);
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+    
+    // زر التحميل
+    const downloadBtn = document.getElementById('downloadBtn');
+    downloadBtn.href = "https://github.com/sajadamazonat-svg/dardasha/raw/main/%D9%82%D8%A7%D8%A6%D9%85%D8%A9%20%D8%AA%D8%B3%D9%88%D9%82%D9%8A.apk";
+    
+    // تسجيل حدث مشاهدة الصفحة
+    logEvent(analytics, 'page_view', { page_title: 'تطبيق قائمة تسوقي - مع تسجيل Google' });
 </script>
 </body>
 </html>
