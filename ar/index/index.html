@@ -122,6 +122,10 @@
             color: white;
         }
         .btn-danger:hover { background: #dc2626; }
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
         .lang-btn {
             background: #f1f5f9;
             font-weight: 800;
@@ -138,9 +142,6 @@
             margin-bottom: 2rem;
             transition: all 0.4s;
             position: relative;
-        }
-        .site-cover:hover {
-            transform: scale(1.01);
         }
         .cover-overlay {
             position: absolute;
@@ -226,9 +227,14 @@
             border-radius: 1rem;
             transition: all 0.3s;
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            background: #f1f5f9;
         }
         .gallery img:hover {
             transform: scale(1.05) rotate(1deg);
+        }
+        .gallery img.error-img {
+            opacity: 0.5;
+            border: 2px solid #ef4444;
         }
 
         .admin-panel {
@@ -275,6 +281,7 @@
             width: 100%;
             height: 110px;
             object-fit: cover;
+            background: #e2e8f0;
         }
         .image-actions {
             padding: 0.5rem;
@@ -296,12 +303,18 @@
         }
         .message-success { background: #dcfce7; color: #166534; }
         .message-error { background: #fee2e2; color: #991b1b; }
+        .message-warning { background: #ffedd5; color: #9a3412; }
         hr { margin: 1.5rem 0; border-color: #e2e8f0; }
         footer {
             text-align: center;
             padding: 1.2rem;
             font-size: 0.8rem;
             color: #64748b;
+        }
+        .refresh-btn {
+            margin-right: 1rem;
+            background: #0f172a;
+            color: white;
         }
         @media (max-width: 700px) {
             body { padding: 1rem; }
@@ -320,6 +333,12 @@
             height: 80px;
             object-fit: cover;
             border-radius: 0.8rem;
+            background: #e2e8f0;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
     </style>
 </head>
@@ -354,13 +373,19 @@
                 </div>
                 <div class="app-desc" id="appDescDisplay"></div>
                 <a id="downloadLinkDisplay" class="download-btn" href="#" target="_blank" style="display: none;">تحميل التطبيق</a>
-                <div class="gallery-title" id="galleryTitle">معرض الصور</div>
+                <div class="flex-between">
+                    <div class="gallery-title" id="galleryTitle">معرض الصور</div>
+                    <button id="refreshPublicGalleryBtn" class="btn-outline refresh-btn" style="font-size:0.8rem;">⟳ تحديث</button>
+                </div>
                 <div id="publicGallery" class="gallery"></div>
             </div>
         </div>
 
         <div id="adminPanel" class="admin-panel" style="display: none;">
-            <h3 id="adminPanelTitle">لوحة التحكم المتكاملة</h3>
+            <div class="flex-between">
+                <h3 id="adminPanelTitle">لوحة التحكم المتكاملة</h3>
+                <button id="refreshAdminDataBtn" class="btn-outline refresh-btn">⟳ تحديث البيانات</button>
+            </div>
             <div class="form-group">
                 <label id="labelSiteLogo">لوقو الموقع (شعار الشركة في الهيدر)</label>
                 <input type="file" id="siteLogoUpload" accept="image/*">
@@ -393,7 +418,10 @@
             </div>
             <button id="saveInfoBtn" class="btn-primary">حفظ معلومات التطبيق</button>
             <hr>
-            <h3 id="galleryManageTitle">إدارة صور المعرض (للتطبيق)</h3>
+            <div class="flex-between">
+                <h3 id="galleryManageTitle">إدارة صور المعرض (للتطبيق)</h3>
+                <button id="refreshGalleryAdminBtn" class="btn-outline refresh-btn">⟳ تحديث</button>
+            </div>
             <div class="form-group">
                 <label id="labelUploadGallery">رفع صورة جديدة للمعرض</label>
                 <input type="file" id="galleryUpload" accept="image/*">
@@ -443,7 +471,8 @@
             app_logo_label: "شعار التطبيق (لوقو التطبيق)", app_name_label: "اسم التطبيق", app_desc_label: "وصف التطبيق",
             download_link_label: "رابط التحميل", gallery_manage_title: "إدارة صور المعرض (للتطبيق)", upload_gallery_label: "رفع صورة جديدة للمعرض",
             admin_panel_title: "لوحة التحكم المتكاملة", upload_btn_site: "رفع لوقو الموقع", upload_btn_cover: "رفع الغلاف", upload_btn_logo: "رفع الشعار",
-            no_preview: "لا يوجد عنصر حالياً", delete_btn_text: "حذف"
+            no_preview: "لا يوجد عنصر حالياً", delete_btn_text: "حذف", image_load_error: "فشل تحميل الصورة - تحقق من صلاحيات التخزين",
+            refresh_data: "تم تحديث البيانات"
         },
         en: {
             sign_in: "Sign in with Google", sign_out: "Sign out", admin_welcome: "Welcome Admin - you can manage all content.",
@@ -455,7 +484,8 @@
             app_logo_label: "App Logo", app_name_label: "App Name", app_desc_label: "App Description",
             download_link_label: "Download Link", gallery_manage_title: "Manage Gallery Images", upload_gallery_label: "Upload new gallery image",
             admin_panel_title: "Admin Dashboard", upload_btn_site: "Upload Site Logo", upload_btn_cover: "Upload Cover", upload_btn_logo: "Upload Logo",
-            no_preview: "No item available", delete_btn_text: "Delete"
+            no_preview: "No item available", delete_btn_text: "Delete", image_load_error: "Image failed to load - check storage permissions",
+            refresh_data: "Data refreshed"
         }
     };
     let currentLang = localStorage.getItem('appLang') || 'ar';
@@ -465,18 +495,17 @@
         return str;
     }
     function setDirection() {
-        const htmlEl = document.documentElement;
         const body = document.body;
         if (currentLang === 'en') {
             body.classList.add('ltr');
             body.classList.remove('rtl');
-            htmlEl.setAttribute('dir', 'ltr');
-            htmlEl.setAttribute('lang', 'en');
+            document.documentElement.setAttribute('dir', 'ltr');
+            document.documentElement.setAttribute('lang', 'en');
         } else {
             body.classList.add('rtl');
             body.classList.remove('ltr');
-            htmlEl.setAttribute('dir', 'rtl');
-            htmlEl.setAttribute('lang', 'ar');
+            document.documentElement.setAttribute('dir', 'rtl');
+            document.documentElement.setAttribute('lang', 'ar');
         }
     }
     function updateStaticTexts() {
@@ -566,26 +595,60 @@
         galleryUrls: [], galleryPaths: []
     };
 
-    function showMessage(msg, isError = false) {
+    function showMessage(msg, isError = false, isWarning = false) {
         messageBox.textContent = msg;
-        messageBox.className = `message ${isError ? 'message-error' : 'message-success'}`;
-        setTimeout(() => { messageBox.textContent = ''; messageBox.className = 'message'; }, 4000);
+        if (isWarning) messageBox.className = 'message message-warning';
+        else messageBox.className = `message ${isError ? 'message-error' : 'message-success'}`;
+        setTimeout(() => { messageBox.textContent = ''; messageBox.className = 'message'; }, 5000);
+    }
+
+    // Helper to add error handling on images
+    function handleImageErrors(imgs) {
+        imgs.forEach(img => {
+            if (!img.complete) {
+                img.onerror = () => {
+                    img.classList.add('error-img');
+                    img.alt = t('image_load_error');
+                    const parent = img.parentElement;
+                    if (parent && !parent.querySelector('.error-tooltip')) {
+                        const tooltip = document.createElement('small');
+                        tooltip.className = 'error-tooltip';
+                        tooltip.style.display = 'block';
+                        tooltip.style.color = '#ef4444';
+                        tooltip.style.fontSize = '0.7rem';
+                        tooltip.innerText = t('image_load_error');
+                        parent.appendChild(tooltip);
+                    }
+                };
+            } else if (img.naturalWidth === 0) {
+                img.onerror?.();
+            }
+        });
     }
 
     function updatePublicUI() {
-        if (currentData.siteLogoUrl) { siteLogoImg.src = currentData.siteLogoUrl; siteLogoImg.style.display = 'block'; }
+        if (currentData.siteLogoUrl) { siteLogoImg.src = currentData.siteLogoUrl; siteLogoImg.style.display = 'block'; handleImageErrors([siteLogoImg]); }
         else { siteLogoImg.style.display = 'none'; }
         if (currentData.coverUrl) { siteCoverDiv.style.backgroundImage = `url('${currentData.coverUrl}')`; siteCoverDiv.style.backgroundColor = 'transparent'; }
         else { siteCoverDiv.style.backgroundImage = 'none'; siteCoverDiv.style.backgroundColor = '#cbd5e1'; }
-        if (currentData.logoUrl) { appLogoImg.src = currentData.logoUrl; appLogoImg.style.display = 'block'; }
+        if (currentData.logoUrl) { appLogoImg.src = currentData.logoUrl; appLogoImg.style.display = 'block'; handleImageErrors([appLogoImg]); }
         else { appLogoImg.style.display = 'none'; }
         appNameDisplay.textContent = currentData.name || (currentLang === 'ar' ? 'اسم التطبيق' : 'App Name');
         appDescDisplay.textContent = currentData.description || '';
         if (currentData.downloadLink) { downloadLinkDisplay.href = currentData.downloadLink; downloadLinkDisplay.style.display = 'inline-block'; downloadLinkDisplay.innerText = t('download_app'); }
         else { downloadLinkDisplay.style.display = 'none'; }
         publicGalleryDiv.innerHTML = '';
-        if (currentData.galleryUrls.length) { currentData.galleryUrls.forEach(url => { const img = document.createElement('img'); img.src = url; publicGalleryDiv.appendChild(img); }); }
-        else { publicGalleryDiv.innerHTML = `<p style="color:#64748b;">${t('no_images')}</p>`; }
+        if (currentData.galleryUrls.length) {
+            currentData.galleryUrls.forEach(url => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.loading = 'lazy';
+                publicGalleryDiv.appendChild(img);
+            });
+            handleImageErrors(publicGalleryDiv.querySelectorAll('img'));
+        } else {
+            publicGalleryDiv.innerHTML = `<p style="color:#64748b;">${t('no_images')}</p>`;
+        }
         document.getElementById('galleryTitle').innerText = t('gallery_title');
     }
 
@@ -595,6 +658,7 @@
         currentData.galleryUrls.forEach((url, idx) => {
             const card = document.createElement('div'); card.className = 'image-card';
             const img = document.createElement('img'); img.src = url;
+            img.onerror = () => { img.style.opacity = '0.5'; img.alt = t('image_load_error'); };
             const actions = document.createElement('div'); actions.className = 'image-actions';
             const delBtn = document.createElement('button'); delBtn.textContent = t('delete'); delBtn.className = 'delete-img-btn';
             delBtn.onclick = async () => {
@@ -613,33 +677,39 @@
             galleryImagesList.appendChild(card);
         });
     };
+    
     window.renderPreviews = function() {
+        const createPreviewWithDelete = (url, path, fieldUrl, fieldPath, label) => {
+            const container = document.createElement('div'); container.style.display = 'flex'; container.style.alignItems = 'center'; container.style.gap = '0.8rem';
+            const img = document.createElement('img'); img.src = url; img.className = 'preview-img';
+            const del = document.createElement('button'); del.textContent = t('delete_btn_text'); del.className = 'btn-danger'; del.style.padding = '0.3rem 0.8rem';
+            del.onclick = async () => {
+                if (!confirm(t('confirm_del_logo'))) return;
+                try {
+                    if (path) await deleteObject(storageRef(storage, path));
+                    await update(ref(db, 'appInfo'), { [fieldUrl]: '', [fieldPath]: '' });
+                    showMessage(t('success_delete'));
+                } catch(e) { showMessage(e.message, true); }
+            };
+            container.appendChild(img); container.appendChild(del);
+            return container;
+        };
         siteLogoPreview.innerHTML = '';
-        if (currentData.siteLogoUrl) {
-            const img = document.createElement('img'); img.src = currentData.siteLogoUrl; img.className = 'preview-img';
-            const del = document.createElement('button'); del.textContent = t('delete_btn_text'); del.className = 'btn-danger'; del.style.padding = '0.3rem 0.8rem';
-            del.onclick = async () => { if (!confirm(t('confirm_del_logo'))) return; try { if(currentData.siteLogoPath) await deleteObject(storageRef(storage, currentData.siteLogoPath)); await update(ref(db, 'appInfo'), { siteLogoUrl: '', siteLogoPath: '' }); showMessage(t('success_delete')); } catch(e){ showMessage(e.message, true); } };
-            siteLogoPreview.appendChild(img); siteLogoPreview.appendChild(del);
-        } else { siteLogoPreview.innerHTML = `<p style="color:#64748b;">${t('no_preview')}</p>`; }
+        if (currentData.siteLogoUrl) siteLogoPreview.appendChild(createPreviewWithDelete(currentData.siteLogoUrl, currentData.siteLogoPath, 'siteLogoUrl', 'siteLogoPath', 'site'));
+        else siteLogoPreview.innerHTML = `<p style="color:#64748b;">${t('no_preview')}</p>`;
+        
         coverPreview.innerHTML = '';
-        if (currentData.coverUrl) {
-            const img = document.createElement('img'); img.src = currentData.coverUrl; img.className = 'preview-img';
-            const del = document.createElement('button'); del.textContent = t('delete_btn_text'); del.className = 'btn-danger'; del.style.padding = '0.3rem 0.8rem';
-            del.onclick = async () => { if (!confirm(t('confirm_del_logo'))) return; try { if(currentData.coverPath) await deleteObject(storageRef(storage, currentData.coverPath)); await update(ref(db, 'appInfo'), { coverUrl: '', coverPath: '' }); showMessage(t('success_delete')); } catch(e){ showMessage(e.message, true); } };
-            coverPreview.appendChild(img); coverPreview.appendChild(del);
-        } else { coverPreview.innerHTML = `<p style="color:#64748b;">${t('no_preview')}</p>`; }
+        if (currentData.coverUrl) coverPreview.appendChild(createPreviewWithDelete(currentData.coverUrl, currentData.coverPath, 'coverUrl', 'coverPath', 'cover'));
+        else coverPreview.innerHTML = `<p style="color:#64748b;">${t('no_preview')}</p>`;
+        
         logoPreview.innerHTML = '';
-        if (currentData.logoUrl) {
-            const img = document.createElement('img'); img.src = currentData.logoUrl; img.className = 'preview-img';
-            const del = document.createElement('button'); del.textContent = t('delete_btn_text'); del.className = 'btn-danger'; del.style.padding = '0.3rem 0.8rem';
-            del.onclick = async () => { if (!confirm(t('confirm_del_logo'))) return; try { if(currentData.logoPath) await deleteObject(storageRef(storage, currentData.logoPath)); await update(ref(db, 'appInfo'), { logoUrl: '', logoPath: '' }); showMessage(t('success_delete')); } catch(e){ showMessage(e.message, true); } };
-            logoPreview.appendChild(img); logoPreview.appendChild(del);
-        } else { logoPreview.innerHTML = `<p style="color:#64748b;">${t('no_preview')}</p>`; }
+        if (currentData.logoUrl) logoPreview.appendChild(createPreviewWithDelete(currentData.logoUrl, currentData.logoPath, 'logoUrl', 'logoPath', 'logo'));
+        else logoPreview.innerHTML = `<p style="color:#64748b;">${t('no_preview')}</p>`;
     };
 
     async function uploadFile(file, type, fieldUrl, fieldPath, displayName) {
-        if (!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) return showMessage('Unauthorized', true);
-        if (!file) return showMessage('Select file', true);
+        if (!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) return showMessage('غير مصرح', true);
+        if (!file) return showMessage('اختر ملفاً أولاً', true);
         try {
             const ext = file.name.split('.').pop();
             const path = `${type}/${Date.now()}.${ext}`;
@@ -648,11 +718,27 @@
             const url = await getDownloadURL(fileRef);
             await update(ref(db, 'appInfo'), { [fieldUrl]: url, [fieldPath]: path });
             showMessage(t('success_upload_logo', { name: displayName }));
+            // Force re-fetch from database after upload
+            const snapshot = await new Promise(resolve => onValue(ref(db, 'appInfo'), resolve, { onlyOnce: true }));
+            const d = snapshot.val() || {};
+            Object.assign(currentData, {
+                siteLogoUrl: d.siteLogoUrl || '', siteLogoPath: d.siteLogoPath || '',
+                coverUrl: d.coverUrl || '', coverPath: d.coverPath || '',
+                logoUrl: d.logoUrl || '', logoPath: d.logoPath || '',
+                name: d.name || '', description: d.description || '', downloadLink: d.downloadLink || '',
+                galleryUrls: d.galleryUrls || [], galleryPaths: d.galleryPaths || []
+            });
+            updatePublicUI();
+            if (adminPanel.style.display === 'block') {
+                renderAdminGallery();
+                renderPreviews();
+            }
         } catch(err) { showMessage(err.message, true); }
     }
+    
     async function uploadGalleryImage(file) {
-        if (!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) return showMessage('Unauthorized', true);
-        if (!file) return showMessage('Select image', true);
+        if (!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) return showMessage('غير مصرح', true);
+        if (!file) return showMessage('اختر صورة', true);
         try {
             const ext = file.name.split('.').pop();
             const path = `gallery_images/${Date.now()}_${Math.random().toString(36).substr(2,6)}.${ext}`;
@@ -663,15 +749,50 @@
             const newPaths = [...currentData.galleryPaths, path];
             await update(ref(db, 'appInfo'), { galleryUrls: newUrls, galleryPaths: newPaths });
             showMessage(t('success_upload_logo', { name: t('upload_gallery') }));
+            // Force refresh
+            const snapshot = await new Promise(resolve => onValue(ref(db, 'appInfo'), resolve, { onlyOnce: true }));
+            const d = snapshot.val() || {};
+            currentData.galleryUrls = d.galleryUrls || [];
+            currentData.galleryPaths = d.galleryPaths || [];
+            updatePublicUI();
+            if (adminPanel.style.display === 'block') renderAdminGallery();
         } catch(err) { showMessage(err.message, true); }
     }
+    
     async function saveAppInfo() {
-        if (!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) return showMessage('Unauthorized', true);
+        if (!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) return showMessage('غير مصرح', true);
         const name = appNameInput.value.trim();
-        if (!name) return showMessage('App name required', true);
+        if (!name) return showMessage('اسم التطبيق مطلوب', true);
         await update(ref(db, 'appInfo'), { name, description: appDescInput.value.trim(), downloadLink: downloadLinkInput.value.trim() });
         showMessage(t('save_info') + ' ✅');
+        const snapshot = await new Promise(resolve => onValue(ref(db, 'appInfo'), resolve, { onlyOnce: true }));
+        const d = snapshot.val() || {};
+        currentData.name = d.name; currentData.description = d.description; currentData.downloadLink = d.downloadLink;
+        updatePublicUI();
     }
+    
+    function refreshDataManually() {
+        onValue(ref(db, 'appInfo'), (snap) => {
+            const d = snap.val() || {};
+            currentData = {
+                siteLogoUrl: d.siteLogoUrl || '', siteLogoPath: d.siteLogoPath || '',
+                coverUrl: d.coverUrl || '', coverPath: d.coverPath || '',
+                logoUrl: d.logoUrl || '', logoPath: d.logoPath || '',
+                name: d.name || '', description: d.description || '', downloadLink: d.downloadLink || '',
+                galleryUrls: d.galleryUrls || [], galleryPaths: d.galleryPaths || []
+            };
+            updatePublicUI();
+            if (adminPanel.style.display === 'block') {
+                appNameInput.value = currentData.name;
+                appDescInput.value = currentData.description;
+                downloadLinkInput.value = currentData.downloadLink;
+                renderAdminGallery();
+                renderPreviews();
+            }
+            showMessage(t('refresh_data'), false);
+        }, { onlyOnce: true });
+    }
+
     function loadData() {
         onValue(ref(db, 'appInfo'), (snap) => {
             const d = snap.val() || {};
@@ -729,6 +850,9 @@
     uploadLogoBtn.addEventListener('click', () => uploadFile(logoUpload.files[0], 'app_logo', 'logoUrl', 'logoPath', t('upload_btn_logo')));
     uploadGalleryBtn.addEventListener('click', () => uploadGalleryImage(galleryUpload.files[0]));
     saveInfoBtn.addEventListener('click', saveAppInfo);
+    document.getElementById('refreshAdminDataBtn').addEventListener('click', refreshDataManually);
+    document.getElementById('refreshGalleryAdminBtn').addEventListener('click', refreshDataManually);
+    document.getElementById('refreshPublicGalleryBtn').addEventListener('click', refreshDataManually);
     
     document.getElementById('langToggleBtn').addEventListener('click', () => {
         currentLang = currentLang === 'ar' ? 'en' : 'ar';
