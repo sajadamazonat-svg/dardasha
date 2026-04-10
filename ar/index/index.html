@@ -2,8 +2,9 @@
 <html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اسهل حل | منصة إدارة التطبيقات</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>اسهل حل | منصة احترافية لنشر التطبيقات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,37 +13,58 @@
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
-            background-color: #f3f4f6;
-            color: #1f2937;
+            font-family: 'Cairo', 'Inter', sans-serif;
+            background: linear-gradient(145deg, #f8fafc 0%, #eef2f6 100%);
+            color: #0f172a;
             padding: 2rem;
-            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .container {
-            max-width: 1280px;
+            max-width: 1300px;
             margin: 0 auto;
-            background: #ffffff;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
-            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out;
         }
 
-        /* Header */
+        .main-card {
+            background: rgba(255,255,255,0.96);
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .main-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -12px rgba(0,0,0,0.3);
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 1.5rem 2rem;
-            border-bottom: 1px solid #e5e7eb;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
             flex-wrap: wrap;
             gap: 1rem;
         }
 
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #2563eb, #1e40af);
+        .logo-title .brand-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
@@ -55,277 +77,315 @@
         }
 
         .user-email {
-            font-size: 0.875rem;
-            color: #4b5563;
-            background: #f3f4f6;
-            padding: 0.5rem 1rem;
+            background: #f1f5f9;
+            padding: 0.5rem 1.2rem;
             border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
         button {
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            padding: 0.5rem 1.25rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.875rem;
-        }
-
-        button:hover {
-            background-color: #1d4ed8;
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            border: 1px solid #d1d5db;
-            color: #374151;
-        }
-
-        .btn-outline:hover {
-            background-color: #f9fafb;
-            border-color: #9ca3af;
-        }
-
-        .btn-danger {
-            background-color: #ef4444;
-        }
-
-        .btn-danger:hover {
-            background-color: #dc2626;
-        }
-
-        /* Main content */
-        .main-content {
-            padding: 2rem;
-        }
-
-        /* Public section */
-        .public-section {
-            background-color: #f9fafb;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid #e5e7eb;
-        }
-
-        .public-section h2 {
-            font-size: 1.25rem;
+            font-family: 'Cairo', sans-serif;
             font-weight: 600;
-            margin-bottom: 1rem;
-            color: #111827;
+            border: none;
+            padding: 0.6rem 1.3rem;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
         }
 
-        .app-name {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin: 0.5rem 0;
-        }
-
-        .app-description {
-            color: #4b5563;
-            margin: 0.75rem 0;
-        }
-
-        .download-button {
-            display: inline-block;
-            background-color: #059669;
+        .btn-primary {
+            background: #2563eb;
             color: white;
-            padding: 0.6rem 1.5rem;
-            border-radius: 0.5rem;
-            text-decoration: none;
-            font-weight: 500;
+            box-shadow: 0 4px 6px -1px rgba(37,99,235,0.3);
+        }
+        .btn-primary:hover { background: #1d4ed8; transform: scale(1.02); }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+        }
+        .btn-outline:hover { background: #f8fafc; }
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-danger:hover { background: #dc2626; }
+
+        /* قسم الغلاف (Cover) */
+        .cover-section {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+        .cover-section:hover {
+            transform: scale(1.01);
+        }
+        .cover-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+            padding: 1.5rem;
+            color: white;
+        }
+        .cover-overlay h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .public-section {
+            padding: 2rem;
+            background: #fefefe;
+            border-radius: 1.5rem;
+            margin: 1.5rem 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.8rem;
+        }
+        .app-logo {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 1.5rem;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+        .app-logo:hover { transform: scale(1.02); }
+        .app-title h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .app-desc {
+            font-size: 1rem;
+            color: #334155;
+            line-height: 1.6;
             margin: 1rem 0;
         }
-
+        .download-btn {
+            display: inline-flex;
+            background: #059669;
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+        .download-btn:hover {
+            background: #047857;
+            transform: translateY(-2px);
+        }
+        .gallery-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 1.5rem 0 1rem;
+            border-right: 5px solid #3b82f6;
+            padding-right: 1rem;
+        }
         .gallery {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 1rem;
+            gap: 1.2rem;
         }
-
         .gallery img {
-            width: 180px;
-            height: 180px;
+            width: 200px;
+            height: 200px;
             object-fit: cover;
-            border-radius: 0.75rem;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-
-        /* Admin panel */
-        .admin-panel {
-            background-color: #ffffff;
-            border: 1px solid #e5e7eb;
             border-radius: 1rem;
-            padding: 1.5rem;
-            margin-top: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        .gallery img:hover {
+            transform: scale(1.05) rotate(1deg);
         }
 
+        /* لوحة التحكم */
+        .admin-panel {
+            background: #ffffff;
+            margin: 1.5rem 2rem 2rem;
+            padding: 1.8rem;
+            border-radius: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
         .admin-panel h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 1.2rem;
         }
-
         .form-group {
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.3rem;
         }
-
         label {
+            font-weight: 700;
             display: block;
-            font-weight: 500;
             margin-bottom: 0.5rem;
-            font-size: 0.875rem;
         }
-
         input, textarea {
             width: 100%;
-            padding: 0.625rem 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            transition: border 0.2s;
+            padding: 0.8rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 1rem;
+            font-family: 'Cairo', sans-serif;
         }
-
         input:focus, textarea:focus {
             outline: none;
-            border-color: #2563eb;
-            ring: 2px solid #bfdbfe;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
         }
-
         .images-list {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
             margin-top: 1rem;
         }
-
-        .image-item {
-            position: relative;
-            width: 120px;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.75rem;
+        .image-card {
+            background: #f8fafc;
+            border-radius: 1rem;
             overflow: hidden;
-            background: #f9fafb;
+            width: 130px;
+            border: 1px solid #e2e8f0;
         }
-
-        .image-item img {
+        .image-card img {
             width: 100%;
-            height: 100px;
+            height: 110px;
             object-fit: cover;
         }
-
         .image-actions {
-            padding: 0.5rem;
+            padding: 0.6rem;
             text-align: center;
         }
-
-        .delete-image-btn {
-            background-color: #ef4444;
+        .delete-img-btn {
+            background: #ef4444;
             font-size: 0.75rem;
-            padding: 0.25rem 0.75rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 1rem;
             width: 100%;
         }
-
+        .logo-preview, .cover-preview {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .current-logo, .current-cover {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 1rem;
+            border: 1px solid #cbd5e1;
+        }
+        .current-cover {
+            width: 160px;
+            height: 90px;
+        }
         .message {
             margin-top: 1rem;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            font-weight: 600;
         }
-
-        .message-success {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-
-        .message-error {
-            background-color: #fee2e2;
-            color: #991b1b;
-        }
-
-        hr {
-            margin: 1.5rem 0;
-            border: none;
-            border-top: 1px solid #e5e7eb;
-        }
-
+        .message-success { background: #dcfce7; color: #166534; }
+        .message-error { background: #fee2e2; color: #991b1b; }
+        hr { margin: 1.5rem 0; border-color: #e2e8f0; }
         footer {
             text-align: center;
             padding: 1.5rem;
-            border-top: 1px solid #e5e7eb;
-            color: #6b7280;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
+            color: #64748b;
         }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-            .gallery img {
-                width: 120px;
-                height: 120px;
-            }
+        @media (max-width: 700px) {
+            body { padding: 1rem; }
+            .cover-section { height: 180px; }
+            .gallery img { width: 140px; height: 140px; }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <div class="logo">
-            <h1>اسهل حل</h1>
-        </div>
-        <div class="user-area">
-            <span class="user-email" id="userEmailDisplay"></span>
-            <button id="signOutBtn" class="btn-outline" style="display: none;">تسجيل خروج</button>
-        </div>
-    </div>
-
-    <div class="main-content">
-        <!-- منطقة تسجيل الدخول -->
-        <div id="loginSection" style="text-align: center; padding: 2rem;">
-            <button id="googleSignInBtn" style="font-size: 1rem;">تسجيل الدخول بحساب Google</button>
-            <p id="authStatus" style="margin-top: 1rem; color: #6b7280;"></p>
+    <div class="main-card">
+        <div class="header">
+            <div class="logo-title"><span class="brand-name">اسهل حل</span></div>
+            <div class="user-area">
+                <span class="user-email" id="userEmailDisplay">غير مسجل</span>
+                <button id="signOutBtn" class="btn-outline" style="display: none;">تسجيل خروج</button>
+            </div>
         </div>
 
-        <!-- العرض العام (للزوار) -->
+        <div id="loginSection" style="text-align: center; padding: 3rem 2rem;">
+            <button id="googleSignInBtn" class="btn-primary" style="font-size: 1.1rem;">تسجيل الدخول بحساب Google</button>
+            <p id="authStatus" style="margin-top: 1.2rem; color: #475569;"></p>
+        </div>
+
+        <!-- العرض العام مع صورة الغلاف -->
         <div id="publicDisplay" class="public-section">
-            <h2>التطبيق</h2>
-            <div class="app-name" id="appNameDisplay">---</div>
-            <div class="app-description" id="appDescDisplay"></div>
-            <a id="downloadLinkDisplay" class="download-button" href="#" target="_blank" style="display: none;">تحميل التطبيق</a>
-            <h4 style="margin: 1rem 0 0.5rem;">معرض الصور</h4>
+            <div id="coverContainer" class="cover-section" style="background-image: none; background-color: #e2e8f0;">
+                <div class="cover-overlay">
+                    <h2>مرحباً بك في اسهل حل</h2>
+                </div>
+            </div>
+            <div class="app-header">
+                <img id="appLogoImg" class="app-logo" src="" alt="شعار التطبيق" style="display: none;">
+                <div class="app-title"><h2 id="appNameDisplay">---</h2></div>
+            </div>
+            <div class="app-desc" id="appDescDisplay"></div>
+            <a id="downloadLinkDisplay" class="download-btn" href="#" target="_blank" style="display: none;">تحميل التطبيق</a>
+            <div class="gallery-title">معرض الصور</div>
             <div id="publicGallery" class="gallery"></div>
         </div>
 
-        <!-- لوحة تحكم المسؤول (تظهر فقط للمسؤول) -->
+        <!-- لوحة تحكم المسؤول -->
         <div id="adminPanel" class="admin-panel" style="display: none;">
-            <h3>لوحة التحكم</h3>
+            <h3>لوحة إدارة التطبيق</h3>
+            <div class="form-group">
+                <label>صورة غلاف الموقع (Cover)</label>
+                <input type="file" id="coverUploadInput" accept="image/jpeg,image/png,image/webp">
+                <button id="uploadCoverBtn" class="btn-primary" style="margin-top: 0.5rem;">رفع الغلاف</button>
+                <div id="coverPreviewArea" class="cover-preview"></div>
+            </div>
+            <div class="form-group">
+                <label>شعار التطبيق (لوجو)</label>
+                <input type="file" id="logoUploadInput" accept="image/jpeg,image/png,image/webp">
+                <button id="uploadLogoBtn" class="btn-primary" style="margin-top: 0.5rem;">رفع الشعار</button>
+                <div id="logoPreviewArea" class="logo-preview"></div>
+            </div>
             <div class="form-group">
                 <label>اسم التطبيق</label>
-                <input type="text" id="appNameInput" placeholder="مثال: تطبيق اسهل حل">
+                <input type="text" id="appNameInput" placeholder="اسم التطبيق">
             </div>
             <div class="form-group">
                 <label>وصف التطبيق</label>
-                <textarea id="appDescInput" placeholder="وصف تفصيلي للتطبيق..."></textarea>
+                <textarea id="appDescInput" placeholder="وصف تفصيلي..."></textarea>
             </div>
             <div class="form-group">
                 <label>رابط التحميل</label>
-                <input type="url" id="downloadLinkInput" placeholder="https://example.com/app.apk">
+                <input type="url" id="downloadLinkInput" placeholder="https://...">
             </div>
-            <button id="saveInfoBtn">حفظ المعلومات</button>
-
+            <button id="saveInfoBtn" class="btn-primary">حفظ المعلومات</button>
             <hr>
-
-            <h3>إدارة الصور</h3>
+            <h3>إدارة صور المعرض</h3>
             <div class="form-group">
-                <label>رفع صورة جديدة</label>
-                <input type="file" id="imageUploadInput" accept="image/jpeg,image/png,image/webp">
-                <button id="uploadImageBtn" style="margin-top: 0.5rem;">رفع الصورة</button>
+                <label>رفع صورة جديدة للمعرض</label>
+                <input type="file" id="galleryImageInput" accept="image/*">
+                <button id="uploadGalleryBtn" class="btn-primary" style="margin-top: 0.5rem;">رفع الصورة</button>
             </div>
             <div>
                 <label>الصور الحالية</label>
@@ -333,10 +393,8 @@
             </div>
             <div id="messageBox" class="message"></div>
         </div>
+        <footer>© 2025 اسهل حل - جميع الحقوق محفوظة</footer>
     </div>
-    <footer>
-        جميع الحقوق محفوظة © 2025 - اسهل حل
-    </footer>
 </div>
 
 <script type="module">
@@ -365,7 +423,7 @@
 
     const ADMIN_EMAIL = "ashlhl.iq@gmail.com";
 
-    // عناصر DOM
+    // DOM elements
     const loginSection = document.getElementById('loginSection');
     const publicDisplay = document.getElementById('publicDisplay');
     const adminPanel = document.getElementById('adminPanel');
@@ -374,189 +432,218 @@
     const googleBtn = document.getElementById('googleSignInBtn');
     const authStatus = document.getElementById('authStatus');
 
-    // حقول العرض العام
+    const coverContainer = document.getElementById('coverContainer');
+    const appLogoImg = document.getElementById('appLogoImg');
     const appNameDisplay = document.getElementById('appNameDisplay');
     const appDescDisplay = document.getElementById('appDescDisplay');
     const downloadLinkDisplay = document.getElementById('downloadLinkDisplay');
     const publicGallery = document.getElementById('publicGallery');
 
-    // حقول الإدارة
     const appNameInput = document.getElementById('appNameInput');
     const appDescInput = document.getElementById('appDescInput');
     const downloadLinkInput = document.getElementById('downloadLinkInput');
     const saveInfoBtn = document.getElementById('saveInfoBtn');
-    const imageUploadInput = document.getElementById('imageUploadInput');
-    const uploadImageBtn = document.getElementById('uploadImageBtn');
+    const logoUploadInput = document.getElementById('logoUploadInput');
+    const uploadLogoBtn = document.getElementById('uploadLogoBtn');
+    const coverUploadInput = document.getElementById('coverUploadInput');
+    const uploadCoverBtn = document.getElementById('uploadCoverBtn');
+    const galleryImageInput = document.getElementById('galleryImageInput');
+    const uploadGalleryBtn = document.getElementById('uploadGalleryBtn');
     const imagesListContainer = document.getElementById('imagesListContainer');
     const messageBox = document.getElementById('messageBox');
+    const logoPreviewArea = document.getElementById('logoPreviewArea');
+    const coverPreviewArea = document.getElementById('coverPreviewArea');
 
-    let currentImages = [];  // قائمة روابط الصور
-    let currentImageStoragePaths = []; // لتخزين مسارات الملفات (لحذفها من Storage)
+    let currentData = {
+        name: '', description: '', downloadLink: '',
+        logoUrl: '', logoStoragePath: '',
+        coverUrl: '', coverStoragePath: '',
+        galleryImages: [], galleryStoragePaths: []
+    };
 
     function showMessage(text, isError = false) {
         messageBox.textContent = text;
         messageBox.className = `message ${isError ? 'message-error' : 'message-success'}`;
-        setTimeout(() => {
-            messageBox.textContent = '';
-            messageBox.className = 'message';
-        }, 4000);
+        setTimeout(() => { messageBox.textContent = ''; messageBox.className = 'message'; }, 4000);
     }
 
-    // تحديث العرض العام
-    function updatePublicDisplay(data) {
-        appNameDisplay.textContent = data.name || "لم يضف اسم بعد";
-        appDescDisplay.textContent = data.description || "";
-        if (data.downloadLink && data.downloadLink.trim() !== "") {
-            downloadLinkDisplay.href = data.downloadLink;
-            downloadLinkDisplay.style.display = "inline-block";
+    function updatePublicUI() {
+        appNameDisplay.textContent = currentData.name || "اسم التطبيق";
+        appDescDisplay.textContent = currentData.description || "";
+        if (currentData.downloadLink && currentData.downloadLink.trim()) {
+            downloadLinkDisplay.href = currentData.downloadLink;
+            downloadLinkDisplay.style.display = "inline-flex";
         } else {
             downloadLinkDisplay.style.display = "none";
         }
-        // عرض الصور
+        // الشعار
+        if (currentData.logoUrl) {
+            appLogoImg.src = currentData.logoUrl;
+            appLogoImg.style.display = "block";
+        } else {
+            appLogoImg.style.display = "none";
+        }
+        // صورة الغلاف
+        if (currentData.coverUrl) {
+            coverContainer.style.backgroundImage = `url('${currentData.coverUrl}')`;
+            coverContainer.style.backgroundColor = "transparent";
+        } else {
+            coverContainer.style.backgroundImage = "none";
+            coverContainer.style.backgroundColor = "#e2e8f0";
+        }
+        // معرض الصور
         publicGallery.innerHTML = "";
-        if (data.images && data.images.length > 0) {
-            data.images.forEach(url => {
+        if (currentData.galleryImages && currentData.galleryImages.length) {
+            currentData.galleryImages.forEach(url => {
                 const img = document.createElement('img');
                 img.src = url;
-                img.alt = "صورة التطبيق";
+                img.alt = "معرض التطبيق";
                 publicGallery.appendChild(img);
             });
         } else {
-            publicGallery.innerHTML = "<p style='color:#6b7280;'>لا توجد صور معروضة حالياً.</p>";
+            publicGallery.innerHTML = "<p style='color:#64748b;'>لا توجد صور معروضة حالياً.</p>";
         }
     }
 
-    // عرض قائمة الصور في لوحة الإدارة مع زر حذف
-    function renderAdminImages(images, imagePaths) {
+    function renderAdminImages() {
         imagesListContainer.innerHTML = "";
-        if (!images || images.length === 0) {
-            imagesListContainer.innerHTML = "<p style='color:#6b7280;'>لا توجد صور. ارفع الصور الأولى.</p>";
+        if (!currentData.galleryImages || currentData.galleryImages.length === 0) {
+            imagesListContainer.innerHTML = "<p style='color:#64748b;'>لا توجد صور. قم برفع أول صورة.</p>";
             return;
         }
-        images.forEach((url, idx) => {
-            const div = document.createElement('div');
-            div.className = 'image-item';
-            const img = document.createElement('img');
-            img.src = url;
-            const actionsDiv = document.createElement('div');
-            actionsDiv.className = 'image-actions';
-            const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = 'حذف';
-            deleteBtn.className = 'delete-image-btn';
-            deleteBtn.addEventListener('click', async () => {
-                if (!confirm("هل أنت متأكد من حذف هذه الصورة؟")) return;
+        currentData.galleryImages.forEach((url, idx) => {
+            const card = document.createElement('div'); card.className = 'image-card';
+            const img = document.createElement('img'); img.src = url;
+            const actions = document.createElement('div'); actions.className = 'image-actions';
+            const delBtn = document.createElement('button'); delBtn.textContent = 'حذف'; delBtn.className = 'delete-img-btn';
+            delBtn.addEventListener('click', async () => {
+                if (!confirm("حذف هذه الصورة نهائياً؟")) return;
                 try {
-                    // حذف الملف من Storage إذا كان لدينا المسار
-                    const path = imagePaths[idx];
-                    if (path) {
-                        const fileRef = storageRef(storage, path);
-                        await deleteObject(fileRef);
-                    }
-                    // تحديث قاعدة البيانات بإزالة الصورة من القائمة
-                    const newImages = [...images];
-                    const newPaths = [...imagePaths];
-                    newImages.splice(idx, 1);
-                    newPaths.splice(idx, 1);
-                    await update(ref(db, 'appInfo'), {
-                        images: newImages,
-                        imageStoragePaths: newPaths
-                    });
-                    showMessage("تم حذف الصورة بنجاح");
-                } catch (err) {
-                    showMessage("فشل الحذف: " + err.message, true);
-                }
+                    const path = currentData.galleryStoragePaths[idx];
+                    if (path) { await deleteObject(storageRef(storage, path)); }
+                    const newImages = [...currentData.galleryImages]; newImages.splice(idx,1);
+                    const newPaths = [...currentData.galleryStoragePaths]; newPaths.splice(idx,1);
+                    await update(ref(db, 'appInfo'), { galleryImages: newImages, galleryStoragePaths: newPaths });
+                    showMessage("تم حذف الصورة");
+                } catch(err) { showMessage("فشل الحذف: "+err.message, true); }
             });
-            actionsDiv.appendChild(deleteBtn);
-            div.appendChild(img);
-            div.appendChild(actionsDiv);
-            imagesListContainer.appendChild(div);
+            actions.appendChild(delBtn);
+            card.appendChild(img); card.appendChild(actions);
+            imagesListContainer.appendChild(card);
         });
     }
 
-    // تحميل البيانات من Firebase
-    function loadAppData() {
+    function renderLogoPreview() {
+        logoPreviewArea.innerHTML = "";
+        if (currentData.logoUrl) {
+            const img = document.createElement('img'); img.src = currentData.logoUrl; img.className = 'current-logo';
+            const delBtn = document.createElement('button'); delBtn.textContent = 'حذف الشعار'; delBtn.className = 'btn-danger'; delBtn.style.padding = '0.3rem 0.8rem';
+            delBtn.addEventListener('click', async () => {
+                if (!confirm("حذف الشعار؟")) return;
+                try {
+                    if (currentData.logoStoragePath) await deleteObject(storageRef(storage, currentData.logoStoragePath));
+                    await update(ref(db, 'appInfo'), { logoUrl: '', logoStoragePath: '' });
+                    showMessage("تم حذف الشعار");
+                } catch(err) { showMessage("خطأ", true); }
+            });
+            logoPreviewArea.appendChild(img); logoPreviewArea.appendChild(delBtn);
+        } else { logoPreviewArea.innerHTML = "<p style='color:#64748b;'>لا يوجد شعار حالياً</p>"; }
+    }
+
+    function renderCoverPreview() {
+        coverPreviewArea.innerHTML = "";
+        if (currentData.coverUrl) {
+            const img = document.createElement('img'); img.src = currentData.coverUrl; img.className = 'current-cover';
+            const delBtn = document.createElement('button'); delBtn.textContent = 'حذف الغلاف'; delBtn.className = 'btn-danger'; delBtn.style.padding = '0.3rem 0.8rem';
+            delBtn.addEventListener('click', async () => {
+                if (!confirm("حذف صورة الغلاف؟")) return;
+                try {
+                    if (currentData.coverStoragePath) await deleteObject(storageRef(storage, currentData.coverStoragePath));
+                    await update(ref(db, 'appInfo'), { coverUrl: '', coverStoragePath: '' });
+                    showMessage("تم حذف الغلاف");
+                } catch(err) { showMessage("خطأ", true); }
+            });
+            coverPreviewArea.appendChild(img); coverPreviewArea.appendChild(delBtn);
+        } else { coverPreviewArea.innerHTML = "<p style='color:#64748b;'>لا يوجد غلاف حالياً</p>"; }
+    }
+
+    async function uploadCover(file) {
+        if (!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) return showMessage("غير مصرح", true);
+        if (!file) return showMessage("اختر صورة للغلاف", true);
+        try {
+            const ext = file.name.split('.').pop();
+            const path = `site_cover/cover_${Date.now()}.${ext}`;
+            const fileRef = storageRef(storage, path);
+            await uploadBytes(fileRef, file);
+            const url = await getDownloadURL(fileRef);
+            await update(ref(db, 'appInfo'), { coverUrl: url, coverStoragePath: path });
+            showMessage("تم رفع غلاف الموقع بنجاح");
+        } catch(err) { showMessage("فشل الرفع: "+err.message, true); }
+    }
+
+    async function uploadLogo(file) {
+        if (!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) return showMessage("غير مصرح", true);
+        if (!file) return showMessage("اختر صورة للشعار", true);
+        try {
+            const ext = file.name.split('.').pop();
+            const path = `app_logo/logo_${Date.now()}.${ext}`;
+            const fileRef = storageRef(storage, path);
+            await uploadBytes(fileRef, file);
+            const url = await getDownloadURL(fileRef);
+            await update(ref(db, 'appInfo'), { logoUrl: url, logoStoragePath: path });
+            showMessage("تم رفع الشعار بنجاح");
+        } catch(err) { showMessage("فشل الرفع: "+err.message, true); }
+    }
+
+    async function uploadGalleryImage(file) {
+        if (!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) return showMessage("غير مصرح", true);
+        if (!file) return showMessage("اختر صورة", true);
+        try {
+            const ext = file.name.split('.').pop();
+            const fileName = `gallery_images/${Date.now()}_${Math.random().toString(36).substring(2,8)}.${ext}`;
+            const fileRef = storageRef(storage, fileName);
+            await uploadBytes(fileRef, file);
+            const url = await getDownloadURL(fileRef);
+            const newImages = [...currentData.galleryImages, url];
+            const newPaths = [...currentData.galleryStoragePaths, fileName];
+            await update(ref(db, 'appInfo'), { galleryImages: newImages, galleryStoragePaths: newPaths });
+            showMessage("تم رفع الصورة بنجاح");
+        } catch(err) { showMessage("فشل الرفع: "+err.message, true); }
+    }
+
+    async function saveAppInfo() {
+        if (!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) return showMessage("غير مصرح", true);
+        const name = appNameInput.value.trim();
+        if (!name) return showMessage("اسم التطبيق مطلوب", true);
+        await update(ref(db, 'appInfo'), {
+            name: name,
+            description: appDescInput.value.trim(),
+            downloadLink: downloadLinkInput.value.trim()
+        });
+        showMessage("تم حفظ معلومات التطبيق");
+    }
+
+    function loadDataAndListen() {
         onValue(ref(db, 'appInfo'), (snapshot) => {
             const data = snapshot.val() || {};
-            const appData = {
-                name: data.name || '',
-                description: data.description || '',
-                downloadLink: data.downloadLink || '',
-                images: data.images || [],
-                imageStoragePaths: data.imageStoragePaths || []
+            currentData = {
+                name: data.name || '', description: data.description || '', downloadLink: data.downloadLink || '',
+                logoUrl: data.logoUrl || '', logoStoragePath: data.logoStoragePath || '',
+                coverUrl: data.coverUrl || '', coverStoragePath: data.coverStoragePath || '',
+                galleryImages: data.galleryImages || [], galleryStoragePaths: data.galleryStoragePaths || []
             };
-            currentImages = appData.images;
-            currentImageStoragePaths = appData.imageStoragePaths;
-            updatePublicDisplay(appData);
+            updatePublicUI();
             if (adminPanel.style.display === 'block') {
-                appNameInput.value = appData.name;
-                appDescInput.value = appData.description;
-                downloadLinkInput.value = appData.downloadLink;
-                renderAdminImages(appData.images, appData.imageStoragePaths);
+                appNameInput.value = currentData.name;
+                appDescInput.value = currentData.description;
+                downloadLinkInput.value = currentData.downloadLink;
+                renderAdminImages();
+                renderLogoPreview();
+                renderCoverPreview();
             }
         });
     }
 
-    // حفظ معلومات التطبيق (الاسم، الوصف، الرابط)
-    async function saveAppInfo() {
-        const user = auth.currentUser;
-        if (!user || user.email !== ADMIN_EMAIL) {
-            showMessage("غير مصرح بهذه العملية", true);
-            return;
-        }
-        const name = appNameInput.value.trim();
-        if (!name) {
-            showMessage("اسم التطبيق مطلوب", true);
-            return;
-        }
-        try {
-            await update(ref(db, 'appInfo'), {
-                name: name,
-                description: appDescInput.value.trim(),
-                downloadLink: downloadLinkInput.value.trim()
-            });
-            showMessage("تم حفظ معلومات التطبيق");
-        } catch (err) {
-            showMessage("خطأ: " + err.message, true);
-        }
-    }
-
-    // رفع صورة جديدة
-    async function uploadNewImage() {
-        const user = auth.currentUser;
-        if (!user || user.email !== ADMIN_EMAIL) {
-            showMessage("غير مصرح", true);
-            return;
-        }
-        const file = imageUploadInput.files[0];
-        if (!file) {
-            showMessage("اختر صورة أولاً", true);
-            return;
-        }
-        if (!file.type.startsWith('image/')) {
-            showMessage("الملف المختار ليس صورة", true);
-            return;
-        }
-        try {
-            const ext = file.name.split('.').pop();
-            const fileName = `app_images/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${ext}`;
-            const fileRef = storageRef(storage, fileName);
-            const uploadTask = await uploadBytes(fileRef, file);
-            const downloadURL = await getDownloadURL(uploadTask.ref);
-            // إضافة الصورة إلى القائمة الحالية
-            const newImages = [...currentImages, downloadURL];
-            const newPaths = [...currentImageStoragePaths, fileName];
-            await update(ref(db, 'appInfo'), {
-                images: newImages,
-                imageStoragePaths: newPaths
-            });
-            showMessage("تم رفع الصورة بنجاح");
-            imageUploadInput.value = '';
-        } catch (err) {
-            showMessage("فشل الرفع: " + err.message, true);
-        }
-    }
-
-    // مراقبة حالة تسجيل الدخول
     onAuthStateChanged(auth, (user) => {
         if (user) {
             userEmailSpan.textContent = user.email;
@@ -565,14 +652,14 @@
                 loginSection.style.display = 'none';
                 adminPanel.style.display = 'block';
                 publicDisplay.style.display = 'block';
-                authStatus.textContent = "مرحباً أيها المسؤول – يمكنك تعديل بيانات التطبيق والصور.";
-                loadAppData();
+                authStatus.textContent = "مرحباً أيها المسؤول – يمكنك تعديل كل البيانات.";
+                loadDataAndListen();
             } else {
                 loginSection.style.display = 'none';
                 adminPanel.style.display = 'none';
                 publicDisplay.style.display = 'block';
                 authStatus.textContent = `تم الدخول كـ ${user.email} لكن ليس لديك صلاحيات الإدارة.`;
-                loadAppData();
+                loadDataAndListen();
             }
         } else {
             userEmailSpan.textContent = "غير مسجل";
@@ -581,14 +668,16 @@
             adminPanel.style.display = 'none';
             publicDisplay.style.display = 'block';
             authStatus.textContent = "سجل الدخول بحساب Google لإدارة التطبيق (للمسؤول فقط).";
-            loadAppData(); // تبقى البيانات العامة ظاهرة
+            loadDataAndListen();
         }
     });
 
     googleBtn.addEventListener('click', () => signInWithPopup(auth, new GoogleAuthProvider()));
     signOutBtn.addEventListener('click', () => signOut(auth));
     saveInfoBtn.addEventListener('click', saveAppInfo);
-    uploadImageBtn.addEventListener('click', uploadNewImage);
+    uploadLogoBtn.addEventListener('click', () => uploadLogo(logoUploadInput.files[0]));
+    uploadCoverBtn.addEventListener('click', () => uploadCover(coverUploadInput.files[0]));
+    uploadGalleryBtn.addEventListener('click', () => uploadGalleryImage(galleryImageInput.files[0]));
 </script>
 </body>
 </html>
