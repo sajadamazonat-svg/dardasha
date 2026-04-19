@@ -3,219 +3,441 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CV Builder</title>
+  <title>CV Builder Pro</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
+    * { box-sizing: border-box; font-family: "Cairo", Arial, sans-serif; }
+    :root{
+      --bg1:#0f172a;
+      --bg2:#111827;
+      --card:#ffffff;
+      --line:#e5e7eb;
+      --text:#111827;
+      --muted:#6b7280;
+      --primary:#2563eb;
+      --primary2:#1d4ed8;
+      --soft:#eff6ff;
+      --shadow: 0 18px 50px rgba(0,0,0,.12);
+      --radius: 22px;
     }
 
-    body {
-      margin: 0;
-      background: #f2f4f8;
-      color: #222;
+    body{
+      margin:0;
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,.18), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(59,130,246,.15), transparent 30%),
+        linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+      color:var(--text);
     }
 
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      padding: 20px;
+    .topbar{
+      padding: 24px 18px 0;
+      text-align:center;
     }
 
-    .panel {
-      background: #fff;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    .topbar h1{
+      margin:0;
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--bg2);
+      letter-spacing: .2px;
     }
 
-    h1, h2 {
-      margin-top: 0;
-      color: #1f3c88;
-    }
-
-    label {
-      display: block;
-      margin: 12px 0 6px;
-      font-weight: bold;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      outline: none;
+    .topbar p{
+      margin:8px 0 0;
+      color: var(--muted);
       font-size: 15px;
     }
 
-    textarea {
-      resize: vertical;
-      min-height: 90px;
+    .container{
+      display:grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap:20px;
+      padding: 20px;
+      max-width: 1500px;
+      margin: 0 auto;
+      align-items:start;
     }
 
-    button {
-      margin-top: 16px;
-      padding: 12px 18px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: bold;
+    .panel{
+      background: rgba(255,255,255,.82);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
     }
 
-    .btn-pdf {
-      background: #1f3c88;
+    .panel-header{
+      padding: 18px 20px;
+      background: linear-gradient(135deg, var(--bg2), #1e293b);
       color: white;
     }
 
-    .btn-clear {
-      background: #e0e0e0;
-      color: #222;
-      margin-right: 8px;
+    .panel-header h2{
+      margin:0;
+      font-size: 20px;
+      font-weight: 800;
     }
 
-    #cvPreview {
-      background: white;
-      border: 2px solid #1f3c88;
-      border-radius: 16px;
-      padding: 28px;
-      min-height: 900px;
-    }
-
-    .name {
-      font-size: 30px;
-      font-weight: bold;
-      color: #1f3c88;
-      margin-bottom: 6px;
-    }
-
-    .title {
-      font-size: 18px;
-      color: #555;
-      margin-bottom: 20px;
-    }
-
-    .section {
-      margin-bottom: 18px;
-    }
-
-    .section h3 {
-      margin-bottom: 8px;
-      color: #1f3c88;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 6px;
-    }
-
-    .info {
-      line-height: 1.9;
-      white-space: pre-wrap;
-    }
-
-    .footer-note {
-      margin-top: 12px;
+    .panel-header span{
+      display:block;
+      margin-top:4px;
       font-size: 13px;
-      color: #666;
+      opacity: .8;
     }
 
-    @media (max-width: 900px) {
-      .container {
-        grid-template-columns: 1fr;
-      }
+    .panel-body{
+      padding: 18px 20px 22px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field{
+      margin-bottom: 12px;
+    }
+
+    .field.full{ grid-column: 1 / -1; }
+
+    label{
+      display:block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    input, textarea{
+      width:100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: var(--text);
+      outline:none;
+      transition: .2s ease;
+    }
+
+    input:focus, textarea:focus{
+      border-color: rgba(37,99,235,.65);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.10);
+    }
+
+    textarea{
+      min-height: 94px;
+      resize: vertical;
+      line-height: 1.8;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 14px;
+    }
+
+    button{
+      border:0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    button:hover{ transform: translateY(-1px); }
+    .btn-primary{
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color:#fff;
+      box-shadow: 0 10px 24px rgba(37,99,235,.25);
+    }
+    .btn-light{
+      background:#eef2ff;
+      color:#1e3a8a;
+    }
+
+    .preview-wrap{
+      padding: 18px;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,.12), transparent 26%),
+        linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+      min-height: 100%;
+    }
+
+    .cv{
+      background: white;
+      border-radius: 20px;
+      border: 1px solid #dbeafe;
+      overflow:hidden;
+      box-shadow: 0 20px 50px rgba(15,23,42,.10);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .cv-head{
+      position: relative;
+      padding: 28px 28px 22px;
+      background: linear-gradient(135deg, #0f172a, #1d4ed8);
+      color: white;
+    }
+
+    .cv-head .name{
+      margin:0;
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .cv-head .title{
+      margin: 6px 0 0;
+      font-size: 17px;
+      opacity: .92;
+    }
+
+    .badge-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top: 14px;
+    }
+
+    .badge{
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.18);
+      font-size: 13px;
+    }
+
+    .cv-body{
+      padding: 24px 28px 28px;
+    }
+
+    .cv-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 18px;
+    }
+
+    .section{
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 16px 16px 14px;
+      background: #fff;
+    }
+
+    .section h3{
+      margin:0 0 10px;
+      font-size: 16px;
+      color:#0f172a;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .section h3::before{
+      content:"";
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background: linear-gradient(135deg, var(--primary), #60a5fa);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+    }
+
+    .info{
+      white-space: pre-wrap;
+      line-height: 1.9;
+      color:#1f2937;
+      font-size: 15px;
+    }
+
+    .contact{
+      display:grid;
+      gap:8px;
+    }
+
+    .contact-item{
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      color:#111827;
+      font-size: 14px;
+    }
+
+    .footer-note{
+      margin-top: 16px;
+      text-align:center;
+      color:#64748b;
+      font-size: 13px;
+    }
+
+    @media (max-width: 1100px){
+      .container{ grid-template-columns: 1fr; }
+      .cv-grid{ grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px){
+      .grid{ grid-template-columns: 1fr; }
+      .topbar h1{ font-size: 24px; }
+      .cv-head .name{ font-size: 24px; }
+      .panel-body, .preview-wrap, .cv-body, .cv-head{ padding-left: 16px; padding-right: 16px; }
+    }
+
+    @media print{
+      body{ background:#fff; }
+      .topbar, .panel:first-child, .actions{ display:none !important; }
+      .container{ display:block; padding:0; }
+      .panel{ box-shadow:none; border:0; }
+      .preview-wrap{ padding:0; }
+      .cv{ box-shadow:none; border:0; max-width:100%; }
     }
   </style>
 </head>
 <body>
 
+  <div class="topbar">
+    <h1>CV Builder Pro</h1>
+    <p>اكتب معلوماتك وشوف السيفي بشكل احترافي، وبعدها نزله PDF مباشرة</p>
+  </div>
+
   <div class="container">
     <div class="panel">
-      <h1>إدخال معلومات السيفي</h1>
+      <div class="panel-header">
+        <h2>إدخال المعلومات</h2>
+        <span>عبّي الحقول حتى يتحدث السيفي مباشرة</span>
+      </div>
 
-      <label>الاسم الكامل</label>
-      <input type="text" id="fullName" placeholder="مثال: سجاد أحمد" />
+      <div class="panel-body">
+        <div class="grid">
+          <div class="field">
+            <label>الاسم الكامل</label>
+            <input type="text" id="fullName" placeholder="مثال: سجاد أحمد" />
+          </div>
 
-      <label>المسمى الوظيفي</label>
-      <input type="text" id="jobTitle" placeholder="مثال: مطور مواقع" />
+          <div class="field">
+            <label>المسمى الوظيفي</label>
+            <input type="text" id="jobTitle" placeholder="مثال: مطور ويب" />
+          </div>
 
-      <label>رقم الهاتف</label>
-      <input type="text" id="phone" placeholder="مثال: 0770xxxxxxx" />
+          <div class="field">
+            <label>رقم الهاتف</label>
+            <input type="text" id="phone" placeholder="0770xxxxxxx" />
+          </div>
 
-      <label>البريد الإلكتروني</label>
-      <input type="text" id="email" placeholder="example@gmail.com" />
+          <div class="field">
+            <label>البريد الإلكتروني</label>
+            <input type="text" id="email" placeholder="example@gmail.com" />
+          </div>
 
-      <label>العنوان</label>
-      <input type="text" id="address" placeholder="مثال: بغداد، العراق" />
+          <div class="field full">
+            <label>العنوان</label>
+            <input type="text" id="address" placeholder="بغداد، العراق" />
+          </div>
 
-      <label>نبذة شخصية</label>
-      <textarea id="about" placeholder="اكتب نبذة قصيرة عن نفسك..."></textarea>
+          <div class="field full">
+            <label>نبذة شخصية</label>
+            <textarea id="about" placeholder="اكتب نبذة قصيرة عن نفسك..."></textarea>
+          </div>
 
-      <label>المهارات</label>
-      <textarea id="skills" placeholder="مثال:
-HTML
-CSS
-JavaScript
-Java"></textarea>
+          <div class="field">
+            <label>المهارات</label>
+            <textarea id="skills" placeholder="HTML&#10;CSS&#10;JavaScript&#10;Java"></textarea>
+          </div>
 
-      <label>الخبرات</label>
-      <textarea id="experience" placeholder="مثال:
-شركة X - مطور واجهات - 2024 إلى 2025"></textarea>
+          <div class="field">
+            <label>الخبرات</label>
+            <textarea id="experience" placeholder="شركة X - مطور واجهات - 2024 إلى 2025"></textarea>
+          </div>
 
-      <label>التعليم</label>
-      <textarea id="education" placeholder="مثال:
-بكالوريوس هندسة حاسوب - جامعة بغداد - 2025"></textarea>
+          <div class="field">
+            <label>التعليم</label>
+            <textarea id="education" placeholder="بكالوريوس هندسة حاسوب - جامعة بغداد"></textarea>
+          </div>
 
-      <label>اللغات</label>
-      <textarea id="languages" placeholder="مثال:
-العربية
-الإنجليزية"></textarea>
-
-      <button class="btn-clear" onclick="clearForm()">مسح</button>
-      <button class="btn-pdf" onclick="downloadPDF()">تحميل PDF</button>
-    </div>
-
-    <div class="panel">
-      <h2>معاينة السيفي</h2>
-      <div id="cvPreview">
-        <div class="name" id="pName">اسمك الكامل</div>
-        <div class="title" id="pTitle">المسمى الوظيفي</div>
-
-        <div class="section">
-          <h3>معلومات التواصل</h3>
-          <div class="info" id="pContact">
-            الهاتف: -
-            البريد: -
-            العنوان: -
+          <div class="field">
+            <label>اللغات</label>
+            <textarea id="languages" placeholder="العربية&#10;الإنجليزية"></textarea>
           </div>
         </div>
 
-        <div class="section">
-          <h3>نبذة شخصية</h3>
-          <div class="info" id="pAbout">-</div>
+        <div class="actions">
+          <button class="btn-light" onclick="clearForm()">مسح الكل</button>
+          <button class="btn-primary" onclick="downloadPDF()">تحميل PDF</button>
         </div>
+      </div>
+    </div>
 
-        <div class="section">
-          <h3>المهارات</h3>
-          <div class="info" id="pSkills">-</div>
+    <div class="panel">
+      <div class="panel-header">
+        <h2>معاينة السيفي</h2>
+        <span>شكل أنيق ومرتب قبل التحميل</span>
+      </div>
+
+      <div class="preview-wrap">
+        <div class="cv" id="cvPreview">
+          <div class="cv-head">
+            <h2 class="name" id="pName">اسمك الكامل</h2>
+            <div class="title" id="pTitle">المسمى الوظيفي</div>
+
+            <div class="badge-row">
+              <div class="badge" id="pPhoneBadge">الهاتف: -</div>
+              <div class="badge" id="pEmailBadge">البريد: -</div>
+              <div class="badge" id="pAddressBadge">العنوان: -</div>
+            </div>
+          </div>
+
+          <div class="cv-body">
+            <div class="cv-grid">
+              <div class="section">
+                <h3>نبذة شخصية</h3>
+                <div class="info" id="pAbout">-</div>
+              </div>
+
+              <div class="section">
+                <h3>معلومات التواصل</h3>
+                <div class="contact">
+                  <div class="contact-item">الهاتف: <span id="pPhone">-</span></div>
+                  <div class="contact-item">البريد: <span id="pEmail">-</span></div>
+                  <div class="contact-item">العنوان: <span id="pAddress">-</span></div>
+                </div>
+              </div>
+
+              <div class="section">
+                <h3>المهارات</h3>
+                <div class="info" id="pSkills">-</div>
+              </div>
+
+              <div class="section">
+                <h3>اللغات</h3>
+                <div class="info" id="pLanguages">-</div>
+              </div>
+
+              <div class="section">
+                <h3>الخبرات</h3>
+                <div class="info" id="pExperience">-</div>
+              </div>
+
+              <div class="section">
+                <h3>التعليم</h3>
+                <div class="info" id="pEducation">-</div>
+              </div>
+            </div>
+
+            <div class="footer-note">تم إنشاء هذا السيفي من خلال الصفحة</div>
+          </div>
         </div>
-
-        <div class="section">
-          <h3>الخبرات</h3>
-          <div class="info" id="pExperience">-</div>
-        </div>
-
-        <div class="section">
-          <h3>التعليم</h3>
-          <div class="info" id="pEducation">-</div>
-        </div>
-
-        <div class="section">
-          <h3>اللغات</h3>
-          <div class="info" id="pLanguages">-</div>
-        </div>
-
-        <div class="footer-note">تم إنشاء هذا السيفي من خلال الصفحة.</div>
       </div>
     </div>
   </div>
@@ -225,8 +447,8 @@ Java"></textarea>
 
   <script>
     const fields = [
-      "fullName", "jobTitle", "phone", "email", "address",
-      "about", "skills", "experience", "education", "languages"
+      "fullName","jobTitle","phone","email","address",
+      "about","skills","experience","education","languages"
     ];
 
     fields.forEach(id => {
@@ -234,39 +456,32 @@ Java"></textarea>
     });
 
     function formatText(value) {
-      return value.trim() === "" ? "-" : value;
+      return value.trim() ? value.trim() : "-";
     }
 
     function updatePreview() {
-      document.getElementById("pName").textContent =
-        formatText(document.getElementById("fullName").value);
-
-      document.getElementById("pTitle").textContent =
-        formatText(document.getElementById("jobTitle").value);
-
+      const fullName = formatText(document.getElementById("fullName").value);
+      const jobTitle = formatText(document.getElementById("jobTitle").value);
       const phone = formatText(document.getElementById("phone").value);
       const email = formatText(document.getElementById("email").value);
       const address = formatText(document.getElementById("address").value);
 
-      document.getElementById("pContact").textContent =
-        "الهاتف: " + phone + "\n" +
-        "البريد: " + email + "\n" +
-        "العنوان: " + address;
+      document.getElementById("pName").textContent = fullName;
+      document.getElementById("pTitle").textContent = jobTitle;
 
-      document.getElementById("pAbout").textContent =
-        formatText(document.getElementById("about").value);
+      document.getElementById("pPhone").textContent = phone;
+      document.getElementById("pEmail").textContent = email;
+      document.getElementById("pAddress").textContent = address;
 
-      document.getElementById("pSkills").textContent =
-        formatText(document.getElementById("skills").value);
+      document.getElementById("pPhoneBadge").textContent = "الهاتف: " + phone;
+      document.getElementById("pEmailBadge").textContent = "البريد: " + email;
+      document.getElementById("pAddressBadge").textContent = "العنوان: " + address;
 
-      document.getElementById("pExperience").textContent =
-        formatText(document.getElementById("experience").value);
-
-      document.getElementById("pEducation").textContent =
-        formatText(document.getElementById("education").value);
-
-      document.getElementById("pLanguages").textContent =
-        formatText(document.getElementById("languages").value);
+      document.getElementById("pAbout").textContent = formatText(document.getElementById("about").value);
+      document.getElementById("pSkills").textContent = formatText(document.getElementById("skills").value);
+      document.getElementById("pExperience").textContent = formatText(document.getElementById("experience").value);
+      document.getElementById("pEducation").textContent = formatText(document.getElementById("education").value);
+      document.getElementById("pLanguages").textContent = formatText(document.getElementById("languages").value);
     }
 
     function clearForm() {
@@ -285,27 +500,13 @@ Java"></textarea>
 
       const imgData = canvas.toDataURL("image/png");
       const { jsPDF } = window.jspdf;
-
       const pdf = new jsPDF("p", "mm", "a4");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
 
+      const pageWidth = pdf.internal.pageSize.getWidth();
       const imgWidth = pageWidth - 20;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      let heightLeft = imgHeight;
-      let position = 10;
-
-      pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight + 10;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
       pdf.save("CV.pdf");
     }
 
