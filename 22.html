@@ -1,0 +1,214 @@
+<!DOCTYPE html><html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مشغل فيديو نهائي مع استرجاع تلقائي</title>
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui;
+      background:#0f172a;
+      color:white;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
+      padding:20px;
+    }
+    .box{
+      width:100%;
+      max-width:900px;
+      background:#111827;
+      padding:20px;
+      border-radius:15px;
+      border:1px solid #243244;
+      box-shadow:0 20px 60px rgba(0,0,0,.3);
+    }
+    input{
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid #333;
+      background:#0b1220;
+      color:#fff;
+      box-sizing:border-box;
+      font-size:15px;
+    }
+    button{
+      margin-top:10px;
+      padding:12px;
+      width:100%;
+      border:none;
+      border-radius:10px;
+      background:#38bdf8;
+      font-weight:bold;
+      cursor:pointer;
+      font-size:15px;
+    }
+    iframe,video{
+      width:100%;
+      height:450px;
+      margin-top:15px;
+      border:none;
+      border-radius:10px;
+      background:black;
+    }
+    .msg{
+      margin-top:12px;
+      color:#cbd5e1;
+      line-height:1.7;
+      font-size:14px;
+    }
+    .error{
+      color:#f87171;
+      margin-top:12px;
+      line-height:1.7;
+    }
+    .small{
+      color:#94a3b8;
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.7;
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .actions button{
+      width:auto;
+      flex:1 1 180px;
+      background:#1f2937;
+      color:#e5e7eb;
+      border:1px solid #334155;
+    }
+  </style>
+</head>
+<body><div class="box">
+  <h2>مشغل فيديو نهائي</h2>
+  <input id="url" placeholder="ضع رابط YouTube / mp4 / KrakenFiles" autocomplete="off" />  <div class="actions">
+    <button onclick="play()">تشغيل</button>
+    <button onclick="restoreLast()">استرجاع آخر رابط</button>
+    <button onclick="clearAll()">مسح</button>
+  </div>  <div id="player"></div>
+  <div id="msg" class="msg"></div>
+  <div id="err" class="error"></div>  <div class="small">
+    إذا خرجت من إعلان أو رجعت للصفحة، سيتم استرجاع الرابط تلقائيًا من الذاكرة المحلية.
+  </div>
+</div><script>
+const STORAGE_KEY = 'last_video_url';
+const MODE_KEY = 'last_video_mode';
+
+function getYouTubeID(url){
+  const match = url.match(/(?:youtu\.be\/|youtube\.com.*[?&]v=)([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : null;
+}
+
+function normalizeKraken(url){
+  // يحول /view/... إلى /embed-video/... إن أمكن
+  const viewMatch = url.match(/krakenfiles\.com\/view\/([A-Za-z0-9]+)\/file\.html/i);
+  if(viewMatch) return `https://krakenfiles.com/embed-video/${viewMatch[1]}`;
+
+  const embedMatch = url.match(/krakenfiles\.com\/embed-video\/([A-Za-z0-9]+)/i);
+  if(embedMatch) return `https://krakenfiles.com/embed-video/${embedMatch[1]}`;
+
+  return url;
+}
+
+function saveCurrent(url, mode){
+  localStorage.setItem(STORAGE_KEY, url);
+  localStorage.setItem(MODE_KEY, mode);
+}
+
+function restoreLast(){
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if(saved){
+    document.getElementById('url').value = saved;
+    play();
+  }
+}
+
+function clearAll(){
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(MODE_KEY);
+  document.getElementById('url').value = '';
+  document.getElementById('player').innerHTML = '';
+  document.getElementById('msg').innerHTML = '';
+  document.getElementById('err').innerHTML = '';
+}
+
+function play(){
+  const input = document.getElementById('url');
+  const url = input.value.trim();
+  const player = document.getElementById('player');
+  const msg = document.getElementById('msg');
+  const err = document.getElementById('err');
+
+  player.innerHTML = '';
+  msg.innerHTML = '';
+  err.innerHTML = '';
+
+  if(!url){
+    err.innerHTML = 'أدخل الرابط أولًا.';
+    return;
+  }
+
+  // حفظ الرابط دائمًا حتى لو خرجت من إعلان أو رجعت للصفحة
+  saveCurrent(url, 'pending');
+
+  // YouTube
+  const ytId = getYouTubeID(url);
+  if(ytId){
+    const embed = `https://www.youtube.com/embed/${ytId}`;
+    player.innerHTML = `<iframe src="${embed}" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>`;
+    saveCurrent(url, 'youtube');
+    return;
+  }
+
+  // MP4 مباشر
+  if(/\.(mp4|webm|ogg)(\?|#|$)/i.test(url)){
+    player.innerHTML = `<video controls playsinline src="${url}"></video>`;
+    saveCurrent(url, 'video');
+    return;
+  }
+
+  // KrakenFiles
+  if(url.includes('krakenfiles.com')){
+    const krakenUrl = normalizeKraken(url);
+    player.innerHTML = `<iframe src="${krakenUrl}" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>`;
+    msg.innerHTML = 'تمت محاولة التشغيل داخل الصفحة. إذا فتح إعلان ثم رجعت، سيتم إعادة تحميل نفس الرابط تلقائيًا.';
+    saveCurrent(krakenUrl, 'kraken');
+    return;
+  }
+
+  // أي رابط آخر
+  err.innerHTML = 'الرابط غير مدعوم. استخدم YouTube أو ملف mp4 مباشر أو رابط KrakenFiles.';
+}
+
+function autoRestore(){
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if(saved && !document.getElementById('url').value.trim()){
+    document.getElementById('url').value = saved;
+    play();
+  }
+}
+
+// عند فتح الصفحة استرجع آخر رابط تلقائيًا
+window.addEventListener('load', autoRestore);
+
+// إذا رجعت من إعلان أو خرجت/دخلت الصفحة، نحفظ ونسترجع
+window.addEventListener('beforeunload', () => {
+  const current = document.getElementById('url').value.trim();
+  if(current) localStorage.setItem(STORAGE_KEY, current);
+});
+
+document.addEventListener('visibilitychange', () => {
+  if(document.hidden){
+    const current = document.getElementById('url').value.trim();
+    if(current) localStorage.setItem(STORAGE_KEY, current);
+  } else {
+    setTimeout(autoRestore, 150);
+  }
+});
+</script></body>
+</html>
