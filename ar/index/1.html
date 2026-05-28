@@ -3,280 +3,124 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>إنشاء حساب برقم الهاتف</title>
+  <title>تسجيل دخول فوري – رقم اختبار</title>
   <style>
-    :root{
-      --bg1:#0f172a;
-      --bg2:#111827;
-      --card:#0b1220cc;
-      --line:#263247;
-      --text:#e5e7eb;
-      --muted:#94a3b8;
-      --accent:#3b82f6;
-      --accent2:#2563eb;
-      --success:#10b981;
-      --danger:#ef4444;
-      --field:#111827;
+    :root {
+      --bg1: #0f172a;
+      --bg2: #111827;
+      --card: #0b1220cc;
+      --line: #263247;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent2: #2563eb;
+      --success: #10b981;
+      --danger: #ef4444;
     }
 
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      min-height:100vh;
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
       font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
-      background:
-        radial-gradient(circle at top, #1e293b 0%, var(--bg1) 30%, var(--bg2) 100%);
-      color:var(--text);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
+      background: radial-gradient(circle at top, #1e293b 0%, #0f172a 30%, #111827 100%);
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
 
-    .wrap{
-      width:100%;
-      max-width:460px;
-    }
-
-    .card{
+    .card {
       background: linear-gradient(180deg, #0b1220f2, #0b1220d9);
-      border:1px solid var(--line);
-      border-radius:24px;
-      padding:24px;
+      border: 1px solid #263247;
+      border-radius: 24px;
+      padding: 32px;
       box-shadow: 0 20px 60px rgba(0,0,0,.35);
       backdrop-filter: blur(14px);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
     }
 
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border:1px solid #274060;
-      border-radius:999px;
-      color:#bfdbfe;
-      background:#0b1b33;
-      font-size:13px;
-      margin-bottom:14px;
+    h1 {
+      margin: 0 0 12px;
+      font-size: 26px;
     }
 
-    h1{
-      margin:0 0 8px;
-      font-size:28px;
-      line-height:1.2;
+    p {
+      color: #94a3b8;
+      font-size: 14px;
+      margin: 0 0 24px;
+      line-height: 1.7;
     }
 
-    p.desc{
-      margin:0 0 20px;
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.8;
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      transition: .2s ease;
     }
 
-    .grid{
-      display:grid;
-      gap:12px;
+    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
     }
 
-    .field{
-      display:grid;
-      gap:8px;
+    .status {
+      margin-top: 20px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      background: #0f172a;
+      border: 1px solid #263247;
+      color: #cbd5e1;
+      min-height: 48px;
+      text-align: center;
+      line-height: 1.7;
     }
 
-    label{
-      font-size:14px;
-      color:#cbd5e1;
-    }
+    .status.success { border-color: rgba(16,185,129,.35); color: #bbf7d0; }
+    .status.error   { border-color: rgba(239,68,68,.35);   color: #fecaca; }
 
-    input{
-      width:100%;
-      border:1px solid var(--line);
-      background:var(--field);
-      color:var(--text);
-      border-radius:14px;
-      padding:14px 16px;
-      font-size:15px;
-      outline:none;
-      transition:.2s ease;
-    }
-
-    input:focus{
-      border-color:#3b82f6;
-      box-shadow:0 0 0 4px rgba(59,130,246,.15);
-    }
-
-    .phone-row{
-      display:grid;
-      grid-template-columns: 110px 1fr;
-      gap:10px;
-      direction:ltr;
-    }
-
-    .prefix{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border:1px solid var(--line);
-      background:#0f172a;
-      border-radius:14px;
-      font-weight:700;
-      color:#dbeafe;
-      min-height:52px;
-      user-select:none;
-    }
-
-    .helper{
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.7;
-      margin-top:-2px;
-    }
-
-    .btn{
-      width:100%;
-      border:none;
-      border-radius:14px;
-      padding:14px 16px;
-      font-size:15px;
-      font-weight:700;
-      cursor:pointer;
-      transition:.2s ease;
-    }
-
-    .btn-primary{
-      background:linear-gradient(135deg, var(--accent), var(--accent2));
-      color:white;
-    }
-
-    .btn-primary:hover{ transform: translateY(-1px); }
-    .btn-secondary{
-      background:#1f2937;
-      color:#e5e7eb;
-      border:1px solid var(--line);
-    }
-
-    .btn:disabled{
-      opacity:.6;
-      cursor:not-allowed;
-      transform:none;
-    }
-
-    .section{
-      display:none;
-      margin-top:14px;
-      padding-top:14px;
-      border-top:1px solid var(--line);
-      gap:12px;
-    }
-
-    .section.show{
-      display:grid;
-    }
-
-    .status{
-      margin-top:14px;
-      padding:12px 14px;
-      border-radius:14px;
-      font-size:14px;
-      line-height:1.7;
-      background:#0f172a;
-      border:1px solid var(--line);
-      color:#cbd5e1;
-      min-height:48px;
-    }
-
-    .status.success{ border-color: rgba(16,185,129,.35); color:#bbf7d0; }
-    .status.error{ border-color: rgba(239,68,68,.35); color:#fecaca; }
-
-    .footer-note{
-      margin-top:14px;
-      text-align:center;
-      color:var(--muted);
-      font-size:12px;
-    }
-
-    #recaptcha-container{
-      margin-top:12px;
-      min-height:78px;
-    }
-
-    .topline{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:12px;
-    }
-
-    .dot{
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      background:var(--success);
-      box-shadow:0 0 0 6px rgba(16,185,129,.12);
-      flex:0 0 auto;
+    .note {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #64748b;
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="badge"><span class="dot"></span> إنشاء حساب برقم الهاتف</div>
+  <div class="card">
+    <h1>تسجيل دخول فوري</h1>
+    <p>
+      هذا الزر يستخدم رقم الاختبار المُسجل في Firebase<br />
+      <strong>+964 782 305 3419</strong> والرمز الثابت <strong>123456</strong>
+    </p>
 
-      <div class="topline">
-        <div>
-          <h1>سجل دخولك بسهولة</h1>
-          <p class="desc">
-            أدخل اسمك ورقمك العراقي، ثم أرسل رمز التحقق عبر SMS لإكمال إنشاء الحساب.
-          </p>
-        </div>
-      </div>
+    <button id="instantBtn" class="btn">تسجيل الدخول الفوري</button>
 
-      <div class="grid">
-        <div class="field">
-          <label for="name">الاسم الكامل</label>
-          <input id="name" type="text" placeholder="مثال: أحمد علي" autocomplete="name" />
-        </div>
-
-        <div class="field">
-          <label for="localPhone">رقم الهاتف العراقي</label>
-          <div class="phone-row">
-            <div class="prefix">+964</div>
-            <input id="localPhone" type="tel" inputmode="numeric" placeholder="7XXXXXXXXX" autocomplete="tel" />
-          </div>
-          <div class="helper">
-            اكتب الرقم بدون +964 وبدون الصفر الأول غالبًا، مثال: 7701234567
-          </div>
-        </div>
-
-        <button id="sendBtn" class="btn btn-primary">إرسال رمز التحقق</button>
-
-        <div id="otpSection" class="section">
-          <div class="field">
-            <label for="code">رمز التحقق</label>
-            <input id="code" type="text" inputmode="numeric" placeholder="أدخل الرمز المرسل" />
-          </div>
-
-          <button id="verifyBtn" class="btn btn-primary">تأكيد وإنشاء الحساب</button>
-          <button id="resendBtn" class="btn btn-secondary">إعادة إرسال الرمز</button>
-        </div>
-
-        <div id="recaptcha-container"></div>
-        <div id="status" class="status">جاهز.</div>
-        <div class="footer-note">هذه الصفحة تعمل مع Firebase Authentication على الويب.</div>
-      </div>
-    </div>
+    <div id="status" class="status">جاهز. اضغط على الزر لتسجيل الدخول.</div>
+    <div class="note">يعمل فقط مع أرقام الاختبار المُضافة في لوحة التحكم</div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
       getAuth,
-      RecaptchaVerifier,
       signInWithPhoneNumber,
       updateProfile
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+    // إعدادات مشروع Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDDb5kAoZCOLGqVvzKZ9q-wB1FZrdqyVH8",
       authDomain: "sample-firebase-ai-app-c5b33.firebaseapp.com",
@@ -291,116 +135,54 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const nameInput = document.getElementById("name");
-    const phoneInput = document.getElementById("localPhone");
-    const codeInput = document.getElementById("code");
-    const sendBtn = document.getElementById("sendBtn");
-    const verifyBtn = document.getElementById("verifyBtn");
-    const resendBtn = document.getElementById("resendBtn");
-    const otpSection = document.getElementById("otpSection");
-    const statusBox = document.getElementById("status");
+    // بيانات رقم الاختبار من Firebase Console
+    const TEST_PHONE = "+9647823053419";   // بدون مسافات أو شرطات
+    const TEST_CODE  = "123456";
 
-    let confirmationResult = null;
+    const instantBtn = document.getElementById("instantBtn");
+    const statusBox  = document.getElementById("status");
 
-    function setStatus(message, type = "") {
+    function setStatus(msg, type = "") {
       statusBox.className = "status";
       if (type) statusBox.classList.add(type);
-      statusBox.textContent = message;
+      statusBox.textContent = msg;
     }
 
-    function buildIraqiPhoneNumber(raw) {
-      let digits = String(raw || "").replace(/\D/g, "");
+    instantBtn.addEventListener("click", async () => {
+      instantBtn.disabled = true;
+      setStatus("جارٍ بدء عملية التحقق...");
 
-      if (digits.startsWith("0")) digits = digits.slice(1);
-
-      if (!digits.startsWith("7")) {
-        throw new Error("رقم العراق يجب أن يبدأ بـ 7 بعد +964.");
-      }
-
-      return `+964${digits}`;
-    }
-
-    function validateName() {
-      const name = nameInput.value.trim();
-      if (name.length < 3) {
-        throw new Error("اكتب اسمًا صحيحًا.");
-      }
-      return name;
-    }
-
-    function validatePhone() {
-      const phone = buildIraqiPhoneNumber(phoneInput.value.trim());
-      if (phone.length < 13) {
-        throw new Error("رقم الهاتف غير مكتمل.");
-      }
-      return phone;
-    }
-
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-      size: "invisible"
-    });
-
-    async function sendCode() {
       try {
-        sendBtn.disabled = true;
-        resendBtn.disabled = true;
-        setStatus("جارٍ إرسال رمز التحقق...");
-
-        validateName();
-        const phoneNumber = validatePhone();
-
-        confirmationResult = await signInWithPhoneNumber(
+        // لا حاجة إلى reCAPTCHA لأرقام الاختبار
+        const confirmationResult = await signInWithPhoneNumber(
           auth,
-          phoneNumber,
-          window.recaptchaVerifier
+          TEST_PHONE
+          // لا نمرر أي reCAPTCHA هنا لأنه رقم اختبار
         );
 
-        otpSection.classList.add("show");
-        setStatus("تم إرسال الرمز إلى رقمك. تحقق من الرسائل ثم أدخل الكود.", "success");
-      } catch (error) {
-        console.error(error);
-        setStatus(error.message || "حدث خطأ أثناء إرسال الرمز.", "error");
-      } finally {
-        sendBtn.disabled = false;
-        resendBtn.disabled = false;
-      }
-    }
+        setStatus("تم استلام نتيجة التأكيد، جارٍ إدخال الرمز تلقائياً...");
 
-    async function verifyCode() {
-      try {
-        if (!confirmationResult) {
-          throw new Error("أرسل الرمز أولًا.");
-        }
-
-        const code = codeInput.value.trim();
-        if (code.length < 4) {
-          throw new Error("اكتب رمز التحقق بشكل صحيح.");
-        }
-
-        verifyBtn.disabled = true;
-        setStatus("جارٍ التحقق من الرمز...");
-
-        const result = await confirmationResult.confirm(code);
+        // تأكيد الرمز الثابت
+        const result = await confirmationResult.confirm(TEST_CODE);
         const user = result.user;
-        const name = validateName();
 
-        await updateProfile(user, { displayName: name });
+        // تحديث الاسم بشكل اختياري (يمكن إزالته إذا أردت)
+        await updateProfile(user, { displayName: "مستخدم فوري" });
 
         setStatus(
-          `تم إنشاء الحساب بنجاح. مرحبًا ${name} — UID: ${user.uid}`,
+          `✅ تم تسجيل الدخول بنجاح! \n UID: ${user.uid}`,
           "success"
         );
       } catch (error) {
         console.error(error);
-        setStatus(error.message || "رمز التحقق غير صحيح.", "error");
+        setStatus(
+          error.message || "فشل تسجيل الدخول، تأكد من إضافة الرقم كرقم اختبار.",
+          "error"
+        );
       } finally {
-        verifyBtn.disabled = false;
+        instantBtn.disabled = false;
       }
-    }
-
-    sendBtn.addEventListener("click", sendCode);
-    verifyBtn.addEventListener("click", verifyCode);
-    resendBtn.addEventListener("click", sendCode);
+    });
   </script>
 </body>
 </html>
