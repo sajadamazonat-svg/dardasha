@@ -170,6 +170,11 @@
 
         <!-- تبويب إدارة المحتوى -->
         <div id="sub-content" class="sub-page">
+            <div class="card"><h3><i class="fas fa-key"></i> مفتاح API للخرائط (Geocoding)</h3>
+                <input type="text" id="geoApiKeyInput" placeholder="أدخل مفتاح API الخاص بك (مثل OpenCage)" dir="ltr">
+                <button id="saveGeoApiKeyBtn" class="btn-primary">حفظ المفتاح</button>
+                <p style="font-size:0.7rem; margin-top:5px;">سيُستخدم هذا المفتاح لجلب إحداثيات الدول لتحسين الخريطة. احصل على مفتاح مجاني من OpenCage أو غيره.</p>
+            </div>
             <div class="card"><h3><i class="fas fa-image"></i> صورة البنر الرئيسي</h3><input type="file" id="coverFile" accept="image/*"><button id="uploadCoverBtn" class="btn-primary">رفع البنر</button><div id="coverPreviewArea" class="preview-area"></div></div>
             <div class="card"><h3><i class="fas fa-heading"></i> نصوص البنر</h3><input id="bannerTitleInput" placeholder="عنوان البنر"><input id="bannerDescInput" placeholder="وصف البنر"><button id="saveBannerTextBtn" class="btn-primary">حفظ النصوص</button></div>
             <div class="card"><h3><i class="fas fa-globe"></i> لوقو الموقع (الرأس)</h3><input type="file" id="siteLogoFile" accept="image/*"><button id="uploadSiteLogoBtn" class="btn-primary">رفع</button><div id="siteLogoPreviewArea"></div></div>
@@ -203,6 +208,9 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
     const ADMIN_EMAIL = "ashlhl.iq@gmail.com";
+    
+    // ---- مفتاح API للتحديد الجغرافي (ضع مفتاحك هنا أو استخدم واجهة الإدارة) ----
+    let GEO_API_KEY = ""; // سيتم تحميله من Firebase
     
     // ---- متغيرات عامة ----
     let cachedCountry = null;
@@ -272,6 +280,45 @@
         return 30;
     }
     
+    // تحديث الخريطة باستخدام المفتاح المحفوظ
+    async function updateMapWithApiKey(visits) {
+        if(!mapInstance) {
+            mapInstance = L.map('map').setView([25, 10], 2);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(mapInstance);
+            markersLayer = L.layerGroup().addTo(mapInstance);
+        }
+        markersLayer.clearLayers();
+        let countryStats = {};
+        visits.forEach(v=>{ if(v.country && v.country !== 'غير معروف') countryStats[v.country] = (countryStats[v.country]||0)+1; });
+        
+        for(let [country, count] of Object.entries(countryStats)) {
+            let latlng = countryCoordsCache.get(country);
+            if(!latlng) {
+                try {
+                    let url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(country)}&format=json&limit=1`;
+                    if(GEO_API_KEY && GEO_API_KEY.trim() !== "") {
+                        // استخدام مفتاح API إذا توفر (مثال: OpenCage)
+                        url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(country)}&key=${GEO_API_KEY}&limit=1`;
+                        const res = await fetch(url);
+                        const data = await res.json();
+                        if(data.results && data.results.length) {
+                            latlng = [data.results[0].geometry.lat, data.results[0].geometry.lng];
+                        }
+                    }
+                    if(!latlng) {
+                        // الرجوع إلى Nominatim كخيار احتياطي
+                        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(country)}&format=json&limit=1`);
+                        const data = await res.json();
+                        if(data[0]) latlng = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+                    }
+                    if(latlng) countryCoordsCache.set(country, latlng);
+                    else continue;
+                } catch(e){ continue; }
+            }
+            if(latlng) L.circleMarker(latlng, { radius: Math.min(22, 5 + count/2), color: '#f97316', fillColor: '#f97316', fillOpacity: 0.7, weight: 1 }).bindPopup(`<b>${country}</b><br>${count} زيارة`).addTo(markersLayer);
+        }
+    }
+    
     async function updateUI() {
         let visits = filterByDate(allVisits);
         let clicks = filterByDate(allClicks);
@@ -282,7 +329,6 @@
         document.getElementById('avgDailyVisits').innerText = avgDaily;
         let convRate = (clicks.length / (visits.length||1))*100;
         document.getElementById('clickRate').innerText = convRate.toFixed(1)+'%';
-        // تقدير بسيط لمتوسط الجلسة (بين 20-80 ثانية)
         let avgSess = Math.floor(25 + Math.random() * 55);
         document.getElementById('avgSession').innerText = avgSess;
         let bounceCalc = visits.length ? Math.min(85, Math.floor((visits.length - clicks.length) / visits.length * 100)) : 0;
@@ -307,18 +353,8 @@
         if(radarChart) radarChart.destroy();
         radarChart = new Chart(document.getElementById('radarChart'), { type:'radar', data:{ labels:radarLabels, datasets:[{ label:'التوزيع', data:radarData, backgroundColor:'rgba(59,130,246,0.3)', borderColor:'#2563eb', pointBackgroundColor:'#f97316' }] } });
         
-        // الخريطة
-        if(!mapInstance) { mapInstance = L.map('map').setView([25, 10], 2); L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(mapInstance); markersLayer = L.layerGroup().addTo(mapInstance); }
-        markersLayer.clearLayers();
-        let countryStats = {};
-        visits.forEach(v=>{ if(v.country && v.country !== 'غير معروف') countryStats[v.country] = (countryStats[v.country]||0)+1; });
-        for(let [country, count] of Object.entries(countryStats)) {
-            let latlng = countryCoordsCache.get(country);
-            if(!latlng) {
-                try { let res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(country)}&format=json&limit=1`); let data = await res.json(); if(data[0]) latlng = [parseFloat(data[0].lat), parseFloat(data[0].lon)]; else continue; countryCoordsCache.set(country, latlng); } catch(e){ continue; }
-            }
-            if(latlng) L.circleMarker(latlng, { radius: Math.min(22, 5 + count/2), color: '#f97316', fillColor: '#f97316', fillOpacity: 0.7, weight: 1 }).bindPopup(`<b>${country}</b><br>${count} زيارة`).addTo(markersLayer);
-        }
+        // تحديث الخريطة باستخدام المفتاح
+        await updateMapWithApiKey(visits);
         
         // جداول الزوار والنقرات
         let searchVis = document.getElementById('searchVisitors').value.toLowerCase();
@@ -335,7 +371,7 @@
     }
     
     // ---- إدارة المحتوى (base64) ----
-    let currentData = { coverBase64:'', siteLogoBase64:'', appLogoBase64:'', name:'تطبيق ذكي', description:'', downloadLink:'', gallery:[], bannerTitle:'مرحباً', bannerDesc:'حمّل التطبيق الآن' };
+    let currentData = { coverBase64:'', siteLogoBase64:'', appLogoBase64:'', name:'تطبيق ذكي', description:'', downloadLink:'', gallery:[], bannerTitle:'مرحباً', bannerDesc:'', geoApiKey: '' };
     const fileToBase64 = (f)=>new Promise((res,rej)=>{ if(f.size>2*1024*1024) rej('الحجم يتجاوز 2MB'); let r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(f); });
     async function uploadImage(file,field,msg,previewEl){ if(!file) return; try{ let b64=await fileToBase64(file); await update(ref(db,'appInfo'),{[field]:b64}); showMessage(msg+' تم بنجاح', false); } catch(e){ showMessage('فشل الرفع: '+e, true); } }
     async function uploadMultiple(files){ if(!files.length) return; let newGal=[...currentData.gallery]; for(let f of files) try{ newGal.push(await fileToBase64(f)); }catch(e){ showMessage(`الصورة ${f.name} كبيرة جداً`, true); } await update(ref(db,'appInfo'),{gallery:newGal}); showMessage(`تم رفع ${files.length} صورة`, false); }
@@ -343,6 +379,14 @@
     window.deleteField = async(field)=>{ if(confirm('حذف هذا العنصر؟')){ await update(ref(db,'appInfo'),{[field]:''}); showMessage('تم الحذف', false); } };
     async function saveAppInfo(){ await update(ref(db,'appInfo'),{ name:document.getElementById('appNameInput').value, description:document.getElementById('appDescInput').value, downloadLink:document.getElementById('downloadLinkInput').value }); showMessage('تم حفظ معلومات التطبيق', false); }
     async function saveBanner(){ await update(ref(db,'appInfo'),{ bannerTitle:document.getElementById('bannerTitleInput').value, bannerDesc:document.getElementById('bannerDescInput').value }); showMessage('تم حفظ نص البنر', false); }
+    async function saveGeoApiKey() { 
+        const newKey = document.getElementById('geoApiKeyInput').value.trim();
+        await update(ref(db,'appInfo'), { geoApiKey: newKey });
+        GEO_API_KEY = newKey;
+        showMessage('تم حفظ مفتاح API للخرائط', false);
+        // تحديث الخريطة فوراً
+        if(mapInstance) updateUI();
+    }
     
     function refreshUI(){
         let d=currentData;
@@ -358,6 +402,9 @@
         if(d.appLogoBase64){ appLogoPub.src=d.appLogoBase64; appLogoPub.style.display='block'; } else appLogoPub.style.display='none';
         document.getElementById('galleryPublic').innerHTML = d.gallery.map(img=>`<div class="gallery-item"><img src="${img}" loading="lazy"></div>`).join('');
         if(document.getElementById('adminPage').classList.contains('active') && auth.currentUser?.email===ADMIN_EMAIL) renderAdminPreviews();
+        // تحديث مفتاح API العام
+        if(d.geoApiKey) GEO_API_KEY = d.geoApiKey;
+        document.getElementById('geoApiKeyInput').value = d.geoApiKey || '';
     }
     
     function renderAdminPreviews(){
@@ -369,11 +416,24 @@
         document.getElementById('downloadLinkInput').value = currentData.downloadLink;
         document.getElementById('bannerTitleInput').value = currentData.bannerTitle;
         document.getElementById('bannerDescInput').value = currentData.bannerDesc;
+        document.getElementById('geoApiKeyInput').value = currentData.geoApiKey || '';
         let galleryContainer = document.getElementById('galleryAdminList');
         galleryContainer.innerHTML = currentData.gallery.map((img,i)=>`<div class="gallery-item"><img src="${img}"><button onclick="window.deleteGalleryImage(${i})">حذف</button></div>`).join('') || '<p style="opacity:0.6">📸 لا توجد صور، قم برفع صور جديدة</p>';
     }
     
-    function loadData(){ onValue(ref(db,'appInfo'), snap=>{ let d=snap.val()||{}; Object.assign(currentData,{ coverBase64:d.coverBase64||'', siteLogoBase64:d.siteLogoBase64||'', appLogoBase64:d.appLogoBase64||'', name:d.name||'تطبيق ذكي', description:d.description||'', downloadLink:d.downloadLink||'', gallery:d.gallery||[], bannerTitle:d.bannerTitle||'مرحباً', bannerDesc:d.bannerDesc||'اكتشف التطبيق الآن' }); refreshUI(); }); }
+    function loadData(){ 
+        onValue(ref(db,'appInfo'), snap=>{ 
+            let d=snap.val()||{}; 
+            Object.assign(currentData,{ 
+                coverBase64:d.coverBase64||'', siteLogoBase64:d.siteLogoBase64||'', appLogoBase64:d.appLogoBase64||'', 
+                name:d.name||'تطبيق ذكي', description:d.description||'', downloadLink:d.downloadLink||'', 
+                gallery:d.gallery||[], bannerTitle:d.bannerTitle||'مرحباً', bannerDesc:d.bannerDesc||'اكتشف التطبيق الآن',
+                geoApiKey: d.geoApiKey || ''
+            }); 
+            if(currentData.geoApiKey) GEO_API_KEY = currentData.geoApiKey;
+            refreshUI(); 
+        }); 
+    }
     
     function showMessage(msg, isError=false){ let el=document.getElementById('adminMessage'); if(el){ el.textContent=msg; el.className=`message ${isError?'error':'success'}`; setTimeout(()=>{ if(el) el.textContent=''; }, 4000); } }
     
@@ -399,6 +459,7 @@
     document.getElementById('uploadGalleryBtn').addEventListener('click',()=>uploadMultiple(Array.from(document.getElementById('galleryFile').files)));
     document.getElementById('saveAppInfoBtn').addEventListener('click',saveAppInfo);
     document.getElementById('saveBannerTextBtn').addEventListener('click',saveBanner);
+    document.getElementById('saveGeoApiKeyBtn').addEventListener('click',saveGeoApiKey);
     document.getElementById('refreshStatsBtn').addEventListener('click',()=>updateUI());
     document.querySelectorAll('.filter-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentFilter.range = btn.dataset.range; currentFilter.start = null; currentFilter.end = null; updateUI(); }); });
     document.getElementById('applyCustomRange').addEventListener('click',()=>{ let start=new Date(document.getElementById('startDate').value).getTime(); let end=new Date(document.getElementById('endDate').value).getTime(); if(start && end && start<=end){ currentFilter.range=null; currentFilter.start=start; currentFilter.end=end; updateUI(); } else showMessage('حدد نطاق زمني صحيح', true); });
