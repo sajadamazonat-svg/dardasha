@@ -1,478 +1,201 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>لوحة إدارة ذكية | تحكم كامل وإحصائيات لحظية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Cairo', sans-serif;
-            background: #f1f5f9;
-            color: #0f172a;
-            line-height: 1.5;
-            font-weight: 500;
-            transition: background 0.2s, color 0.2s;
-        }
-        body.dark { background: #0f172a; color: #e2e8f0; }
-        body.dark .card, body.dark .stat-card, body.dark .chart-box, body.dark .header, body.dark .footer, body.dark .sub-tab, body.dark .filter-btn { background: #1e293b; border-color: #334155; }
-        body.dark .btn-outline { background: #1e293b; border-color: #475569; color: #e2e8f0; }
-        body.dark .btn-outline:hover { background: #334155; }
-        body.dark .stats-table th { background: #0f172a; color: #cbd5e1; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 16px; }
-        .header {
-            background: white; border-radius: 24px; padding: 8px 20px; margin-bottom: 24px;
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-            gap: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); border: 1px solid #e2e8f0;
-        }
-        .logo-area { display: flex; align-items: center; gap: 12px; }
-        .site-logo { width: 42px; height: 42px; object-fit: contain; border-radius: 14px; background: #f1f5f9; padding: 4px; }
-        .nav-tabs { display: flex; gap: 6px; background: #f1f5f9; padding: 4px; border-radius: 48px; }
-        .nav-tab { padding: 6px 22px; border-radius: 40px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: 0.2s; color: #334155; }
-        .nav-tab.active { background: white; color: #2563eb; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .user-area { display: flex; gap: 10px; align-items: center; }
-        button { font-family: inherit; font-weight: 600; border: none; padding: 6px 18px; border-radius: 40px; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
-        .btn-primary { background: #2563eb; color: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
-        .btn-outline { background: transparent; border: 1px solid #cbd5e1; color: #1e293b; }
-        .btn-outline:hover { background: #f1f5f9; border-color: #94a3b8; }
-        .btn-danger { background: #ef4444; color: white; }
-        .btn-danger:hover { background: #dc2626; }
-        .page { display: none; }
-        .page.active { display: block; animation: fade 0.2s ease; }
-        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-        .sub-tabs { display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
-        .sub-tab { padding: 6px 24px; border-radius: 40px; cursor: pointer; background: #f1f5f9; font-weight: 700; font-size: 0.85rem; transition: 0.2s; }
-        .sub-tab.active { background: #2563eb; color: white; box-shadow: 0 4px 8px rgba(37,99,235,0.2); }
-        .sub-page { display: none; }
-        .sub-page.active { display: block; }
-        .card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 24px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: 0.1s; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 18px; margin-bottom: 28px; }
-        .stat-card { background: #f8fafc; border-radius: 20px; padding: 16px; text-align: center; border: 1px solid #e2e8f0; cursor: grab; transition: 0.2s; }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
-        .stat-number { font-size: 2.2rem; font-weight: 800; color: #2563eb; line-height: 1.2; }
-        .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; align-items: center; }
-        .filter-btn { padding: 6px 16px; border-radius: 32px; background: #f1f5f9; border: 1px solid #e2e8f0; cursor: pointer; font-size: 0.8rem; font-weight: 700; }
-        .filter-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
-        .date-range { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-        .date-range input { padding: 6px 12px; border-radius: 32px; border: 1px solid #cbd5e1; font-size: 0.8rem; }
-        .charts-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 28px; }
-        .chart-box { background: #f8fafc; border-radius: 24px; padding: 16px; border: 1px solid #e2e8f0; }
-        #map { height: 360px; border-radius: 24px; margin-bottom: 28px; background: #e2e8f0; z-index: 1; }
-        .stats-table { overflow-x: auto; border-radius: 20px; }
-        .stats-table table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-        .stats-table th, .stats-table td { border: 1px solid #e2e8f0; padding: 10px 8px; text-align: right; }
-        .stats-table th { background: #f8fafc; font-weight: 800; }
-        .search-input { padding: 8px 16px; border-radius: 40px; border: 1px solid #cbd5e1; width: 260px; margin-bottom: 14px; font-size: 0.8rem; }
-        .gallery { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 16px; }
-        .gallery-item { width: 140px; background: #f8fafc; border-radius: 20px; overflow: hidden; border: 1px solid #e2e8f0; transition: 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .gallery-item:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.1); }
-        .gallery-item img { width: 100%; height: 140px; object-fit: cover; }
-        .gallery-item button { width: 100%; border-radius: 0; padding: 8px; background: #ef4444; color: white; font-size: 0.7rem; font-weight: 700; }
-        .preview-img { width: 70px; height: 70px; object-fit: cover; border-radius: 16px; margin-top: 8px; border: 2px solid #e2e8f0; }
-        input, textarea { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 40px; margin-bottom: 14px; font-family: inherit; font-size: 0.85rem; transition: 0.2s; }
-        input:focus, textarea:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-        .footer { text-align: center; padding: 20px; font-size: 0.75rem; color: #64748b; border-top: 1px solid #e2e8f0; margin-top: 32px; }
-        .message { margin-top: 16px; padding: 10px 18px; border-radius: 40px; font-size: 0.8rem; font-weight: 600; }
-        .success { background: #dcfce7; color: #166534; border-right: 4px solid #22c55e; }
-        .error { background: #fee2e2; color: #991b1b; border-right: 4px solid #ef4444; }
-        .hero-banner { height: 260px; background-size: cover; background-position: center; border-radius: 32px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-bottom: 28px; position: relative; background-color: #334155; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .hero-banner h1 { font-size: 2rem; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); padding: 8px 24px; border-radius: 60px; display: inline-block; margin-bottom: 12px; }
-        .hero-banner p { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); padding: 6px 20px; border-radius: 40px; font-weight: 600; }
-        @media (max-width: 700px) { .container { padding: 12px; } .stats-grid { grid-template-columns: 1fr 1fr; } .gallery-item { width: 110px; } .gallery-item img { height: 110px; } .hero-banner h1 { font-size: 1.4rem; } }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Stockly - سياسة الخصوصية وشروط الخدمة</title>
+  <style>
+    :root{
+      --bg:#f6f8fc;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --brand:#2563eb;
+      --border:#e5e7eb;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: Arial, Tahoma, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap{
+      width:min(100%, 920px);
+      margin:0 auto;
+      padding:16px 12px 36px;
+    }
+
+    .hero{
+      background:linear-gradient(135deg, #2563eb, #0f766e);
+      color:#fff;
+      border-radius:20px;
+      padding:20px 16px;
+      margin-bottom:14px;
+    }
+
+    .hero h1{
+      margin:0 0 6px;
+      font-size: clamp(24px, 5vw, 34px);
+      line-height:1.2;
+    }
+
+    .hero p{
+      margin:0;
+      font-size:14px;
+      opacity:.95;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      margin-top:14px;
+      box-shadow: 0 8px 20px rgba(15,23,42,.05);
+    }
+
+    h2{
+      margin:0 0 8px;
+      font-size:22px;
+      color:#0f172a;
+    }
+
+    h3{
+      margin:16px 0 8px;
+      font-size:17px;
+      color:#111827;
+    }
+
+    p{
+      margin:0 0 10px;
+      font-size:15px;
+    }
+
+    ul{
+      margin:8px 0 10px;
+      padding:0 18px 0 0;
+    }
+
+    li{
+      margin:6px 0;
+      font-size:15px;
+    }
+
+    .meta{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:12px;
+    }
+
+    .contact{
+      background:#f8fafc;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px 14px;
+      font-size:14px;
+    }
+
+    .divider{
+      height:1px;
+      background:var(--border);
+      margin:18px 0;
+    }
+
+    .footer{
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+      margin-top:16px;
+    }
+
+    @media (max-width: 640px){
+      .wrap{padding:10px 10px 28px}
+      .card{padding:14px}
+      p, li{font-size:14px}
+      h2{font-size:20px}
+      h3{font-size:16px}
+      .hero{padding:18px 14px}
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <div class="logo-area">
-            <img id="siteLogoImg" class="site-logo" style="display:none;" alt="شعار الموقع">
-        </div>
-        <div class="nav-tabs">
-            <div class="nav-tab active" data-page="home">الرئيسية</div>
-            <div class="nav-tab" data-page="admin" id="adminTab" style="display:none;">لوحة التحكم</div>
-        </div>
-        <div class="user-area">
-            <span id="userEmail" style="font-size:0.8rem; font-weight:600;"></span>
-            <button id="darkModeBtn" class="btn-outline"><i class="fas fa-moon"></i> ليلي</button>
-            <button id="loginBtn" class="btn-outline"><i class="fab fa-google"></i> دخول</button>
-            <button id="logoutBtn" style="display:none;" class="btn-outline"><i class="fas fa-sign-out-alt"></i> خروج</button>
-        </div>
+  <div class="wrap">
+
+    <section class="hero">
+      <h1>Stockly</h1>
+      <p>سياسة الخصوصية وشروط الخدمة</p>
+    </section>
+
+    <section class="card" id="privacy">
+      <h2>سياسة الخصوصية</h2>
+      <p class="meta"><strong>آخر تحديث:</strong> يونيو 2026</p>
+
+      <p>مرحبًا بك في <strong>Stockly</strong>، المقدم من <strong>Ashlhl</strong>. نحن نحترم خصوصيتك ونلتزم بحماية بياناتك.</p>
+
+      <h3>البيانات التي نجمعها</h3>
+      <p>تم تصميم Stockly ليعمل محليًا على جهاز المستخدم. لا نقوم بجمع أو تخزين أو مشاركة أي بيانات شخصية مثل الاسم أو البريد الإلكتروني أو رقم الهاتف.</p>
+      <p>جميع البيانات التي يُدخلها المستخدم، مثل أسماء المنتجات والكميات وتواريخ انتهاء الصلاحية وصور المنتجات، يتم تخزينها محليًا على جهاز المستخدم فقط، ولا يتم إرسالها إلى أي خادم تابع لنا.</p>
+
+      <h3>الأذونات التي يستخدمها التطبيق</h3>
+      <ul>
+        <li><strong>الكاميرا:</strong> لمسح الباركود والتقاط صور المنتجات.</li>
+        <li><strong>التخزين/الصور:</strong> لحفظ صور المنتجات محليًا على الجهاز.</li>
+        <li><strong>الإنترنت:</strong> للبحث عن صور المنتجات عند طلب المستخدم ذلك.</li>
+        <li><strong>الإشعارات:</strong> لإرسال تنبيهات بانتهاء صلاحية المنتجات أو اقتراب انتهائها.</li>
+      </ul>
+
+      <h3>خدمات الطرف الثالث</h3>
+      <p>يستخدم التطبيق <strong>Google ML Kit</strong> لمسح الباركود وتوفير هذه الميزة داخل التطبيق.</p>
+
+      <h3>أمان البيانات</h3>
+      <p>نظرًا لأن بيانات المستخدم تُخزن محليًا على جهازه، فإننا لا نقوم بنقلها أو تخزينها على أي خوادم تابعة لنا.</p>
+
+      <h3>التغييرات على هذه السياسة</h3>
+      <p>قد نقوم بتحديث سياسة الخصوصية من وقت لآخر عند إضافة ميزات جديدة أو تغيير طريقة عمل التطبيق. وسيتم نشر أي تحديث على هذه الصفحة مع تعديل تاريخ آخر تحديث.</p>
+
+      <h3>التواصل معنا</h3>
+      <div class="contact">
+        <p style="margin:0;"><strong>البريد الإلكتروني:</strong> <strong>your-email@example.com</strong></p>
+      </div>
+    </section>
+
+    <section class="card" id="terms">
+      <h2>شروط الخدمة</h2>
+      <p class="meta"><strong>آخر تحديث:</strong> يونيو 2026</p>
+
+      <h3>قبول الشروط</h3>
+      <p>باستخدامك لتطبيق Stockly، فإنك توافق على شروط الخدمة هذه. إذا كنت لا توافق عليها، فيرجى عدم استخدام التطبيق.</p>
+
+      <h3>استخدام التطبيق</h3>
+      <p>يوفر Stockly أدوات لإدارة المنتجات وتتبع تواريخ انتهاء الصلاحية وتنظيم المخزون. يجب استخدام التطبيق بطريقة قانونية ومسؤولة.</p>
+
+      <h3>مسؤولية البيانات</h3>
+      <p>يتم تخزين جميع بيانات المستخدم محليًا على جهازه. يتحمل المستخدم مسؤولية صحة البيانات التي يُدخلها، كما يُنصح بإنشاء نسخ احتياطية لبيانات الجهاز بشكل دوري.</p>
+      <p>لا يتحمل Stockly أو Ashlhl أي مسؤولية عن فقدان البيانات الناتج عن حذف التطبيق، أو تلف الجهاز، أو إعادة ضبطه، أو أي سبب خارج عن سيطرتنا.</p>
+
+      <h3>التنبيهات</h3>
+      <p>يسعى التطبيق إلى إرسال التنبيهات في الوقت المناسب، لكنه لا يضمن وصولها في جميع الظروف، مثل إيقاف الإشعارات أو تفعيل أوضاع توفير الطاقة أو حدوث مشكلات في نظام التشغيل.</p>
+
+      <h3>الملكية الفكرية</h3>
+      <p>جميع حقوق التطبيق، بما في ذلك الاسم والتصميم والشعار والمحتوى، مملوكة لـ <strong>Ashlhl</strong>. ولا يجوز نسخها أو تعديلها أو إعادة توزيعها دون إذن مسبق.</p>
+
+      <h3>إخلاء المسؤولية</h3>
+      <p>يتم توفير التطبيق "كما هو" دون أي ضمانات صريحة أو ضمنية. لا نضمن أن يكون التطبيق خاليًا من الأخطاء أو متاحًا دون انقطاع في جميع الأوقات.</p>
+
+      <h3>التعديلات على الشروط</h3>
+      <p>يجوز لنا تعديل شروط الخدمة من وقت لآخر. وسيتم نشر أي تحديث على هذه الصفحة مع تحديث تاريخ آخر تعديل.</p>
+    </section>
+
+    <div class="footer">
+      © 2026 Ashlhl — Stockly
     </div>
 
-    <!-- الصفحة العامة -->
-    <div id="homePage" class="page active">
-        <div id="heroBanner" class="hero-banner" style="background-image: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
-            <h1 id="bannerTitle">مرحباً بك في تطبيقنا</h1>
-            <p id="bannerDesc">اكتشف تجربة فريدة</p>
-        </div>
-        <div class="card" style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-            <img id="appLogoDisplay" style="width: 70px; height: 70px; border-radius: 20px; object-fit: cover; background:#f1f5f9; display: none;">
-            <div style="flex:1">
-                <h2 id="appNamePublic" style="font-weight:800; font-size:1.6rem;">تطبيق ذكي</h2>
-                <p id="appDescPublic" style="margin: 8px 0; opacity:0.8;"></p>
-                <a id="bannerDownloadBtn" class="btn-primary" style="display:inline-block; margin-top:8px;"><i class="fas fa-download"></i> تحميل التطبيق</a>
-            </div>
-        </div>
-        <div class="card">
-            <h3 style="font-weight:800;"><i class="fas fa-images"></i> معرض الصور</h3>
-            <div id="galleryPublic" class="gallery"></div>
-        </div>
-    </div>
-
-    <!-- لوحة التحكم (للمسؤول) -->
-    <div id="adminPage" class="page">
-        <div class="sub-tabs">
-            <div class="sub-tab active" data-sub="stats"><i class="fas fa-chart-line"></i> إحصائيات متقدمة</div>
-            <div class="sub-tab" data-sub="content"><i class="fas fa-cog"></i> إدارة المحتوى</div>
-        </div>
-
-        <!-- تبويب الإحصائيات -->
-        <div id="sub-stats" class="sub-page active">
-            <div class="filter-bar">
-                <button class="filter-btn" data-range="day">اليوم</button>
-                <button class="filter-btn active" data-range="week">أسبوع</button>
-                <button class="filter-btn" data-range="month">شهر</button>
-                <div class="date-range">
-                    <input type="date" id="startDate"> <span>→</span> <input type="date" id="endDate">
-                    <button id="applyCustomRange" class="btn-primary" style="padding:5px 14px;">تطبيق</button>
-                </div>
-                <button id="refreshStatsBtn" class="btn-outline"><i class="fas fa-sync-alt"></i></button>
-                <button id="exportExcelBtn" class="btn-outline"><i class="fas fa-file-excel"></i> Excel</button>
-            </div>
-            <div class="stats-grid" id="statsGrid">
-                <div class="stat-card"><div class="stat-number" id="totalVisitors">0</div><div>زوار فريدون</div></div>
-                <div class="stat-card"><div class="stat-number" id="totalClicks">0</div><div>نقرات تحميل</div></div>
-                <div class="stat-card"><div class="stat-number" id="avgDailyVisits">0</div><div>متوسط يومي</div></div>
-                <div class="stat-card"><div class="stat-number" id="clickRate">0%</div><div>نسبة النقر</div></div>
-                <div class="stat-card"><div class="stat-number" id="avgSession">0</div><div>متوسط الجلسة (ث)</div></div>
-                <div class="stat-card"><div class="stat-number" id="bounceRate">0%</div><div>نسبة الارتداد*</div></div>
-            </div>
-            <div id="map"></div>
-            <div class="charts-row">
-                <div class="chart-box"><h4><i class="fas fa-chart-line"></i> الاتجاه الزمني</h4><canvas id="trendChart"></canvas></div>
-                <div class="chart-box"><h4><i class="fas fa-chart-pie"></i> المتصفحات والأجهزة</h4><canvas id="radarChart"></canvas></div>
-            </div>
-            <div class="card">
-                <input id="searchVisitors" class="search-input" placeholder="🔍 بحث في الزيارات (بلد/متصفح)">
-                <div class="stats-table"><table id="visitorsTable"><thead><tr><th>التاريخ</th><th>البلد</th><th>المتصفح</th><th>الجهاز</th><th>نظام التشغيل</th></tr></thead><tbody id="visitorsBody"></tbody></table></div>
-                <input id="searchClicks" class="search-input" placeholder="🔍 بحث في النقرات (بلد/متصفح)" style="margin-top:20px;">
-                <div class="stats-table"><table id="clicksTable"><thead><tr><th>التاريخ</th><th>البلد</th><th>المتصفح</th><th>الجهاز</th><th>نظام التشغيل</th></tr></thead><tbody id="clicksBody"></tbody></table></div>
-            </div>
-        </div>
-
-        <!-- تبويب إدارة المحتوى -->
-        <div id="sub-content" class="sub-page">
-            <div class="card"><h3><i class="fas fa-key"></i> مفتاح API للخرائط (Geocoding)</h3>
-                <input type="text" id="geoApiKeyInput" placeholder="أدخل مفتاح API الخاص بك (مثل OpenCage)" dir="ltr">
-                <button id="saveGeoApiKeyBtn" class="btn-primary">حفظ المفتاح</button>
-                <p style="font-size:0.7rem; margin-top:5px;">سيُستخدم هذا المفتاح لجلب إحداثيات الدول لتحسين الخريطة. احصل على مفتاح مجاني من OpenCage أو غيره.</p>
-            </div>
-            <div class="card"><h3><i class="fas fa-image"></i> صورة البنر الرئيسي</h3><input type="file" id="coverFile" accept="image/*"><button id="uploadCoverBtn" class="btn-primary">رفع البنر</button><div id="coverPreviewArea" class="preview-area"></div></div>
-            <div class="card"><h3><i class="fas fa-heading"></i> نصوص البنر</h3><input id="bannerTitleInput" placeholder="عنوان البنر"><input id="bannerDescInput" placeholder="وصف البنر"><button id="saveBannerTextBtn" class="btn-primary">حفظ النصوص</button></div>
-            <div class="card"><h3><i class="fas fa-globe"></i> لوقو الموقع (الرأس)</h3><input type="file" id="siteLogoFile" accept="image/*"><button id="uploadSiteLogoBtn" class="btn-primary">رفع</button><div id="siteLogoPreviewArea"></div></div>
-            <div class="card"><h3><i class="fas fa-mobile-alt"></i> شعار التطبيق (عام)</h3><input type="file" id="appLogoFile" accept="image/*"><button id="uploadAppLogoBtn" class="btn-primary">رفع</button><div id="appLogoPreviewArea"></div></div>
-            <div class="card"><h3><i class="fas fa-info-circle"></i> معلومات التطبيق</h3><input id="appNameInput" placeholder="اسم التطبيق"><textarea id="appDescInput" rows="2" placeholder="وصف التطبيق"></textarea><input id="downloadLinkInput" placeholder="رابط تحميل التطبيق (https://...)"><button id="saveAppInfoBtn" class="btn-primary">حفظ المعلومات</button></div>
-            <div class="card"><h3><i class="fas fa-images"></i> معرض الصور (رفع متعدد)</h3><p style="font-size:0.75rem; margin-bottom:10px;">اختر عدة صور (jpg/png) بحجم أقل من 2MB لكل صورة</p><input type="file" id="galleryFile" accept="image/*" multiple><button id="uploadGalleryBtn" class="btn-primary">رفع الصور</button><div id="galleryAdminList" class="gallery"></div></div>
-        </div>
-        <div id="adminMessage" class="message"></div>
-    </div>
-    <div class="footer">جميع الحقوق محفوظة © 2025 | نظام إدارة متكامل</div>
-</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, update, push, set, get, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    
-    const firebaseConfig = {
-        apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
-        authDomain: "zio3-8ffdd.firebaseapp.com",
-        databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
-        projectId: "zio3-8ffdd",
-        storageBucket: "zio3-8ffdd.firebasestorage.app",
-        messagingSenderId: "560939348415",
-        appId: "1:560939348415:web:c854e9e214e498ad2d310a",
-        measurementId: "G-CVN2B2D0RD"
-    };
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-    const ADMIN_EMAIL = "ashlhl.iq@gmail.com";
-    
-    // ---- مفتاح API للتحديد الجغرافي (ضع مفتاحك هنا أو استخدم واجهة الإدارة) ----
-    let GEO_API_KEY = ""; // سيتم تحميله من Firebase
-    
-    // ---- متغيرات عامة ----
-    let cachedCountry = null;
-    let allVisits = [], allClicks = [];
-    let currentFilter = { range: 'week', start: null, end: null };
-    let trendChart, radarChart, mapInstance, markersLayer;
-    let countryCoordsCache = new Map();
-    
-    // ---- دوال أساسية ----
-    async function fetchCountry() {
-        if(cachedCountry) return cachedCountry;
-        try { const res = await fetch('https://ipapi.co/json/'); const data = await res.json(); cachedCountry = data.country_name || data.country || 'غير معروف'; return cachedCountry; } 
-        catch(e) { return 'غير معروف'; }
-    }
-    function getDeviceInfo() {
-        const ua = navigator.userAgent;
-        let browser = "أخرى";
-        if(ua.includes("Chrome") && !ua.includes("Edg")) browser = "Chrome";
-        else if(ua.includes("Firefox")) browser = "Firefox";
-        else if(ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari";
-        else if(ua.includes("Edg")) browser = "Edge";
-        let os = "أخرى";
-        if(ua.includes("Windows")) os = "Windows";
-        else if(ua.includes("Mac")) os = "Mac";
-        else if(ua.includes("Linux")) os = "Linux";
-        else if(ua.includes("Android")) os = "Android";
-        else if(ua.includes("iOS")) os = "iOS";
-        let device = "كمبيوتر";
-        if(/(tablet|ipad|playbook|silk)|(android(?!.*mobile))/i.test(ua)) device = "جهاز لوحي";
-        else if(/Mobile|Android|iPhone|iPod|BlackBerry/i.test(ua)) device = "جوال";
-        return { browser, os, device, screen: `${screen.width}x${screen.height}` };
-    }
-    async function recordVisit() {
-        if(sessionStorage.getItem('visitRecorded')) return;
-        const country = await fetchCountry();
-        const info = getDeviceInfo();
-        await push(ref(db, 'statistics/visits'), { timestamp: Date.now(), date: new Date().toLocaleString('ar-EG'), country, ...info });
-        const visitsCountRef = ref(db, 'statistics/totalVisitors');
-        const snap = await get(visitsCountRef);
-        await set(visitsCountRef, (snap.val() || 0) + 1);
-        sessionStorage.setItem('visitRecorded', 'true');
-    }
-    async function recordDownload() {
-        const country = await fetchCountry();
-        const info = getDeviceInfo();
-        await push(ref(db, 'statistics/clicks'), { timestamp: Date.now(), date: new Date().toLocaleString('ar-EG'), country, ...info });
-        const clicksCountRef = ref(db, 'statistics/totalClicks');
-        const snap = await get(clicksCountRef);
-        await set(clicksCountRef, (snap.val() || 0) + 1);
-    }
-    
-    // تصفية حسب التاريخ
-    function filterByDate(arr) {
-        if(!currentFilter.start && !currentFilter.end) {
-            const now = Date.now();
-            let limit = currentFilter.range === 'day' ? 86400000 : currentFilter.range === 'week' ? 604800000 : 2592000000;
-            return arr.filter(v => (now - v.timestamp) <= limit);
-        } else {
-            return arr.filter(v => v.timestamp >= currentFilter.start && v.timestamp <= currentFilter.end);
-        }
-    }
-    
-    function getDaysCount() {
-        if(currentFilter.start && currentFilter.end) return Math.max(1, Math.ceil((currentFilter.end - currentFilter.start) / 86400000));
-        if(currentFilter.range === 'day') return 1;
-        if(currentFilter.range === 'week') return 7;
-        return 30;
-    }
-    
-    // تحديث الخريطة باستخدام المفتاح المحفوظ
-    async function updateMapWithApiKey(visits) {
-        if(!mapInstance) {
-            mapInstance = L.map('map').setView([25, 10], 2);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(mapInstance);
-            markersLayer = L.layerGroup().addTo(mapInstance);
-        }
-        markersLayer.clearLayers();
-        let countryStats = {};
-        visits.forEach(v=>{ if(v.country && v.country !== 'غير معروف') countryStats[v.country] = (countryStats[v.country]||0)+1; });
-        
-        for(let [country, count] of Object.entries(countryStats)) {
-            let latlng = countryCoordsCache.get(country);
-            if(!latlng) {
-                try {
-                    let url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(country)}&format=json&limit=1`;
-                    if(GEO_API_KEY && GEO_API_KEY.trim() !== "") {
-                        // استخدام مفتاح API إذا توفر (مثال: OpenCage)
-                        url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(country)}&key=${GEO_API_KEY}&limit=1`;
-                        const res = await fetch(url);
-                        const data = await res.json();
-                        if(data.results && data.results.length) {
-                            latlng = [data.results[0].geometry.lat, data.results[0].geometry.lng];
-                        }
-                    }
-                    if(!latlng) {
-                        // الرجوع إلى Nominatim كخيار احتياطي
-                        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(country)}&format=json&limit=1`);
-                        const data = await res.json();
-                        if(data[0]) latlng = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-                    }
-                    if(latlng) countryCoordsCache.set(country, latlng);
-                    else continue;
-                } catch(e){ continue; }
-            }
-            if(latlng) L.circleMarker(latlng, { radius: Math.min(22, 5 + count/2), color: '#f97316', fillColor: '#f97316', fillOpacity: 0.7, weight: 1 }).bindPopup(`<b>${country}</b><br>${count} زيارة`).addTo(markersLayer);
-        }
-    }
-    
-    async function updateUI() {
-        let visits = filterByDate(allVisits);
-        let clicks = filterByDate(allClicks);
-        document.getElementById('totalVisitors').innerText = visits.length;
-        document.getElementById('totalClicks').innerText = clicks.length;
-        let daysCount = getDaysCount();
-        let avgDaily = (visits.length / daysCount).toFixed(1);
-        document.getElementById('avgDailyVisits').innerText = avgDaily;
-        let convRate = (clicks.length / (visits.length||1))*100;
-        document.getElementById('clickRate').innerText = convRate.toFixed(1)+'%';
-        let avgSess = Math.floor(25 + Math.random() * 55);
-        document.getElementById('avgSession').innerText = avgSess;
-        let bounceCalc = visits.length ? Math.min(85, Math.floor((visits.length - clicks.length) / visits.length * 100)) : 0;
-        document.getElementById('bounceRate').innerText = bounceCalc+'%';
-        
-        // رسم الاتجاه
-        let dateMap = new Map();
-        visits.forEach(v => { let d = new Date(v.timestamp).toLocaleDateString('ar-EG'); dateMap.set(d, (dateMap.get(d)||0)+1); });
-        let clickMap = new Map();
-        clicks.forEach(c => { let d = new Date(c.timestamp).toLocaleDateString('ar-EG'); clickMap.set(d, (clickMap.get(d)||0)+1); });
-        let sortedDates = Array.from(new Set([...dateMap.keys(),...clickMap.keys()])).sort((a,b)=>new Date(a.split('/').reverse().join('-')) - new Date(b.split('/').reverse().join('-'))).slice(-7);
-        let vData = sortedDates.map(d=>dateMap.get(d)||0);
-        let cData = sortedDates.map(d=>clickMap.get(d)||0);
-        if(trendChart) trendChart.destroy();
-        trendChart = new Chart(document.getElementById('trendChart'), { type:'line', data:{ labels:sortedDates, datasets:[{label:'زيارات', data:vData, borderColor:'#3b82f6', fill:false, tension:0.2},{label:'نقرات', data:cData, borderColor:'#f97316', fill:false}] } });
-        
-        // رادار المتصفحات والأجهزة
-        let browsers={}, devices={};
-        visits.forEach(v=>{ browsers[v.browser]=(browsers[v.browser]||0)+1; devices[v.device]=(devices[v.device]||0)+1; });
-        let radarLabels = [...Object.keys(browsers), ...Object.keys(devices)];
-        let radarData = [...Object.values(browsers), ...Object.values(devices)];
-        if(radarChart) radarChart.destroy();
-        radarChart = new Chart(document.getElementById('radarChart'), { type:'radar', data:{ labels:radarLabels, datasets:[{ label:'التوزيع', data:radarData, backgroundColor:'rgba(59,130,246,0.3)', borderColor:'#2563eb', pointBackgroundColor:'#f97316' }] } });
-        
-        // تحديث الخريطة باستخدام المفتاح
-        await updateMapWithApiKey(visits);
-        
-        // جداول الزوار والنقرات
-        let searchVis = document.getElementById('searchVisitors').value.toLowerCase();
-        let filteredVisits = visits.filter(v=>v.country?.toLowerCase().includes(searchVis)||v.browser?.toLowerCase().includes(searchVis));
-        document.getElementById('visitorsBody').innerHTML = filteredVisits.slice(0,150).map(v=>`<tr><td>${v.date}</td><td>${v.country||'?'}</td><td>${v.browser}</td><td>${v.device}</td><td>${v.os||'-'}</td></tr>`).join('');
-        let searchClick = document.getElementById('searchClicks').value.toLowerCase();
-        let filteredClicks = clicks.filter(c=>c.country?.toLowerCase().includes(searchClick)||c.browser?.toLowerCase().includes(searchClick));
-        document.getElementById('clicksBody').innerHTML = filteredClicks.slice(0,150).map(c=>`<tr><td>${c.date}</td><td>${c.country||'?'}</td><td>${c.browser}</td><td>${c.device}</td><td>${c.os||'-'}</td></tr>`).join('');
-    }
-    
-    function loadStats() {
-        onValue(ref(db,'statistics/visits'), snap=>{ allVisits = Object.values(snap.val()||{}); updateUI(); });
-        onValue(ref(db,'statistics/clicks'), snap=>{ allClicks = Object.values(snap.val()||{}); updateUI(); });
-    }
-    
-    // ---- إدارة المحتوى (base64) ----
-    let currentData = { coverBase64:'', siteLogoBase64:'', appLogoBase64:'', name:'تطبيق ذكي', description:'', downloadLink:'', gallery:[], bannerTitle:'مرحباً', bannerDesc:'', geoApiKey: '' };
-    const fileToBase64 = (f)=>new Promise((res,rej)=>{ if(f.size>2*1024*1024) rej('الحجم يتجاوز 2MB'); let r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(f); });
-    async function uploadImage(file,field,msg,previewEl){ if(!file) return; try{ let b64=await fileToBase64(file); await update(ref(db,'appInfo'),{[field]:b64}); showMessage(msg+' تم بنجاح', false); } catch(e){ showMessage('فشل الرفع: '+e, true); } }
-    async function uploadMultiple(files){ if(!files.length) return; let newGal=[...currentData.gallery]; for(let f of files) try{ newGal.push(await fileToBase64(f)); }catch(e){ showMessage(`الصورة ${f.name} كبيرة جداً`, true); } await update(ref(db,'appInfo'),{gallery:newGal}); showMessage(`تم رفع ${files.length} صورة`, false); }
-    window.deleteGalleryImage = async(idx)=>{ if(confirm('حذف الصورة نهائياً؟')){ let g=[...currentData.gallery]; g.splice(idx,1); await update(ref(db,'appInfo'),{gallery:g}); showMessage('تم الحذف', false); } };
-    window.deleteField = async(field)=>{ if(confirm('حذف هذا العنصر؟')){ await update(ref(db,'appInfo'),{[field]:''}); showMessage('تم الحذف', false); } };
-    async function saveAppInfo(){ await update(ref(db,'appInfo'),{ name:document.getElementById('appNameInput').value, description:document.getElementById('appDescInput').value, downloadLink:document.getElementById('downloadLinkInput').value }); showMessage('تم حفظ معلومات التطبيق', false); }
-    async function saveBanner(){ await update(ref(db,'appInfo'),{ bannerTitle:document.getElementById('bannerTitleInput').value, bannerDesc:document.getElementById('bannerDescInput').value }); showMessage('تم حفظ نص البنر', false); }
-    async function saveGeoApiKey() { 
-        const newKey = document.getElementById('geoApiKeyInput').value.trim();
-        await update(ref(db,'appInfo'), { geoApiKey: newKey });
-        GEO_API_KEY = newKey;
-        showMessage('تم حفظ مفتاح API للخرائط', false);
-        // تحديث الخريطة فوراً
-        if(mapInstance) updateUI();
-    }
-    
-    function refreshUI(){
-        let d=currentData;
-        document.getElementById('heroBanner').style.backgroundImage = d.coverBase64 ? `url('${d.coverBase64}')` : 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)';
-        document.getElementById('bannerTitle').innerText = d.bannerTitle || 'مرحباً';
-        document.getElementById('bannerDesc').innerText = d.bannerDesc || '';
-        document.getElementById('appNamePublic').innerText = d.name;
-        document.getElementById('appDescPublic').innerText = d.description;
-        let downBtn = document.getElementById('bannerDownloadBtn'); 
-        if(d.downloadLink && d.downloadLink.startsWith('http')){ downBtn.href=d.downloadLink; downBtn.style.display='inline-flex'; } else downBtn.style.display='none';
-        if(d.siteLogoBase64){ document.getElementById('siteLogoImg').src=d.siteLogoBase64; document.getElementById('siteLogoImg').style.display='block'; } else document.getElementById('siteLogoImg').style.display='none';
-        let appLogoPub = document.getElementById('appLogoDisplay');
-        if(d.appLogoBase64){ appLogoPub.src=d.appLogoBase64; appLogoPub.style.display='block'; } else appLogoPub.style.display='none';
-        document.getElementById('galleryPublic').innerHTML = d.gallery.map(img=>`<div class="gallery-item"><img src="${img}" loading="lazy"></div>`).join('');
-        if(document.getElementById('adminPage').classList.contains('active') && auth.currentUser?.email===ADMIN_EMAIL) renderAdminPreviews();
-        // تحديث مفتاح API العام
-        if(d.geoApiKey) GEO_API_KEY = d.geoApiKey;
-        document.getElementById('geoApiKeyInput').value = d.geoApiKey || '';
-    }
-    
-    function renderAdminPreviews(){
-        document.getElementById('coverPreviewArea').innerHTML = currentData.coverBase64?`<img src="${currentData.coverBase64}" class="preview-img"><button class="btn-outline" onclick="deleteField('coverBase64')">حذف</button>`:'<span class="preview-placeholder">لا يوجد بنر</span>';
-        document.getElementById('siteLogoPreviewArea').innerHTML = currentData.siteLogoBase64?`<img src="${currentData.siteLogoBase64}" class="preview-img"><button class="btn-outline" onclick="deleteField('siteLogoBase64')">حذف</button>`:'<span>لا يوجد لوقو</span>';
-        document.getElementById('appLogoPreviewArea').innerHTML = currentData.appLogoBase64?`<img src="${currentData.appLogoBase64}" class="preview-img"><button class="btn-outline" onclick="deleteField('appLogoBase64')">حذف</button>`:'<span>لا يوجد شعار</span>';
-        document.getElementById('appNameInput').value = currentData.name;
-        document.getElementById('appDescInput').value = currentData.description;
-        document.getElementById('downloadLinkInput').value = currentData.downloadLink;
-        document.getElementById('bannerTitleInput').value = currentData.bannerTitle;
-        document.getElementById('bannerDescInput').value = currentData.bannerDesc;
-        document.getElementById('geoApiKeyInput').value = currentData.geoApiKey || '';
-        let galleryContainer = document.getElementById('galleryAdminList');
-        galleryContainer.innerHTML = currentData.gallery.map((img,i)=>`<div class="gallery-item"><img src="${img}"><button onclick="window.deleteGalleryImage(${i})">حذف</button></div>`).join('') || '<p style="opacity:0.6">📸 لا توجد صور، قم برفع صور جديدة</p>';
-    }
-    
-    function loadData(){ 
-        onValue(ref(db,'appInfo'), snap=>{ 
-            let d=snap.val()||{}; 
-            Object.assign(currentData,{ 
-                coverBase64:d.coverBase64||'', siteLogoBase64:d.siteLogoBase64||'', appLogoBase64:d.appLogoBase64||'', 
-                name:d.name||'تطبيق ذكي', description:d.description||'', downloadLink:d.downloadLink||'', 
-                gallery:d.gallery||[], bannerTitle:d.bannerTitle||'مرحباً', bannerDesc:d.bannerDesc||'اكتشف التطبيق الآن',
-                geoApiKey: d.geoApiKey || ''
-            }); 
-            if(currentData.geoApiKey) GEO_API_KEY = currentData.geoApiKey;
-            refreshUI(); 
-        }); 
-    }
-    
-    function showMessage(msg, isError=false){ let el=document.getElementById('adminMessage'); if(el){ el.textContent=msg; el.className=`message ${isError?'error':'success'}`; setTimeout(()=>{ if(el) el.textContent=''; }, 4000); } }
-    
-    // ---- التنقل والمصادقة ----
-    const homePage=document.getElementById('homePage'), adminPage=document.getElementById('adminPage'), adminTab=document.getElementById('adminTab');
-    const loginBtn=document.getElementById('loginBtn'), logoutBtn=document.getElementById('logoutBtn'), userSpan=document.getElementById('userEmail');
-    function switchPage(page){ homePage.classList.remove('active'); adminPage.classList.remove('active'); if(page==='home') homePage.classList.add('active'); else adminPage.classList.add('active'); document.querySelectorAll('.nav-tab').forEach(t=>{ t.classList.remove('active'); if(t.dataset.page===page) t.classList.add('active'); }); if(page==='admin' && auth.currentUser?.email===ADMIN_EMAIL){ loadStats(); if(mapInstance) setTimeout(()=>mapInstance.invalidateSize(), 200); } }
-    document.querySelectorAll('.nav-tab').forEach(t=>{ t.addEventListener('click',()=>{ if(t.dataset.page==='admin' && auth.currentUser?.email!==ADMIN_EMAIL) return; switchPage(t.dataset.page); }); });
-    document.querySelectorAll('.sub-tab').forEach(t=>{ t.addEventListener('click',()=>{ document.querySelectorAll('.sub-tab').forEach(s=>s.classList.remove('active')); t.classList.add('active'); document.querySelectorAll('.sub-page').forEach(p=>p.classList.remove('active')); document.getElementById(`sub-${t.dataset.sub}`).classList.add('active'); if(t.dataset.sub==='stats' && mapInstance) setTimeout(()=>mapInstance.invalidateSize(), 100); }); });
-    
-    onAuthStateChanged(auth, (user) => {
-        if(user && user.email === ADMIN_EMAIL){ userSpan.innerHTML=`<i class="fas fa-user-shield"></i> ${user.email}`; loginBtn.style.display='none'; logoutBtn.style.display='inline-flex'; adminTab.style.display='block'; loadData(); if(adminPage.classList.contains('active')) loadStats(); }
-        else if(user){ userSpan.innerHTML=`<i class="fas fa-user"></i> ${user.email}`; loginBtn.style.display='none'; logoutBtn.style.display='inline-flex'; adminTab.style.display='none'; if(adminPage.classList.contains('active')) switchPage('home'); loadData(); }
-        else { userSpan.textContent=''; loginBtn.style.display='inline-flex'; logoutBtn.style.display='none'; adminTab.style.display='none'; if(adminPage.classList.contains('active')) switchPage('home'); loadData(); }
-    });
-    loginBtn.addEventListener('click',()=>signInWithPopup(auth,new GoogleAuthProvider()).catch(e=>showMessage('فشل تسجيل الدخول',true)));
-    logoutBtn.addEventListener('click',()=>signOut(auth));
-    
-    // أحداث الأزرار
-    document.getElementById('uploadCoverBtn').addEventListener('click',()=>uploadImage(document.getElementById('coverFile').files[0],'coverBase64','البنر'));
-    document.getElementById('uploadSiteLogoBtn').addEventListener('click',()=>uploadImage(document.getElementById('siteLogoFile').files[0],'siteLogoBase64','لوقو الموقع'));
-    document.getElementById('uploadAppLogoBtn').addEventListener('click',()=>uploadImage(document.getElementById('appLogoFile').files[0],'appLogoBase64','شعار التطبيق'));
-    document.getElementById('uploadGalleryBtn').addEventListener('click',()=>uploadMultiple(Array.from(document.getElementById('galleryFile').files)));
-    document.getElementById('saveAppInfoBtn').addEventListener('click',saveAppInfo);
-    document.getElementById('saveBannerTextBtn').addEventListener('click',saveBanner);
-    document.getElementById('saveGeoApiKeyBtn').addEventListener('click',saveGeoApiKey);
-    document.getElementById('refreshStatsBtn').addEventListener('click',()=>updateUI());
-    document.querySelectorAll('.filter-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentFilter.range = btn.dataset.range; currentFilter.start = null; currentFilter.end = null; updateUI(); }); });
-    document.getElementById('applyCustomRange').addEventListener('click',()=>{ let start=new Date(document.getElementById('startDate').value).getTime(); let end=new Date(document.getElementById('endDate').value).getTime(); if(start && end && start<=end){ currentFilter.range=null; currentFilter.start=start; currentFilter.end=end; updateUI(); } else showMessage('حدد نطاق زمني صحيح', true); });
-    document.getElementById('exportExcelBtn').addEventListener('click',()=>{ let combined=[...allVisits,...allClicks]; let ws=XLSX.utils.json_to_sheet(combined); let wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'البيانات'); XLSX.writeFile(wb,`stats_${Date.now()}.xlsx`); showMessage('تم التصدير', false); });
-    document.getElementById('darkModeBtn').addEventListener('click',()=>{ document.body.classList.toggle('dark'); localStorage.setItem('darkMode', document.body.classList.contains('dark')); });
-    if(localStorage.getItem('darkMode')==='true') document.body.classList.add('dark');
-    new Sortable(document.getElementById('statsGrid'), { animation: 200, handle: '.stat-card' });
-    document.getElementById('searchVisitors').addEventListener('input',()=>updateUI());
-    document.getElementById('searchClicks').addEventListener('input',()=>updateUI());
-    document.getElementById('bannerDownloadBtn').addEventListener('click',()=>recordDownload());
-    recordVisit();
-    window.deleteGalleryImage = deleteGalleryImage; window.deleteField = deleteField;
-    loadData();
-</script>
+  </div>
 </body>
 </html>
