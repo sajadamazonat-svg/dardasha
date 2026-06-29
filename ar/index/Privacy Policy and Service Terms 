@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Stockly - سياسة الخصوصية وشروط الخدمة</title>
+  <style>
+    :root{
+      --bg:#f6f8fc;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --brand:#2563eb;
+      --border:#e5e7eb;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: Arial, Tahoma, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap{
+      width:min(100%, 920px);
+      margin:0 auto;
+      padding:16px 12px 36px;
+    }
+
+    .hero{
+      background:linear-gradient(135deg, #2563eb, #0f766e);
+      color:#fff;
+      border-radius:20px;
+      padding:20px 16px;
+      margin-bottom:14px;
+    }
+
+    .hero h1{
+      margin:0 0 6px;
+      font-size: clamp(24px, 5vw, 34px);
+      line-height:1.2;
+    }
+
+    .hero p{
+      margin:0;
+      font-size:14px;
+      opacity:.95;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      margin-top:14px;
+      box-shadow: 0 8px 20px rgba(15,23,42,.05);
+    }
+
+    h2{
+      margin:0 0 8px;
+      font-size:22px;
+      color:#0f172a;
+    }
+
+    h3{
+      margin:16px 0 8px;
+      font-size:17px;
+      color:#111827;
+    }
+
+    p{
+      margin:0 0 10px;
+      font-size:15px;
+    }
+
+    ul{
+      margin:8px 0 10px;
+      padding:0 18px 0 0;
+    }
+
+    li{
+      margin:6px 0;
+      font-size:15px;
+    }
+
+    .meta{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:12px;
+    }
+
+    .contact{
+      background:#f8fafc;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px 14px;
+      font-size:14px;
+    }
+
+    .divider{
+      height:1px;
+      background:var(--border);
+      margin:18px 0;
+    }
+
+    .footer{
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+      margin-top:16px;
+    }
+
+    @media (max-width: 640px){
+      .wrap{padding:10px 10px 28px}
+      .card{padding:14px}
+      p, li{font-size:14px}
+      h2{font-size:20px}
+      h3{font-size:16px}
+      .hero{padding:18px 14px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <section class="hero">
+      <h1>Stockly</h1>
+      <p>سياسة الخصوصية وشروط الخدمة</p>
+    </section>
+
+    <section class="card" id="privacy">
+      <h2>سياسة الخصوصية</h2>
+      <p class="meta"><strong>آخر تحديث:</strong> يونيو 2026</p>
+
+      <p>مرحبًا بك في <strong>Stockly</strong>، المقدم من <strong>Ashlhl</strong>. نحن نحترم خصوصيتك ونلتزم بحماية بياناتك.</p>
+
+      <h3>البيانات التي نجمعها</h3>
+      <p>تم تصميم Stockly ليعمل محليًا على جهاز المستخدم. لا نقوم بجمع أو تخزين أو مشاركة أي بيانات شخصية مثل الاسم أو البريد الإلكتروني أو رقم الهاتف.</p>
+      <p>جميع البيانات التي يُدخلها المستخدم، مثل أسماء المنتجات والكميات وتواريخ انتهاء الصلاحية وصور المنتجات، يتم تخزينها محليًا على جهاز المستخدم فقط، ولا يتم إرسالها إلى أي خادم تابع لنا.</p>
+
+      <h3>الأذونات التي يستخدمها التطبيق</h3>
+      <ul>
+        <li><strong>الكاميرا:</strong> لمسح الباركود والتقاط صور المنتجات.</li>
+        <li><strong>التخزين/الصور:</strong> لحفظ صور المنتجات محليًا على الجهاز.</li>
+        <li><strong>الإنترنت:</strong> للبحث عن صور المنتجات عند طلب المستخدم ذلك.</li>
+        <li><strong>الإشعارات:</strong> لإرسال تنبيهات بانتهاء صلاحية المنتجات أو اقتراب انتهائها.</li>
+      </ul>
+
+      <h3>خدمات الطرف الثالث</h3>
+      <p>يستخدم التطبيق <strong>Google ML Kit</strong> لمسح الباركود وتوفير هذه الميزة داخل التطبيق.</p>
+
+      <h3>أمان البيانات</h3>
+      <p>نظرًا لأن بيانات المستخدم تُخزن محليًا على جهازه، فإننا لا نقوم بنقلها أو تخزينها على أي خوادم تابعة لنا.</p>
+
+      <h3>التغييرات على هذه السياسة</h3>
+      <p>قد نقوم بتحديث سياسة الخصوصية من وقت لآخر عند إضافة ميزات جديدة أو تغيير طريقة عمل التطبيق. وسيتم نشر أي تحديث على هذه الصفحة مع تعديل تاريخ آخر تحديث.</p>
+
+      <h3>التواصل معنا</h3>
+      <div class="contact">
+        <p style="margin:0;"><strong>البريد الإلكتروني:</strong> <strong>your-email@example.com</strong></p>
+      </div>
+    </section>
+
+    <section class="card" id="terms">
+      <h2>شروط الخدمة</h2>
+      <p class="meta"><strong>آخر تحديث:</strong> يونيو 2026</p>
+
+      <h3>قبول الشروط</h3>
+      <p>باستخدامك لتطبيق Stockly، فإنك توافق على شروط الخدمة هذه. إذا كنت لا توافق عليها، فيرجى عدم استخدام التطبيق.</p>
+
+      <h3>استخدام التطبيق</h3>
+      <p>يوفر Stockly أدوات لإدارة المنتجات وتتبع تواريخ انتهاء الصلاحية وتنظيم المخزون. يجب استخدام التطبيق بطريقة قانونية ومسؤولة.</p>
+
+      <h3>مسؤولية البيانات</h3>
+      <p>يتم تخزين جميع بيانات المستخدم محليًا على جهازه. يتحمل المستخدم مسؤولية صحة البيانات التي يُدخلها، كما يُنصح بإنشاء نسخ احتياطية لبيانات الجهاز بشكل دوري.</p>
+      <p>لا يتحمل Stockly أو Ashlhl أي مسؤولية عن فقدان البيانات الناتج عن حذف التطبيق، أو تلف الجهاز، أو إعادة ضبطه، أو أي سبب خارج عن سيطرتنا.</p>
+
+      <h3>التنبيهات</h3>
+      <p>يسعى التطبيق إلى إرسال التنبيهات في الوقت المناسب، لكنه لا يضمن وصولها في جميع الظروف، مثل إيقاف الإشعارات أو تفعيل أوضاع توفير الطاقة أو حدوث مشكلات في نظام التشغيل.</p>
+
+      <h3>الملكية الفكرية</h3>
+      <p>جميع حقوق التطبيق، بما في ذلك الاسم والتصميم والشعار والمحتوى، مملوكة لـ <strong>Ashlhl</strong>. ولا يجوز نسخها أو تعديلها أو إعادة توزيعها دون إذن مسبق.</p>
+
+      <h3>إخلاء المسؤولية</h3>
+      <p>يتم توفير التطبيق "كما هو" دون أي ضمانات صريحة أو ضمنية. لا نضمن أن يكون التطبيق خاليًا من الأخطاء أو متاحًا دون انقطاع في جميع الأوقات.</p>
+
+      <h3>التعديلات على الشروط</h3>
+      <p>يجوز لنا تعديل شروط الخدمة من وقت لآخر. وسيتم نشر أي تحديث على هذه الصفحة مع تحديث تاريخ آخر تعديل.</p>
+    </section>
+
+    <div class="footer">
+      © 2026 Ashlhl — Stockly
+    </div>
+
+  </div>
+</body>
+</html>
