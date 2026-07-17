@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>سياسة الخصوصية – PowerBee</title>
+    <style>
+        /* ===== Reset & Base ===== */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f2f5fa;
+            --bg-card: #ffffff;
+            --text-primary: #0a1a2f;
+            --text-secondary: #2c4058;
+            --text-muted: #6b7f96;
+            --accent: #1a6be0;
+            --accent-light: #e6eff9;
+            --border-light: #e2eaf2;
+            --shadow-card: 0 6px 24px rgba(0, 20, 50, 0.06);
+            --radius-card: 20px;
+            --radius-sm: 10px;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --max-width: 480px;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            padding: 20px 16px 48px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ===== Container ===== */
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        /* ===== Header ===== */
+        .header {
+            margin-bottom: 24px;
+            padding-top: 6px;
+        }
+
+        .app-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .app-name span {
+            color: var(--accent);
+        }
+
+        .header h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-top: 12px;
+            color: var(--text-primary);
+        }
+
+        .header .last-updated {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: var(--accent-light);
+            padding: 2px 16px;
+            border-radius: 30px;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+        }
+
+        /* ===== Intro Card ===== */
+        .intro-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-card);
+            padding: 20px 20px 18px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-light);
+            margin-bottom: 20px;
+        }
+
+        .intro-card p {
+            font-size: 0.98rem;
+            color: var(--text-secondary);
+        }
+
+        /* ===== Policy Sections ===== */
+        .policy-section {
+            background: var(--bg-card);
+            border-radius: var(--radius-card);
+            padding: 18px 20px 20px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-light);
+            margin-bottom: 16px;
+        }
+
+        .policy-section h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .policy-section p,
+        .policy-section li {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .policy-section ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 4px;
+        }
+
+        .policy-section ul li {
+            padding-right: 18px;
+            position: relative;
+            margin-bottom: 2px;
+        }
+
+        .policy-section ul li::before {
+            content: "–";
+            position: absolute;
+            right: 0;
+            color: var(--accent);
+            font-weight: 400;
+        }
+
+        .policy-section .subnote {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            background: var(--bg-primary);
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            margin-top: 10px;
+            border-right: 3px solid var(--accent);
+        }
+
+        /* ===== Contact ===== */
+        .contact-box {
+            background: var(--bg-card);
+            border-radius: var(--radius-card);
+            padding: 18px 20px 20px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-light);
+            margin-top: 4px;
+        }
+
+        .contact-box h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .contact-box p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .contact-box .email-link {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 2px solid var(--accent-light);
+            padding-bottom: 2px;
+            transition: border-color 0.2s;
+        }
+
+        .contact-box .email-link:hover {
+            border-bottom-color: var(--accent);
+        }
+
+        /* ===== Footer ===== */
+        .footer-note {
+            margin-top: 28px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+            border-top: 1px solid var(--border-light);
+            padding-top: 20px;
+            letter-spacing: 0.01em;
+        }
+
+        /* ===== Spacing tweaks ===== */
+        .policy-section:last-of-type {
+            margin-bottom: 16px;
+        }
+
+        /* small screens */
+        @media (max-width: 400px) {
+            body {
+                padding: 16px 12px 32px;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .policy-section h2 {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ===== HEADER ===== -->
+        <header class="header">
+            <div class="app-name">
+                <span>PowerBee</span>
+            </div>
+            <h1>سياسة الخصوصية</h1>
+            <span class="last-updated">آخر تحديث: 18 يوليو 2026</span>
+        </header>
+
+        <!-- ===== INTRO ===== -->
+        <div class="intro-card">
+            <p>مرحبًا بك في PowerBee.<br />
+            نحن نحترم خصوصيتك ونسعى إلى حماية بياناتك. توضح سياسة الخصوصية هذه كيفية تعامل التطبيق مع المعلومات.</p>
+        </div>
+
+        <!-- ===== المعلومات التي نجمعها ===== -->
+        <section class="policy-section">
+            <h2>المعلومات التي نجمعها</h2>
+            <p>لا يجمع تطبيق PowerBee أي معلومات شخصية مثل:</p>
+            <ul>
+                <li>الاسم.</li>
+                <li>البريد الإلكتروني.</li>
+                <li>رقم الهاتف.</li>
+                <li>الموقع الجغرافي.</li>
+                <li>جهات الاتصال.</li>
+            </ul>
+        </section>
+
+        <!-- ===== بيانات الجهاز ===== -->
+        <section class="policy-section">
+            <h2>بيانات الجهاز</h2>
+            <p>يستخدم التطبيق معلومات البطارية المتوفرة من نظام أندرويد فقط لعرضها داخل التطبيق، مثل:</p>
+            <ul>
+                <li>نسبة شحن البطارية.</li>
+                <li>حالة الشحن.</li>
+                <li>درجة حرارة البطارية.</li>
+                <li>نوع الشحن.</li>
+                <li>فولتية البطارية.</li>
+            </ul>
+            <div class="subnote">
+                تُستخدم هذه المعلومات فقط لتشغيل وظائف التطبيق ولا يتم إرسالها إلى أي خادم أو مشاركتها مع أي طرف ثالث.
+            </div>
+        </section>
+
+        <!-- ===== تخزين البيانات ===== -->
+        <section class="policy-section">
+            <h2>تخزين البيانات</h2>
+            <p>يحفظ التطبيق بعض الإعدادات التي يختارها المستخدم، مثل نسبة التنبيه، داخل الجهاز فقط، ولا يتم رفعها إلى الإنترنت.</p>
+        </section>
+
+        <!-- ===== مشاركة البيانات ===== -->
+        <section class="policy-section">
+            <h2>مشاركة البيانات</h2>
+            <p>لا يبيع التطبيق بيانات المستخدمين ولا يشاركها مع أي طرف ثالث.</p>
+        </section>
+
+        <!-- ===== الأطفال ===== -->
+        <section class="policy-section">
+            <h2>الأطفال</h2>
+            <p>التطبيق غير مخصص للأطفال بشكل خاص، ولا يجمع أي بيانات شخصية عنهم.</p>
+        </section>
+
+        <!-- ===== الأمان ===== -->
+        <section class="policy-section">
+            <h2>الأمان</h2>
+            <p>نعمل على توفير تجربة آمنة، ويتم تشغيل التطبيق محليًا على جهاز المستخدم دون الحاجة إلى إنشاء حساب.</p>
+        </section>
+
+        <!-- ===== التغييرات ===== -->
+        <section class="policy-section">
+            <h2>التغييرات على سياسة الخصوصية</h2>
+            <p>قد يتم تحديث سياسة الخصوصية عند إضافة ميزات جديدة أو خدمات خارجية. سيتم نشر أي تحديث داخل هذه الصفحة.</p>
+        </section>
+
+        <!-- ===== التواصل (بالبريد الجديد) ===== -->
+        <section class="contact-box">
+            <h2>التواصل</h2>
+            <p>إذا كانت لديك أي استفسارات حول سياسة الخصوصية، يمكنك التواصل معنا عبر البريد الإلكتروني:</p>
+            <a href="mailto:ashlhl.iq@gmail.com" class="email-link">ashlhl.iq@gmail.com</a>
+        </section>
+
+        <!-- ===== Footer ===== -->
+        <div class="footer-note">
+            PowerBee &bull; جميع الحقوق محفوظة
+        </div>
+
+    </div>
+</body>
+</html>
