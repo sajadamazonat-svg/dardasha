@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>lidercenter - الرئيسية</title>
     <style>
-        /* ---------- إعدادات عامة (أبيض وأسود) ---------- */
+        /* نفس الأنماط السابقة (لم تتغير) */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f8f8f8;
@@ -21,8 +20,6 @@
             display: flex;
             flex-direction: column;
         }
-
-        /* ---------- الهيدر (الشريط العلوي) ---------- */
         .header {
             background: #ffffff;
             border-bottom: 1px solid #e0e0e0;
@@ -33,38 +30,32 @@
             flex-wrap: wrap;
             gap: 15px;
         }
-
         .header .brand {
             font-size: 1.8rem;
             font-weight: 900;
             color: #000000;
             letter-spacing: 1px;
         }
-
         .header .brand span {
             font-weight: 300;
             color: #888;
             font-size: 0.9rem;
             margin-right: 8px;
         }
-
         .header .user-area {
             display: flex;
             align-items: center;
             gap: 15px;
             flex-wrap: wrap;
         }
-
         .header .user-area .welcome {
             font-size: 0.95rem;
             color: #333;
         }
-
         .header .user-area .welcome strong {
             color: #000;
             font-weight: 700;
         }
-
         .btn-logout {
             padding: 8px 20px;
             background: transparent;
@@ -76,21 +67,17 @@
             transition: 0.3s;
             font-size: 0.9rem;
         }
-
         .btn-logout:hover {
             border-color: #000;
             color: #000;
             background: #f0f0f0;
         }
-
-        /* ---------- المحتوى الرئيسي ---------- */
         .container {
             max-width: 1200px;
             margin: 30px auto;
             padding: 0 20px;
             flex: 1;
         }
-
         .page-title {
             font-size: 1.8rem;
             font-weight: 700;
@@ -99,15 +86,11 @@
             border-right: 4px solid #000;
             padding-right: 15px;
         }
-
-        /* ---------- شبكة المنتجات ---------- */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 25px;
         }
-
-        /* بطاقة المنتج */
         .product-card {
             background: #ffffff;
             border: 1px solid #eaeaea;
@@ -119,13 +102,11 @@
             flex-direction: column;
             align-items: center;
         }
-
         .product-card:hover {
             border-color: #000000;
             transform: translateY(-5px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
         }
-
         .product-card img {
             width: 100%;
             max-height: 180px;
@@ -134,14 +115,12 @@
             background: #f5f5f5;
             margin-bottom: 12px;
         }
-
         .product-card .product-name {
             font-weight: 700;
             font-size: 1.05rem;
             color: #000;
             margin-bottom: 5px;
         }
-
         .product-card .product-desc {
             font-size: 0.8rem;
             color: #777;
@@ -149,20 +128,17 @@
             height: 35px;
             overflow: hidden;
         }
-
         .product-card .product-price {
             font-size: 1.3rem;
             font-weight: 800;
             color: #000;
             margin-bottom: 12px;
         }
-
         .product-card .product-price small {
             font-size: 0.7rem;
             font-weight: 400;
             color: #888;
         }
-
         .btn-add-to-cart {
             padding: 10px 20px;
             background: #000000;
@@ -175,25 +151,19 @@
             transition: 0.3s;
             width: 100%;
         }
-
         .btn-add-to-cart:hover {
             background: #333333;
             transform: scale(1.02);
         }
-
         .btn-add-to-cart:active {
             transform: scale(0.97);
         }
-
-        /* ---------- حالة عدم وجود منتجات (لن تظهر) ---------- */
         .no-products {
             text-align: center;
             color: #888;
             padding: 60px 20px;
             font-size: 1.2rem;
         }
-
-        /* ---------- تذييل بسيط ---------- */
         .footer {
             text-align: center;
             padding: 20px;
@@ -202,8 +172,6 @@
             border-top: 1px solid #eee;
             margin-top: 30px;
         }
-
-        /* ---------- استجابة للجوال ---------- */
         @media (max-width: 600px) {
             .header {
                 flex-direction: column;
@@ -225,38 +193,28 @@
 </head>
 <body>
 
-    <!-- ======== الهيدر ======== -->
     <header class="header">
         <div class="brand">
             lidercenter
-            <span>● متجرك الإلكتروني</span>
+            <span>متجرك الإلكتروني</span>
         </div>
         <div class="user-area">
-            <div class="welcome">👋 مرحباً، <strong id="userNameDisplay">المستخدم</strong></div>
+            <div class="welcome">مرحباً، <strong id="userNameDisplay">المستخدم</strong></div>
             <button class="btn-logout" id="logoutBtn">تسجيل الخروج</button>
         </div>
     </header>
 
-    <!-- ======== المحتوى الرئيسي ======== -->
     <main class="container">
-        <h2 class="page-title">✦ جميع المنتجات</h2>
-
-        <!-- شبكة المنتجات -->
-        <div class="products-grid" id="productsContainer">
-            <!-- سيتم ملؤها بواسطة جافا سكريبت -->
-        </div>
+        <h2 class="page-title">جميع المنتجات</h2>
+        <div class="products-grid" id="productsContainer"></div>
     </main>
 
-    <!-- ======== تذييل ======== -->
     <footer class="footer">
         © 2026 lidercenter — جميع الحقوق محفوظة
     </footer>
 
-    <!-- ========================================================== -->
-    <!-- ======== كود Firebase وأعمال المنطق ======== -->
-    <!-- ========================================================== -->
     <script type="module">
-        // ----- 1. استيراد Firebase Auth -----
+        // استيرادات Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
         import {
@@ -265,75 +223,41 @@
             signOut
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
-        // ----- 2. إعدادات Firebase (نفس الإعدادات السابقة) -----
+        // ----- الإعدادات الجديدة لمشروع ashlhl-ed7c7e17 -----
         const firebaseConfig = {
-            apiKey: "AIzaSyDDb5kAoZCOLGqVvzKZ9q-wB1FZrdqyVH8",
-            authDomain: "sample-firebase-ai-app-c5b33.firebaseapp.com",
-            databaseURL: "https://sample-firebase-ai-app-c5b33-default-rtdb.firebaseio.com",
-            projectId: "sample-firebase-ai-app-c5b33",
-            storageBucket: "sample-firebase-ai-app-c5b33.firebasestorage.app",
-            messagingSenderId: "183057738013",
-            appId: "1:183057738013:web:649fc47c465a23da1959f4",
-            measurementId: "G-1SCGVCM2WW"
+            apiKey: "AIzaSyB0lg1AkTQF1ZdntWZsWUoCG8GpqbK-WAY",
+            authDomain: "ashlhl-ed7c7e17.firebaseapp.com",
+            databaseURL: "https://ashlhl-ed7c7e17-default-rtdb.firebaseio.com",
+            projectId: "ashlhl-ed7c7e17",
+            storageBucket: "ashlhl-ed7c7e17.firebasestorage.app",
+            messagingSenderId: "246682226738",
+            appId: "1:246682226738:web:4301ea8caebe2c1325ac2b"
         };
 
-        // ----- 3. التهيئة -----
+        // تهيئة Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const auth = getAuth(app);
 
-        // ----- 4. عناصر DOM -----
         const userNameDisplay = document.getElementById('userNameDisplay');
         const logoutBtn = document.getElementById('logoutBtn');
         const productsContainer = document.getElementById('productsContainer');
 
-        // ----- 5. قائمة المنتجات (ثابتة كنموذج) -----
-        // يمكنك لاحقاً استبدال هذه المصفوفة بجلب بيانات من Firestore أو Realtime Database
-        const products = [{
-            id: 1,
-            name: 'سماعة لاسلكية Pro',
-            desc: 'عزل ضوضاء، بطارية 24 ساعة',
-            price: 199,
-            image: 'https://picsum.photos/seed/headphone/300/300'
-        }, {
-            id: 2,
-            name: 'ساعة ذكية رياضية',
-            desc: 'شاشة AMOLED، تتبع اللياقة',
-            price: 450,
-            image: 'https://picsum.photos/seed/watch/300/300'
-        }, {
-            id: 3,
-            name: 'حقيبة ظهر عصرية',
-            desc: 'مقاومة للماء، 20 لتر',
-            price: 120,
-            image: 'https://picsum.photos/seed/bag/300/300'
-        }, {
-            id: 4,
-            name: 'هاتف ذكي X10',
-            desc: 'كاميرا 108 ميجا، 5G',
-            price: 1299,
-            image: 'https://picsum.photos/seed/phone/300/300'
-        }, {
-            id: 5,
-            name: 'أحذية جري خفيفة',
-            desc: 'مريحة، مناسبة للرياضة',
-            price: 280,
-            image: 'https://picsum.photos/seed/shoes/300/300'
-        }, {
-            id: 6,
-            name: 'ساعة يد كلاسيك',
-            desc: 'حركة أوتوماتيكية، جلد طبيعي',
-            price: 750,
-            image: 'https://picsum.photos/seed/classicwatch/300/300'
-        }];
+        // قائمة المنتجات (نموذجية)
+        const products = [
+            { id: 1, name: 'سماعة لاسلكية Pro', desc: 'عزل ضوضاء، بطارية 24 ساعة', price: 199, image: 'https://picsum.photos/seed/headphone/300/300' },
+            { id: 2, name: 'ساعة ذكية رياضية', desc: 'شاشة AMOLED، تتبع اللياقة', price: 450, image: 'https://picsum.photos/seed/watch/300/300' },
+            { id: 3, name: 'حقيبة ظهر عصرية', desc: 'مقاومة للماء، 20 لتر', price: 120, image: 'https://picsum.photos/seed/bag/300/300' },
+            { id: 4, name: 'هاتف ذكي X10', desc: 'كاميرا 108 ميجا، 5G', price: 1299, image: 'https://picsum.photos/seed/phone/300/300' },
+            { id: 5, name: 'أحذية جري خفيفة', desc: 'مريحة، مناسبة للرياضة', price: 280, image: 'https://picsum.photos/seed/shoes/300/300' },
+            { id: 6, name: 'ساعة يد كلاسيك', desc: 'حركة أوتوماتيكية، جلد طبيعي', price: 750, image: 'https://picsum.photos/seed/classicwatch/300/300' }
+        ];
 
-        // ----- 6. دالة عرض المنتجات -----
         function renderProducts(productsArray) {
             if (!productsArray || productsArray.length === 0) {
-                productsContainer.innerHTML = '<div class="no-products">⚠️ لا توجد منتجات لعرضها حالياً.</div>';
+                productsContainer.innerHTML = '<div class="no-products">لا توجد منتجات لعرضها حالياً.</div>';
                 return;
             }
-
             let html = '';
             productsArray.forEach((product) => {
                 html += `
@@ -343,52 +267,44 @@
                         <div class="product-desc">${product.desc}</div>
                         <div class="product-price">${product.price} <small>ج.م</small></div>
                         <button class="btn-add-to-cart" data-id="${product.id}">
-                            🛒 أضف إلى السلة
+                            أضف إلى السلة
                         </button>
                     </div>
                 `;
             });
             productsContainer.innerHTML = html;
 
-            // إضافة حدث لجميع أزرار "أضف إلى السلة" (مجرد تنبيه توضيحي)
             document.querySelectorAll('.btn-add-to-cart').forEach((btn) => {
                 btn.addEventListener('click', (e) => {
                     const productId = e.target.getAttribute('data-id');
                     const productName = products.find(p => p.id == productId)?.name || 'المنتج';
-                    alert(`✅ تمت إضافة "${productName}" إلى السلة! (هذه مجرد تجربة)`);
+                    alert(`تمت إضافة "${productName}" إلى السلة! (هذه مجرد تجربة)`);
                 });
             });
         }
 
-        // ----- 7. التحقق من حالة تسجيل الدخول (الأهم) -----
+        // التحقق من حالة تسجيل الدخول (الحماية)
         onAuthStateChanged(auth, (user) => {
             if (!user) {
-                // إذا لم يكن مسجلاً دخوله، نرجعه إلى صفحة تسجيل الدخول فوراً
                 window.location.href = 'login.html';
                 return;
             }
-
-            // إذا كان مسجلاً دخوله، نعرض اسمه ونعرض المنتجات
             const displayName = user.displayName || user.email || 'مستخدم';
             userNameDisplay.textContent = displayName;
             renderProducts(products);
         });
 
-        // ----- 8. زر تسجيل الخروج -----
         logoutBtn.addEventListener('click', () => {
             signOut(auth)
                 .then(() => {
-                    // بعد تسجيل الخروج، onAuthStateChanged سيتحكم بالتوجيه إلى login.html
-                    // لكننا نضيف تحويلاً احتياطياً
                     window.location.href = 'login.html';
                 })
                 .catch((error) => {
-                    alert('❌ حدث خطأ أثناء تسجيل الخروج: ' + error.message);
+                    alert('حدث خطأ أثناء تسجيل الخروج: ' + error.message);
                 });
         });
 
-        // ----- 9. رسالة ترحيب في الكونسول -----
-        console.log('✅ home.html جاهز ومحمي بواسطة Firebase Auth');
+        console.log('home.html - Firebase مهيأ بمشروع ashlhl-ed7c7e17');
     </script>
 </body>
 </html>
