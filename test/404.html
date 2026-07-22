@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lidercenter - الصفحة غير موجودة</title>
+    <style>
+        /* ---------- إعدادات عامة ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            direction: rtl;
+            color: #000000;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* ---------- بطاقة الخطأ ---------- */
+        .error-container {
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+            padding: 50px 30px;
+            border: 1px solid #e0e0e0;
+            border-radius: 24px;
+            background: #ffffff;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+            transition: 0.3s ease;
+        }
+
+        .error-container:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+        }
+
+        /* ---------- رمز الخطأ الكبير ---------- */
+        .error-code {
+            font-size: 8rem;
+            font-weight: 900;
+            line-height: 1;
+            color: #000000;
+            letter-spacing: -8px;
+            margin-bottom: 10px;
+            user-select: none;
+        }
+
+        .error-code span {
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .error-code span:nth-child(1) { animation-delay: 0s; }
+        .error-code span:nth-child(2) { animation-delay: 0.3s; }
+        .error-code span:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* ---------- النصوص التوضيحية ---------- */
+        .error-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 12px;
+        }
+
+        .error-message {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 8px;
+        }
+
+        .error-hint {
+            font-size: 0.9rem;
+            color: #999;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 20px;
+        }
+
+        /* ---------- مجموعة الأزرار ---------- */
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #000000;
+            color: #ffffff;
+            border: 2px solid #000000;
+        }
+
+        .btn-primary:hover {
+            background: #ffffff;
+            color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #000000;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            border-color: #000000;
+            background: #f8f8f8;
+            transform: translateY(-2px);
+        }
+
+        /* ---------- أيقونات بسيطة (نصية) ---------- */
+        .icon-arrow {
+            display: inline-block;
+            transform: scaleX(-1); /* لأن الكتابة RTL، السهم يشير لليسار */
+            font-size: 1.2rem;
+        }
+
+        /* ---------- استجابة للجوال ---------- */
+        @media (max-width: 500px) {
+            .error-code {
+                font-size: 5.5rem;
+                letter-spacing: -4px;
+            }
+            .error-title {
+                font-size: 1.4rem;
+            }
+            .actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-primary,
+            .btn-secondary {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="error-container">
+        <!-- رقم 404 مع حركة بسيطة -->
+        <div class="error-code">
+            <span>4</span><span>0</span><span>4</span>
+        </div>
+
+        <!-- العناوين -->
+        <h1 class="error-title">عفواً، الصفحة غير موجودة</h1>
+        <p class="error-message">
+            يبدو أن الرابط الذي تتبعه قد يكون مكسوراً أو تم حذف الصفحة.
+        </p>
+        <p class="error-hint">
+            تحقق من الرابط، أو عد إلى المتجر للاستمرار في التسوق.
+        </p>
+
+        <!-- الأزرار -->
+        <div class="actions">
+            <a href="home.html" class="btn-primary">
+                <span class="icon-arrow">→</span> العودة إلى الرئيسية
+            </a>
+            <a href="support.html" class="btn-secondary">
+                💬 فريق الدعم
+            </a>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- كود تحويل تلقائي للصفحات غير الموجودة (اختياري، مفيد جداً) -->
+    <!-- ========================================================== -->
+    <script>
+        // هذه الفائدة: إذا كان المستخدم في صفحة غير موجودة (مثل cart.html)
+        // ولم نقم بإنشائها بعد، يمكننا توجيهه تلقائياً إلى 404.html
+        // لكن الأفضل أن نضع هذا الكود في الصفحات المؤقتة.
+        // حالياً، هذه الصفحة تعمل كصفحة 404 ثابتة.
+
+        console.log('✅ 404.html جاهزة - يمكنك استخدامها للصفحات غير المكتملة');
+
+        // إذا أتيت من رابط معين، يمكن عرضه في الكونسول للمساعدة في التصحيح
+        const currentUrl = window.location.href;
+        console.log('🌐 الرابط المطلوب:', currentUrl);
+    </script>
+</body>
+</html>
