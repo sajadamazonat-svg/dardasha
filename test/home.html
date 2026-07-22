@@ -1,813 +1,394 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LiderCenter | المتجر</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --bg1:#0f172a;
-      --bg2:#111827;
-      --card:rgba(255,255,255,.08);
-      --card-2:rgba(255,255,255,.12);
-      --text:#f8fafc;
-      --muted:rgba(248,250,252,.72);
-      --line:rgba(255,255,255,.12);
-      --primary:#38bdf8;
-      --primary-2:#22c55e;
-      --danger:#ef4444;
-      --shadow:0 18px 50px rgba(0,0,0,.28);
-      --radius:24px;
-      --sidebar-w:280px;
-      --bottom-h:72px;
-    }
-
-    *{
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
-    }
-
-    html,body{
-      height:100%;
-      font-family:"Cairo",sans-serif;
-      background:
-        radial-gradient(circle at top right, rgba(56,189,248,.16), transparent 30%),
-        radial-gradient(circle at bottom left, rgba(34,197,94,.14), transparent 28%),
-        linear-gradient(135deg, var(--bg1), var(--bg2));
-      color:var(--text);
-      overflow-x:hidden;
-    }
-
-    body{
-      min-height:100vh;
-    }
-
-    a{
-      color:inherit;
-      text-decoration:none;
-    }
-
-    button{
-      font:inherit;
-      border:none;
-      cursor:pointer;
-    }
-
-    .app{
-      min-height:100vh;
-      display:flex;
-    }
-
-    /* Sidebar */
-    .sidebar{
-      position:fixed;
-      top:0;
-      right:0;
-      width:var(--sidebar-w);
-      height:100vh;
-      padding:20px;
-      background:rgba(15, 23, 42, .82);
-      backdrop-filter:blur(18px);
-      border-left:1px solid var(--line);
-      box-shadow:var(--shadow);
-      transform:translateX(100%);
-      transition:transform .35s ease;
-      z-index:30;
-      display:flex;
-      flex-direction:column;
-      gap:18px;
-    }
-
-    .sidebar.open{
-      transform:translateX(0);
-    }
-
-    .sidebar-header{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      padding:8px 6px 18px;
-      border-bottom:1px solid var(--line);
-    }
-
-    .logo{
-      width:54px;
-      height:54px;
-      border-radius:16px;
-      object-fit:cover;
-      background:rgba(255,255,255,.08);
-    }
-
-    .brand h2{
-      font-size:1.2rem;
-      font-weight:800;
-      line-height:1.2;
-    }
-
-    .brand p{
-      font-size:.88rem;
-      color:var(--muted);
-    }
-
-    .nav-list{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      padding-top:6px;
-      overflow:auto;
-      flex:1;
-    }
-
-    .nav-link{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:14px 16px;
-      border-radius:18px;
-      background:transparent;
-      color:var(--text);
-      transition:all .25s ease;
-      border:1px solid transparent;
-    }
-
-    .nav-link:hover,
-    .nav-link.active{
-      background:var(--card);
-      border-color:var(--line);
-      transform:translateX(-2px);
-    }
-
-    .nav-link .dot{
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      background:var(--primary);
-      box-shadow:0 0 0 4px rgba(56,189,248,.14);
-      flex:0 0 10px;
-    }
-
-    .nav-link.logout .dot{
-      background:var(--danger);
-      box-shadow:0 0 0 4px rgba(239,68,68,.12);
-    }
-
-    .admin-item{
-      display:none;
-    }
-
-    .sidebar-footer{
-      padding-top:14px;
-      border-top:1px solid var(--line);
-      color:var(--muted);
-      font-size:.92rem;
-    }
-
-    /* Main */
-    .main{
-      width:100%;
-      min-height:100vh;
-      padding-right:0;
-      padding-top:0;
-      padding-bottom:calc(var(--bottom-h) + 18px);
-      transition:margin-right .35s ease;
-    }
-
-    .topbar{
-      position:sticky;
-      top:0;
-      z-index:20;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:16px 18px;
-      background:rgba(15, 23, 42, .72);
-      backdrop-filter:blur(16px);
-      border-bottom:1px solid var(--line);
-    }
-
-    .topbar-left{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:0;
-    }
-
-    .menu-btn{
-      width:46px;
-      height:46px;
-      border-radius:16px;
-      background:var(--card);
-      color:var(--text);
-      border:1px solid var(--line);
-      display:grid;
-      place-items:center;
-      font-size:1.2rem;
-      transition:transform .2s ease, background .2s ease;
-      flex:0 0 auto;
-    }
-
-    .menu-btn:hover{
-      transform:scale(1.03);
-      background:var(--card-2);
-    }
-
-    .title-wrap{
-      min-width:0;
-    }
-
-    .title-wrap h1{
-      font-size:1.25rem;
-      line-height:1.2;
-      font-weight:800;
-    }
-
-    .title-wrap p{
-      font-size:.9rem;
-      color:var(--muted);
-    }
-
-    .profile-chip{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:9px 12px;
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:999px;
-      max-width:52vw;
-    }
-
-    .avatar{
-      width:34px;
-      height:34px;
-      border-radius:50%;
-      background:linear-gradient(135deg, var(--primary), var(--primary-2));
-      display:grid;
-      place-items:center;
-      color:#fff;
-      font-weight:800;
-      flex:0 0 auto;
-    }
-
-    .profile-text{
-      min-width:0;
-      display:flex;
-      flex-direction:column;
-      line-height:1.2;
-    }
-
-    .profile-text strong{
-      font-size:.92rem;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .profile-text span{
-      font-size:.78rem;
-      color:var(--muted);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .content{
-      padding:18px;
-      max-width:1400px;
-      margin:0 auto;
-    }
-
-    .hero{
-      position:relative;
-      overflow:hidden;
-      background:
-        linear-gradient(135deg, rgba(56,189,248,.20), rgba(34,197,94,.12)),
-        rgba(255,255,255,.06);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:22px;
-      box-shadow:var(--shadow);
-      margin-bottom:18px;
-    }
-
-    .hero::after{
-      content:"";
-      position:absolute;
-      inset:auto -60px -80px auto;
-      width:220px;
-      height:220px;
-      border-radius:50%;
-      background:radial-gradient(circle, rgba(255,255,255,.22), transparent 65%);
-      filter:blur(10px);
-      pointer-events:none;
-    }
-
-    .hero h2{
-      font-size:clamp(1.3rem, 2.5vw, 2rem);
-      margin-bottom:8px;
-      font-weight:800;
-    }
-
-    .hero p{
-      color:var(--muted);
-      max-width:700px;
-      line-height:1.8;
-    }
-
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(4, minmax(0,1fr));
-      gap:14px;
-      margin-bottom:18px;
-    }
-
-    .stat-card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:18px;
-      box-shadow:var(--shadow);
-    }
-
-    .stat-card span{
-      display:block;
-      color:var(--muted);
-      font-size:.88rem;
-      margin-bottom:10px;
-    }
-
-    .stat-card strong{
-      display:block;
-      font-size:1.5rem;
-      font-weight:800;
-    }
-
-    .section{
-      margin-bottom:18px;
-    }
-
-    .section-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:12px;
-    }
-
-    .section-head h3{
-      font-size:1.1rem;
-      font-weight:800;
-    }
-
-    .section-head a{
-      color:var(--primary);
-      font-size:.92rem;
-    }
-
-    .search-box{
-      display:flex;
-      gap:10px;
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:10px;
-      margin-bottom:18px;
-      box-shadow:var(--shadow);
-    }
-
-    .search-box input{
-      flex:1;
-      background:transparent;
-      border:none;
-      outline:none;
-      color:var(--text);
-      font-size:1rem;
-      padding:10px 12px;
-    }
-
-    .search-box input::placeholder{
-      color:rgba(248,250,252,.55);
-    }
-
-    .search-btn{
-      padding:12px 18px;
-      border-radius:16px;
-      background:linear-gradient(135deg, var(--primary), var(--primary-2));
-      color:#fff;
-      font-weight:700;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(4, minmax(0,1fr));
-      gap:14px;
-    }
-
-    .product-card{
-      background:rgba(255,255,255,.07);
-      border:1px solid var(--line);
-      border-radius:22px;
-      overflow:hidden;
-      box-shadow:var(--shadow);
-      transition:transform .25s ease, background .25s ease;
-    }
-
-    .product-card:hover{
-      transform:translateY(-3px);
-      background:rgba(255,255,255,.1);
-    }
-
-    .product-image{
-      width:100%;
-      aspect-ratio:1/1;
-      object-fit:cover;
-      display:block;
-      background:rgba(255,255,255,.06);
-    }
-
-    .product-body{
-      padding:14px;
-    }
-
-    .product-body h4{
-      font-size:1rem;
-      font-weight:800;
-      margin-bottom:6px;
-    }
-
-    .product-body p{
-      color:var(--muted);
-      font-size:.88rem;
-      line-height:1.7;
-      min-height:48px;
-      margin-bottom:12px;
-    }
-
-    .product-meta{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-
-    .price{
-      font-weight:800;
-      color:#fff;
-    }
-
-    .view-btn{
-      padding:9px 14px;
-      border-radius:14px;
-      background:rgba(56,189,248,.16);
-      border:1px solid rgba(56,189,248,.28);
-      color:#fff;
-    }
-
-    .empty-state{
-      padding:24px;
-      border-radius:22px;
-      border:1px dashed rgba(255,255,255,.22);
-      background:rgba(255,255,255,.05);
-      color:var(--muted);
-      text-align:center;
-    }
-
-    /* Bottom nav */
-    .bottom-nav{
-      position:fixed;
-      left:0;
-      right:0;
-      bottom:0;
-      height:var(--bottom-h);
-      background:rgba(15, 23, 42, .86);
-      backdrop-filter:blur(16px);
-      border-top:1px solid var(--line);
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      z-index:25;
-    }
-
-    .bottom-nav a{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:4px;
-      color:var(--muted);
-      font-size:.82rem;
-      transition:color .2s ease, background .2s ease;
-    }
-
-    .bottom-nav a.active,
-    .bottom-nav a:hover{
-      color:#fff;
-      background:rgba(255,255,255,.05);
-    }
-
-    /* Overlay */
-    .overlay{
-      position:fixed;
-      inset:0;
-      background:rgba(2, 6, 23, .42);
-      opacity:0;
-      pointer-events:none;
-      transition:opacity .25s ease;
-      z-index:25;
-    }
-
-    .overlay.show{
-      opacity:1;
-      pointer-events:auto;
-    }
-
-    /* Animations */
-    .fade-in{
-      animation:fadeIn .5s ease both;
-    }
-
-    @keyframes fadeIn{
-      from{opacity:0; transform:translateY(8px);}
-      to{opacity:1; transform:translateY(0);}
-    }
-
-    /* Responsive */
-    @media (max-width: 1100px){
-      .stats,
-      .grid{
-        grid-template-columns:repeat(2, minmax(0,1fr));
-      }
-    }
-
-    @media (max-width: 760px){
-      .content{
-        padding:14px;
-      }
-
-      .profile-chip{
-        display:none;
-      }
-
-      .stats,
-      .grid{
-        grid-template-columns:1fr;
-      }
-
-      .hero{
-        padding:18px;
-      }
-
-      .sidebar{
-        width:min(86vw, 300px);
-      }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lidercenter - الرئيسية</title>
+    <style>
+        /* ---------- إعدادات عامة (أبيض وأسود) ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f8f8;
+            direction: rtl;
+            color: #000;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ---------- الهيدر (الشريط العلوي) ---------- */
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header .brand {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #000000;
+            letter-spacing: 1px;
+        }
+
+        .header .brand span {
+            font-weight: 300;
+            color: #888;
+            font-size: 0.9rem;
+            margin-right: 8px;
+        }
+
+        .header .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .header .user-area .welcome {
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+        .header .user-area .welcome strong {
+            color: #000;
+            font-weight: 700;
+        }
+
+        .btn-logout {
+            padding: 8px 20px;
+            background: transparent;
+            border: 1.5px solid #ccc;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-logout:hover {
+            border-color: #000;
+            color: #000;
+            background: #f0f0f0;
+        }
+
+        /* ---------- المحتوى الرئيسي ---------- */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #000;
+            border-right: 4px solid #000;
+            padding-right: 15px;
+        }
+
+        /* ---------- شبكة المنتجات ---------- */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        /* بطاقة المنتج */
+        .product-card {
+            background: #ffffff;
+            border: 1px solid #eaeaea;
+            border-radius: 14px;
+            padding: 15px 15px 20px;
+            text-align: center;
+            transition: 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .product-card:hover {
+            border-color: #000000;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+        }
+
+        .product-card img {
+            width: 100%;
+            max-height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: #f5f5f5;
+            margin-bottom: 12px;
+        }
+
+        .product-card .product-name {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #000;
+            margin-bottom: 5px;
+        }
+
+        .product-card .product-desc {
+            font-size: 0.8rem;
+            color: #777;
+            margin-bottom: 8px;
+            height: 35px;
+            overflow: hidden;
+        }
+
+        .product-card .product-price {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #000;
+            margin-bottom: 12px;
+        }
+
+        .product-card .product-price small {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: #888;
+        }
+
+        .btn-add-to-cart {
+            padding: 10px 20px;
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .btn-add-to-cart:hover {
+            background: #333333;
+            transform: scale(1.02);
+        }
+
+        .btn-add-to-cart:active {
+            transform: scale(0.97);
+        }
+
+        /* ---------- حالة عدم وجود منتجات (لن تظهر) ---------- */
+        .no-products {
+            text-align: center;
+            color: #888;
+            padding: 60px 20px;
+            font-size: 1.2rem;
+        }
+
+        /* ---------- تذييل بسيط ---------- */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+            font-size: 0.8rem;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+        }
+
+        /* ---------- استجابة للجوال ---------- */
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .header .user-area {
+                justify-content: center;
+            }
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+            }
+            .page-title {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="overlay" id="overlay"></div>
-
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <img src="images/logo.png" alt="LiderCenter" class="logo">
-      <div class="brand">
-        <h2>LiderCenter</h2>
-        <p>لوحة المتجر</p>
-      </div>
-    </div>
-
-    <nav class="nav-list">
-      <a class="nav-link active" href="store.html"><span class="dot"></span>الرئيسية</a>
-      <a class="nav-link" href="categories.html"><span class="dot"></span>الأقسام</a>
-      <a class="nav-link" href="favorites.html"><span class="dot"></span>المفضلة</a>
-      <a class="nav-link" href="orders.html"><span class="dot"></span>طلباتي</a>
-      <a class="nav-link" href="profile.html"><span class="dot"></span>حسابي</a>
-
-      <a class="nav-link admin-item" id="adminLink" href="admin.html">
-        <span class="dot"></span>لوحة التحكم
-      </a>
-
-      <a class="nav-link logout" href="#" id="logoutBtn">
-        <span class="dot"></span>تسجيل الخروج
-      </a>
-    </nav>
-
-    <div class="sidebar-footer">
-      <div id="userEmail">جاري التحقق من الحساب...</div>
-    </div>
-  </aside>
-
-  <div class="main">
-    <header class="topbar">
-      <div class="topbar-left">
-        <button class="menu-btn" id="menuBtn" aria-label="فتح القائمة">☰</button>
-        <div class="title-wrap">
-          <h1>LiderCenter</h1>
-          <p>الصفحة الرئيسية للمتجر</p>
+    <!-- ======== الهيدر ======== -->
+    <header class="header">
+        <div class="brand">
+            lidercenter
+            <span>● متجرك الإلكتروني</span>
         </div>
-      </div>
-
-      <div class="profile-chip">
-        <div class="avatar" id="avatarLetter">L</div>
-        <div class="profile-text">
-          <strong id="displayName">المستخدم</strong>
-          <span id="displayRole">متسوق</span>
+        <div class="user-area">
+            <div class="welcome">👋 مرحباً، <strong id="userNameDisplay">المستخدم</strong></div>
+            <button class="btn-logout" id="logoutBtn">تسجيل الخروج</button>
         </div>
-      </div>
     </header>
 
-    <main class="content fade-in">
-      <section class="hero">
-        <h2>مرحبًا بك في LiderCenter</h2>
-        <p>
-          استعرض المنتجات بسهولة، تصفح الأقسام، وادخل إلى لوحة التحكم فقط إذا كنت تستخدم حساب المدير.
-        </p>
-      </section>
+    <!-- ======== المحتوى الرئيسي ======== -->
+    <main class="container">
+        <h2 class="page-title">✦ جميع المنتجات</h2>
 
-      <section class="stats">
-        <div class="stat-card">
-          <span>المنتجات</span>
-          <strong>128</strong>
+        <!-- شبكة المنتجات -->
+        <div class="products-grid" id="productsContainer">
+            <!-- سيتم ملؤها بواسطة جافا سكريبت -->
         </div>
-        <div class="stat-card">
-          <span>الأقسام</span>
-          <strong>24</strong>
-        </div>
-        <div class="stat-card">
-          <span>الطلبات</span>
-          <strong>56</strong>
-        </div>
-        <div class="stat-card">
-          <span>المفضلة</span>
-          <strong>19</strong>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="section-head">
-          <h3>ابحث عن منتج</h3>
-          <a href="categories.html">عرض الأقسام</a>
-        </div>
-
-        <div class="search-box">
-          <input type="search" placeholder="اكتب اسم المنتج..." id="searchInput">
-          <button class="search-btn" id="searchBtn">بحث</button>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="section-head">
-          <h3>أحدث المنتجات</h3>
-          <a href="products.html">عرض الكل</a>
-        </div>
-
-        <div class="grid">
-          <article class="product-card">
-            <img class="product-image" src="images/product.png" alt="منتج">
-            <div class="product-body">
-              <h4>اسم المنتج</h4>
-              <p>وصف مختصر للمنتج يظهر هنا بشكل أنيق ومختصر.</p>
-              <div class="product-meta">
-                <span class="price">15,000 د.ع</span>
-                <a href="#" class="view-btn">تفاصيل</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="product-card">
-            <img class="product-image" src="images/product.png" alt="منتج">
-            <div class="product-body">
-              <h4>اسم المنتج</h4>
-              <p>وصف مختصر للمنتج يظهر هنا بشكل أنيق ومختصر.</p>
-              <div class="product-meta">
-                <span class="price">22,000 د.ع</span>
-                <a href="#" class="view-btn">تفاصيل</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="product-card">
-            <img class="product-image" src="images/product.png" alt="منتج">
-            <div class="product-body">
-              <h4>اسم المنتج</h4>
-              <p>وصف مختصر للمنتج يظهر هنا بشكل أنيق ومختصر.</p>
-              <div class="product-meta">
-                <span class="price">30,000 د.ع</span>
-                <a href="#" class="view-btn">تفاصيل</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="product-card">
-            <img class="product-image" src="images/product.png" alt="منتج">
-            <div class="product-body">
-              <h4>اسم المنتج</h4>
-              <p>وصف مختصر للمنتج يظهر هنا بشكل أنيق ومختصر.</p>
-              <div class="product-meta">
-                <span class="price">18,500 د.ع</span>
-                <a href="#" class="view-btn">تفاصيل</a>
-              </div>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="section-head">
-          <h3>قسم فارغ تجريبي</h3>
-        </div>
-        <div class="empty-state">
-          هنا لاحقًا سيتم تحميل المنتجات من Firebase Realtime Database بشكل ديناميكي.
-        </div>
-      </section>
     </main>
-  </div>
 
-  <nav class="bottom-nav">
-    <a class="active" href="store.html">الرئيسية</a>
-    <a href="categories.html">الأقسام</a>
-    <a href="favorites.html">المفضلة</a>
-    <a href="profile.html">حسابي</a>
-  </nav>
+    <!-- ======== تذييل ======== -->
+    <footer class="footer">
+        © 2026 lidercenter — جميع الحقوق محفوظة
+    </footer>
 
-  <script type="module">
-    import { auth } from "./firebase.js";
-    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    <!-- ========================================================== -->
+    <!-- ======== كود Firebase وأعمال المنطق ======== -->
+    <!-- ========================================================== -->
+    <script type="module">
+        // ----- 1. استيراد Firebase Auth -----
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
+        import {
+            getAuth,
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
-    const ADMIN_EMAIL = "ashlhl.iq@gmail.com";
+        // ----- 2. إعدادات Firebase (نفس الإعدادات السابقة) -----
+        const firebaseConfig = {
+            apiKey: "AIzaSyDDb5kAoZCOLGqVvzKZ9q-wB1FZrdqyVH8",
+            authDomain: "sample-firebase-ai-app-c5b33.firebaseapp.com",
+            databaseURL: "https://sample-firebase-ai-app-c5b33-default-rtdb.firebaseio.com",
+            projectId: "sample-firebase-ai-app-c5b33",
+            storageBucket: "sample-firebase-ai-app-c5b33.firebasestorage.app",
+            messagingSenderId: "183057738013",
+            appId: "1:183057738013:web:649fc47c465a23da1959f4",
+            measurementId: "G-1SCGVCM2WW"
+        };
 
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
-    const menuBtn = document.getElementById("menuBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const adminLink = document.getElementById("adminLink");
-    const userEmail = document.getElementById("userEmail");
-    const displayName = document.getElementById("displayName");
-    const displayRole = document.getElementById("displayRole");
-    const avatarLetter = document.getElementById("avatarLetter");
-    const searchBtn = document.getElementById("searchBtn");
-    const searchInput = document.getElementById("searchInput");
+        // ----- 3. التهيئة -----
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
 
-    const openSidebar = () => {
-      sidebar.classList.add("open");
-      overlay.classList.add("show");
-    };
+        // ----- 4. عناصر DOM -----
+        const userNameDisplay = document.getElementById('userNameDisplay');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const productsContainer = document.getElementById('productsContainer');
 
-    const closeSidebar = () => {
-      sidebar.classList.remove("open");
-      overlay.classList.remove("show");
-    };
+        // ----- 5. قائمة المنتجات (ثابتة كنموذج) -----
+        // يمكنك لاحقاً استبدال هذه المصفوفة بجلب بيانات من Firestore أو Realtime Database
+        const products = [{
+            id: 1,
+            name: 'سماعة لاسلكية Pro',
+            desc: 'عزل ضوضاء، بطارية 24 ساعة',
+            price: 199,
+            image: 'https://picsum.photos/seed/headphone/300/300'
+        }, {
+            id: 2,
+            name: 'ساعة ذكية رياضية',
+            desc: 'شاشة AMOLED، تتبع اللياقة',
+            price: 450,
+            image: 'https://picsum.photos/seed/watch/300/300'
+        }, {
+            id: 3,
+            name: 'حقيبة ظهر عصرية',
+            desc: 'مقاومة للماء، 20 لتر',
+            price: 120,
+            image: 'https://picsum.photos/seed/bag/300/300'
+        }, {
+            id: 4,
+            name: 'هاتف ذكي X10',
+            desc: 'كاميرا 108 ميجا، 5G',
+            price: 1299,
+            image: 'https://picsum.photos/seed/phone/300/300'
+        }, {
+            id: 5,
+            name: 'أحذية جري خفيفة',
+            desc: 'مريحة، مناسبة للرياضة',
+            price: 280,
+            image: 'https://picsum.photos/seed/shoes/300/300'
+        }, {
+            id: 6,
+            name: 'ساعة يد كلاسيك',
+            desc: 'حركة أوتوماتيكية، جلد طبيعي',
+            price: 750,
+            image: 'https://picsum.photos/seed/classicwatch/300/300'
+        }];
 
-    menuBtn.addEventListener("click", openSidebar);
-    overlay.addEventListener("click", closeSidebar);
+        // ----- 6. دالة عرض المنتجات -----
+        function renderProducts(productsArray) {
+            if (!productsArray || productsArray.length === 0) {
+                productsContainer.innerHTML = '<div class="no-products">⚠️ لا توجد منتجات لعرضها حالياً.</div>';
+                return;
+            }
 
-    logoutBtn.addEventListener("click", async (e) => {
-      e.preventDefault();
-      try {
-        await signOut(auth);
-        window.location.replace("welcome.html");
-      } catch (error) {
-        alert("تعذر تسجيل الخروج الآن.");
-        console.error(error);
-      }
-    });
+            let html = '';
+            productsArray.forEach((product) => {
+                html += `
+                    <div class="product-card">
+                        <img src="${product.image}" alt="${product.name}" loading="lazy" />
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-desc">${product.desc}</div>
+                        <div class="product-price">${product.price} <small>ج.م</small></div>
+                        <button class="btn-add-to-cart" data-id="${product.id}">
+                            🛒 أضف إلى السلة
+                        </button>
+                    </div>
+                `;
+            });
+            productsContainer.innerHTML = html;
 
-    searchBtn.addEventListener("click", () => {
-      const value = searchInput.value.trim();
-      if (value) {
-        alert("سيتم البحث عن: " + value);
-      }
-    });
+            // إضافة حدث لجميع أزرار "أضف إلى السلة" (مجرد تنبيه توضيحي)
+            document.querySelectorAll('.btn-add-to-cart').forEach((btn) => {
+                btn.addEventListener('click', (e) => {
+                    const productId = e.target.getAttribute('data-id');
+                    const productName = products.find(p => p.id == productId)?.name || 'المنتج';
+                    alert(`✅ تمت إضافة "${productName}" إلى السلة! (هذه مجرد تجربة)`);
+                });
+            });
+        }
 
-    searchInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") searchBtn.click();
-    });
+        // ----- 7. التحقق من حالة تسجيل الدخول (الأهم) -----
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // إذا لم يكن مسجلاً دخوله، نرجعه إلى صفحة تسجيل الدخول فوراً
+                window.location.href = 'login.html';
+                return;
+            }
 
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.replace("welcome.html");
-        return;
-      }
+            // إذا كان مسجلاً دخوله، نعرض اسمه ونعرض المنتجات
+            const displayName = user.displayName || user.email || 'مستخدم';
+            userNameDisplay.textContent = displayName;
+            renderProducts(products);
+        });
 
-      const email = user.email || "غير معروف";
-      userEmail.textContent = email;
-      displayName.textContent = user.displayName || email.split("@")[0] || "المستخدم";
-      avatarLetter.textContent = (displayName.textContent || "L").charAt(0).toUpperCase();
+        // ----- 8. زر تسجيل الخروج -----
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth)
+                .then(() => {
+                    // بعد تسجيل الخروج، onAuthStateChanged سيتحكم بالتوجيه إلى login.html
+                    // لكننا نضيف تحويلاً احتياطياً
+                    window.location.href = 'login.html';
+                })
+                .catch((error) => {
+                    alert('❌ حدث خطأ أثناء تسجيل الخروج: ' + error.message);
+                });
+        });
 
-      if (email === ADMIN_EMAIL) {
-        adminLink.style.display = "flex";
-        displayRole.textContent = "مدير النظام";
-      } else {
-        adminLink.style.display = "none";
-        displayRole.textContent = "متسوق";
-      }
-    });
-  </script>
+        // ----- 9. رسالة ترحيب في الكونسول -----
+        console.log('✅ home.html جاهز ومحمي بواسطة Firebase Auth');
+    </script>
 </body>
 </html>
