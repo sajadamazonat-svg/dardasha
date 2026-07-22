@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>الرئيسية | LiderCenter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: #050b14;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: min(92%, 580px);
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px);
+            border-radius: 44px;
+            padding: clamp(2.5rem, 7vw, 4.5rem) clamp(1.8rem, 5vw, 3.5rem);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.7);
+        }
+        .welcome-icon {
+            font-size: clamp(4rem, 12vw, 6rem);
+            margin-bottom: 16px;
+        }
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            margin-bottom: 12px;
+        }
+        h1 .highlight {
+            background: linear-gradient(145deg, #f5d76e, #f1c40f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            line-height: 1.9;
+            margin: 20px 0 35px;
+        }
+        .btn-logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: clamp(16px, 2.5vh, 24px) clamp(32px, 5vw, 48px);
+            border-radius: 80px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .btn-logout:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .btn-logout i {
+            color: #f1c40f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="welcome-icon">🏠</div>
+        <h1><span class="highlight">Lider</span>Center</h1>
+        <p style="font-size:clamp(1.4rem, 3vw, 2rem); font-weight:700; color:#f5d76e;">
+            ✅ مرحباً بك في لوحة التحكم
+        </p>
+        <p>
+            لقد تم تسجيل الدخول بنجاح.<br />
+            هذه هي الصفحة الرئيسية الخاصة بك.
+        </p>
+        <!-- زر تسجيل الخروج (محاكاة) -->
+        <a href="index.html" class="btn-logout">
+            <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+        </a>
+    </div>
+</body>
+</html>
