@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lidercenter - لوحة التحكم</title>
+    <title>lidercenter - المتجر</title>
     <style>
         * {
             margin: 0;
@@ -13,18 +13,18 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f8f8;
+            background: #f5f5f5;
             direction: rtl;
-            color: #000;
+            color: #1a1a1a;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* ---------- الهيدر ---------- */
+        /* ===== HEADER ===== */
         .header {
             background: #ffffff;
-            border-bottom: 2px solid #000000;
+            border-bottom: 2px solid #e0e0e0;
             padding: 12px 25px;
             display: flex;
             justify-content: space-between;
@@ -34,9 +34,9 @@
         }
 
         .header .brand {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 900;
-            color: #000000;
+            color: #000;
         }
 
         .header .brand span {
@@ -53,39 +53,30 @@
             flex-wrap: wrap;
         }
 
-        .header .user-area .admin-badge {
-            background: #000;
-            color: #fff;
-            padding: 2px 10px;
-            border-radius: 30px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
         .header .user-area .welcome {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #333;
         }
         .header .user-area .welcome strong {
             color: #000;
         }
 
-        .btn-back {
-            padding: 6px 16px;
-            background: transparent;
-            border: 1.5px solid #ccc;
+        .btn-admin {
+            padding: 6px 18px;
+            background: #000;
+            color: #fff;
+            border: none;
             border-radius: 30px;
             font-weight: 600;
-            color: #555;
-            text-decoration: none;
+            cursor: pointer;
             transition: 0.3s;
             font-size: 0.8rem;
+            text-decoration: none;
+            display: inline-block;
         }
-        .btn-back:hover {
-            border-color: #000;
-            color: #000;
-            background: #f0f0f0;
+        .btn-admin:hover {
+            background: #333;
+            transform: scale(1.02);
         }
 
         .btn-logout {
@@ -105,7 +96,7 @@
             background: #fff5f5;
         }
 
-        /* ---------- المحتوى الرئيسي ---------- */
+        /* ===== MAIN ===== */
         .container {
             max-width: 1200px;
             margin: 20px auto;
@@ -114,259 +105,179 @@
             width: 100%;
         }
 
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 25px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 12px;
-        }
-
-        .page-header h1 {
-            font-size: 1.6rem;
+        .page-title {
+            font-size: 1.8rem;
             font-weight: 800;
-            color: #000;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            display: inline-block;
         }
 
-        .page-header .date {
-            color: #888;
-            font-size: 0.8rem;
-        }
-
-        /* ---------- بطاقات الإحصائيات ---------- */
-        .stats-grid {
+        /* ===== PRODUCTS GRID ===== */
+        .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            margin-top: 10px;
         }
 
-        .stat-card {
+        .product-card {
             background: #ffffff;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 18px 15px;
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        .stat-card:hover {
-            border-color: #000;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 18px rgba(0,0,0,0.03);
-        }
-
-        .stat-card .stat-number {
-            font-size: 2rem;
-            font-weight: 900;
-            color: #000;
-            line-height: 1.2;
-        }
-
-        .stat-card .stat-label {
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 6px;
-            font-weight: 500;
-        }
-
-        /* ---------- أزرار الإدارة ---------- */
-        .admin-actions {
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
             border-radius: 14px;
-            padding: 25px;
-            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: 0.3s ease;
+            border: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
         }
 
-        .admin-actions h3 {
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            border-color: #ccc;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 180px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #aaa;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 15px 18px 18px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-name {
             font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 18px;
+            margin-bottom: 4px;
             color: #000;
         }
 
-        .actions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-        }
-
-        .actions-grid button {
-            padding: 12px 15px;
-            background: #ffffff;
-            border: 2px solid #000;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 0.85rem;
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 800;
             color: #000;
-            cursor: pointer;
-            transition: 0.25s ease;
-            text-align: center;
+            margin: 6px 0 12px;
         }
 
-        .actions-grid button:hover {
-            background: #000;
-            color: #fff;
-            transform: scale(1.02);
-        }
-
-        .actions-grid button .action-label {
-            display: block;
-            font-size: 0.75rem;
+        .product-price span {
+            font-size: 0.8rem;
             font-weight: 400;
             color: #888;
-            margin-top: 2px;
-        }
-        .actions-grid button:hover .action-label {
-            color: #ccc;
         }
 
-        /* ---------- سجل النشاطات ---------- */
-        .activity-log {
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
-            border-radius: 14px;
-            padding: 20px 25px;
+        .btn-add-to-cart {
+            margin-top: auto;
+            padding: 10px 0;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
         }
 
-        .activity-log h3 {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #000;
+        .btn-add-to-cart:hover {
+            background: #333;
+            transform: scale(1.01);
         }
 
-        .activity-log .empty-log {
-            color: #aaa;
-            font-size: 0.85rem;
-            padding: 25px 0;
+        .empty-products {
             text-align: center;
-            border-top: 1px dashed #eee;
+            padding: 60px 20px;
+            color: #888;
+            font-size: 1.1rem;
+            border: 2px dashed #ddd;
+            border-radius: 20px;
+            grid-column: 1 / -1;
         }
 
-        /* ---------- تذييل ---------- */
+        /* ===== LOADING ===== */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #888;
+        }
+
+        /* ===== FOOTER ===== */
         .footer {
             text-align: center;
             padding: 15px;
             color: #ccc;
             font-size: 0.7rem;
             border-top: 1px solid #eee;
-            margin-top: 25px;
+            margin-top: 30px;
         }
 
-        /* ---------- استجابة للجوال ---------- */
         @media (max-width: 600px) {
             .header {
                 flex-direction: column;
-                align-items: stretch;
                 text-align: center;
             }
             .header .user-area {
                 justify-content: center;
             }
-            .page-header {
-                flex-direction: column;
-                text-align: center;
-                gap: 8px;
-            }
-            .stats-grid {
+            .products-grid {
                 grid-template-columns: 1fr 1fr;
+                gap: 12px;
             }
-            .actions-grid {
-                grid-template-columns: 1fr;
+            .product-image {
+                height: 130px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- ======== الهيدر ======== -->
+    <!-- ===== HEADER ===== -->
     <header class="header">
         <div class="brand">
             lidercenter
-            <span>لوحة التحكم</span>
+            <span>المتجر</span>
         </div>
         <div class="user-area">
-            <span class="admin-badge">مدير</span>
-            <div class="welcome">مرحباً، <strong id="adminNameDisplay">المدير</strong></div>
-            <a href="home.html" class="btn-back">العودة للمتجر</a>
+            <div class="welcome">مرحباً، <strong id="userNameDisplay">زائر</strong></div>
+            <a href="admin.html" class="btn-admin" id="adminLink" style="display:none;">لوحة التحكم</a>
             <button class="btn-logout" id="logoutBtn">تسجيل الخروج</button>
         </div>
     </header>
 
-    <!-- ======== المحتوى الرئيسي ======== -->
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="container">
-        <!-- رأس الصفحة -->
-        <div class="page-header">
-            <h1>لوحة التحكم</h1>
-            <span class="date" id="currentDate"></span>
-        </div>
+        <h1 class="page-title">جميع المنتجات</h1>
 
-        <!-- بطاقات الإحصائيات -->
-        <div class="stats-grid" id="statsGrid">
-            <div class="stat-card">
-                <div class="stat-number" id="totalProducts">0</div>
-                <div class="stat-label">إجمالي المنتجات</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalUsers">0</div>
-                <div class="stat-label">إجمالي المستخدمين</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalOrders">0</div>
-                <div class="stat-label">إجمالي الطلبات</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalRevenue">0</div>
-                <div class="stat-label">إجمالي المبيعات</div>
-            </div>
-        </div>
-
-        <!-- أزرار الإدارة السريعة -->
-        <div class="admin-actions">
-            <h3>إدارة المتجر</h3>
-            <div class="actions-grid">
-                <button id="btnAddProduct">
-                    اضافة منتج جديد
-                    <span class="action-label">(نموذج اضافة)</span>
-                </button>
-                <button id="btnManageOrders">
-                    ادارة الطلبات
-                    <span class="action-label">(قائمة الطلبات)</span>
-                </button>
-                <button id="btnManageUsers">
-                    ادارة المستخدمين
-                    <span class="action-label">(قائمة الاعضاء)</span>
-                </button>
-                <button id="btnSettings">
-                    اعدادات المتجر
-                    <span class="action-label">(تخصيص)</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- سجل النشاطات -->
-        <div class="activity-log">
-            <h3>آخر النشاطات</h3>
-            <div class="empty-log">
-                لا توجد نشاطات مسجلة حتى الان.
-            </div>
+        <div id="productsContainer">
+            <div class="loading">جاري تحميل المنتجات...</div>
         </div>
     </main>
 
-    <!-- ======== تذييل ======== -->
     <footer class="footer">
-        (c) 2026 lidercenter - لوحة تحكم المدير
+        (c) 2026 lidercenter - جميع الحقوق محفوظة
     </footer>
 
-    <!-- ========================================================== -->
-    <!-- ======== كود Firebase ======== -->
-    <!-- ========================================================== -->
+    <!-- ===== FIREBASE ===== -->
     <script type="module">
-        // استيرادات Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
         import {
@@ -381,7 +292,6 @@
             child
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-        // اعدادات Firebase (مشروع ashlhl-ed7c7e17)
         const firebaseConfig = {
             apiKey: "AIzaSyB0lg1AkTQF1ZdntWZsWUoCG8GpqbK-WAY",
             authDomain: "ashlhl-ed7c7e17.firebaseapp.com",
@@ -392,113 +302,116 @@
             appId: "1:246682226738:web:4301ea8caebe2c1325ac2b"
         };
 
-        // التهيئة
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // عناصر DOM
-        const adminNameDisplay = document.getElementById('adminNameDisplay');
+        const userNameDisplay = document.getElementById('userNameDisplay');
+        const adminLink = document.getElementById('adminLink');
         const logoutBtn = document.getElementById('logoutBtn');
-        const totalProducts = document.getElementById('totalProducts');
-        const totalUsers = document.getElementById('totalUsers');
-        const totalOrders = document.getElementById('totalOrders');
-        const totalRevenue = document.getElementById('totalRevenue');
-        const currentDate = document.getElementById('currentDate');
-
-        const btnAddProduct = document.getElementById('btnAddProduct');
-        const btnManageOrders = document.getElementById('btnManageOrders');
-        const btnManageUsers = document.getElementById('btnManageUsers');
-        const btnSettings = document.getElementById('btnSettings');
+        const productsContainer = document.getElementById('productsContainer');
 
         const ADMIN_EMAIL = 'ashlhl.iq@gmail.com';
 
-        // عرض التاريخ
-        const now = new Date();
-        currentDate.textContent = now.toLocaleDateString('ar-EG', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
+        // ============================================================
+        //  1. التحقق من حالة المصادقة – إعادة توجيه إذا لم يكن مسجلاً
+        // ============================================================
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // غير مسجل → login
+                window.location.replace('login.html');
+                return;
+            }
+
+            // مسجل الدخول
+            const email = user.email;
+            userNameDisplay.textContent = user.displayName || email || 'مستخدم';
+
+            // إظهار رابط لوحة التحكم فقط للمدير
+            if (email === ADMIN_EMAIL) {
+                adminLink.style.display = 'inline-block';
+            } else {
+                adminLink.style.display = 'none';
+            }
+
+            // تحميل المنتجات
+            loadProducts();
         });
 
-        // دالة جلب الاحصائيات من Firebase
-        async function loadStats() {
+        // ============================================================
+        //  2. جلب المنتجات من Firebase
+        // ============================================================
+        async function loadProducts() {
             try {
-                const productsSnapshot = await get(child(ref(db), 'products'));
-                const productsCount = productsSnapshot.exists() ? Object.keys(productsSnapshot.val()).length : 0;
-                totalProducts.textContent = productsCount;
-
-                const usersSnapshot = await get(child(ref(db), 'users'));
-                const usersCount = usersSnapshot.exists() ? Object.keys(usersSnapshot.val()).length : 0;
-                totalUsers.textContent = usersCount;
-
-                const ordersSnapshot = await get(child(ref(db), 'orders'));
-                const ordersCount = ordersSnapshot.exists() ? Object.keys(ordersSnapshot.val()).length : 0;
-                totalOrders.textContent = ordersCount;
-
-                let revenue = 0;
-                if (ordersSnapshot.exists()) {
-                    const orders = ordersSnapshot.val();
-                    for (const key in orders) {
-                        if (orders[key].totalPrice) {
-                            revenue += Number(orders[key].totalPrice);
-                        }
-                    }
+                const snapshot = await get(child(ref(db), 'products'));
+                if (!snapshot.exists()) {
+                    productsContainer.innerHTML = `
+                        <div class="empty-products">
+                            🛒 لا توجد منتجات حالياً.
+                        </div>
+                    `;
+                    return;
                 }
-                totalRevenue.textContent = revenue.toFixed(0);
+
+                const products = snapshot.val();
+                let html = '<div class="products-grid">';
+
+                for (const [id, product] of Object.entries(products)) {
+                    const name = product.name || 'منتج بدون اسم';
+                    const price = product.price || 0;
+                    const image = product.image || ''; // رابط صورة (اختياري)
+
+                    html += `
+                        <div class="product-card">
+                            <div class="product-image">
+                                ${image ? `<img src="${image}" alt="${name}" />` : '🖼️'}
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">${name}</div>
+                                <div class="product-price">${price.toFixed(2)} <span>د.ع</span></div>
+                                <button class="btn-add-to-cart" data-id="${id}">➕ أضف إلى السلة</button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                html += '</div>';
+                productsContainer.innerHTML = html;
+
+                // ربط أزرار الإضافة (يمكن تطويرها لاحقاً)
+                document.querySelectorAll('.btn-add-to-cart').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const productId = e.target.dataset.id;
+                        alert(`تم إضافة المنتج (${productId}) إلى السلة (وهمي)`);
+                        // هنا يمكن إضافة منطق حقيقي للسلة
+                    });
+                });
 
             } catch (error) {
-                console.error('خطا في جلب الاحصائيات:', error);
+                console.error('خطأ في تحميل المنتجات:', error);
+                productsContainer.innerHTML = `
+                    <div class="empty-products" style="border-color:#d32f2f;">
+                        ❌ حدث خطأ أثناء تحميل المنتجات. حاول مرة أخرى.
+                    </div>
+                `;
             }
         }
 
-        // التحقق من صلاحية المدير (حماية الصفحة)
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = 'login.html';
-                return;
-            }
-
-            if (user.email !== ADMIN_EMAIL) {
-                alert('هذه الصفحة مخصصة للمدير فقط. سيتم توجيهك الى المتجر.');
-                window.location.href = 'home.html';
-                return;
-            }
-
-            adminNameDisplay.textContent = user.displayName || user.email || 'المدير';
-            loadStats();
-        });
-
-        // أزرار الادارة (مؤقتة)
-        btnAddProduct.addEventListener('click', () => {
-            alert('سيتم فتح نموذج لاضافة منتج جديد وحفظه في Firebase.');
-        });
-
-        btnManageOrders.addEventListener('click', () => {
-            alert('سيتم عرض قائمة بجميع الطلبات المستلمة من العملاء.');
-        });
-
-        btnManageUsers.addEventListener('click', () => {
-            alert('سيتم عرض قائمة بجميع المستخدمين المسجلين.');
-        });
-
-        btnSettings.addEventListener('click', () => {
-            alert('سيتم فتح اعدادات المتجر (الاسم، الشعار، الخيارات العامة).');
-        });
-
-        // تسجيل الخروج
+        // ============================================================
+        //  3. تسجيل الخروج
+        // ============================================================
         logoutBtn.addEventListener('click', () => {
             signOut(auth)
                 .then(() => {
-                    window.location.href = 'login.html';
+                    window.location.replace('login.html');
                 })
                 .catch((error) => {
-                    alert('حدث خطا اثناء تسجيل الخروج: ' + error.message);
+                    alert('خطأ في تسجيل الخروج: ' + error.message);
                 });
         });
 
-        console.log('admin.html جاهز (بدون ايموجي، خط اصغر)');
+        console.log('✅ home.html – جاهز مع تحكم تلقائي في المصادقة.');
     </script>
 </body>
 </html>
