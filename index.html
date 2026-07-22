@@ -1,1 +1,301 @@
-سج الخيقلني
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>مركز - الغسالات</title>
+    <style>
+        /* ===== إعادة ضبط ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Tahoma', system-ui, -apple-system, sans-serif;
+            background: #f8f6f2;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        /* ===== الحاوية الرئيسية ===== */
+        .container {
+            max-width: 820px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 2.5rem;
+            padding: 3.5rem 2.8rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04), 0 8px 20px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(212, 175, 55, 0.08);
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        /* ===== الشعار (بدون حرف ل) ===== */
+        .logo-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #fcf9f2;
+            box-shadow: 0 6px 24px rgba(212, 175, 55, 0.08), 0 0 0 1px rgba(212, 175, 55, 0.1);
+            transition: box-shadow 0.3s ease;
+            font-size: 4rem;
+            color: #b8962e;
+            font-weight: 300;
+        }
+
+        .logo:hover {
+            box-shadow: 0 8px 32px rgba(212, 175, 55, 0.15);
+        }
+
+        /* ===== العنوان (كبير) ===== */
+        .title h1 {
+            font-size: clamp(3rem, 7vw, 4.2rem);
+            font-weight: 600;
+            color: #1e1e1e;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            margin-bottom: 0.2rem;
+        }
+
+        .title h1 span {
+            color: #b8962e;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .title h1 span::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            opacity: 0.3;
+            border-radius: 4px;
+        }
+
+        /* ===== النص التعريفي (كبير) ===== */
+        .description {
+            margin: 2.2rem 0 2.8rem;
+        }
+
+        .description p {
+            font-size: clamp(1.4rem, 2vw, 1.7rem);
+            line-height: 2.2;
+            color: #3d3d3d;
+            max-width: 620px;
+            margin: 0 auto 0.5rem;
+            font-weight: 400;
+        }
+
+        .description .divider {
+            display: inline-block;
+            width: 60px;
+            height: 3px;
+            background: #d4af37;
+            margin: 1.2rem auto 1.4rem;
+            border-radius: 4px;
+            opacity: 0.4;
+        }
+
+        .description .sub {
+            font-size: 1.2rem;
+            color: #6a6a6a;
+            letter-spacing: 0.5px;
+            font-weight: 300;
+        }
+
+        /* ===== الزر (كبير) ===== */
+        .btn-primary {
+            display: inline-block;
+            padding: 1.2rem 3.8rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e1e1e;
+            background: transparent;
+            border: 2px solid #d4af37;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            letter-spacing: 0.5px;
+            font-family: inherit;
+            background-color: #fcf9f2;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.05);
+        }
+
+        .btn-primary:hover {
+            background: #d4af37;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15);
+            border-color: #d4af37;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary span {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* ===== تذييل (كبير) ===== */
+        .footer-note {
+            margin-top: 3rem;
+            font-size: 1rem;
+            color: #b0b0b0;
+            letter-spacing: 1.5px;
+            font-weight: 300;
+        }
+
+        .footer-note span {
+            color: #d4af37;
+            opacity: 0.3;
+        }
+
+        /* ===== استجابة ===== */
+        @media (max-width: 640px) {
+            .container {
+                padding: 2.2rem 1.5rem;
+                border-radius: 2rem;
+            }
+
+            .logo {
+                width: 90px;
+                height: 90px;
+                font-size: 3rem;
+            }
+
+            .title h1 {
+                font-size: 2.4rem;
+            }
+
+            .description p {
+                font-size: 1.2rem;
+            }
+
+            .description .sub {
+                font-size: 1rem;
+            }
+
+            .btn-primary {
+                padding: 1rem 2.5rem;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .container {
+                padding: 1.8rem 1rem;
+            }
+            .logo {
+                width: 75px;
+                height: 75px;
+                font-size: 2.4rem;
+            }
+            .title h1 {
+                font-size: 2rem;
+            }
+            .description p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="container">
+
+        <!-- الشعار (رمز بدون حرف ل) -->
+        <div class="logo-wrapper">
+            <div class="logo" role="img" aria-label="شعار المركز">
+                ★
+            </div>
+        </div>
+
+        <!-- العنوان (بدون ليدر) -->
+        <div class="title">
+            <h1>
+                مرحباً بكم في <span>المركز</span>
+            </h1>
+        </div>
+
+        <!-- النص التعريفي (عن الغسالات) -->
+        <div class="description">
+            <p>
+                نقدم تشكيلة واسعة من الغسالات وأجهزة الغسيل بأعلى جودة، وأسعار تنافسية،
+                وخدمات ما بعد البيع المتميزة. نحرص على توفير أحدث التقنيات لتلبية احتياجات منزلك.
+            </p>
+            <div class="divider"></div>
+            <p class="sub">
+                غسالات أوتوماتيك • نشافات • مجففات • قطع غيار أصلية
+            </p>
+        </div>
+
+        <!-- زر الدعوة -->
+        <button class="btn-primary" id="mainCta">
+            <span>اطلب الآن &nbsp;←</span>
+        </button>
+
+        <!-- تذييل -->
+        <div class="footer-note">
+            <span>✦</span> المركز &bull; ٢٠٢٦ <span>✦</span>
+        </div>
+
+    </main>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const ctaBtn = document.getElementById('mainCta');
+
+            if (ctaBtn) {
+                ctaBtn.addEventListener('click', function(e) {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<span>جاري التوجيه …</span>';
+                    this.style.pointerEvents = 'none';
+                    this.style.opacity = '0.7';
+
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.style.pointerEvents = 'auto';
+                        this.style.opacity = '1';
+                        alert('شكراً لاهتمامك بمنتجاتنا!\nسيتم توجيهك إلى صفحة الغسالات قريباً.');
+                    }, 800);
+                });
+            }
+
+            // دعم لوحة المفاتيح
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    const target = e.target;
+                    if (target && target.classList && target.classList.contains('btn-primary')) {
+                        e.preventDefault();
+                        target.click();
+                    }
+                }
+            });
+
+        })();
+    </script>
+
+</body>
+</html>
