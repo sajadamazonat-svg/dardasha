@@ -1347,13 +1347,13 @@
       mainContent.classList.remove('shifted');
       document.body.style.overflow = ''; });
 
-    // ===== تسجيل الخروج =====
+    // ===== تسجيل الخروج (تم التعديل هنا) =====
     logoutBtn.addEventListener('click', function() {
       if (confirm('تسجيل الخروج؟')) {
         signOut(auth)
           .then(() => {
             showToast('تم تسجيل الخروج', 'success');
-            window.location.reload();
+            window.location.href = 'index.html'; // التوجيه إلى index.html
           })
           .catch(err => showToast('خطأ: ' + err.message, 'error'));
       }
