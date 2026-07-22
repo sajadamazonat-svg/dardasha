@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lidercenter - لوحة التحكم</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f8f8;
+            direction: rtl;
+            color: #000;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ---------- الهيدر ---------- */
+        .header {
+            background: #ffffff;
+            border-bottom: 2px solid #000000;
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header .brand {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #000000;
+        }
+
+        .header .brand span {
+            font-weight: 300;
+            color: #888;
+            font-size: 0.8rem;
+            margin-right: 6px;
+        }
+
+        .header .user-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .header .user-area .admin-badge {
+            background: #000;
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .header .user-area .welcome {
+            font-size: 0.85rem;
+            color: #333;
+        }
+        .header .user-area .welcome strong {
+            color: #000;
+        }
+
+        .btn-back {
+            padding: 6px 16px;
+            background: transparent;
+            border: 1.5px solid #ccc;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #555;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 0.8rem;
+        }
+        .btn-back:hover {
+            border-color: #000;
+            color: #000;
+            background: #f0f0f0;
+        }
+
+        .btn-logout {
+            padding: 6px 16px;
+            background: transparent;
+            border: 1.5px solid #ccc;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.8rem;
+        }
+        .btn-logout:hover {
+            border-color: #d32f2f;
+            color: #d32f2f;
+            background: #fff5f5;
+        }
+
+        /* ---------- المحتوى الرئيسي ---------- */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 12px;
+        }
+
+        .page-header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #000;
+        }
+
+        .page-header .date {
+            color: #888;
+            font-size: 0.8rem;
+        }
+
+        /* ---------- بطاقات الإحصائيات ---------- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 18px 15px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: #000;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.03);
+        }
+
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #000;
+            line-height: 1.2;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        /* ---------- أزرار الإدارة ---------- */
+        .admin-actions {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .admin-actions h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: #000;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .actions-grid button {
+            padding: 12px 15px;
+            background: #ffffff;
+            border: 2px solid #000;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #000;
+            cursor: pointer;
+            transition: 0.25s ease;
+            text-align: center;
+        }
+
+        .actions-grid button:hover {
+            background: #000;
+            color: #fff;
+            transform: scale(1.02);
+        }
+
+        .actions-grid button .action-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: #888;
+            margin-top: 2px;
+        }
+        .actions-grid button:hover .action-label {
+            color: #ccc;
+        }
+
+        /* ---------- سجل النشاطات ---------- */
+        .activity-log {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 14px;
+            padding: 20px 25px;
+        }
+
+        .activity-log h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #000;
+        }
+
+        .activity-log .empty-log {
+            color: #aaa;
+            font-size: 0.85rem;
+            padding: 25px 0;
+            text-align: center;
+            border-top: 1px dashed #eee;
+        }
+
+        /* ---------- تذييل ---------- */
+        .footer {
+            text-align: center;
+            padding: 15px;
+            color: #ccc;
+            font-size: 0.7rem;
+            border-top: 1px solid #eee;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .header .user-area {
+                justify-content: center;
+            }
+            .page-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 8px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="brand">
+            lidercenter
+            <span>لوحة التحكم</span>
+        </div>
+        <div class="user-area">
+            <span class="admin-badge">مدير</span>
+            <div class="welcome">مرحباً، <strong id="adminNameDisplay">المدير</strong></div>
+            <a href="home.html" class="btn-back">العودة للمتجر</a>
+            <button class="btn-logout" id="logoutBtn">تسجيل الخروج</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>لوحة التحكم</h1>
+            <span class="date" id="currentDate"></span>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalProducts">0</div>
+                <div class="stat-label">اجمالي المنتجات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalUsers">0</div>
+                <div class="stat-label">اجمالي المستخدمين</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalOrders">0</div>
+                <div class="stat-label">اجمالي الطلبات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalRevenue">0</div>
+                <div class="stat-label">اجمالي المبيعات</div>
+            </div>
+        </div>
+
+        <div class="admin-actions">
+            <h3>ادارة المتجر</h3>
+            <div class="actions-grid">
+                <button id="btnAddProduct">
+                    اضافة منتج جديد
+                    <span class="action-label">(نموذج اضافة)</span>
+                </button>
+                <button id="btnManageOrders">
+                    ادارة الطلبات
+                    <span class="action-label">(قائمة الطلبات)</span>
+                </button>
+                <button id="btnManageUsers">
+                    ادارة المستخدمين
+                    <span class="action-label">(قائمة الاعضاء)</span>
+                </button>
+                <button id="btnSettings">
+                    اعدادات المتجر
+                    <span class="action-label">(تخصيص)</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="activity-log">
+            <h3>اخر النشاطات</h3>
+            <div class="empty-log">
+                لا توجد نشاطات مسجلة حتى الان.
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        (c) 2026 lidercenter - لوحة تحكم المدير
+    </footer>
+
+    <script type="module">
+        // استيرادات Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
+        import {
+            getAuth,
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+        import {
+            getDatabase,
+            ref,
+            get,
+            child
+        } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+
+        // اعدادات Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyB0lg1AkTQF1ZdntWZsWUoCG8GpqbK-WAY",
+            authDomain: "ashlhl-ed7c7e17.firebaseapp.com",
+            databaseURL: "https://ashlhl-ed7c7e17-default-rtdb.firebaseio.com",
+            projectId: "ashlhl-ed7c7e17",
+            storageBucket: "ashlhl-ed7c7e17.firebasestorage.app",
+            messagingSenderId: "246682226738",
+            appId: "1:246682226738:web:4301ea8caebe2c1325ac2b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        // عناصر الصفحة
+        const adminNameDisplay = document.getElementById('adminNameDisplay');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const totalProducts = document.getElementById('totalProducts');
+        const totalUsers = document.getElementById('totalUsers');
+        const totalOrders = document.getElementById('totalOrders');
+        const totalRevenue = document.getElementById('totalRevenue');
+        const currentDate = document.getElementById('currentDate');
+
+        // البريد المطلوب للمدير
+        const ADMIN_EMAIL = 'ashlhl.iq@gmail.com';
+
+        // عرض التاريخ
+        const now = new Date();
+        currentDate.textContent = now.toLocaleDateString('ar-EG', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // =======================================================
+        //  دالة التوجيه الآمن (الأهم في هذه الصفحة)
+        // =======================================================
+        function redirectTo(page) {
+            // استخدام replace بدلاً من href لمنع العودة للصفحة المحظورة عبر زر الرجوع
+            window.location.replace(page);
+        }
+
+        // =======================================================
+        //  التحقق من صلاحية المدير (مع حل مشكلة عدم التوجيه)
+        // =======================================================
+        onAuthStateChanged(auth, (user) => {
+            // الحالة 1: المستخدم غير مسجل دخوله
+            if (!user) {
+                redirectTo('login.html');
+                return;
+            }
+
+            // الحالة 2: المستخدم مسجل لكن بريده الإلكتروني غير متوفر (null)
+            // أو لا يساوي بريد المدير المطلوب
+            // نضيف تحققاً إضافياً: إذا كان البريد null أو undefined، نعتبره غير مصرح له
+            const userEmail = user.email; 
+            
+            if (!userEmail || userEmail !== ADMIN_EMAIL) {
+                // إظهار رسالة للمستخدم (تنبيه) ثم التوجيه الفوري
+                alert('هذه الصفحة مخصصة للمدير فقط. سيتم توجيهك الى المتجر.');
+                redirectTo('home.html');
+                return; // ننهي التنفيذ هنا حتى لا يحاول عرض لوحة التحكم
+            }
+
+            // =======================================================
+            // إذا وصلنا إلى هنا، فهذا يعني أن البريد الإلكتروني مطابق تماماً
+            // =======================================================
+            
+            // عرض اسم المدير
+            adminNameDisplay.textContent = user.displayName || user.email || 'المدير';
+            
+            // جلب الإحصائيات من Firebase
+            async function loadStats() {
+                try {
+                    const productsSnapshot = await get(child(ref(db), 'products'));
+                    const productsCount = productsSnapshot.exists() ? Object.keys(productsSnapshot.val()).length : 0;
+                    totalProducts.textContent = productsCount;
+
+                    const usersSnapshot = await get(child(ref(db), 'users'));
+                    const usersCount = usersSnapshot.exists() ? Object.keys(usersSnapshot.val()).length : 0;
+                    totalUsers.textContent = usersCount;
+
+                    const ordersSnapshot = await get(child(ref(db), 'orders'));
+                    const ordersCount = ordersSnapshot.exists() ? Object.keys(ordersSnapshot.val()).length : 0;
+                    totalOrders.textContent = ordersCount;
+
+                    let revenue = 0;
+                    if (ordersSnapshot.exists()) {
+                        const orders = ordersSnapshot.val();
+                        for (const key in orders) {
+                            if (orders[key].totalPrice) {
+                                revenue += Number(orders[key].totalPrice);
+                            }
+                        }
+                    }
+                    totalRevenue.textContent = revenue.toFixed(0);
+                } catch (error) {
+                    console.error('خطا في جلب الاحصائيات:', error);
+                }
+            }
+            loadStats();
+        });
+
+        // =======================================================
+        //  أزرار الإدارة (مؤقتة)
+        // =======================================================
+        document.getElementById('btnAddProduct').addEventListener('click', () => {
+            alert('سيتم فتح نموذج لاضافة منتج جديد وحفظه في Firebase.');
+        });
+
+        document.getElementById('btnManageOrders').addEventListener('click', () => {
+            alert('سيتم عرض قائمة بجميع الطلبات المستلمة من العملاء.');
+        });
+
+        document.getElementById('btnManageUsers').addEventListener('click', () => {
+            alert('سيتم عرض قائمة بجميع المستخدمين المسجلين.');
+        });
+
+        document.getElementById('btnSettings').addEventListener('click', () => {
+            alert('سيتم فتح اعدادات المتجر (الاسم، الشعار، الخيارات العامة).');
+        });
+
+        // =======================================================
+        //  تسجيل الخروج
+        // =======================================================
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth)
+                .then(() => {
+                    redirectTo('login.html');
+                })
+                .catch((error) => {
+                    alert('حدث خطا اثناء تسجيل الخروج: ' + error.message);
+                });
+        });
+
+        console.log('admin.html جاهز (مع تحسين منطق التوجيه)');
+    </script>
+</body>
+</html>
