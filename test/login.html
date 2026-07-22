@@ -3,519 +3,308 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lidercenter - تسجيل الدخول</title>
+    <title>lidercenter - الرئيسية</title>
     <style>
-        /* ---------- إعدادات عامة (أبيض وأسود) ---------- */
+        /* نفس الأنماط السابقة (لم تتغير) */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            background-color: #f8f8f8;
             direction: rtl;
+            color: #000;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-
-        .login-card {
+        .header {
             background: #ffffff;
-            padding: 45px 40px 40px;
-            text-align: center;
-            width: 400px;
-            max-width: 92%;
-            border: 1px solid #e0e0e0;
-            border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
-            transition: 0.3s;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
-
-        .store-name {
-            font-size: 2.8rem;
+        .header .brand {
+            font-size: 1.8rem;
             font-weight: 900;
             color: #000000;
             letter-spacing: 1px;
-            margin-bottom: 5px;
         }
-
-        .sub-title {
-            color: #888888;
-            font-size: 0.9rem;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #f0f0f0;
-            padding-bottom: 15px;
-        }
-
-        /* ---------- زر Gmail ---------- */
-        .btn-google {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            width: 100%;
-            padding: 14px 20px;
-            background: #ffffff;
-            border: 2px solid #000000;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #000000;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            margin-top: 10px;
-        }
-
-        .btn-google:hover {
-            background: #000000;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .google-icon {
-            font-size: 1.6rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #4285F4, #EA4335, #FBBC05, #34A853);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1;
-        }
-
-        .btn-google:hover .google-icon {
-            -webkit-text-fill-color: #ffffff;
-            background: none;
-            color: #ffffff;
-        }
-
-        /* ---------- الفاصل ---------- */
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 25px 0 15px;
-            gap: 15px;
-        }
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e0e0e0;
-        }
-        .divider span {
-            color: #999;
-            font-size: 0.8rem;
-        }
-
-        /* ---------- مجموعة حقول الإدخال (مع زر العين) ---------- */
-        .input-group {
-            text-align: right;
-            margin-bottom: 15px;
-        }
-        .input-group label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        /* حاوية الباسوورد (لجعل العين داخله) */
-        .password-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            width: 100%;
-        }
-
-        .password-wrapper input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            font-size: 1rem;
-            background: #fafafa;
-            transition: 0.2s;
-            outline: none;
-            padding-left: 50px; /* مكان للزر */
-        }
-
-        .password-wrapper input:focus {
-            border-color: #000000;
-            background: #ffffff;
-        }
-
-        /* زر العين (إظهار/إخفاء) */
-        .toggle-password {
-            position: absolute;
-            left: 15px; /* لأنه باتجاه RTL، الـ left هو اليمين البصري */
-            top: 50%;
-            transform: translateY(-50%);
-            background: transparent;
-            border: none;
-            font-size: 1.3rem;
-            cursor: pointer;
+        .header .brand span {
+            font-weight: 300;
             color: #888;
-            padding: 5px;
-            transition: 0.2s;
-            line-height: 1;
-        }
-
-        .toggle-password:hover {
-            color: #000;
-        }
-
-        /* الحقل العادي (البريد) */
-        .input-group input[type="email"] {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            font-size: 1rem;
-            background: #fafafa;
-            transition: 0.2s;
-            outline: none;
-        }
-        .input-group input[type="email"]:focus {
-            border-color: #000000;
-            background: #ffffff;
-        }
-
-        .btn-email {
-            width: 100%;
-            padding: 12px;
-            background: #000000;
-            color: #ffffff;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 5px;
-        }
-        .btn-email:hover {
-            background: #333333;
-        }
-
-        /* ---------- حالة المستخدم ---------- */
-        .user-status {
-            margin-top: 25px;
-            padding: 15px;
-            border-top: 1px solid #f0f0f0;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-        .user-status.show {
-            display: flex;
-        }
-        .user-status .user-avatar {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            border: 2px solid #000000;
-            object-fit: cover;
-        }
-        .user-status .user-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #000;
-        }
-        .user-status .user-email {
-            color: #666;
             font-size: 0.9rem;
+            margin-right: 8px;
+        }
+        .header .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .header .user-area .welcome {
+            font-size: 0.95rem;
+            color: #333;
+        }
+        .header .user-area .welcome strong {
+            color: #000;
+            font-weight: 700;
         }
         .btn-logout {
-            padding: 8px 25px;
+            padding: 8px 20px;
             background: transparent;
-            border: 1px solid #ccc;
+            border: 1.5px solid #ccc;
             border-radius: 30px;
-            cursor: pointer;
             font-weight: 600;
             color: #555;
+            cursor: pointer;
             transition: 0.3s;
-            margin-top: 5px;
+            font-size: 0.9rem;
         }
         .btn-logout:hover {
             border-color: #000;
             color: #000;
-            background: #f5f5f5;
+            background: #f0f0f0;
         }
-
-        /* ---------- رسائل الخطأ / النجاح ---------- */
-        .message {
-            font-size: 0.9rem;
-            min-height: 25px;
-            margin-top: 15px;
-            color: #d32f2f;
-            word-wrap: break-word;
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
         }
-        .message.success {
-            color: #2e7d32;
-        }
-
-        /* تلميحات إعدادات Firebase */
-        .firebase-tip {
-            background: #f7f7f7;
-            border-radius: 10px;
-            padding: 12px;
-            margin-top: 15px;
-            font-size: 0.75rem;
-            color: #666;
-            text-align: right;
-            border-right: 3px solid #000;
-            display: none; /* مخفي افتراضياً، يظهر فقط عند وجود خطأ في Gmail */
-        }
-        .firebase-tip.show {
-            display: block;
-        }
-        .firebase-tip strong {
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 25px;
             color: #000;
+            border-right: 4px solid #000;
+            padding-right: 15px;
         }
-
-        .fade-out {
-            opacity: 0;
-            transform: scale(0.96);
-            transition: all 0.4s ease;
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+        .product-card {
+            background: #ffffff;
+            border: 1px solid #eaeaea;
+            border-radius: 14px;
+            padding: 15px 15px 20px;
+            text-align: center;
+            transition: 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .product-card:hover {
+            border-color: #000000;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+        }
+        .product-card img {
+            width: 100%;
+            max-height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: #f5f5f5;
+            margin-bottom: 12px;
+        }
+        .product-card .product-name {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #000;
+            margin-bottom: 5px;
+        }
+        .product-card .product-desc {
+            font-size: 0.8rem;
+            color: #777;
+            margin-bottom: 8px;
+            height: 35px;
+            overflow: hidden;
+        }
+        .product-card .product-price {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #000;
+            margin-bottom: 12px;
+        }
+        .product-card .product-price small {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: #888;
+        }
+        .btn-add-to-cart {
+            padding: 10px 20px;
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+        .btn-add-to-cart:hover {
+            background: #333333;
+            transform: scale(1.02);
+        }
+        .btn-add-to-cart:active {
+            transform: scale(0.97);
+        }
+        .no-products {
+            text-align: center;
+            color: #888;
+            padding: 60px 20px;
+            font-size: 1.2rem;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+            font-size: 0.8rem;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+        }
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .header .user-area {
+                justify-content: center;
+            }
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+            }
+            .page-title {
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="login-card" id="loginCard">
-
-        <div class="store-name">lidercenter</div>
-        <div class="sub-title">● تسجيل الدخول إلى حسابك ●</div>
-
-        <!-- ===== زر Gmail ===== -->
-        <button class="btn-google" id="googleLoginBtn">
-            <span class="google-icon">G</span>
-            اتصال عبر Gmail
-        </button>
-
-        <div class="divider">
-            <span>أو</span>
+    <header class="header">
+        <div class="brand">
+            lidercenter
+            <span>متجرك الإلكتروني</span>
         </div>
-
-        <!-- ===== نموذج البريد الإلكتروني ===== -->
-        <div class="input-group">
-            <label>البريد الإلكتروني</label>
-            <input type="email" placeholder="example@mail.com" id="emailInput" />
-        </div>
-
-        <div class="input-group">
-            <label>كلمة المرور</label>
-            <div class="password-wrapper">
-                <input type="password" placeholder="••••••••" id="passwordInput" />
-                <!-- زر إظهار/إخفاء كلمة المرور -->
-                <button type="button" class="toggle-password" id="togglePasswordBtn" aria-label="إظهار أو إخفاء كلمة المرور">
-                    👁️
-                </button>
-            </div>
-        </div>
-
-        <button class="btn-email" id="emailLoginBtn">تسجيل الدخول</button>
-
-        <!-- رسالة الحالة -->
-        <div class="message" id="message"></div>
-
-        <!-- تلميحات Firebase (تظهر عند فشل Gmail) -->
-        <div class="firebase-tip" id="firebaseTip">
-            <strong>💡 تلميح:</strong> إذا لم تعمل خدمة Gmail، تأكد من:<br />
-            1. تفعيل "Google" في <strong>Firebase Console → Authentication → Sign-in methods</strong>.<br />
-            2. إضافة <strong>localhost</strong> و <strong>127.0.0.1</strong> إلى <strong>Authorized domains</strong> في إعدادات Authentication.
-        </div>
-
-        <!-- ===== حالة المستخدم ===== -->
-        <div class="user-status" id="userStatus">
-            <img class="user-avatar" id="userAvatar" src="" alt="الصورة الشخصية" />
-            <div class="user-name" id="userName">غير معروف</div>
-            <div class="user-email" id="userEmail">غير معروف</div>
+        <div class="user-area">
+            <div class="welcome">مرحباً، <strong id="userNameDisplay">المستخدم</strong></div>
             <button class="btn-logout" id="logoutBtn">تسجيل الخروج</button>
         </div>
-    </div>
+    </header>
 
-    <!-- ========================================================== -->
-    <!-- ====== كود Firebase ====== -->
-    <!-- ========================================================== -->
+    <main class="container">
+        <h2 class="page-title">جميع المنتجات</h2>
+        <div class="products-grid" id="productsContainer"></div>
+    </main>
+
+    <footer class="footer">
+        © 2026 lidercenter — جميع الحقوق محفوظة
+    </footer>
+
     <script type="module">
-        // ----- 1. الاستيرادات -----
+        // استيرادات Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
         import {
             getAuth,
-            signInWithPopup,
-            GoogleAuthProvider,
-            signInWithEmailAndPassword,
             onAuthStateChanged,
             signOut
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
-        // ----- 2. الإعدادات -----
+        // ----- الإعدادات الجديدة لمشروع ashlhl-ed7c7e17 -----
         const firebaseConfig = {
-            apiKey: "AIzaSyDDb5kAoZCOLGqVvzKZ9q-wB1FZrdqyVH8",
-            authDomain: "sample-firebase-ai-app-c5b33.firebaseapp.com",
-            databaseURL: "https://sample-firebase-ai-app-c5b33-default-rtdb.firebaseio.com",
-            projectId: "sample-firebase-ai-app-c5b33",
-            storageBucket: "sample-firebase-ai-app-c5b33.firebasestorage.app",
-            messagingSenderId: "183057738013",
-            appId: "1:183057738013:web:649fc47c465a23da1959f4",
-            measurementId: "G-1SCGVCM2WW"
+            apiKey: "AIzaSyB0lg1AkTQF1ZdntWZsWUoCG8GpqbK-WAY",
+            authDomain: "ashlhl-ed7c7e17.firebaseapp.com",
+            databaseURL: "https://ashlhl-ed7c7e17-default-rtdb.firebaseio.com",
+            projectId: "ashlhl-ed7c7e17",
+            storageBucket: "ashlhl-ed7c7e17.firebasestorage.app",
+            messagingSenderId: "246682226738",
+            appId: "1:246682226738:web:4301ea8caebe2c1325ac2b"
         };
 
-        // ----- 3. التهيئة -----
+        // تهيئة Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
 
-        // ----- 4. عناصر HTML -----
-        const googleBtn = document.getElementById('googleLoginBtn');
-        const emailBtn = document.getElementById('emailLoginBtn');
-        const emailInput = document.getElementById('emailInput');
-        const passwordInput = document.getElementById('passwordInput');
-        const togglePasswordBtn = document.getElementById('togglePasswordBtn');
-        const messageDiv = document.getElementById('message');
-        const userStatus = document.getElementById('userStatus');
-        const userName = document.getElementById('userName');
-        const userEmail = document.getElementById('userEmail');
-        const userAvatar = document.getElementById('userAvatar');
+        const userNameDisplay = document.getElementById('userNameDisplay');
         const logoutBtn = document.getElementById('logoutBtn');
-        const loginCard = document.getElementById('loginCard');
-        const firebaseTip = document.getElementById('firebaseTip');
+        const productsContainer = document.getElementById('productsContainer');
 
-        // ----- 5. وظيفة زر إظهار/إخفاء كلمة المرور -----
-        togglePasswordBtn.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            // تغيير الأيقونة
-            this.textContent = type === 'password' ? '👁️' : '🙈';
-        });
+        // قائمة المنتجات (نموذجية)
+        const products = [
+            { id: 1, name: 'سماعة لاسلكية Pro', desc: 'عزل ضوضاء، بطارية 24 ساعة', price: 199, image: 'https://picsum.photos/seed/headphone/300/300' },
+            { id: 2, name: 'ساعة ذكية رياضية', desc: 'شاشة AMOLED، تتبع اللياقة', price: 450, image: 'https://picsum.photos/seed/watch/300/300' },
+            { id: 3, name: 'حقيبة ظهر عصرية', desc: 'مقاومة للماء، 20 لتر', price: 120, image: 'https://picsum.photos/seed/bag/300/300' },
+            { id: 4, name: 'هاتف ذكي X10', desc: 'كاميرا 108 ميجا، 5G', price: 1299, image: 'https://picsum.photos/seed/phone/300/300' },
+            { id: 5, name: 'أحذية جري خفيفة', desc: 'مريحة، مناسبة للرياضة', price: 280, image: 'https://picsum.photos/seed/shoes/300/300' },
+            { id: 6, name: 'ساعة يد كلاسيك', desc: 'حركة أوتوماتيكية، جلد طبيعي', price: 750, image: 'https://picsum.photos/seed/classicwatch/300/300' }
+        ];
 
-        // ----- 6. دالة عرض الرسائل -----
-        function showMessage(text, isSuccess = false) {
-            messageDiv.textContent = text;
-            messageDiv.className = 'message';
-            if (isSuccess) {
-                messageDiv.classList.add('success');
-            }
-            // إخفاء التلميحات عند النجاح
-            if (isSuccess) firebaseTip.classList.remove('show');
-        }
-
-        // ----- 7. دالة تحديث الواجهة -----
-        function updateUI(user) {
-            if (user) {
-                userStatus.classList.add('show');
-                userName.textContent = user.displayName || user.email || 'مستخدم';
-                userEmail.textContent = user.email || 'لا يوجد بريد';
-                userAvatar.src = user.photoURL || 'https://ui-avatars.com/api/?name=U&background=000&color=fff';
-                // إخفاء أزرار الدخول
-                document.querySelector('.btn-google').style.display = 'none';
-                document.querySelector('.divider').style.display = 'none';
-                document.querySelectorAll('.input-group').forEach(el => el.style.display = 'none');
-                document.querySelector('.btn-email').style.display = 'none';
-                showMessage('✅ تم تسجيل الدخول بنجاح!', true);
-                // توجيه إلى home.html بعد نصف ثانية (اختياري لكن مفيد)
-                setTimeout(() => {
-                    window.location.href = 'home.html';
-                }, 800);
-            } else {
-                userStatus.classList.remove('show');
-                document.querySelector('.btn-google').style.display = 'flex';
-                document.querySelector('.divider').style.display = 'flex';
-                document.querySelectorAll('.input-group').forEach(el => el.style.display = 'block');
-                document.querySelector('.btn-email').style.display = 'block';
-                showMessage('');
-                emailInput.value = '';
-                passwordInput.value = '';
-                // إعادة العين للوضع الافتراضي
-                passwordInput.setAttribute('type', 'password');
-                togglePasswordBtn.textContent = '👁️';
-            }
-        }
-
-        // ----- 8. مراقب حالة الدخول -----
-        onAuthStateChanged(auth, (user) => {
-            updateUI(user);
-        });
-
-        // ----- 9. زر Gmail -----
-        googleBtn.addEventListener('click', () => {
-            // إخفاء التلميحات القديمة
-            firebaseTip.classList.remove('show');
-            showMessage('⏳ جاري الاتصال بـ Gmail...');
-
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    // نجاح - onAuthStateChanged سيتولى الباقي
-                })
-                .catch((error) => {
-                    console.error('خطأ Gmail:', error);
-                    // عرض التلميحات لأن المشكلة غالباً في الإعدادات
-                    firebaseTip.classList.add('show');
-
-                    // رسالة خطأ مفهومة
-                    let errorMsg = '❌ فشل الاتصال بـ Gmail.';
-                    if (error.code === 'auth/popup-blocked') {
-                        errorMsg = '❌ المتصفح منع النافذة المنبثقة، سمح بالنوافذ المنبثقة لهذا الموقع.';
-                    } else if (error.code === 'auth/unauthorized-domain') {
-                        errorMsg = '❌ النطاق غير مصرح به. أضف localhost إلى Authorized domains في Firebase.';
-                    } else if (error.code === 'auth/operation-not-allowed') {
-                        errorMsg = '❌ خدمة Gmail غير مفعلة في Firebase Console.';
-                    } else {
-                        errorMsg += ' ' + error.message;
-                    }
-                    showMessage(errorMsg);
-                });
-        });
-
-        // ----- 10. زر البريد الإلكتروني -----
-        emailBtn.addEventListener('click', () => {
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
-            if (!email || !password) {
-                showMessage('⚠️ الرجاء إدخال البريد وكلمة المرور');
+        function renderProducts(productsArray) {
+            if (!productsArray || productsArray.length === 0) {
+                productsContainer.innerHTML = '<div class="no-products">لا توجد منتجات لعرضها حالياً.</div>';
                 return;
             }
-            showMessage('⏳ جاري تسجيل الدخول...');
-            signInWithEmailAndPassword(auth, email, password)
+            let html = '';
+            productsArray.forEach((product) => {
+                html += `
+                    <div class="product-card">
+                        <img src="${product.image}" alt="${product.name}" loading="lazy" />
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-desc">${product.desc}</div>
+                        <div class="product-price">${product.price} <small>ج.م</small></div>
+                        <button class="btn-add-to-cart" data-id="${product.id}">
+                            أضف إلى السلة
+                        </button>
+                    </div>
+                `;
+            });
+            productsContainer.innerHTML = html;
+
+            document.querySelectorAll('.btn-add-to-cart').forEach((btn) => {
+                btn.addEventListener('click', (e) => {
+                    const productId = e.target.getAttribute('data-id');
+                    const productName = products.find(p => p.id == productId)?.name || 'المنتج';
+                    alert(`تمت إضافة "${productName}" إلى السلة! (هذه مجرد تجربة)`);
+                });
+            });
+        }
+
+        // التحقق من حالة تسجيل الدخول (الحماية)
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            const displayName = user.displayName || user.email || 'مستخدم';
+            userNameDisplay.textContent = displayName;
+            renderProducts(products);
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth)
                 .then(() => {
-                    // onAuthStateChanged سيتولى الباقي
+                    window.location.href = 'login.html';
                 })
                 .catch((error) => {
-                    console.error(error);
-                    let msg = '❌ خطأ: ';
-                    if (error.code === 'auth/user-not-found') msg += 'هذا البريد غير مسجل.';
-                    else if (error.code === 'auth/wrong-password') msg += 'كلمة المرور غير صحيحة.';
-                    else if (error.code === 'auth/invalid-email') msg += 'البريد الإلكتروني غير صحيح.';
-                    else msg += error.message;
-                    showMessage(msg);
+                    alert('حدث خطأ أثناء تسجيل الخروج: ' + error.message);
                 });
         });
 
-        // ----- 11. زر تسجيل الخروج -----
-        logoutBtn.addEventListener('click', () => {
-            signOut(auth).catch((error) => {
-                alert('❌ خطأ في تسجيل الخروج: ' + error.message);
-            });
-        });
-
-        // ----- 12. دعم مفتاح Enter -----
-        document.querySelectorAll('.input-group input').forEach((input) => {
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') emailBtn.click();
-            });
-        });
-
-        console.log('✅ login.html جاهز مع زر إظهار/إخفاء كلمة المرور');
+        console.log('home.html - Firebase مهيأ بمشروع ashlhl-ed7c7e17');
     </script>
 </body>
 </html>
