@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lidercenter - تسجيل الدخول</title>
+    <style>
+        /* ---------- إعدادات عامة (أبيض وأسود) ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            direction: rtl;
+        }
+
+        /* بطاقة تسجيل الدخول */
+        .login-card {
+            background: #ffffff;
+            padding: 45px 40px 40px;
+            text-align: center;
+            width: 400px;
+            max-width: 92%;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+            transition: 0.3s;
+        }
+
+        /* اسم المتجر */
+        .store-name {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #000000;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .sub-title {
+            color: #888888;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+
+        /* ---------- زر Gmail (الأساسي) ---------- */
+        .btn-google {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 14px 20px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #000000;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-top: 10px;
+        }
+
+        .btn-google:hover {
+            background: #000000;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* أيقونة Gmail (شعار G مبسط) */
+        .google-icon {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4285F4, #EA4335, #FBBC05, #34A853);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .btn-google:hover .google-icon {
+            -webkit-text-fill-color: #ffffff;
+            background: none;
+            color: #ffffff;
+        }
+
+        /* ---------- خيار البريد الإلكتروني (اختياري، لكن يمكن تركه) ---------- */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0 15px;
+            gap: 15px;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+        .divider span {
+            color: #999;
+            font-size: 0.8rem;
+        }
+
+        .input-group {
+            text-align: right;
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #fafafa;
+            transition: 0.2s;
+            outline: none;
+        }
+        .input-group input:focus {
+            border-color: #000000;
+            background: #ffffff;
+        }
+
+        .btn-email {
+            width: 100%;
+            padding: 12px;
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 5px;
+        }
+        .btn-email:hover {
+            background: #333333;
+        }
+
+        /* ---------- حالة المستخدم (تظهر بعد تسجيل الدخول) ---------- */
+        .user-status {
+            margin-top: 25px;
+            padding: 15px;
+            border-top: 1px solid #f0f0f0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-status.show {
+            display: flex;
+        }
+        .user-status .user-avatar {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: 2px solid #000000;
+            object-fit: cover;
+        }
+        .user-status .user-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #000;
+        }
+        .user-status .user-email {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .btn-logout {
+            padding: 8px 25px;
+            background: transparent;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #555;
+            transition: 0.3s;
+            margin-top: 5px;
+        }
+        .btn-logout:hover {
+            border-color: #000;
+            color: #000;
+            background: #f5f5f5;
+        }
+
+        /* رسائل الخطأ / النجاح */
+        .message {
+            font-size: 0.9rem;
+            min-height: 25px;
+            margin-top: 15px;
+            color: #d32f2f;
+        }
+        .message.success {
+            color: #2e7d32;
+        }
+
+        .fade-out {
+            opacity: 0;
+            transform: scale(0.96);
+            transition: all 0.4s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ====== بطاقة تسجيل الدخول ====== -->
+    <div class="login-card" id="loginCard">
+
+        <!-- اسم المتجر -->
+        <div class="store-name">lidercenter</div>
+        <div class="sub-title">● تسجيل الدخول إلى حسابك ●</div>
+
+        <!-- ========== زر Gmail الأساسي ========== -->
+        <button class="btn-google" id="googleLoginBtn">
+            <span class="google-icon">G</span>
+            اتصال عبر Gmail
+        </button>
+
+        <!-- فاصل (اختياري) -->
+        <div class="divider">
+            <span>أو</span>
+        </div>
+
+        <!-- نموذج البريد الإلكتروني (اختياري، فقط للشكل) -->
+        <div class="input-group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" placeholder="example@mail.com" id="emailInput" />
+        </div>
+        <div class="input-group">
+            <label>كلمة المرور</label>
+            <input type="password" placeholder="••••••••" id="passwordInput" />
+        </div>
+        <button class="btn-email" id="emailLoginBtn">تسجيل الدخول</button>
+
+        <!-- رسالة الحالة -->
+        <div class="message" id="message"></div>
+
+        <!-- ========== منطقة حالة المستخدم (تظهر بعد نجاح الدخول) ========== -->
+        <div class="user-status" id="userStatus">
+            <img class="user-avatar" id="userAvatar" src="" alt="الصورة الشخصية" />
+            <div class="user-name" id="userName">غير معروف</div>
+            <div class="user-email" id="userEmail">غير معروف</div>
+            <button class="btn-logout" id="logoutBtn">تسجيل الخروج</button>
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- ====== كود Firebase (باستخدام وحدات ES6 الحديثة) ====== -->
+    <!-- ================================================================== -->
+    <script type="module">
+        // ----- 1. استيراد مكتبات Firebase الضرورية -----
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
+        import {
+            getAuth,
+            signInWithPopup,
+            GoogleAuthProvider,
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+
+        // ----- 2. إعدادات Firebase الخاصة بك (التي زودتني بها) -----
+        const firebaseConfig = {
+            apiKey: "AIzaSyDDb5kAoZCOLGqVvzKZ9q-wB1FZrdqyVH8",
+            authDomain: "sample-firebase-ai-app-c5b33.firebaseapp.com",
+            databaseURL: "https://sample-firebase-ai-app-c5b33-default-rtdb.firebaseio.com",
+            projectId: "sample-firebase-ai-app-c5b33",
+            storageBucket: "sample-firebase-ai-app-c5b33.firebasestorage.app",
+            messagingSenderId: "183057738013",
+            appId: "1:183057738013:web:649fc47c465a23da1959f4",
+            measurementId: "G-1SCGVCM2WW"
+        };
+
+        // ----- 3. تهيئة Firebase -----
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // ----- 4. عناصر HTML -----
+        const googleBtn = document.getElementById('googleLoginBtn');
+        const emailBtn = document.getElementById('emailLoginBtn');
+        const emailInput = document.getElementById('emailInput');
+        const passwordInput = document.getElementById('passwordInput');
+        const messageDiv = document.getElementById('message');
+        const userStatus = document.getElementById('userStatus');
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+        const userAvatar = document.getElementById('userAvatar');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const loginCard = document.getElementById('loginCard');
+
+        // ----- 5. دالة عرض الرسائل -----
+        function showMessage(text, isSuccess = false) {
+            messageDiv.textContent = text;
+            messageDiv.className = 'message';
+            if (isSuccess) {
+                messageDiv.classList.add('success');
+            }
+            setTimeout(() => {
+                if (!isSuccess) messageDiv.textContent = '';
+            }, 4000);
+        }
+
+        // ----- 6. دالة تحديث واجهة المستخدم بعد تسجيل الدخول -----
+        function updateUI(user) {
+            if (user) {
+                // إظهار بيانات المستخدم
+                userStatus.classList.add('show');
+                userName.textContent = user.displayName || 'مستخدم جديد';
+                userEmail.textContent = user.email || 'لا يوجد بريد';
+                userAvatar.src = user.photoURL || 'https://ui-avatars.com/api/?name=U&background=000&color=fff';
+                // إخفاء أزرار الدخول والنماذج (اختياري)
+                document.querySelector('.btn-google').style.display = 'none';
+                document.querySelector('.divider').style.display = 'none';
+                document.querySelector('.input-group').style.display = 'none';
+                document.querySelector('.btn-email').style.display = 'none';
+                showMessage('✅ تم تسجيل الدخول بنجاح!', true);
+            } else {
+                // إظهار أزرار الدخول مرة أخرى
+                userStatus.classList.remove('show');
+                document.querySelector('.btn-google').style.display = 'flex';
+                document.querySelector('.divider').style.display = 'flex';
+                document.querySelector('.input-group').style.display = 'block';
+                document.querySelector('.btn-email').style.display = 'block';
+                showMessage('');
+                // مسح الحقول
+                emailInput.value = '';
+                passwordInput.value = '';
+            }
+        }
+
+        // ----- 7. مراقبة حالة تسجيل الدخول (الأهم) -----
+        onAuthStateChanged(auth, (user) => {
+            updateUI(user);
+            // إذا كان هناك مستخدم، يمكنك توجيهه لصفحة أخرى بعد ثانية مثلاً
+            if (user) {
+                // اختر ما تريد فعله بعد تسجيل الدخول، مثلاً:
+                // window.location.href = 'dashboard.html';
+                // لكننا سنبقيها هنا لنريحه حالة المستخدم
+            }
+        });
+
+        // ----- 8. تسجيل الدخول عبر Google (Gmail) -----
+        googleBtn.addEventListener('click', () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    // نجاح
+                    const user = result.user;
+                    showMessage(`مرحباً ${user.displayName} 👋`, true);
+                })
+                .catch((error) => {
+                    // فشل
+                    console.error(error);
+                    showMessage('❌ فشل الاتصال بـ Gmail: ' + error.message);
+                });
+        });
+
+        // ----- 9. تسجيل الدخول بالبريد الإلكتروني (اختياري) -----
+        emailBtn.addEventListener('click', () => {
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            if (!email || !password) {
+                showMessage('⚠️ الرجاء إدخال البريد وكلمة المرور');
+                return;
+            }
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    showMessage(`مرحباً ${user.email} 👋`, true);
+                })
+                .catch((error) => {
+                    console.error(error);
+                    if (error.code === 'auth/user-not-found') {
+                        showMessage('❌ هذا البريد غير مسجل');
+                    } else if (error.code === 'auth/wrong-password') {
+                        showMessage('❌ كلمة المرور غير صحيحة');
+                    } else {
+                        showMessage('❌ خطأ: ' + error.message);
+                    }
+                });
+        });
+
+        // ----- 10. تسجيل الخروج -----
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth)
+                .then(() => {
+                    showMessage('👋 تم تسجيل الخروج بنجاح', true);
+                    // إعادة عرض أزرار الدخول (يتم عبر onAuthStateChanged)
+                })
+                .catch((error) => {
+                    showMessage('❌ خطأ في تسجيل الخروج: ' + error.message);
+                });
+        });
+
+        // ----- 11. إضافة دعم الضغط على Enter في حقول البريد وكلمة المرور -----
+        document.querySelectorAll('.input-group input').forEach((input) => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    emailBtn.click();
+                }
+            });
+        });
+
+        // إضافة تأثير تلاشي لو أردت التوجيه (مثل ما فعلنا في index.html)
+        // لكننا سنبقيها هنا بدون توجيه إجباري حتى يرى المستخدم حالة الدخول.
+        console.log('✅ Firebase متصل وجاهز!');
+    </script>
+</body>
+</html>
