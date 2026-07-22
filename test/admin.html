@@ -21,7 +21,6 @@
             flex-direction: column;
         }
 
-        /* ---------- الهيدر ---------- */
         .header {
             background: #ffffff;
             border-bottom: 2px solid #000000;
@@ -105,7 +104,6 @@
             background: #fff5f5;
         }
 
-        /* ---------- المحتوى الرئيسي ---------- */
         .container {
             max-width: 1200px;
             margin: 20px auto;
@@ -135,7 +133,6 @@
             font-size: 0.8rem;
         }
 
-        /* ---------- بطاقات الإحصائيات ---------- */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -172,7 +169,6 @@
             font-weight: 500;
         }
 
-        /* ---------- أزرار الإدارة ---------- */
         .admin-actions {
             background: #ffffff;
             border: 1px solid #e0e0e0;
@@ -224,7 +220,6 @@
             color: #ccc;
         }
 
-        /* ---------- سجل النشاطات ---------- */
         .activity-log {
             background: #ffffff;
             border: 1px solid #e0e0e0;
@@ -247,7 +242,6 @@
             border-top: 1px dashed #eee;
         }
 
-        /* ---------- تذييل ---------- */
         .footer {
             text-align: center;
             padding: 15px;
@@ -278,130 +272,83 @@
                 grid-template-columns: 1fr;
             }
         }
-
-        /* ---------- شاشة تحميل مؤقتة (تظهر لحين التحقق) ---------- */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            right: 0;
-            left: 0;
-            bottom: 0;
-            background: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            font-size: 1.2rem;
-            color: #888;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .loading-screen .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #f0f0f0;
-            border-top: 3px solid #000;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .loading-screen.hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
 
-    <!-- ======== شاشة التحميل المؤقتة (تختفي بعد التحقق) ======== -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="spinner"></div>
-        <span>جاري التحقق من الصلاحيات...</span>
-    </div>
+    <header class="header">
+        <div class="brand">
+            lidercenter
+            <span>لوحة التحكم</span>
+        </div>
+        <div class="user-area">
+            <span class="admin-badge">مدير</span>
+            <div class="welcome">مرحباً، <strong id="adminNameDisplay">المدير</strong></div>
+            <a href="home.html" class="btn-back">العودة للمتجر</a>
+            <button class="btn-logout" id="logoutBtn">تسجيل الخروج</button>
+        </div>
+    </header>
 
-    <!-- ======== محتوى لوحة التحكم (مخفي حتى التحقق) ======== -->
-    <div id="dashboardContent" style="display: none;">
+    <main class="container">
+        <div class="page-header">
+            <h1>لوحة التحكم</h1>
+            <span class="date" id="currentDate"></span>
+        </div>
 
-        <header class="header">
-            <div class="brand">
-                lidercenter
-                <span>لوحة التحكم</span>
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalProducts">0</div>
+                <div class="stat-label">اجمالي المنتجات</div>
             </div>
-            <div class="user-area">
-                <span class="admin-badge">مدير</span>
-                <div class="welcome">مرحباً، <strong id="adminNameDisplay">المدير</strong></div>
-                <a href="home.html" class="btn-back">العودة للمتجر</a>
-                <button class="btn-logout" id="logoutBtn">تسجيل الخروج</button>
+            <div class="stat-card">
+                <div class="stat-number" id="totalUsers">0</div>
+                <div class="stat-label">اجمالي المستخدمين</div>
             </div>
-        </header>
-
-        <main class="container">
-            <div class="page-header">
-                <h1>لوحة التحكم</h1>
-                <span class="date" id="currentDate"></span>
+            <div class="stat-card">
+                <div class="stat-number" id="totalOrders">0</div>
+                <div class="stat-label">اجمالي الطلبات</div>
             </div>
-
-            <div class="stats-grid" id="statsGrid">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalProducts">0</div>
-                    <div class="stat-label">اجمالي المنتجات</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="totalUsers">0</div>
-                    <div class="stat-label">اجمالي المستخدمين</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="totalOrders">0</div>
-                    <div class="stat-label">اجمالي الطلبات</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="totalRevenue">0</div>
-                    <div class="stat-label">اجمالي المبيعات</div>
-                </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalRevenue">0</div>
+                <div class="stat-label">اجمالي المبيعات</div>
             </div>
+        </div>
 
-            <div class="admin-actions">
-                <h3>ادارة المتجر</h3>
-                <div class="actions-grid">
-                    <button id="btnAddProduct">
-                        اضافة منتج جديد
-                        <span class="action-label">(نموذج اضافة)</span>
-                    </button>
-                    <button id="btnManageOrders">
-                        ادارة الطلبات
-                        <span class="action-label">(قائمة الطلبات)</span>
-                    </button>
-                    <button id="btnManageUsers">
-                        ادارة المستخدمين
-                        <span class="action-label">(قائمة الاعضاء)</span>
-                    </button>
-                    <button id="btnSettings">
-                        اعدادات المتجر
-                        <span class="action-label">(تخصيص)</span>
-                    </button>
-                </div>
+        <div class="admin-actions">
+            <h3>ادارة المتجر</h3>
+            <div class="actions-grid">
+                <button id="btnAddProduct">
+                    اضافة منتج جديد
+                    <span class="action-label">(نموذج اضافة)</span>
+                </button>
+                <button id="btnManageOrders">
+                    ادارة الطلبات
+                    <span class="action-label">(قائمة الطلبات)</span>
+                </button>
+                <button id="btnManageUsers">
+                    ادارة المستخدمين
+                    <span class="action-label">(قائمة الاعضاء)</span>
+                </button>
+                <button id="btnSettings">
+                    اعدادات المتجر
+                    <span class="action-label">(تخصيص)</span>
+                </button>
             </div>
+        </div>
 
-            <div class="activity-log">
-                <h3>اخر النشاطات</h3>
-                <div class="empty-log">
-                    لا توجد نشاطات مسجلة حتى الان.
-                </div>
+        <div class="activity-log">
+            <h3>اخر النشاطات</h3>
+            <div class="empty-log">
+                لا توجد نشاطات مسجلة حتى الان.
             </div>
-        </main>
+        </div>
+    </main>
 
-        <footer class="footer">
-            (c) 2026 lidercenter - لوحة تحكم المدير
-        </footer>
-    </div>
+    <footer class="footer">
+        (c) 2026 lidercenter - لوحة تحكم المدير
+    </footer>
 
-    <!-- ========================================================== -->
-    <!-- ======== كود Firebase ======== -->
-    <!-- ========================================================== -->
     <script type="module">
-        // استيرادات Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
         import {
@@ -416,7 +363,6 @@
             child
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-        // اعدادات Firebase (مشروع ashlhl-ed7c7e17)
         const firebaseConfig = {
             apiKey: "AIzaSyB0lg1AkTQF1ZdntWZsWUoCG8GpqbK-WAY",
             authDomain: "ashlhl-ed7c7e17.firebaseapp.com",
@@ -432,9 +378,6 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // عناصر الصفحة
-        const loadingScreen = document.getElementById('loadingScreen');
-        const dashboardContent = document.getElementById('dashboardContent');
         const adminNameDisplay = document.getElementById('adminNameDisplay');
         const logoutBtn = document.getElementById('logoutBtn');
         const totalProducts = document.getElementById('totalProducts');
@@ -445,7 +388,6 @@
 
         const ADMIN_EMAIL = 'ashlhl.iq@gmail.com';
 
-        // عرض التاريخ
         const now = new Date();
         currentDate.textContent = now.toLocaleDateString('ar-EG', {
             year: 'numeric',
@@ -453,46 +395,26 @@
             day: 'numeric'
         });
 
-        // =======================================================
-        //  دالة التوجيه الفوري (بدون ظهور محتوى الصفحة)
-        // =======================================================
         function redirectTo(page) {
             window.location.replace(page);
         }
 
-        // =======================================================
-        //  التحقق من صلاحية المدير (مع شاشة تحميل)
-        // =======================================================
+        // التحقق من صلاحية المدير - توجيه تلقائي بدون رسائل
         onAuthStateChanged(auth, (user) => {
-            // إذا لم يكن هناك مستخدم مسجل
             if (!user) {
                 redirectTo('login.html');
                 return;
             }
 
             const userEmail = user.email;
-
-            // إذا كان البريد الإلكتروني غير موجود أو لا يساوي بريد المدير
             if (!userEmail || userEmail !== ADMIN_EMAIL) {
-                // نعرض رسالة سريعة ثم نوجه (بدون عرض محتوى الصفحة)
-                // ولكن بدلاً من التنبيه، سنوجه مباشرة (يمكنك إضافة تنبيه إذا أردت)
-                // لكننا سنوجه بدون تنبيه لتجربة أكثر سلاسة
                 redirectTo('home.html');
                 return;
             }
 
-            // =======================================================
-            // إذا وصلنا هنا، فالمستخدم هو المدير
-            // =======================================================
-
-            // إخفاء شاشة التحميل وإظهار محتوى لوحة التحكم
-            loadingScreen.classList.add('hidden');
-            dashboardContent.style.display = 'block';
-
-            // عرض اسم المدير
+            // هنا فقط المدير
             adminNameDisplay.textContent = user.displayName || user.email || 'المدير';
 
-            // جلب الإحصائيات من Firebase
             async function loadStats() {
                 try {
                     const productsSnapshot = await get(child(ref(db), 'products'));
@@ -524,9 +446,6 @@
             loadStats();
         });
 
-        // =======================================================
-        //  أزرار الإدارة (مؤقتة)
-        // =======================================================
         document.getElementById('btnAddProduct').addEventListener('click', () => {
             alert('سيتم فتح نموذج لاضافة منتج جديد وحفظه في Firebase.');
         });
@@ -543,9 +462,6 @@
             alert('سيتم فتح اعدادات المتجر (الاسم، الشعار، الخيارات العامة).');
         });
 
-        // =======================================================
-        //  تسجيل الخروج
-        // =======================================================
         logoutBtn.addEventListener('click', () => {
             signOut(auth)
                 .then(() => {
@@ -556,7 +472,7 @@
                 });
         });
 
-        console.log('admin.html - النسخة النهائية جاهزة');
+        console.log('admin.html - التوجيه التلقائي للمدير فقط يعمل.');
     </script>
 </body>
 </html>
