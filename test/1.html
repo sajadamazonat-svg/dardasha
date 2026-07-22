@@ -1,111 +1,214 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تسجيل الدخول</title>
-
-<style>
-body{
-    font-family:Arial,sans-serif;
-    background:#0f172a;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    margin:0;
-}
-
-.box{
-    background:white;
-    padding:35px;
-    border-radius:15px;
-    text-align:center;
-    width:320px;
-}
-
-button{
-    width:100%;
-    padding:15px;
-    border:none;
-    border-radius:10px;
-    background:#4285F4;
-    color:white;
-    font-size:18px;
-    cursor:pointer;
-}
-
-img{
-    width:80px;
-    margin-bottom:20px;
-}
-
-#user{
-    margin-top:20px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تسجيل الدخول</title>
+  <style>
+    * { box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#111827;
+    }
+    .card{
+      width:min(92vw, 380px);
+      background:#fff;
+      border-radius:20px;
+      padding:28px 22px;
+      box-shadow:0 18px 50px rgba(0,0,0,.25);
+      text-align:center;
+    }
+    .logo{
+      width:82px;
+      height:82px;
+      border-radius:22px;
+      margin:0 auto 14px;
+      background:#eff6ff;
+      display:grid;
+      place-items:center;
+      font-size:38px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:26px;
+      color:#111827;
+    }
+    p{
+      margin:0 0 18px;
+      color:#6b7280;
+      line-height:1.7;
+      font-size:14px;
+    }
+    button{
+      width:100%;
+      border:none;
+      border-radius:14px;
+      padding:14px 16px;
+      font-size:16px;
+      cursor:pointer;
+      font-weight:700;
+      transition:.2s ease;
+    }
+    #loginBtn{
+      background:#4285F4;
+      color:#fff;
+      box-shadow:0 10px 20px rgba(66,133,244,.28);
+    }
+    #loginBtn:hover{ transform:translateY(-1px); }
+    #logoutBtn{
+      margin-top:10px;
+      background:#e5e7eb;
+      color:#111827;
+      display:none;
+    }
+    .status{
+      margin-top:16px;
+      font-size:14px;
+      color:#374151;
+      min-height:22px;
+    }
+    .user-box{
+      margin-top:18px;
+      padding:14px;
+      border-radius:16px;
+      background:#f9fafb;
+      display:none;
+      text-align:right;
+    }
+    .user-row{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .user-row img{
+      width:54px;
+      height:54px;
+      border-radius:50%;
+      object-fit:cover;
+      flex:0 0 auto;
+    }
+    .user-meta strong{
+      display:block;
+      font-size:15px;
+      margin-bottom:4px;
+    }
+    .user-meta span{
+      color:#6b7280;
+      font-size:13px;
+      word-break:break-word;
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="box">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+  <div class="card">
+    <div class="logo">🛒</div>
+    <h1>تسجيل الدخول</h1>
+    <p>ادخل بحساب Google حتى تكمل للمتجر.</p>
 
-    <h2>تسجيل الدخول</h2>
+    <button id="loginBtn">تسجيل الدخول باستخدام Google</button>
+    <button id="logoutBtn">تسجيل الخروج</button>
 
-    <button id="login">
-        تسجيل الدخول باستخدام Google
-    </button>
+    <div class="status" id="status"></div>
 
-    <div id="user"></div>
-</div>
+    <div class="user-box" id="userBox">
+      <div class="user-row">
+        <img id="userPhoto" alt="User photo" />
+        <div class="user-meta">
+          <strong id="userName"></strong>
+          <span id="userEmail"></span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<script type="module">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyB0lg1AkTQF1ZdntWZsWUoCG8GpqbK-WAY",
+      authDomain: "ashlhl-ed7c7e17.firebaseapp.com",
+      projectId: "ashlhl-ed7c7e17",
+      storageBucket: "ashlhl-ed7c7e17.firebasestorage.app",
+      messagingSenderId: "246682226738",
+      appId: "1:246682226738:web:4301ea8caebe2c1325ac2b"
+    };
 
-import {
-getAuth,
-GoogleAuthProvider,
-signInWithPopup
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDDb5kAoZCOLGqVvzKZ9q-wB1FZrdqyVH8",
-  authDomain: "sample-firebase-ai-app-c5b33.firebaseapp.com",
-  databaseURL: "https://sample-firebase-ai-app-c5b33-default-rtdb.firebaseio.com",
-  projectId: "sample-firebase-ai-app-c5b33",
-  storageBucket: "sample-firebase-ai-app-c5b33.firebasestorage.app",
-  messagingSenderId: "183057738013",
-  appId: "1:183057738013:web:649fc47c465a23da1959f4",
-  measurementId: "G-1SCGVCM2WW"
-};
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({
+      prompt: "select_account"
+    });
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const statusEl = document.getElementById("status");
+    const userBox = document.getElementById("userBox");
+    const userPhoto = document.getElementById("userPhoto");
+    const userName = document.getElementById("userName");
+    const userEmail = document.getElementById("userEmail");
 
-document.getElementById("login").onclick = async ()=>{
+    loginBtn.addEventListener("click", async () => {
+      statusEl.textContent = "جاري فتح Google...";
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
 
-try{
+        statusEl.textContent = "تم تسجيل الدخول بنجاح.";
+        userBox.style.display = "block";
+        logoutBtn.style.display = "block";
 
-const result = await signInWithPopup(auth,provider);
+        userPhoto.src = user.photoURL || "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg";
+        userName.textContent = user.displayName || "مستخدم Google";
+        userEmail.textContent = user.email || "";
 
-const user=result.user;
+        // بعد الدخول انقل المستخدم للصفحة الرئيسية
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1000);
 
-document.getElementById("user").innerHTML=`
-<h3>${user.displayName}</h3>
-<p>${user.email}</p>
-<img src="${user.photoURL}" width="80" style="border-radius:50%;">
-`;
+      } catch (error) {
+        console.error(error);
+        statusEl.textContent = "صار خطأ: " + (error?.message || "فشل تسجيل الدخول");
+      }
+    });
 
-}catch(e){
-alert(e.message);
-}
+    logoutBtn.addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        statusEl.textContent = "تم تسجيل الخروج.";
+        userBox.style.display = "none";
+        logoutBtn.style.display = "none";
+      } catch (error) {
+        statusEl.textContent = "صار خطأ أثناء الخروج.";
+      }
+    });
 
-};
-
-</script>
-
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        userBox.style.display = "block";
+        logoutBtn.style.display = "block";
+        userPhoto.src = user.photoURL || "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg";
+        userName.textContent = user.displayName || "مستخدم Google";
+        userEmail.textContent = user.email || "";
+        statusEl.textContent = "أنت مسجل دخول بالفعل.";
+      }
+    });
+  </script>
 </body>
 </html>
