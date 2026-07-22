@@ -364,6 +364,11 @@
             transform: scale(0.95);
             background: #f5f5f5;
         }
+        .btn-google:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
 
         .btn-group {
             display: flex;
@@ -410,6 +415,50 @@
         .bottom-bar-global i {
             margin-left: 8px;
             color: rgba(241, 196, 15, 0.2);
+        }
+
+        /* ========== Toast / رسالة منبثقة خفيفة ========== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s ease;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            font-family: 'Tajawal', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap;
+            max-width: 90%;
+        }
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast i {
+            font-size: 1.2rem;
+        }
+        .toast.success i {
+            color: #4ade80;
+        }
+        .toast.error i {
+            color: #f87171;
+        }
+        .toast.info i {
+            color: #60a5fa;
         }
 
         @media (max-width: 380px) {
@@ -549,7 +598,7 @@
                     <a href="login.html" class="btn-secondary-glass" aria-label="تسجيل الدخول">
                         <i class="fas fa-user"></i> تسجيل الدخول
                     </a>
-                    <!-- زر Google المعدل نهائياً -->
+                    <!-- زر Google – يعمل الآن بطريقة popup (مثل الكود الثاني) -->
                     <button id="googleSignInBtn" type="button" class="btn-google" aria-label="تسجيل الدخول عبر Google">
                         <i class="fab fa-google"></i> تسجيل الدخول عبر Google
                     </button>
@@ -571,7 +620,13 @@
         </div>
     </div>
 
-    <!-- ===== Firebase SDK ===== -->
+    <!-- ===== Toast ===== -->
+    <div id="toast" class="toast">
+        <i class="fas fa-circle-check"></i>
+        <span id="toastMessage">تم بنجاح</span>
+    </div>
+
+    <!-- ===== Firebase SDK (compat) ===== -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js">
     </script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js">
@@ -579,85 +634,118 @@
 
     <script>
         // =============================================================
-        // 1. تهيئة Firebase (استبدل هذه البيانات ببيانات مشروعك الخاص)
+        // 1. تهيئة Firebase – باستخدام إعدادات المشروع الذي يعمل (من الكود الثاني)
         // =============================================================
         const firebaseConfig = {
-            apiKey: "AIzaSyDDb5kAoZCOLGqVvzKZ9q-wB1FZrdqyVH8",
-            authDomain: "sample-firebase-ai-app-c5b33.firebaseapp.com",
-            databaseURL: "https://sample-firebase-ai-app-c5b33-default-rtdb.firebaseio.com",
-            projectId: "sample-firebase-ai-app-c5b33",
-            storageBucket: "sample-firebase-ai-app-c5b33.firebasestorage.app",
-            messagingSenderId: "183057738013",
-            appId: "1:183057738013:web:649fc47c465a23da1959f4",
-            measurementId: "G-1SCGVCM2WW"
+            apiKey: "AIzaSyB0lg1AkTQF1ZdntWZsWUoCG8GpqbK-WAY",
+            authDomain: "ashlhl-ed7c7e17.firebaseapp.com",
+            projectId: "ashlhl-ed7c7e17",
+            storageBucket: "ashlhl-ed7c7e17.firebasestorage.app",
+            messagingSenderId: "246682226738",
+            appId: "1:246682226738:web:4301ea8caebe2c1325ac2b"
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
         // =============================================================
-        // 2. مراقبة حالة تسجيل الدخول (توجيه تلقائي إذا كان مسجلاً)
+        // 2. مراقبة حالة تسجيل الدخول – توجيه تلقائي إذا كان مسجلاً
         // =============================================================
         auth.onAuthStateChanged(function(user) {
             if (user) {
-                // المستخدم مسجل الدخول بالفعل → نوجهه فوراً للصفحة الرئيسية
                 console.log('✅ مستخدم مسجل دخوله مسبقاً:', user.displayName);
+                // نوجهه فوراً للصفحة الرئيسية
                 window.location.replace('home.html');
             } else {
-                // لا يوجد مستخدم → نكمل عرض شاشة الترحيب
                 console.log('👤 لا يوجد مستخدم مسجل دخوله.');
             }
         });
 
         // =============================================================
-        // 3. دالة تسجيل الدخول عبر Google (باستخدام Redirect فقط)
+        // 3. دالة تسجيل الدخول عبر Google باستخدام POPUP (مثل الكود الثاني)
         // =============================================================
-        function signInWithGoogleRedirect() {
+        function signInWithGooglePopup() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            // (اختياري) إضافة رسالة تأكيد لتوعية المستخدم
-            if (confirm('سيتم توجيهك إلى Google لتسجيل الدخول. هل تريد المتابعة؟')) {
-                auth.signInWithRedirect(provider);
-            }
+            provider.setCustomParameters({ prompt: 'select_account' });
+
+            const btn = document.getElementById('googleSignInBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الاتصال...';
+
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    const user = result.user;
+                    console.log('✅ تسجيل دخول ناجح:', user.displayName);
+                    showToast('مرحباً ' + user.displayName + '! تم تسجيل الدخول بنجاح.', 'success');
+
+                    // بعد ثانية ننتقل للصفحة الرئيسية
+                    setTimeout(() => {
+                        window.location.replace('home.html');
+                    }, 1200);
+                })
+                .catch((error) => {
+                    console.error('❌ خطأ في Popup:', error);
+                    let msg = 'فشل تسجيل الدخول. ';
+                    switch (error.code) {
+                        case 'auth/account-exists-with-different-credential':
+                            msg += 'يوجد حساب آخر بنفس البريد الإلكتروني. حاول تسجيل الدخول باستخدام طريقة أخرى.';
+                            break;
+                        case 'auth/popup-blocked':
+                            msg += 'تم حظر النافذة المنبثقة. اسمح بالنوافذ المنبثقة لهذا الموقع وحاول مرة أخرى.';
+                            break;
+                        case 'auth/cancelled-popup-request':
+                            msg += 'تم إلغاء الطلب. حاول مرة أخرى.';
+                            break;
+                        case 'auth/network-request-failed':
+                            msg += 'فشل الاتصال بالشبكة. تأكد من اتصالك بالإنترنت.';
+                            break;
+                        default:
+                            msg += error.message;
+                    }
+                    showToast(msg, 'error');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fab fa-google"></i> تسجيل الدخول عبر Google';
+                });
         }
 
         // =============================================================
-        // 4. معالجة نتيجة إعادة التوجيه (بعد العودة من Google)
+        // 4. Toast (رسائل منبثقة خفيفة)
         // =============================================================
-        auth.getRedirectResult()
-            .then((result) => {
-                if (result.user) {
-                    // نجاح تسجيل الدخول
-                    alert(`مرحباً ${result.user.displayName}! تم تسجيل الدخول بنجاح.`);
-                    console.log('✅ مستخدم Google جديد:', result.user);
-                    window.location.replace('home.html');
-                }
-            })
-            .catch((error) => {
-                console.error('❌ خطأ في Redirect:', error);
-                let msg = 'فشل تسجيل الدخول. ';
-                switch (error.code) {
-                    case 'auth/account-exists-with-different-credential':
-                        msg += 'يوجد حساب آخر بنفس البريد الإلكتروني. حاول تسجيل الدخول باستخدام طريقة أخرى.';
-                        break;
-                    case 'auth/popup-blocked':
-                        msg += 'تم حظر النافذة المنبثقة. جرب مرة أخرى أو استخدم متصفحاً آخر.';
-                        break;
-                    case 'auth/cancelled-popup-request':
-                        msg += 'تم إلغاء الطلب. حاول مرة أخرى.';
-                        break;
-                    default:
-                        msg += error.message;
-                }
-                alert(msg);
-            });
+        let toastTimer = null;
+
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            toastMsg.textContent = message;
+
+            // إعادة تعيين الأيقونة حسب النوع
+            const icon = toast.querySelector('i');
+            icon.className = '';
+            if (type === 'success') {
+                icon.classList.add('fas', 'fa-circle-check');
+            } else if (type === 'error') {
+                icon.classList.add('fas', 'fa-circle-xmark');
+            } else {
+                icon.classList.add('fas', 'fa-circle-info');
+            }
+
+            toast.className = 'toast ' + type + ' show';
+
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
 
         // =============================================================
-        // 5. ربط زر Google بالدالة وتشغيل شاشة التحميل
+        // 5. ربط زر Google بالدالة + تشغيل شاشة التحميل
         // =============================================================
         document.addEventListener('DOMContentLoaded', function() {
-            // ربط الزر
+            // ربط زر Google
             const googleBtn = document.getElementById('googleSignInBtn');
             if (googleBtn) {
-                googleBtn.addEventListener('click', signInWithGoogleRedirect);
+                googleBtn.addEventListener('click', signInWithGooglePopup);
             }
 
             // ----- شاشة التحميل (Splash Screen) -----
@@ -700,6 +788,8 @@
             }
 
             requestAnimationFrame(updateProgress);
+
+            // أمان: في حال علق التحميل لأي سبب
             setTimeout(() => {
                 if (!welcome.classList.contains('show')) {
                     finishLoading();
