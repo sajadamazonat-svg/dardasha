@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>lidercenter - لوحة التحكم</title>
     <style>
+        /* جميع الأنماط كما هي دون تغيير */
         * {
             margin: 0;
             padding: 0;
@@ -363,6 +364,7 @@
             child
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyB0lg1AkTQF1ZdntWZsWUoCG8GpqbK-WAY",
             authDomain: "ashlhl-ed7c7e17.firebaseapp.com",
@@ -378,6 +380,7 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
+        // DOM elements
         const adminNameDisplay = document.getElementById('adminNameDisplay');
         const logoutBtn = document.getElementById('logoutBtn');
         const totalProducts = document.getElementById('totalProducts');
@@ -386,8 +389,10 @@
         const totalRevenue = document.getElementById('totalRevenue');
         const currentDate = document.getElementById('currentDate');
 
+        // Admin email (only this account can access this page)
         const ADMIN_EMAIL = 'ashlhl.iq@gmail.com';
 
+        // Set current date
         const now = new Date();
         currentDate.textContent = now.toLocaleDateString('ar-EG', {
             year: 'numeric',
@@ -395,57 +400,77 @@
             day: 'numeric'
         });
 
+        // Helper redirect
         function redirectTo(page) {
             window.location.replace(page);
         }
 
-        // التحقق من صلاحية المدير - توجيه تلقائي بدون رسائل
+        // ============================================================
+        //  🔐 AUTH STATE OBSERVER – automatic redirection logic
+        // ============================================================
         onAuthStateChanged(auth, (user) => {
+            // 1. No user → go to login
             if (!user) {
+                console.log('🔴 No user signed in. Redirecting to login.html');
                 redirectTo('login.html');
                 return;
             }
 
             const userEmail = user.email;
+
+            // 2. Logged in but NOT the admin → redirect to home.html
             if (!userEmail || userEmail !== ADMIN_EMAIL) {
+                console.log(`⛔ Non‑admin user (${userEmail}) attempted to access admin panel. Redirecting to home.html`);
                 redirectTo('home.html');
                 return;
             }
 
-            // هنا فقط المدير
+            // 3. Admin is authenticated – show the dashboard
+            console.log('✅ Admin signed in:', userEmail);
             adminNameDisplay.textContent = user.displayName || user.email || 'المدير';
 
-            async function loadStats() {
-                try {
-                    const productsSnapshot = await get(child(ref(db), 'products'));
-                    const productsCount = productsSnapshot.exists() ? Object.keys(productsSnapshot.val()).length : 0;
-                    totalProducts.textContent = productsCount;
-
-                    const usersSnapshot = await get(child(ref(db), 'users'));
-                    const usersCount = usersSnapshot.exists() ? Object.keys(usersSnapshot.val()).length : 0;
-                    totalUsers.textContent = usersCount;
-
-                    const ordersSnapshot = await get(child(ref(db), 'orders'));
-                    const ordersCount = ordersSnapshot.exists() ? Object.keys(ordersSnapshot.val()).length : 0;
-                    totalOrders.textContent = ordersCount;
-
-                    let revenue = 0;
-                    if (ordersSnapshot.exists()) {
-                        const orders = ordersSnapshot.val();
-                        for (const key in orders) {
-                            if (orders[key].totalPrice) {
-                                revenue += Number(orders[key].totalPrice);
-                            }
-                        }
-                    }
-                    totalRevenue.textContent = revenue.toFixed(0);
-                } catch (error) {
-                    console.error('خطا في جلب الاحصائيات:', error);
-                }
-            }
+            // Load statistics
             loadStats();
         });
 
+        // ============================================================
+        //  📊 Load dashboard stats from Firebase Realtime Database
+        // ============================================================
+        async function loadStats() {
+            try {
+                // Products
+                const productsSnapshot = await get(child(ref(db), 'products'));
+                const productsCount = productsSnapshot.exists() ? Object.keys(productsSnapshot.val()).length : 0;
+                totalProducts.textContent = productsCount;
+
+                // Users
+                const usersSnapshot = await get(child(ref(db), 'users'));
+                const usersCount = usersSnapshot.exists() ? Object.keys(usersSnapshot.val()).length : 0;
+                totalUsers.textContent = usersCount;
+
+                // Orders & Revenue
+                const ordersSnapshot = await get(child(ref(db), 'orders'));
+                const ordersCount = ordersSnapshot.exists() ? Object.keys(ordersSnapshot.val()).length : 0;
+                totalOrders.textContent = ordersCount;
+
+                let revenue = 0;
+                if (ordersSnapshot.exists()) {
+                    const orders = ordersSnapshot.val();
+                    for (const key in orders) {
+                        if (orders[key].totalPrice) {
+                            revenue += Number(orders[key].totalPrice);
+                        }
+                    }
+                }
+                totalRevenue.textContent = revenue.toFixed(0);
+            } catch (error) {
+                console.error('❌ Error loading stats:', error);
+            }
+        }
+
+        // ============================================================
+        //  🎛️ Admin action buttons (placeholders)
+        // ============================================================
         document.getElementById('btnAddProduct').addEventListener('click', () => {
             alert('سيتم فتح نموذج لاضافة منتج جديد وحفظه في Firebase.');
         });
@@ -462,6 +487,9 @@
             alert('سيتم فتح اعدادات المتجر (الاسم، الشعار، الخيارات العامة).');
         });
 
+        // ============================================================
+        //  🚪 Logout
+        // ============================================================
         logoutBtn.addEventListener('click', () => {
             signOut(auth)
                 .then(() => {
@@ -472,7 +500,7 @@
                 });
         });
 
-        console.log('admin.html - التوجيه التلقائي للمدير فقط يعمل.');
+        console.log('✅ admin.html – automatic redirection is active.');
     </script>
 </body>
 </html>
