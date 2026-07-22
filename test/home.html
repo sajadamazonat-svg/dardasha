@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lidercenter - الرئيسية</title>
+    <title>lidercenter - لوحة التحكم</title>
     <style>
-        /* ---------- إعدادات عامة ---------- */
         * {
             margin: 0;
             padding: 0;
@@ -22,76 +21,75 @@
             flex-direction: column;
         }
 
-        /* ---------- الهيدر (الشريط العلوي) ---------- */
+        /* ---------- الهيدر ---------- */
         .header {
             background: #ffffff;
-            border-bottom: 1px solid #e0e0e0;
-            padding: 15px 25px;
+            border-bottom: 2px solid #000000;
+            padding: 12px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            gap: 10px;
         }
 
         .header .brand {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: 900;
             color: #000000;
-            letter-spacing: 1px;
         }
 
         .header .brand span {
             font-weight: 300;
             color: #888;
-            font-size: 0.9rem;
-            margin-right: 8px;
-        }
-
-        .header .left-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .menu-toggle {
-            background: transparent;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #000;
-            line-height: 1;
-            transition: 0.3s;
-        }
-
-        .menu-toggle:hover {
-            background: #f0f0f0;
+            font-size: 0.8rem;
+            margin-right: 6px;
         }
 
         .header .user-area {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
-        .header .user-area .welcome {
-            font-size: 0.95rem;
-            color: #333;
+        .header .user-area .admin-badge {
+            background: #000;
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
+        .header .user-area .welcome {
+            font-size: 0.85rem;
+            color: #333;
+        }
         .header .user-area .welcome strong {
             color: #000;
-            font-weight: 700;
+        }
+
+        .btn-back {
+            padding: 6px 16px;
+            background: transparent;
+            border: 1.5px solid #ccc;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #555;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 0.8rem;
+        }
+        .btn-back:hover {
+            border-color: #000;
+            color: #000;
+            background: #f0f0f0;
         }
 
         .btn-logout {
-            padding: 8px 20px;
+            padding: 6px 16px;
             background: transparent;
             border: 1.5px solid #ccc;
             border-radius: 30px;
@@ -99,275 +97,186 @@
             color: #555;
             cursor: pointer;
             transition: 0.3s;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
-
         .btn-logout:hover {
-            border-color: #000;
-            color: #000;
-            background: #f0f0f0;
-        }
-
-        /* ---------- القائمة الجانبية (Sidebar) ---------- */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 999;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .sidebar-overlay.open {
-            display: block;
-            opacity: 1;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 300px;
-            height: 100%;
-            background: #ffffff;
-            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
-            z-index: 1000;
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            border-left: 1px solid #eee;
-        }
-
-        .sidebar.open {
-            right: 0;
-        }
-
-        .sidebar .close-btn {
-            background: transparent;
-            border: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            text-align: left;
-            color: #888;
-            margin-bottom: 30px;
-            transition: 0.2s;
-        }
-
-        .sidebar .close-btn:hover {
-            color: #000;
-        }
-
-        .sidebar .sidebar-brand {
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: #000;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #f0f0f0;
-            padding-bottom: 15px;
-        }
-
-        .sidebar .nav-list {
-            list-style: none;
-            flex: 1;
-        }
-
-        .sidebar .nav-list li {
-            margin-bottom: 8px;
-        }
-
-        .sidebar .nav-list li a,
-        .sidebar .nav-list li button {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 12px;
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            font-size: 1rem;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            transition: 0.2s;
-            text-align: right;
-        }
-
-        .sidebar .nav-list li a:hover,
-        .sidebar .nav-list li button:hover {
-            background: #f5f5f5;
-            color: #000;
-        }
-
-        .sidebar .nav-list li a.active {
-            background: #000;
-            color: #fff;
-        }
-
-        .sidebar .nav-list .admin-link {
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-            margin-top: 10px;
-        }
-
-        .sidebar .nav-list .admin-link button {
+            border-color: #d32f2f;
             color: #d32f2f;
-            font-weight: 700;
-        }
-
-        .sidebar .nav-list .admin-link button:hover {
-            background: #fff0f0;
-        }
-
-        .sidebar .nav-list .icon {
-            font-size: 1.3rem;
-            width: 30px;
-            text-align: center;
+            background: #fff5f5;
         }
 
         /* ---------- المحتوى الرئيسي ---------- */
         .container {
             max-width: 1200px;
-            margin: 30px auto;
+            margin: 20px auto;
             padding: 0 20px;
             flex: 1;
             width: 100%;
         }
 
-        .page-title {
-            font-size: 1.8rem;
-            font-weight: 700;
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
             margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 12px;
+        }
+
+        .page-header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
             color: #000;
-            border-right: 4px solid #000;
-            padding-right: 15px;
         }
 
-        /* ---------- شبكة المنتجات (فارغة حالياً) ---------- */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
-        }
-
-        /* رسالة "لا توجد منتجات" بشكل جميل */
-        .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 80px 20px;
-            background: #ffffff;
-            border-radius: 20px;
-            border: 2px dashed #e0e0e0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-        }
-
-        .empty-state .empty-icon {
-            font-size: 4rem;
-            display: block;
-            margin-bottom: 15px;
-            opacity: 0.5;
-        }
-
-        .empty-state h3 {
-            font-size: 1.4rem;
-            color: #000;
-            margin-bottom: 8px;
-        }
-
-        .empty-state p {
+        .page-header .date {
             color: #888;
-            font-size: 1rem;
+            font-size: 0.8rem;
         }
 
-        .empty-state .empty-hint {
-            margin-top: 15px;
-            font-size: 0.85rem;
-            color: #aaa;
-            border-top: 1px solid #f0f0f0;
-            padding-top: 15px;
-        }
-
-        /* ---------- الشريط السفلي (Footer) ---------- */
-        .footer {
-            background: #ffffff;
-            border-top: 1px solid #e0e0e0;
-            padding: 30px 20px 20px;
-            margin-top: 40px;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
+        /* ---------- بطاقات الإحصائيات ---------- */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
         }
 
-        .footer-col h4 {
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 18px 15px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: #000;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.03);
+        }
+
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #000;
+            line-height: 1.2;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        /* ---------- أزرار الإدارة ---------- */
+        .admin-actions {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .admin-actions h3 {
             font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: #000;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .actions-grid button {
+            padding: 12px 15px;
+            background: #ffffff;
+            border: 2px solid #000;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #000;
+            cursor: pointer;
+            transition: 0.25s ease;
+            text-align: center;
+        }
+
+        .actions-grid button:hover {
+            background: #000;
+            color: #fff;
+            transform: scale(1.02);
+        }
+
+        .actions-grid button .action-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: #888;
+            margin-top: 2px;
+        }
+        .actions-grid button:hover .action-label {
+            color: #ccc;
+        }
+
+        /* ---------- سجل النشاطات ---------- */
+        .activity-log {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 14px;
+            padding: 20px 25px;
+        }
+
+        .activity-log h3 {
+            font-size: 1rem;
             font-weight: 700;
             margin-bottom: 12px;
             color: #000;
         }
 
-        .footer-col p,
-        .footer-col a {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.8;
-            text-decoration: none;
-            display: block;
-            transition: 0.2s;
-        }
-
-        .footer-col a:hover {
-            color: #000;
-        }
-
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 20px auto 0;
-            padding-top: 15px;
-            border-top: 1px solid #f0f0f0;
-            text-align: center;
+        .activity-log .empty-log {
             color: #aaa;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
+            padding: 25px 0;
+            text-align: center;
+            border-top: 1px dashed #eee;
+        }
+
+        /* ---------- تذييل ---------- */
+        .footer {
+            text-align: center;
+            padding: 15px;
+            color: #ccc;
+            font-size: 0.7rem;
+            border-top: 1px solid #eee;
+            margin-top: 25px;
         }
 
         /* ---------- استجابة للجوال ---------- */
         @media (max-width: 600px) {
             .header {
-                flex-direction: row;
-                padding: 12px 15px;
-            }
-            .header .brand {
-                font-size: 1.3rem;
-            }
-            .header .brand span {
-                display: none;
-            }
-            .header .user-area .welcome {
-                font-size: 0.8rem;
-            }
-            .sidebar {
-                width: 270px;
-                right: -290px;
-            }
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-            .empty-state {
-                padding: 50px 15px;
-            }
-            .footer-content {
-                grid-template-columns: 1fr;
+                flex-direction: column;
+                align-items: stretch;
                 text-align: center;
+            }
+            .header .user-area {
+                justify-content: center;
+            }
+            .page-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 8px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .actions-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -378,82 +287,86 @@
     <header class="header">
         <div class="brand">
             lidercenter
-            <span>متجرك الإلكتروني</span>
+            <span>لوحة التحكم</span>
         </div>
-        <div class="left-actions">
-            <div class="user-area">
-                <div class="welcome">مرحباً، <strong id="userNameDisplay">المستخدم</strong></div>
-                <button class="btn-logout" id="logoutBtn">تسجيل الخروج</button>
-            </div>
-            <button class="menu-toggle" id="menuToggle" aria-label="فتح القائمة">☰</button>
+        <div class="user-area">
+            <span class="admin-badge">مدير</span>
+            <div class="welcome">مرحباً، <strong id="adminNameDisplay">المدير</strong></div>
+            <a href="home.html" class="btn-back">العودة للمتجر</a>
+            <button class="btn-logout" id="logoutBtn">تسجيل الخروج</button>
         </div>
     </header>
 
-    <!-- ======== القائمة الجانبية (Sidebar) ======== -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <nav class="sidebar" id="sidebar">
-        <button class="close-btn" id="closeSidebar">✕</button>
-        <div class="sidebar-brand">lidercenter</div>
-        <ul class="nav-list">
-            <li><a href="home.html" class="active" id="navHome"><span class="icon">🏠</span> الرئيسية</a></li>
-            <li><a href="cart.html" id="navCart"><span class="icon">🛒</span> سلة التسوق</a></li>
-            <li><a href="support.html" id="navSupport"><span class="icon">💬</span> فريق الدعم</a></li>
-            <!-- رابط لوحة التحكم (يظهر فقط للمدير عبر JS) -->
-            <li class="admin-link" id="adminNavItem" style="display: none;">
-                <a href="admin.html" id="navAdmin"><span class="icon">⚙️</span> لوحة التحكم</a>
-            </li>
-        </ul>
-        <div style="margin-top: auto; font-size: 0.8rem; color: #ccc; border-top: 1px solid #f0f0f0; padding-top: 15px;">
-            الإصدار 1.0
-        </div>
-    </nav>
-
     <!-- ======== المحتوى الرئيسي ======== -->
     <main class="container">
-        <!-- عنوان الصفحة -->
-        <h2 class="page-title" id="pageTitle">جميع المنتجات</h2>
-        
-        <!-- شبكة المنتجات -->
-        <div class="products-grid" id="productsContainer">
-            <!-- سيتم عرض رسالة "لا توجد منتجات" عبر جافا سكريبت -->
+        <!-- رأس الصفحة -->
+        <div class="page-header">
+            <h1>لوحة التحكم</h1>
+            <span class="date" id="currentDate"></span>
+        </div>
+
+        <!-- بطاقات الإحصائيات -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalProducts">0</div>
+                <div class="stat-label">إجمالي المنتجات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalUsers">0</div>
+                <div class="stat-label">إجمالي المستخدمين</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalOrders">0</div>
+                <div class="stat-label">إجمالي الطلبات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalRevenue">0</div>
+                <div class="stat-label">إجمالي المبيعات</div>
+            </div>
+        </div>
+
+        <!-- أزرار الإدارة السريعة -->
+        <div class="admin-actions">
+            <h3>إدارة المتجر</h3>
+            <div class="actions-grid">
+                <button id="btnAddProduct">
+                    اضافة منتج جديد
+                    <span class="action-label">(نموذج اضافة)</span>
+                </button>
+                <button id="btnManageOrders">
+                    ادارة الطلبات
+                    <span class="action-label">(قائمة الطلبات)</span>
+                </button>
+                <button id="btnManageUsers">
+                    ادارة المستخدمين
+                    <span class="action-label">(قائمة الاعضاء)</span>
+                </button>
+                <button id="btnSettings">
+                    اعدادات المتجر
+                    <span class="action-label">(تخصيص)</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- سجل النشاطات -->
+        <div class="activity-log">
+            <h3>آخر النشاطات</h3>
+            <div class="empty-log">
+                لا توجد نشاطات مسجلة حتى الان.
+            </div>
         </div>
     </main>
 
-    <!-- ======== الشريط السفلي (Footer) ======== -->
+    <!-- ======== تذييل ======== -->
     <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-col">
-                <h4>lidercenter</h4>
-                <p>متجرك الإلكتروني الموثوق لتوفير أحدث المنتجات بأفضل الأسعار.</p>
-            </div>
-            <div class="footer-col">
-                <h4>روابط سريعة</h4>
-                <a href="home.html">الرئيسية</a>
-                <a href="#">المنتجات</a>
-                <a href="#">عروض خاصة</a>
-            </div>
-            <div class="footer-col">
-                <h4>الدعم</h4>
-                <a href="support.html">فريق الدعم</a>
-                <a href="#">سياسة الاسترجاع</a>
-                <a href="#">الشحن والتوصيل</a>
-            </div>
-            <div class="footer-col">
-                <h4>تواصل معنا</h4>
-                <a href="mailto:support@lidercenter.com">support@lidercenter.com</a>
-                <a href="#">+964 123 456 789</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            © 2026 lidercenter — جميع الحقوق محفوظة
-        </div>
+        (c) 2026 lidercenter - لوحة تحكم المدير
     </footer>
 
     <!-- ========================================================== -->
-    <!-- ======== كود Firebase وأعمال المنطق ======== -->
+    <!-- ======== كود Firebase ======== -->
     <!-- ========================================================== -->
     <script type="module">
-        // ----- 1. استيرادات Firebase -----
+        // استيرادات Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
         import {
@@ -461,8 +374,14 @@
             onAuthStateChanged,
             signOut
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+        import {
+            getDatabase,
+            ref,
+            get,
+            child
+        } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-        // ----- 2. إعدادات Firebase (مشروع ashlhl-ed7c7e17) -----
+        // اعدادات Firebase (مشروع ashlhl-ed7c7e17)
         const firebaseConfig = {
             apiKey: "AIzaSyB0lg1AkTQF1ZdntWZsWUoCG8GpqbK-WAY",
             authDomain: "ashlhl-ed7c7e17.firebaseapp.com",
@@ -473,117 +392,113 @@
             appId: "1:246682226738:web:4301ea8caebe2c1325ac2b"
         };
 
-        // ----- 3. التهيئة -----
+        // التهيئة
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const auth = getAuth(app);
+        const db = getDatabase(app);
 
-        // ----- 4. عناصر DOM -----
-        const userNameDisplay = document.getElementById('userNameDisplay');
+        // عناصر DOM
+        const adminNameDisplay = document.getElementById('adminNameDisplay');
         const logoutBtn = document.getElementById('logoutBtn');
-        const productsContainer = document.getElementById('productsContainer');
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        const menuToggle = document.getElementById('menuToggle');
-        const closeSidebarBtn = document.getElementById('closeSidebar');
-        const adminNavItem = document.getElementById('adminNavItem');
-        const navHome = document.getElementById('navHome');
-        const navCart = document.getElementById('navCart');
-        const navSupport = document.getElementById('navSupport');
-        const navAdmin = document.getElementById('navAdmin');
+        const totalProducts = document.getElementById('totalProducts');
+        const totalUsers = document.getElementById('totalUsers');
+        const totalOrders = document.getElementById('totalOrders');
+        const totalRevenue = document.getElementById('totalRevenue');
+        const currentDate = document.getElementById('currentDate');
 
-        // ----- 5. البريد الإلكتروني للمدير -----
+        const btnAddProduct = document.getElementById('btnAddProduct');
+        const btnManageOrders = document.getElementById('btnManageOrders');
+        const btnManageUsers = document.getElementById('btnManageUsers');
+        const btnSettings = document.getElementById('btnSettings');
+
         const ADMIN_EMAIL = 'ashlhl.iq@gmail.com';
 
-        // ----- 6. دالة عرض المنتجات (فارغة) -----
-        function renderEmptyProducts() {
-            productsContainer.innerHTML = `
-                <div class="empty-state">
-                    <span class="empty-icon">📦</span>
-                    <h3>لا توجد منتجات حالياً</h3>
-                    <p>متجرك فارغ من المنتجات.</p>
-                    <div class="empty-hint">
-                        يمكنك إضافة المنتجات من <strong>لوحة التحكم</strong> (للمدير فقط).
-                    </div>
-                </div>
-            `;
-        }
-
-        // ----- 7. وظائف القائمة الجانبية -----
-        function openSidebar() {
-            sidebar.classList.add('open');
-            sidebarOverlay.classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeSidebar() {
-            sidebar.classList.remove('open');
-            sidebarOverlay.classList.remove('open');
-            document.body.style.overflow = '';
-        }
-
-        menuToggle.addEventListener('click', openSidebar);
-        closeSidebarBtn.addEventListener('click', closeSidebar);
-        sidebarOverlay.addEventListener('click', closeSidebar);
-
-        // إغلاق القائمة تلقائياً عند النقر على أي رابط داخلها
-        document.querySelectorAll('.sidebar .nav-list a, .sidebar .nav-list button').forEach(el => {
-            el.addEventListener('click', () => {
-                setTimeout(closeSidebar, 200);
-            });
+        // عرض التاريخ
+        const now = new Date();
+        currentDate.textContent = now.toLocaleDateString('ar-EG', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
         });
 
-        // ----- 8. تفعيل الرابط النشط في القائمة الجانبية -----
-        // بما أننا نستخدم روابط حقيقية (href)، سنحدد الرابط النشط بناءً على عنوان URL الحالي
-        function setActiveLink() {
-            const currentPath = window.location.pathname.split('/').pop() || 'home.html';
-            document.querySelectorAll('.sidebar .nav-list a').forEach(link => {
-                link.classList.remove('active');
-                const linkPath = link.getAttribute('href');
-                if (linkPath === currentPath) {
-                    link.classList.add('active');
-                }
-            });
-        }
-        setActiveLink();
+        // دالة جلب الاحصائيات من Firebase
+        async function loadStats() {
+            try {
+                const productsSnapshot = await get(child(ref(db), 'products'));
+                const productsCount = productsSnapshot.exists() ? Object.keys(productsSnapshot.val()).length : 0;
+                totalProducts.textContent = productsCount;
 
-        // ----- 9. التحقق من حالة تسجيل الدخول (الحماية وعرض زر المدير) -----
+                const usersSnapshot = await get(child(ref(db), 'users'));
+                const usersCount = usersSnapshot.exists() ? Object.keys(usersSnapshot.val()).length : 0;
+                totalUsers.textContent = usersCount;
+
+                const ordersSnapshot = await get(child(ref(db), 'orders'));
+                const ordersCount = ordersSnapshot.exists() ? Object.keys(ordersSnapshot.val()).length : 0;
+                totalOrders.textContent = ordersCount;
+
+                let revenue = 0;
+                if (ordersSnapshot.exists()) {
+                    const orders = ordersSnapshot.val();
+                    for (const key in orders) {
+                        if (orders[key].totalPrice) {
+                            revenue += Number(orders[key].totalPrice);
+                        }
+                    }
+                }
+                totalRevenue.textContent = revenue.toFixed(0);
+
+            } catch (error) {
+                console.error('خطا في جلب الاحصائيات:', error);
+            }
+        }
+
+        // التحقق من صلاحية المدير (حماية الصفحة)
         onAuthStateChanged(auth, (user) => {
             if (!user) {
                 window.location.href = 'login.html';
                 return;
             }
 
-            // عرض اسم المستخدم
-            const displayName = user.displayName || user.email || 'مستخدم';
-            userNameDisplay.textContent = displayName;
-
-            // التحقق من المدير
-            const isAdmin = (user.email === ADMIN_EMAIL);
-
-            if (isAdmin) {
-                adminNavItem.style.display = 'block';
-                console.log('✅ تم تسجيل الدخول كمدير (ashlhl.iq@gmail.com) - زر لوحة التحكم ظاهر');
-            } else {
-                adminNavItem.style.display = 'none';
+            if (user.email !== ADMIN_EMAIL) {
+                alert('هذه الصفحة مخصصة للمدير فقط. سيتم توجيهك الى المتجر.');
+                window.location.href = 'home.html';
+                return;
             }
 
-            // عرض واجهة المتجر (فارغة حالياً)
-            renderEmptyProducts();
+            adminNameDisplay.textContent = user.displayName || user.email || 'المدير';
+            loadStats();
         });
 
-        // ----- 10. زر تسجيل الخروج -----
+        // أزرار الادارة (مؤقتة)
+        btnAddProduct.addEventListener('click', () => {
+            alert('سيتم فتح نموذج لاضافة منتج جديد وحفظه في Firebase.');
+        });
+
+        btnManageOrders.addEventListener('click', () => {
+            alert('سيتم عرض قائمة بجميع الطلبات المستلمة من العملاء.');
+        });
+
+        btnManageUsers.addEventListener('click', () => {
+            alert('سيتم عرض قائمة بجميع المستخدمين المسجلين.');
+        });
+
+        btnSettings.addEventListener('click', () => {
+            alert('سيتم فتح اعدادات المتجر (الاسم، الشعار، الخيارات العامة).');
+        });
+
+        // تسجيل الخروج
         logoutBtn.addEventListener('click', () => {
             signOut(auth)
                 .then(() => {
                     window.location.href = 'login.html';
                 })
                 .catch((error) => {
-                    alert('حدث خطأ أثناء تسجيل الخروج: ' + error.message);
+                    alert('حدث خطا اثناء تسجيل الخروج: ' + error.message);
                 });
         });
 
-        console.log('✅ home.html جاهز (جميع الأزرار تنقل إلى صفحات أخرى، بدون بيانات وهمية)');
+        console.log('admin.html جاهز (بدون ايموجي، خط اصغر)');
     </script>
 </body>
 </html>
