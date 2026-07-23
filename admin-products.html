@@ -4,33 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>lidercenter - إدارة المنتجات</title>
-  <style>
-    /* ── Reset & Variables ── */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
 
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
       --bg: #f4f6fa;
       --card: #ffffff;
       --text: #0b0e14;
       --text-muted: #5e6879;
       --border: #e2e7ef;
-      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.10);
-      --radius-sm: 12px;
-      --radius-md: 18px;
-      --radius-lg: 24px;
-      --radius-xl: 28px;
-      --radius-full: 9999px;
-      --transition: 0.25s cubic-bezier(0.2, 0, 0, 1);
-      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
       --primary: #0b0e14;
       --danger: #dc3545;
       --success: #28a745;
+      --radius: 18px;
+      --shadow: 0 10px 30px rgba(0,0,0,.06);
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
     body {
@@ -38,745 +26,207 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding-top: 84px;
-      padding-bottom: 92px;
-      -webkit-font-smoothing: antialiased;
+      padding: 24px;
     }
 
-    ::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #c9d0db;
-      border-radius: 999px;
-    }
-
-    /* ── Topbar ── */
-    .topbar {
-      position: fixed;
-      top: 0;
-      inset-inline: 0;
-      height: 84px;
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(18px) saturate(1.1);
-      -webkit-backdrop-filter: blur(18px) saturate(1.1);
-      border-bottom: 1px solid rgba(226, 231, 239, 0.7);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      gap: 12px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .brand-mark {
-      width: 44px;
-      height: 44px;
-      border-radius: var(--radius-md);
-      background: linear-gradient(145deg, #0b0e14, #1e2530);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      font-weight: 900;
-      flex-shrink: 0;
-      letter-spacing: -0.5px;
-      box-shadow: 0 4px 12px rgba(11, 14, 20, 0.15);
-    }
-
-    .brand-text h1 {
-      font-size: 1.1rem;
-      font-weight: 900;
-      letter-spacing: -0.3px;
-      line-height: 1.2;
-    }
-
-    .brand-text p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 160px;
-      font-weight: 500;
-    }
-
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .action-btn {
-      height: 42px;
-      min-width: 42px;
-      padding: 0 16px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--text);
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.82rem;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: var(--shadow-sm);
-      text-decoration: none;
-    }
-
-    .action-btn:hover {
-      transform: translateY(-1px);
-      border-color: #b8c2d0;
-      box-shadow: var(--shadow-md);
-    }
-
-    .action-btn:active {
-      transform: scale(0.97);
-    }
-
-    .user-pill {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 4px 12px 4px 4px;
-      border-radius: var(--radius-full);
-      border: 1px solid var(--border);
-      background: #fff;
-      box-shadow: var(--shadow-sm);
-      max-width: 200px;
-      min-width: 0;
-      transition: var(--transition);
-    }
-    .user-pill:hover {
-      box-shadow: var(--shadow-md);
-    }
-
-    .avatar {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #0b0e14, #2a3340);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 0.8rem;
-      font-weight: 800;
-      overflow: hidden;
-    }
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .user-pill span {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100px;
-    }
-
-    /* ── Container ── */
     .container {
-      width: min(1180px, 100%);
+      width: min(1100px, 100%);
       margin: 0 auto;
-      padding: 0 16px;
     }
 
-    /* ── Hero ── */
-    .hero {
+    .card {
       background: #fff;
       border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 24px 28px;
-      box-shadow: var(--shadow-sm);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    h1, h2, h3 {
       margin-bottom: 12px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -60%;
-      right: -10%;
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(11, 14, 20, 0.03) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
     }
 
-    .hero-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      flex-wrap: wrap;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero h2 {
-      font-size: 1.4rem;
-      font-weight: 900;
-      letter-spacing: -0.3px;
-      line-height: 1.4;
-      margin-bottom: 6px;
-    }
-
-    .hero p {
+    .muted {
       color: var(--text-muted);
+      margin-bottom: 14px;
       line-height: 1.8;
-      font-size: 0.92rem;
-      max-width: 660px;
     }
 
-    .badge-admin {
-      background: var(--primary);
-      color: #fff;
-      padding: 4px 16px;
-      border-radius: var(--radius-full);
-      font-size: 0.75rem;
-      font-weight: 700;
-      display: inline-block;
-      margin-top: 6px;
-    }
-
-    /* ── Quick Links ── */
-    .quick-links {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding: 6px 0 12px;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-    }
-    .quick-links::-webkit-scrollbar {
-      display: none;
-    }
-
-    .chip {
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--text);
-      padding: 10px 20px;
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.82rem;
-      white-space: nowrap;
-      transition: var(--transition);
-      flex-shrink: 0;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: var(--shadow-sm);
-    }
-    .chip:hover {
-      background: #0b0e14;
-      color: #fff;
-      border-color: #0b0e14;
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-    .chip:active {
-      transform: scale(0.97);
-    }
-    .chip.active {
-      background: #0b0e14;
-      color: #fff;
-      border-color: #0b0e14;
-    }
-
-    /* ── Form ── */
-    .form-section {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 24px 28px;
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 20px;
-    }
-
-    .form-section h3 {
-      font-weight: 900;
-      font-size: 1.05rem;
-      margin-bottom: 16px;
-    }
-
-    .form-grid {
+    .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 14px;
     }
-    .form-grid .full-width {
+
+    .full {
       grid-column: 1 / -1;
     }
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .form-group label {
+    label {
+      display: block;
+      margin-bottom: 6px;
       font-weight: 700;
-      font-size: 0.85rem;
-      color: var(--text-muted);
+      font-size: 0.9rem;
     }
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      padding: 12px 14px;
+
+    input, textarea, button {
+      width: 100%;
+      border-radius: 12px;
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 0.95rem;
-      background: var(--bg);
-      transition: var(--transition);
-      outline: none;
-      color: var(--text);
+      padding: 12px 14px;
+      font-size: 1rem;
       font-family: inherit;
+      outline: none;
     }
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
+
+    input:focus, textarea:focus {
       border-color: var(--primary);
-      background: #fff;
-      box-shadow: 0 0 0 4px rgba(11, 14, 20, 0.06);
+      box-shadow: 0 0 0 4px rgba(11,14,20,.06);
     }
-    .form-group textarea {
-      min-height: 80px;
+
+    textarea {
+      min-height: 90px;
       resize: vertical;
     }
 
-    .btn-primary {
+    button {
+      border: none;
       background: var(--primary);
       color: #fff;
-      border: none;
-      padding: 12px 28px;
-      border-radius: var(--radius-sm);
       font-weight: 800;
-      font-size: 0.95rem;
       cursor: pointer;
-      transition: var(--transition);
-      width: fit-content;
+      transition: .2s ease;
     }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-      background: #1e2530;
+
+    button:hover {
+      transform: translateY(-1px);
     }
-    .btn-primary:active {
-      transform: scale(0.97);
-    }
-    .btn-primary:disabled {
-      opacity: 0.6;
+
+    button:disabled {
+      opacity: .7;
       cursor: not-allowed;
       transform: none;
     }
 
     .btn-danger {
       background: var(--danger);
-      color: #fff;
-      border: none;
-      padding: 6px 14px;
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    .btn-danger:hover {
-      background: #c82333;
-      transform: translateY(-1px);
     }
 
-    /* ── Products Table ── */
-    .table-wrapper {
+    .status {
+      margin-top: 12px;
+      font-weight: 700;
+      min-height: 24px;
+    }
+
+    .status.success { color: var(--success); }
+    .status.error { color: var(--danger); }
+
+    .table-wrap {
       overflow-x: auto;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-      padding: 4px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      min-width: 700px;
     }
-    th {
-      text-align: right;
-      padding: 14px 16px;
-      border-bottom: 2px solid var(--border);
-      font-weight: 900;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-size: 0.75rem;
-      letter-spacing: 0.3px;
-    }
-    td {
-      padding: 12px 16px;
+
+    th, td {
+      padding: 12px;
       border-bottom: 1px solid var(--border);
+      text-align: right;
       vertical-align: middle;
     }
-    tr:last-child td {
-      border-bottom: none;
+
+    th {
+      font-size: .85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .3px;
     }
-    .product-img-thumb {
-      width: 50px;
-      height: 50px;
-      border-radius: var(--radius-sm);
+
+    .thumb {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
       object-fit: cover;
       background: var(--bg);
       display: block;
     }
-    .product-img-placeholder {
-      width: 50px;
-      height: 50px;
-      border-radius: var(--radius-sm);
+
+    .placeholder {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
       background: var(--bg);
+      color: var(--text-muted);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-muted);
-      font-size: 0.7rem;
+      font-size: .72rem;
     }
-    .actions-cell {
+
+    .actions {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .empty-state {
-      padding: 32px;
-      text-align: center;
-      color: var(--text-muted);
-    }
-
-    /* ── Toast ── */
-    .toast {
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: #0b0e14;
-      color: #fff;
-      padding: 14px 28px;
-      border-radius: var(--radius-full);
-      font-weight: 700;
-      font-size: 0.9rem;
-      box-shadow: var(--shadow-lg);
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-      z-index: 2000;
-      white-space: nowrap;
-    }
-    .toast.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(-50%) translateY(0);
-    }
-    .toast.success {
-      background: var(--success);
-    }
-    .toast.error {
-      background: var(--danger);
-    }
-
-    /* ── Bottom Nav ── */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      inset-inline: 0;
-      height: 84px;
-      background: rgba(255, 255, 255, 0.90);
-      backdrop-filter: blur(18px) saturate(1.1);
-      -webkit-backdrop-filter: blur(18px) saturate(1.1);
-      border-top: 1px solid rgba(226, 231, 239, 0.7);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 1000;
-      padding: 8px 6px 12px;
-      gap: 2px;
-    }
-
-    .nav-btn {
-      flex: 1;
-      max-width: 100px;
-      height: 58px;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      border-radius: var(--radius-md);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      cursor: pointer;
-      transition: var(--transition);
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-decoration: none;
-      letter-spacing: 0.2px;
-      padding: 0 4px;
-    }
-    .nav-btn:hover {
-      background: rgba(11, 14, 20, 0.05);
-      color: var(--text);
-    }
-    .nav-btn.active {
-      background: #0b0e14;
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(11, 14, 20, 0.20);
-    }
-    .nav-btn.active:hover {
-      background: #1e2530;
-    }
-
-    .nav-btn svg {
-      width: 22px;
-      height: 22px;
-      stroke: currentColor;
-      stroke-width: 1.8;
-      fill: none;
-    }
-    .nav-btn.active svg {
-      stroke: #fff;
-    }
-
-    /* ── Responsive ── */
-    @media (max-width: 768px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-      .form-grid .full-width {
-        grid-column: 1;
-      }
-      .hero {
-        padding: 18px 16px;
-      }
-      .table-wrapper {
-        font-size: 0.8rem;
-      }
-      th,
-      td {
-        padding: 10px 12px;
-      }
-      .product-img-thumb,
-      .product-img-placeholder {
-        width: 40px;
-        height: 40px;
-      }
-    }
-
-    @media (max-width: 600px) {
-      body {
-        padding-top: 76px;
-        padding-bottom: 80px;
-      }
-      .topbar {
-        height: 76px;
-        padding: 0 14px;
-      }
-      .brand-mark {
-        width: 38px;
-        height: 38px;
-        font-size: 1rem;
-      }
-      .brand-text h1 {
-        font-size: 0.95rem;
-      }
-      .brand-text p {
-        max-width: 100px;
-        font-size: 0.7rem;
-      }
-      .user-pill {
-        max-width: 130px;
-        padding: 3px 10px 3px 3px;
-      }
-      .user-pill span {
-        max-width: 60px;
-        font-size: 0.74rem;
-      }
-      .avatar {
-        width: 30px;
-        height: 30px;
-        font-size: 0.7rem;
-      }
-      .action-btn {
-        height: 38px;
-        min-width: 38px;
-        padding: 0 12px;
-        font-size: 0.72rem;
-      }
-      .bottom-nav {
-        height: 76px;
-        padding: 6px 4px 10px;
-      }
-      .nav-btn {
-        height: 52px;
-        font-size: 0.6rem;
-        max-width: 72px;
-      }
-      .nav-btn svg {
-        width: 20px;
-        height: 20px;
-      }
-      .toast {
-        font-size: 0.8rem;
-        padding: 12px 20px;
-        bottom: 90px;
-        white-space: normal;
-        max-width: 90%;
-        text-align: center;
-      }
-      .form-section {
-        padding: 16px;
-      }
-      .btn-primary {
-        width: 100%;
-        text-align: center;
-        justify-content: center;
-      }
-      table {
-        font-size: 0.7rem;
-      }
-      th,
-      td {
-        padding: 8px 10px;
-      }
-      .product-img-thumb,
-      .product-img-placeholder {
-        width: 32px;
-        height: 32px;
-      }
-      .actions-cell {
-        flex-direction: column;
-        gap: 4px;
-      }
-    }
-
-    @media (max-width: 400px) {
-      .top-actions .action-btn:not(.user-pill) {
-        display: none;
-      }
-      .brand-text p {
-        max-width: 70px;
-      }
+    @media (max-width: 760px) {
+      .grid { grid-template-columns: 1fr; }
+      .full { grid-column: 1; }
     }
   </style>
 </head>
+
 <body>
+  <div class="container">
+    <div class="card">
+      <h1>إدارة المنتجات</h1>
+      <p class="muted">أضف منتج جديد إلى Realtime Database، وشوف المنتجات الموجودة واحذفها من نفس الصفحة.</p>
 
-  <!-- ═══ Topbar ═══ -->
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">L</div>
-      <div class="brand-text">
-        <h1>lidercenter</h1>
-        <p id="headerSubtitle">إدارة المنتجات</p>
-      </div>
-    </div>
-
-    <div class="top-actions">
-      <a class="action-btn" href="home.html">الرئيسية</a>
-      <a class="action-btn" href="dashboard.html">لوحة التحكم</a>
-      <button class="action-btn" id="logoutBtn" type="button">خروج</button>
-      <div class="user-pill">
-        <div class="avatar" id="topAvatar">U</div>
-        <span id="topUserName">...</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- ═══ Toast ═══ -->
-  <div class="toast" id="toast"></div>
-
-  <!-- ═══ Main ═══ -->
-  <main class="container">
-
-    <!-- Hero -->
-    <section class="hero">
-      <div class="hero-top">
+      <form id="addProductForm" class="grid">
         <div>
-          <h2 id="welcomeText">إدارة المنتجات</h2>
-          <p id="welcomeSubText">أضف منتجاً جديداً باستخدام رابط الصورة، أو احذف المنتجات الموجودة.</p>
-          <span class="badge-admin">مدير</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Quick Links -->
-    <div class="quick-links">
-      <a class="chip" href="home.html">الرئيسية</a>
-      <a class="chip" href="products.html">جميع المنتجات</a>
-      <a class="chip" href="dashboard.html">لوحة التحكم</a>
-      <a class="chip active" href="admin-products.html">إدارة المنتجات</a>
-    </div>
-
-    <!-- ── نموذج إضافة منتج ── -->
-    <section class="form-section">
-      <h3>إضافة منتج جديد</h3>
-      <form id="addProductForm" class="form-grid">
-        <div class="form-group">
           <label for="productName">اسم المنتج *</label>
-          <input type="text" id="productName" placeholder="أدخل اسم المنتج" required />
+          <input type="text" id="productName" placeholder="مثال: آيفون 15" required />
         </div>
-        <div class="form-group">
+
+        <div>
           <label for="productPrice">السعر *</label>
-          <input type="number" id="productPrice" placeholder="مثال: 49.99" step="0.01" required />
+          <input type="number" id="productPrice" placeholder="مثال: 499" step="0.01" required />
         </div>
-        <div class="form-group">
+
+        <div>
           <label for="productCategory">التصنيف</label>
           <input type="text" id="productCategory" placeholder="مثال: إلكترونيات" />
         </div>
-        <div class="form-group">
+
+        <div>
           <label for="productStock">المخزون</label>
-          <input type="number" id="productStock" placeholder="الكمية المتوفرة" step="1" />
+          <input type="number" id="productStock" placeholder="مثال: 10" step="1" />
         </div>
-        <div class="form-group full-width">
-          <label for="productImage">رابط الصورة (URL) *</label>
+
+        <div class="full">
+          <label for="productImage">رابط الصورة *</label>
           <input type="url" id="productImage" placeholder="https://example.com/image.jpg" required />
         </div>
-        <div class="form-group full-width">
+
+        <div class="full">
           <label for="productDescription">الوصف</label>
-          <textarea id="productDescription" placeholder="وصف المنتج (اختياري)"></textarea>
+          <textarea id="productDescription" placeholder="وصف المنتج"></textarea>
         </div>
-        <div class="form-group full-width">
-          <button class="btn-primary" type="submit" id="submitBtn">إضافة المنتج</button>
+
+        <div class="full">
+          <button type="submit" id="submitBtn">إضافة المنتج</button>
+          <div id="status" class="status"></div>
         </div>
       </form>
-    </section>
+    </div>
 
-    <!-- ── قائمة المنتجات ── -->
-    <section>
-      <h3 style="margin: 16px 0 12px;">المنتجات الموجودة</h3>
-      <div class="table-wrapper">
+    <div class="card">
+      <h2>المنتجات الموجودة</h2>
+      <div class="table-wrap">
         <table>
           <thead>
             <tr>
@@ -789,302 +239,201 @@
             </tr>
           </thead>
           <tbody id="productsTableBody">
-            <tr><td colspan="6" class="empty-state">جاري تحميل المنتجات...</td></tr>
+            <tr>
+              <td colspan="6">جاري تحميل المنتجات...</td>
+            </tr>
           </tbody>
         </table>
       </div>
-    </section>
+    </div>
+  </div>
 
-  </main>
-
-  <!-- ═══ Bottom Navigation ═══ -->
-  <nav class="bottom-nav">
-    <a class="nav-btn" href="home.html">
-      <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>
-      الرئيسية
-    </a>
-    <a class="nav-btn" href="products.html">
-      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
-      المنتجات
-    </a>
-    <a class="nav-btn" href="favorites.html">
-      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-      المفضلة
-    </a>
-    <a class="nav-btn" href="cart.html">
-      <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
-      السلة
-    </a>
-    <a class="nav-btn active" href="dashboard.html">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      لوحة التحكم
-    </a>
-  </nav>
-
-  <!-- ═══ Firebase (CDN - يعمل 100% مع Realtime Database فقط) ═══ -->
-  <script>
-    // ── استيراد Firebase من CDN ──
-    // استخدمنا importmap لتحميل الحزم بشكل صحيح
-  </script>
-  
   <script type="importmap">
     {
       "imports": {
-        "firebase/app": "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js",
-        "firebase/auth": "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js",
-        "firebase/database": "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js"
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js",
+        "firebase/database": "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js"
       }
     }
   </script>
 
   <script type="module">
-    // ── استيراد Firebase SDK ──
     import { initializeApp } from "firebase/app";
     import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
     import { getDatabase, ref, push, set, onValue, remove } from "firebase/database";
 
-    // ── إعدادات Firebase (Realtime Database فقط) ──
     const firebaseConfig = {
-      apiKey: "AIzaSyDcj-R4XEXmLUl7hW38r58paTVHxq2GKVI",
-      authDomain: "test-bfcd3.firebaseapp.com",
-      projectId: "test-bfcd3",
-      storageBucket: "test-bfcd3.firebasestorage.app",
-      messagingSenderId: "178734209574",
-      appId: "1:178734209574:web:a54fbfb0118ac2325b64e7",
-      measurementId: "G-9TVW2LDH08"
+      apiKey: "PUT_YOUR_API_KEY_HERE",
+      authDomain: "PUT_YOUR_AUTH_DOMAIN_HERE",
+      databaseURL: "https://YOUR-PROJECT-default-rtdb.firebaseio.com",
+      projectId: "PUT_YOUR_PROJECT_ID_HERE",
+      storageBucket: "PUT_YOUR_STORAGE_BUCKET_HERE",
+      messagingSenderId: "PUT_YOUR_MESSAGING_SENDER_ID_HERE",
+      appId: "PUT_YOUR_APP_ID_HERE"
     };
 
-    // ── تهيئة Firebase ──
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    console.log("✅ Firebase initialized successfully!");
+    const ADMIN_EMAIL = "ashlhl.iq@gmail.com";
 
-    // ── DOM refs ──
-    const topAvatar = document.getElementById('topAvatar');
-    const topUserName = document.getElementById('topUserName');
-    const welcomeText = document.getElementById('welcomeText');
-    const welcomeSubText = document.getElementById('welcomeSubText');
-    const headerSubtitle = document.getElementById('headerSubtitle');
-    const logoutBtn = document.getElementById('logoutBtn');
+    const form = document.getElementById("addProductForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const statusEl = document.getElementById("status");
+    const tableBody = document.getElementById("productsTableBody");
 
-    const form = document.getElementById('addProductForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const productName = document.getElementById('productName');
-    const productPrice = document.getElementById('productPrice');
-    const productCategory = document.getElementById('productCategory');
-    const productStock = document.getElementById('productStock');
-    const productImage = document.getElementById('productImage');
-    const productDescription = document.getElementById('productDescription');
-    const tableBody = document.getElementById('productsTableBody');
-    const toast = document.getElementById('toast');
+    const productName = document.getElementById("productName");
+    const productPrice = document.getElementById("productPrice");
+    const productCategory = document.getElementById("productCategory");
+    const productStock = document.getElementById("productStock");
+    const productImage = document.getElementById("productImage");
+    const productDescription = document.getElementById("productDescription");
 
-    // ── Helpers ──
-    function escapeHtml(str = '') {
+    function showStatus(message, type = "") {
+      statusEl.textContent = message;
+      statusEl.className = `status ${type}`;
+    }
+
+    function escapeHtml(str = "") {
       return String(str)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
     }
 
-    function showToast(message, type = 'success') {
-      toast.textContent = message;
-      toast.className = `toast ${type}`;
-      void toast.offsetWidth;
-      toast.classList.add('show');
-      clearTimeout(toast._hideTimer);
-      toast._hideTimer = setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3000);
+    function renderEmpty(message) {
+      tableBody.innerHTML = `<tr><td colspan="6">${message}</td></tr>`;
     }
 
-    function userNameValue(user) {
-      return user?.displayName || user?.email?.split('@')?.[0] || 'مستخدم';
-    }
-
-    function userInitial(user) {
-      const n = userNameValue(user);
-      return n.trim().charAt(0).toUpperCase() || 'U';
-    }
-
-    function setAvatar(el, user) {
-      const photo = user?.photoURL || '';
-      if (photo) {
-        el.innerHTML = `<img src="${escapeHtml(photo)}" alt="avatar">`;
-      } else {
-        el.textContent = userInitial(user);
-      }
-    }
-
-    // ── التحقق من صلاحية المدير ──
-    const ADMIN_EMAIL = 'ashlhl.iq@gmail.com';
-
-    onAuthStateChanged(auth, (user) => {
-      console.log("Auth state changed:", user?.email);
-      
-      if (!user) {
-        console.log("No user, redirecting to login");
-        window.location.href = 'login.html';
-        return;
-      }
-      
-      if (user.email !== ADMIN_EMAIL) {
-        console.log("Not admin, redirecting to home");
-        window.location.href = 'home.html';
-        return;
-      }
-
-      // ✅ المدير: عرض لوحة التحكم
-      console.log("Admin logged in:", user.email);
-      const name = userNameValue(user);
-      setAvatar(topAvatar, user);
-      topUserName.textContent = name;
-      welcomeText.textContent = `مرحباً ${name}`;
-      welcomeSubText.textContent = 'يمكنك إدارة المنتجات: إضافة، عرض، حذف.';
-      headerSubtitle.textContent = user.email || 'إدارة المنتجات';
-
-      // تحميل المنتجات
-      loadProducts();
-    });
-
-    // ── تحميل المنتجات وعرضها في الجدول ──
     function loadProducts() {
-      console.log("Loading products...");
-      const productsRef = ref(db, 'products');
+      const productsRef = ref(db, "products");
+
       onValue(productsRef, (snapshot) => {
         const data = snapshot.val();
-        console.log("Products data:", data);
-        
+
         if (!data) {
-          tableBody.innerHTML = `<tr><td colspan="6" class="empty-state">لا توجد منتجات حتى الآن</td></tr>`;
+          renderEmpty("لا توجد منتجات حتى الآن");
           return;
         }
 
-        const entries = Object.entries(data);
-        let html = '';
-        for (const [key, product] of entries) {
-          const p = product || {};
-          const name = escapeHtml(p.name || 'بدون اسم');
-          const price = p.price ?? '';
-          const category = escapeHtml(p.category || '');
-          const stock = p.stock ?? '';
-          const image = p.image || '';
-          const id = escapeHtml(key);
+        const rows = Object.entries(data).map(([id, p]) => {
+          const name = escapeHtml(p?.name || "بدون اسم");
+          const price = p?.price ?? "";
+          const category = escapeHtml(p?.category || "—");
+          const stock = p?.stock ?? "—";
+          const image = p?.image || "";
 
-          html += `
+          return `
             <tr>
               <td>
-                ${image
-                  ? `<img src="${escapeHtml(image)}" alt="${name}" class="product-img-thumb" loading="lazy" onerror="this.style.display='none'">`
-                  : `<div class="product-img-placeholder">لا توجد</div>`
+                ${
+                  image
+                    ? `<img class="thumb" src="${escapeHtml(image)}" alt="${name}" onerror="this.style.display='none'">`
+                    : `<div class="placeholder">لا توجد</div>`
                 }
               </td>
               <td><strong>${name}</strong></td>
-              <td>${price ? Number(price).toLocaleString('en-US') : '—'}</td>
-              <td>${category || '—'}</td>
-              <td>${stock || '—'}</td>
+              <td>${price !== "" ? Number(price).toLocaleString() : "—"}</td>
+              <td>${category}</td>
+              <td>${stock}</td>
               <td>
-                <div class="actions-cell">
-                  <button class="btn-danger" data-id="${id}" data-action="delete">حذف</button>
+                <div class="actions">
+                  <button class="btn-danger" data-delete="${id}" type="button">حذف</button>
                 </div>
               </td>
             </tr>
           `;
-        }
-        tableBody.innerHTML = html;
+        }).join("");
 
-        // إضافة أحداث الحذف
-        document.querySelectorAll('[data-action="delete"]').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            const productId = btn.dataset.id;
-            if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
-              await deleteProduct(productId);
+        tableBody.innerHTML = rows;
+
+        document.querySelectorAll("[data-delete]").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            const id = btn.getAttribute("data-delete");
+            if (!confirm("متأكد تريد حذف هذا المنتج؟")) return;
+
+            try {
+              await remove(ref(db, `products/${id}`));
+              showStatus("تم حذف المنتج بنجاح", "success");
+            } catch (error) {
+              console.error(error);
+              showStatus("خطأ بالحذف: " + error.message, "error");
             }
           });
         });
       }, (error) => {
-        console.error("Error loading products:", error);
-        showToast('خطأ في تحميل المنتجات', 'error');
+        console.error("loadProducts error:", error);
+        renderEmpty("فشل تحميل المنتجات");
       });
     }
 
-    // ── حذف منتج ──
-    async function deleteProduct(productId) {
+    onAuthStateChanged(auth, async (user) => {
       try {
-        const productRef = ref(db, `products/${productId}`);
-        await remove(productRef);
-        showToast('تم حذف المنتج بنجاح', 'success');
-      } catch (error) {
-        console.error('Delete error:', error);
-        showToast('حدث خطأ أثناء الحذف', 'error');
-      }
-    }
+        if (!user) {
+          window.location.href = "login.html";
+          return;
+        }
 
-    // ── إضافة منتج (يتم حفظه في Firebase Realtime Database) ──
-    form.addEventListener('submit', async (e) => {
+        if (user.email !== ADMIN_EMAIL) {
+          window.location.href = "home.html";
+          return;
+        }
+
+        loadProducts();
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const name = productName.value.trim();
-      const price = parseFloat(productPrice.value);
+      const price = Number(productPrice.value);
       const category = productCategory.value.trim();
-      const stock = parseInt(productStock.value) || 0;
+      const stock = Number(productStock.value || 0);
       const image = productImage.value.trim();
       const description = productDescription.value.trim();
 
-      if (!name) {
-        showToast('الرجاء إدخال اسم المنتج', 'error');
-        return;
-      }
-      if (isNaN(price) || price <= 0) {
-        showToast('الرجاء إدخال سعر صحيح', 'error');
-        return;
-      }
-      if (!image) {
-        showToast('الرجاء إدخال رابط الصورة', 'error');
-        return;
-      }
+      if (!name) return showStatus("اكتب اسم المنتج", "error");
+      if (!image) return showStatus("اكتب رابط الصورة", "error");
+      if (Number.isNaN(price) || price <= 0) return showStatus("اكتب سعر صحيح", "error");
 
       submitBtn.disabled = true;
-      submitBtn.textContent = 'جاري الحفظ...';
+      submitBtn.textContent = "جاري الحفظ...";
+      showStatus("جاري حفظ المنتج...", "");
 
       try {
-        const newProduct = {
+        const productData = {
           name,
           price,
-          category: category || '',
-          stock: stock || 0,
+          category,
+          stock,
           image,
-          description: description || '',
+          description,
           createdAt: Date.now()
         };
 
-        console.log("Saving product:", newProduct);
-        const productsRef = ref(db, 'products');
-        await push(productsRef, newProduct);
-        console.log("Product saved successfully!");
+        console.log("Saving product:", productData);
 
-        showToast('تم إضافة المنتج بنجاح', 'success');
+        const newRef = push(ref(db, "products"));
+        await set(newRef, productData);
+
+        showStatus("تمت إضافة المنتج بنجاح", "success");
         form.reset();
         productName.focus();
       } catch (error) {
-        console.error('Add product error:', error);
-        showToast('حدث خطأ أثناء الإضافة: ' + error.message, 'error');
+        console.error("save error:", error);
+        showStatus("فشل الحفظ: " + error.message, "error");
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'إضافة المنتج';
+        submitBtn.textContent = "إضافة المنتج";
       }
     });
-
-    // ── تسجيل الخروج ──
-    logoutBtn.addEventListener('click', async () => {
-      await signOut(auth);
-      window.location.href = 'login.html';
-    });
-
-    console.log("✅ Script loaded successfully!");
   </script>
 </body>
 </html>
