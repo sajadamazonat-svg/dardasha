@@ -1130,6 +1130,7 @@
 
         // ================================================================
         // 4. المصادقة وإدارة المستخدم (تسجيل الدخول عبر Google/Gmail)
+        //    عند الضغط على الزر، تظهر نافذة اختيار الحسابات
         // ================================================================
         function updateUI(user) {
             currentUser = user;
@@ -1170,21 +1171,33 @@
                 if (footerAdminLink) footerAdminLink.style.display = 'none';
 
                 userSection.innerHTML = `
-                    <button class="btn-outline-light" id="loginBtn">تسجيل الدخول عبر Gmail</button>
+                    <button class="btn-outline-light" id="loginBtn">🔑 تسجيل الدخول عبر Gmail</button>
                 `;
 
                 const loginBtn = document.getElementById('loginBtn');
                 if (loginBtn) {
                     loginBtn.addEventListener('click', function() {
+                        // استخدام Google Auth Provider مع خاصية اختيار الحساب
                         const provider = new firebase.auth.GoogleAuthProvider();
-                        provider.setCustomParameters({ prompt: 'select_account' });
+                        // إجبار المستخدم على اختيار حساب حتى لو كان مسجلاً بالفعل
+                        provider.setCustomParameters({
+                            prompt: 'select_account'
+                        });
+
+                        // فتح نافذة منبثقة لاختيار حساب Gmail
                         auth.signInWithPopup(provider)
                             .then((result) => {
                                 console.log('✅ تم تسجيل الدخول:', result.user.email);
+                                // إعادة توجيه إلى الصفحة الرئيسية
+                                navigateTo('home');
                             })
                             .catch((err) => {
                                 console.error('❌ خطأ في تسجيل الدخول:', err);
-                                alert('❌ فشل تسجيل الدخول: ' + err.message);
+                                if (err.code === 'auth/popup-blocked') {
+                                    alert('❌ تم حظر النافذة المنبثقة. يرجى السماح بالنوافذ المنبثقة لهذا الموقع.');
+                                } else {
+                                    alert('❌ فشل تسجيل الدخول: ' + err.message);
+                                }
                             });
                     });
                 }
@@ -1196,7 +1209,6 @@
             updateUI(user);
             // إذا كان المستخدم مسؤولاً وكانت الصفحة الحالية هي admin، نعرضها
             if (user && user.email === 'ashlhl.iq@gmail.com') {
-                // المستخدم مسؤول، نجهز لوحة التحكم
                 loadAdminProducts();
                 loadOrderCount();
             }
@@ -1208,7 +1220,6 @@
         function loadProducts() {
             database.ref('products').on('value', (snapshot) => {
                 const products = snapshot.val();
-                // إزالة البطاقات القديمة
                 document.querySelectorAll('.product-card:not(.empty-state)').forEach(el => el.remove());
 
                 if (!products) {
@@ -1274,7 +1285,7 @@
                     detailBtn.textContent = 'تفاصيل';
                     detailBtn.addEventListener('click', function() {
                         alert('تفاصيل المنتج: ' + (p.name || 'غير معروف') + '\nالسعر: ' + (p.price ||
-                        '٠') + ' ر.س');
+                            '٠') + ' ر.س');
                     });
 
                     btnGroup.appendChild(addBtn);
@@ -1301,7 +1312,7 @@
                 tableBody.innerHTML = '';
                 if (!products) {
                     tableBody.innerHTML =
-                    `<tr class="empty-row"><td colspan="6">لا توجد منتجات. أضف منتجاً الآن!</td></tr>`;
+                        `<tr class="empty-row"><td colspan="6">لا توجد منتجات. أضف منتجاً الآن!</td></tr>`;
                     productCountSpan.textContent = '0';
                     return;
                 }
@@ -1337,7 +1348,6 @@
 
                     tableBody.appendChild(row);
 
-                    // تعديل
                     row.querySelector('.btn-edit').addEventListener('click', function() {
                         const id = this.dataset.id;
                         const product = products[id];
@@ -1353,7 +1363,6 @@
                         }
                     });
 
-                    // حذف
                     row.querySelector('.btn-delete').addEventListener('click', function() {
                         const id = this.dataset.id;
                         if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
@@ -1408,7 +1417,6 @@
             const editId = submitBtn.dataset.editId;
 
             if (editId) {
-                // تحديث
                 database.ref('products/' + editId).update(productData)
                     .then(() => {
                         showMessage('✅ تم تحديث المنتج بنجاح', 'success');
@@ -1416,7 +1424,6 @@
                     })
                     .catch(err => showMessage('❌ خطأ في التحديث: ' + err.message, 'error'));
             } else {
-                // إضافة
                 database.ref('products').push(productData)
                     .then(() => {
                         showMessage('✅ تم إضافة المنتج بنجاح', 'success');
@@ -1436,16 +1443,14 @@
         }
 
         // ================================================================
-        // 8. التفاعل العام (روابط، أزرار، هامبرغر)
+        // 8. التفاعل العام
         // ================================================================
-        // هامبرغر
         if (hamburger && topNav) {
             hamburger.addEventListener('click', function() {
                 topNav.classList.toggle('open');
             });
         }
 
-        // روابط التنقل في الشريط العلوي
         document.querySelectorAll('.top-nav a[data-page]').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -1455,14 +1460,12 @@
                     return;
                 }
                 navigateTo(page);
-                // إغلاق القائمة في الجوال
                 if (topNav.classList.contains('open')) {
                     topNav.classList.remove('open');
                 }
             });
         });
 
-        // روابط التنقل في التذييل
         document.querySelectorAll('.footer-col a[data-page]').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -1475,12 +1478,10 @@
             });
         });
 
-        // زر "اكتشف المزيد"
         document.getElementById('goToStoreBtn').addEventListener('click', function() {
             navigateTo('store');
         });
 
-        // زر تحديث المنتجات في المتجر
         document.getElementById('refreshProducts').addEventListener('click', function() {
             loadProducts();
         });
@@ -1492,7 +1493,8 @@
 
         console.log('✅ النظام المدمج جاهز بالكامل.');
         console.log('📧 البريد الإداري: ashlhl.iq@gmail.com');
-        console.log('🔑 لتسجيل الدخول، استخدم زر "تسجيل الدخول عبر Gmail"');
+        console.log('🔑 لتسجيل الدخول، اضغط على زر "تسجيل الدخول عبر Gmail"');
+        console.log('📌 ستظهر نافذة منبثقة لاختيار حساب Google الخاص بك');
     </script>
 
 </body>
