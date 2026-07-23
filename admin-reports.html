@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>التقارير - LiderCenter</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f2f4f8;
+            padding: 12px;
+            color: #111;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 18px 16px 24px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        /* ===== BACK BUTTON ===== */
+        .back-row {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            color: #0f0f0f;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+            touch-action: manipulation;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .back-btn:active {
+            transform: scale(0.94);
+        }
+
+        .back-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: #0a0a0a;
+            letter-spacing: -0.3px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin: 22px 0 12px;
+            color: #1e1e1e;
+        }
+
+        /* ===== STATS GRID ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #f8f9fb;
+            border-radius: 14px;
+            padding: 14px 12px;
+            text-align: center;
+            border: 1px solid #eaedf2;
+            transition: border-color 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: #d0d5de;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0a0a0a;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #6e7482;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .stat-card.primary .stat-number {
+            color: #0f0f0f;
+        }
+        .stat-card.green .stat-number {
+            color: #1a7a34;
+        }
+        .stat-card.blue .stat-number {
+            color: #1a5a8a;
+        }
+        .stat-card.orange .stat-number {
+            color: #b06a0a;
+        }
+        .stat-card.purple .stat-number {
+            color: #6a3a8a;
+        }
+        .stat-card.red .stat-number {
+            color: #b52a37;
+        }
+
+        /* ===== STATUS BREAKDOWN ===== */
+        .status-breakdown {
+            background: #f8f9fb;
+            border-radius: 14px;
+            padding: 14px 16px;
+            border: 1px solid #eaedf2;
+            margin-bottom: 16px;
+        }
+
+        .status-breakdown h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e1e1e;
+            margin-bottom: 10px;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid #eaedf2;
+            font-size: 14px;
+        }
+
+        .status-row:last-child {
+            border-bottom: none;
+        }
+
+        .status-row .label {
+            color: #3d424e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-row .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .dot.new {
+            background: #3b82f6;
+        }
+        .dot.processing {
+            background: #f59e0b;
+        }
+        .dot.shipped {
+            background: #10b981;
+        }
+        .dot.delivered {
+            background: #22c55e;
+        }
+        .dot.cancelled {
+            background: #ef4444;
+        }
+
+        .status-row .count {
+            font-weight: 600;
+            color: #0a0a0a;
+        }
+
+        /* ===== RECENT ORDERS ===== */
+        .recent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .recent-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: #f8f9fb;
+            border-radius: 12px;
+            border: 1px solid #eaedf2;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .recent-item:hover {
+            border-color: #d0d5de;
+        }
+
+        .recent-item .customer {
+            font-weight: 600;
+            color: #0a0a0a;
+        }
+
+        .recent-item .total {
+            font-weight: 600;
+            color: #1a7a34;
+        }
+
+        .recent-item .status-badge {
+            font-size: 12px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            background: #eef0f4;
+            color: #3d424e;
+        }
+
+        .status-badge.new {
+            background: #dbeafe;
+            color: #1a3a6a;
+        }
+        .status-badge.processing {
+            background: #fef3c7;
+            color: #7a5a0a;
+        }
+        .status-badge.shipped {
+            background: #d1fae5;
+            color: #0a5a3a;
+        }
+        .status-badge.delivered {
+            background: #d4edda;
+            color: #0a5a2a;
+        }
+        .status-badge.cancelled {
+            background: #fde2e2;
+            color: #7a1a1a;
+        }
+
+        .recent-empty {
+            color: #7a8290;
+            text-align: center;
+            font-size: 14px;
+            padding: 20px 0;
+        }
+
+        /* ===== STATUS ===== */
+        #status {
+            text-align: center;
+            margin-top: 12px;
+            font-weight: 600;
+            min-height: 24px;
+            font-size: 15px;
+            padding: 4px 0;
+        }
+
+        .success {
+            color: #1a7a34;
+        }
+        .error {
+            color: #c62828;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 420px) {
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                padding: 14px 12px 20px;
+                border-radius: 16px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin-bottom: 14px;
+            }
+
+            .stats-grid {
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 12px 8px;
+            }
+
+            .stat-number {
+                font-size: 24px;
+            }
+
+            .stat-label {
+                font-size: 12px;
+            }
+
+            .section-title {
+                font-size: 16px;
+                margin-top: 18px;
+            }
+
+            .back-btn {
+                font-size: 14px;
+                padding: 5px 10px;
+            }
+
+            .status-breakdown {
+                padding: 12px 14px;
+            }
+
+            .recent-item {
+                font-size: 13px;
+                padding: 8px 10px;
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .container {
+                padding: 12px 10px 16px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            .stat-number {
+                font-size: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+            }
+
+            .stat-card {
+                padding: 10px 6px;
+            }
+
+            .stat-label {
+                font-size: 11px;
+            }
+        }
+
+        @media (max-height: 600px) and (orientation: landscape) {
+            body {
+                padding: 8px 12px;
+            }
+
+            .container {
+                padding: 14px 16px 18px;
+                max-width: 520px;
+            }
+
+            h2 {
+                font-size: 19px;
+                margin-bottom: 10px;
+            }
+
+            .section-title {
+                margin-top: 14px;
+                margin-bottom: 8px;
+                font-size: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+
+            .stat-number {
+                font-size: 20px;
+            }
+
+            .back-btn {
+                font-size: 14px;
+                padding: 4px 10px;
+            }
+        }
+
+        @media (pointer: coarse) {
+            .back-btn {
+                min-height: 44px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #121316;
+            }
+
+            .container {
+                background: #1c1d22;
+                box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            }
+
+            .back-btn {
+                color: #ececec;
+            }
+            .back-btn:hover {
+                background: rgba(255, 255, 255, 0.06);
+            }
+
+            h2,
+            .section-title,
+            .stat-number,
+            .stat-card .stat-number,
+            .status-row .count,
+            .recent-item .customer,
+            .recent-item .total,
+            .status-breakdown h4 {
+                color: #ececec;
+            }
+
+            .stat-card {
+                background: #23252b;
+                border-color: #33373f;
+            }
+
+            .stat-card:hover {
+                border-color: #4a4f5a;
+            }
+
+            .stat-label {
+                color: #8a8f9e;
+            }
+
+            .status-breakdown {
+                background: #23252b;
+                border-color: #33373f;
+            }
+
+            .status-row {
+                border-bottom-color: #33373f;
+            }
+
+            .status-row .label {
+                color: #b0b6c4;
+            }
+
+            .recent-item {
+                background: #23252b;
+                border-color: #33373f;
+            }
+
+            .recent-item:hover {
+                border-color: #4a4f5a;
+            }
+
+            .recent-empty {
+                color: #7a8290;
+            }
+
+            .status-badge {
+                background: #33373f;
+                color: #b0b6c4;
+            }
+
+            .status-badge.new {
+                background: #1a2a4a;
+                color: #8ab4f8;
+            }
+            .status-badge.processing {
+                background: #4a3a0a;
+                color: #f5c542;
+            }
+            .status-badge.shipped {
+                background: #0a3a2a;
+                color: #5ac4a0;
+            }
+            .status-badge.delivered {
+                background: #0a3a1a;
+                color: #5ac480;
+            }
+            .status-badge.cancelled {
+                background: #4a1a1a;
+                color: #f06262;
+            }
+
+            .dot.new {
+                background: #60a5fa;
+            }
+            .dot.processing {
+                background: #fbbf24;
+            }
+            .dot.shipped {
+                background: #34d399;
+            }
+            .dot.delivered {
+                background: #4ade80;
+            }
+            .dot.cancelled {
+                background: #f87171;
+            }
+
+            .stat-card.primary .stat-number {
+                color: #ececec;
+            }
+            .stat-card.green .stat-number {
+                color: #4caf7a;
+            }
+            .stat-card.blue .stat-number {
+                color: #60a5fa;
+            }
+            .stat-card.orange .stat-number {
+                color: #fbbf24;
+            }
+            .stat-card.purple .stat-number {
+                color: #a78bfa;
+            }
+            .stat-card.red .stat-number {
+                color: #f87171;
+            }
+
+            #status {
+                color: #d0d4de;
+            }
+
+            .success {
+                color: #4caf7a;
+            }
+            .error {
+                color: #f06262;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Back Button -->
+        <div class="back-row">
+            <button class="back-btn" type="button" onclick="history.back()" aria-label="رجوع">
+                <svg viewBox="0 0 24 24">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+                رجوع
+            </button>
+        </div>
+
+        <h2>التقارير</h2>
+        <p id="status"></p>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card primary">
+                <div class="stat-number" id="totalOrders">-</div>
+                <div class="stat-label">إجمالي الطلبات</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-number" id="totalProducts">-</div>
+                <div class="stat-label">إجمالي المنتجات</div>
+            </div>
+            <div class="stat-card blue">
+                <div class="stat-number" id="totalUsers">-</div>
+                <div class="stat-label">إجمالي المستخدمين</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-number" id="totalRevenue">-</div>
+                <div class="stat-label">إجمالي الإيرادات</div>
+            </div>
+        </div>
+
+        <!-- Status Breakdown -->
+        <div class="status-breakdown" id="statusBreakdown">
+            <h4>حالة الطلبات</h4>
+            <div id="statusList">
+                <div class="status-row"><span class="label">جاري التحميل...</span></div>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <h3 class="section-title">آخر الطلبات</h3>
+        <div class="recent-list" id="recentOrders">
+            <div class="recent-empty">جاري تحميل الطلبات...</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import {
+            getDatabase,
+            ref,
+            onValue,
+            query,
+            orderByChild,
+            limitToLast
+        } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAgjCRON_o4MUqrLKBaTXAOVZxBXMuPOhM",
+            authDomain: "studio-3203578995-1262a.firebaseapp.com",
+            databaseURL: "https://studio-3203578995-1262a-default-rtdb.firebaseio.com",
+            projectId: "studio-3203578995-1262a",
+            storageBucket: "studio-3203578995-1262a.firebasestorage.app",
+            messagingSenderId: "422562518339",
+            appId: "1:422562518339:web:52bc8169b52e72446f0bf6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const statusMsg = document.getElementById("status");
+        const totalOrdersEl = document.getElementById("totalOrders");
+        const totalProductsEl = document.getElementById("totalProducts");
+        const totalUsersEl = document.getElementById("totalUsers");
+        const totalRevenueEl = document.getElementById("totalRevenue");
+        const statusListEl = document.getElementById("statusList");
+        const recentOrdersEl = document.getElementById("recentOrders");
+
+        function setStatus(msg, type = "") {
+            statusMsg.className = "";
+            statusMsg.textContent = msg;
+            if (type) statusMsg.classList.add(type);
+        }
+
+        function escapeHtml(str = "") {
+            return String(str)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#39;");
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                new: "جديد",
+                processing: "قيد المعالجة",
+                shipped: "تم الشحن",
+                delivered: "تم التسليم",
+                cancelled: "ملغي"
+            };
+            return labels[status] || status || "جديد";
+        }
+
+        function getStatusClass(status) {
+            const classes = {
+                new: "new",
+                processing: "processing",
+                shipped: "shipped",
+                delivered: "delivered",
+                cancelled: "cancelled"
+            };
+            return classes[status] || "new";
+        }
+
+        // Fetch products count
+        onValue(ref(db, "products"), (snapshot) => {
+            const data = snapshot.val();
+            const count = data ? Object.keys(data).length : 0;
+            totalProductsEl.textContent = count;
+        }, (error) => {
+            console.error("Products error:", error);
+            totalProductsEl.textContent = "خطأ";
+        });
+
+        // Fetch users count
+        onValue(ref(db, "users"), (snapshot) => {
+            const data = snapshot.val();
+            const count = data ? Object.keys(data).length : 0;
+            totalUsersEl.textContent = count;
+        }, (error) => {
+            console.error("Users error:", error);
+            totalUsersEl.textContent = "خطأ";
+        });
+
+        // Fetch orders with stats
+        onValue(ref(db, "orders"), (snapshot) => {
+            const data = snapshot.val();
+
+            if (!data) {
+                totalOrdersEl.textContent = "0";
+                totalRevenueEl.textContent = "0";
+                statusListEl.innerHTML =
+                    `<div class="status-row"><span class="label">لا توجد طلبات</span></div>`;
+                recentOrdersEl.innerHTML =
+                    `<div class="recent-empty">لا توجد طلبات حتى الآن</div>`;
+                return;
+            }
+
+            const orders = Object.values(data);
+            const totalOrders = orders.length;
+
+            // Calculate total revenue
+            let totalRevenue = 0;
+            const statusCounts = {
+                new: 0,
+                processing: 0,
+                shipped: 0,
+                delivered: 0,
+                cancelled: 0
+            };
+
+            orders.forEach(order => {
+                const price = Number(order.total) || 0;
+                totalRevenue += price;
+
+                const status = order.status || "new";
+                if (statusCounts.hasOwnProperty(status)) {
+                    statusCounts[status]++;
+                } else {
+                    statusCounts[status] = 1;
+                }
+            });
+
+            totalOrdersEl.textContent = totalOrders;
+            totalRevenueEl.textContent = totalRevenue.toFixed(2);
+
+            // Render status breakdown
+            const statusOrder = ["new", "processing", "shipped", "delivered", "cancelled"];
+            const statusHtml = statusOrder.map(status => {
+                const count = statusCounts[status] || 0;
+                const label = getStatusLabel(status);
+                const dotClass = getStatusClass(status);
+                return `
+                    <div class="status-row">
+                        <span class="label">
+                            <span class="dot ${dotClass}"></span>
+                            ${label}
+                        </span>
+                        <span class="count">${count}</span>
+                    </div>
+                `;
+            }).join("");
+
+            statusListEl.innerHTML = statusHtml;
+
+            // Render recent orders (last 5)
+            const sorted = Object.entries(data)
+                .map(([id, order]) => ({ id, ...order }))
+                .sort((a, b) => {
+                    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                    return dateB - dateA;
+                })
+                .slice(0, 5);
+
+            if (sorted.length === 0) {
+                recentOrdersEl.innerHTML =
+                    `<div class="recent-empty">لا توجد طلبات حديثة</div>`;
+                return;
+            }
+
+            const recentHtml = sorted.map(order => {
+                const customer = escapeHtml(order.customerName || "بدون اسم");
+                const total = order.total ?? "—";
+                const status = order.status || "new";
+                const statusLabel = getStatusLabel(status);
+                const statusClass = getStatusClass(status);
+                return `
+                    <div class="recent-item">
+                        <span class="customer">${customer}</span>
+                        <span class="total">${total !== "—" ? total : "—"}</span>
+                        <span class="status-badge ${statusClass}">${statusLabel}</span>
+                    </div>
+                `;
+            }).join("");
+
+            recentOrdersEl.innerHTML = recentHtml;
+
+        }, (error) => {
+            console.error("Orders error:", error);
+            totalOrdersEl.textContent = "خطأ";
+            totalRevenueEl.textContent = "خطأ";
+            statusListEl.innerHTML =
+                `<div class="status-row"><span class="label">فشل التحميل</span></div>`;
+            recentOrdersEl.innerHTML =
+                `<div class="recent-empty">فشل تحميل الطلبات</div>`;
+        });
+    </script>
+
+</body>
+</html>
