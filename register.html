@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>lidercenter - إنشاء حساب</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    background:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.register-card{
+    width:420px;
+    max-width:92%;
+    background:#fff;
+    border:1px solid #e5e5e5;
+    border-radius:20px;
+    padding:45px 35px;
+    box-shadow:0 8px 25px rgba(0,0,0,.05);
+    animation:fade .5s ease;
+}
+
+.logo{
+    width:75px;
+    height:75px;
+    border:2px solid #000;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:auto;
+    font-size:34px;
+    font-weight:900;
+}
+
+.store-name{
+    text-align:center;
+    font-size:2.4rem;
+    font-weight:900;
+    margin-top:18px;
+}
+
+.sub-title{
+    text-align:center;
+    color:#777;
+    margin:10px 0 30px;
+    border-bottom:1px solid #eee;
+    padding-bottom:15px;
+}
+
+.input-group{
+    margin-bottom:18px;
+}
+
+label{
+    display:block;
+    margin-bottom:7px;
+    font-weight:600;
+    color:#333;
+}
+
+input{
+    width:100%;
+    padding:13px 15px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    background:#fafafa;
+    font-size:15px;
+    transition:.2s;
+}
+
+input:focus{
+    outline:none;
+    border-color:#000;
+    background:#fff;
+}
+
+.btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:50px;
+    background:#000;
+    color:#fff;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.25s;
+    margin-top:10px;
+}
+
+.btn:hover{
+    background:#222;
+}
+
+.divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:25px 0;
+}
+
+.divider::before,
+.divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:#ddd;
+}
+
+.divider span{
+    color:#888;
+    font-size:13px;
+}
+
+.google-btn{
+    width:100%;
+    padding:13px;
+    border:2px solid #000;
+    border-radius:50px;
+    background:#fff;
+    color:#000;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.google-btn:hover{
+    background:#000;
+    color:#fff;
+}
+
+.bottom{
+    margin-top:25px;
+    text-align:center;
+    color:#666;
+    font-size:14px;
+}
+
+.bottom a{
+    color:#000;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+.message{
+    text-align:center;
+    margin-top:15px;
+    color:#d32f2f;
+    min-height:22px;
+}
+
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+</style>
+
+</head>
+<body>
+
+<div class="register-card">
+
+<div class="logo">L</div>
+
+<div class="store-name">lidercenter</div>
+
+<div class="sub-title">
+أنشئ حسابك مجاناً
+</div>
+
+<div class="input-group">
+<label>الاسم الكامل</label>
+<input type="text" id="name" placeholder="الاسم الكامل">
+</div>
+
+<div class="input-group">
+<label>البريد الإلكتروني</label>
+<input type="email" id="email" placeholder="example@mail.com">
+</div>
+
+<div class="input-group">
+<label>كلمة المرور</label>
+<input type="password" id="password" placeholder="********">
+</div>
+
+<div class="input-group">
+<label>تأكيد كلمة المرور</label>
+<input type="password" id="confirmPassword" placeholder="********">
+</div>
+
+<button class="btn" id="registerBtn">
+إنشاء الحساب
+</button>
+
+<div class="divider">
+<span>أو</span>
+</div>
+
+<button class="google-btn" id="googleBtn">
+المتابعة باستخدام Google
+</button>
+
+<div class="message" id="message"></div>
+
+<div class="bottom">
+لديك حساب بالفعل؟
+<a href="login.html">تسجيل الدخول</a>
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import {
+getAuth,
+createUserWithEmailAndPassword,
+GoogleAuthProvider,
+signInWithPopup,
+updateProfile
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+
+const firebaseConfig={
+apiKey:"AIzaSyDcj-R4XEXmLUl7hW38r58paTVHxq2GKVI",
+authDomain:"test-bfcd3.firebaseapp.com",
+projectId:"test-bfcd3",
+storageBucket:"test-bfcd3.firebasestorage.app",
+messagingSenderId:"178734209574",
+appId:"1:178734209574:web:a54fbfb0118ac2325b64e7"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const provider=new GoogleAuthProvider();
+
+const message=document.getElementById("message");
+
+document.getElementById("registerBtn").onclick=async()=>{
+
+const name=document.getElementById("name").value.trim();
+const email=document.getElementById("email").value.trim();
+const password=document.getElementById("password").value;
+const confirm=document.getElementById("confirmPassword").value;
+
+if(!name||!email||!password||!confirm){
+message.innerHTML="يرجى ملء جميع الحقول";
+return;
+}
+
+if(password!==confirm){
+message.innerHTML="كلمتا المرور غير متطابقتين";
+return;
+}
+
+try{
+
+const userCredential=await createUserWithEmailAndPassword(auth,email,password);
+
+await updateProfile(userCredential.user,{
+displayName:name
+});
+
+message.style.color="green";
+message.innerHTML="تم إنشاء الحساب بنجاح";
+
+setTimeout(()=>{
+window.location.href="home.html";
+},800);
+
+}catch(e){
+
+message.style.color="#d32f2f";
+
+switch(e.code){
+
+case "auth/email-already-in-use":
+message.innerHTML="البريد الإلكتروني مستخدم بالفعل";
+break;
+
+case "auth/weak-password":
+message.innerHTML="كلمة المرور يجب أن تكون 6 أحرف أو أكثر";
+break;
+
+case "auth/invalid-email":
+message.innerHTML="البريد الإلكتروني غير صالح";
+break;
+
+default:
+message.innerHTML=e.message;
+
+}
+
+}
+
+};
+
+document.getElementById("googleBtn").onclick=()=>{
+
+signInWithPopup(auth,provider)
+.then(()=>{
+window.location.href="home.html";
+})
+.catch(err=>{
+message.innerHTML=err.message;
+});
+
+};
+
+</script>
+
+</body>
+</html>
