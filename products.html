@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>lidercenter - المنتجات</title>
   <style>
-    /* ── نفس الأنماط السابقة (تم حذفها للاختصار، لكن يمكنك استخدام نفس الكود) ── */
-    /* أنصحك بنسخ الأنماط من الصفحات الأخرى أو استخدام نفس الملف */
-    /* اختصاراً، سأضع الأنماط الأساسية هنا */
+    /* ── الأنماط الأساسية ── */
     * {
       margin: 0;
       padding: 0;
@@ -21,14 +19,12 @@
       --border: #e2e7ef;
       --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
       --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
-      --shadow-lg: 0 20px 48px rgba(0,0,0,0.10);
       --radius-sm: 12px;
       --radius-md: 18px;
       --radius-lg: 24px;
-      --radius-xl: 28px;
       --radius-full: 9999px;
       --transition: 0.25s cubic-bezier(0.2,0,0,1);
-      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font: 'Segoe UI', system-ui, sans-serif;
       --primary: #0b0e14;
       --danger: #dc3545;
       --success: #28a745;
@@ -40,169 +36,795 @@
       min-height: 100vh;
       padding-top: 84px;
       padding-bottom: 92px;
-      -webkit-font-smoothing: antialiased;
     }
-    /* باقي الأنماط … (يمكنك نسخها من الصفحات السابقة) */
-    /* للاختصار سأضع فقط العناصر الأساسية */
+    /* Topbar */
+    .topbar {
+      position: fixed;
+      top: 0;
+      inset-inline: 0;
+      height: 84px;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(226,231,239,0.7);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(145deg, #0b0e14, #1e2530);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 900;
+    }
+    .brand-text h1 {
+      font-size: 1.1rem;
+      font-weight: 900;
+    }
+    .brand-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .action-btn {
+      height: 42px;
+      padding: 0 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.82rem;
+      transition: 0.2s;
+      text-decoration: none;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .action-btn:hover {
+      background: #f0f2f5;
+    }
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 12px 4px 4px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #0b0e14;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      overflow: hidden;
+    }
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .user-pill span {
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    /* Container */
+    .container {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+    /* Hero */
+    .hero {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 24px 28px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+    .hero h2 {
+      font-size: 1.4rem;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    .hero p {
+      color: var(--text-muted);
+      line-height: 1.8;
+      font-size: 0.92rem;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      min-width: 110px;
+      background: var(--bg);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      text-align: center;
+      border: 1px solid transparent;
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.2rem;
+      font-weight: 900;
+    }
+    .stat span {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    /* Search */
+    .search-bar {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .search-bar input, .search-bar select {
+      padding: 14px 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      outline: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: 0.2s;
+      flex: 1;
+      min-width: 180px;
+    }
+    .search-bar input:focus, .search-bar select:focus {
+      border-color: #0b0e14;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(11,14,20,0.06);
+    }
+    /* Quick Links */
+    .quick-links {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 6px 0 12px;
+    }
+    .chip {
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 10px 20px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 0.82rem;
+      white-space: nowrap;
+      transition: 0.2s;
+      text-decoration: none;
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+    }
+    .chip:hover {
+      background: #0b0e14;
+      color: #fff;
+      border-color: #0b0e14;
+      transform: translateY(-2px);
+    }
+    .chip.active {
+      background: #0b0e14;
+      color: #fff;
+      border-color: #0b0e14;
+    }
+    /* Section */
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 14px 0 12px;
+    }
+    .section-title h3 {
+      font-size: 1.05rem;
+      font-weight: 900;
+    }
+    .section-title span {
+      background: var(--bg);
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    /* Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 16px;
+    }
+    .product-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: 0.2s;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    .product-media {
+      width: 100%;
+      aspect-ratio: 1/1;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .product-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .placeholder-img {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+    .product-body {
+      padding: 14px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .product-name {
+      font-size: 0.92rem;
+      font-weight: 800;
+      text-decoration: none;
+      color: var(--text);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .price {
+      font-size: 1.05rem;
+      font-weight: 900;
+    }
+    .card-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .mini-btn {
+      flex: 1;
+      min-width: 52px;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: var(--radius-sm);
+      padding: 8px 6px;
+      font-weight: 700;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: 0.2s;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .mini-btn:hover {
+      background: #0b0e14;
+      color: #fff;
+      border-color: #0b0e14;
+    }
+    .mini-btn.fav-active {
+      background: #0b0e14;
+      color: #fff;
+    }
+    .empty-state {
+      border: 1px dashed #d0d8e3;
+      background: #fafbfc;
+      border-radius: var(--radius-lg);
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      line-height: 2.2;
+    }
+    .loading-box {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      box-shadow: var(--shadow-sm);
+    }
+    /* Bottom Nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      inset-inline: 0;
+      height: 84px;
+      background: rgba(255,255,255,0.90);
+      backdrop-filter: blur(18px);
+      border-top: 1px solid rgba(226,231,239,0.7);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 1000;
+      padding: 8px 6px 12px;
+    }
+    .nav-btn {
+      flex: 1;
+      max-width: 100px;
+      height: 58px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .nav-btn:hover {
+      background: rgba(11,14,20,0.05);
+      color: var(--text);
+    }
+    .nav-btn.active {
+      background: #0b0e14;
+      color: #fff;
+    }
+    .nav-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+    }
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0b0e14;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+      z-index: 2000;
+    }
+    .toast.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    @media (max-width: 600px) {
+      body { padding-top: 76px; padding-bottom: 80px; }
+      .topbar { height: 76px; padding: 0 14px; }
+      .brand-mark { width: 38px; height: 38px; font-size: 1rem; }
+      .brand-text h1 { font-size: 0.95rem; }
+      .user-pill { max-width: 130px; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+      .bottom-nav { height: 76px; }
+      .nav-btn { height: 52px; font-size: 0.6rem; max-width: 72px; }
+      .search-bar { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
-  <!-- نفس الهيكل السابق … -->
 
-  <script type="importmap">
-    {
-      "imports": {
-        "firebase/app": "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js",
-        "firebase/auth": "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js",
-        "firebase/database": "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js"
-      }
-    }
-  </script>
+  <!-- ═══ Topbar ═══ -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">L</div>
+      <div class="brand-text">
+        <h1>lidercenter</h1>
+        <p id="headerSubtitle">المنتجات</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a class="action-btn" href="home.html">الرئيسية</a>
+      <button class="action-btn" id="logoutBtn">خروج</button>
+      <div class="user-pill">
+        <div class="avatar" id="topAvatar">U</div>
+        <span id="topUserName">...</span>
+      </div>
+    </div>
+  </header>
 
-  <script type="module">
-    import { initializeApp } from "firebase/app";
-    import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-    import { getDatabase, ref, onValue, set } from "firebase/database";
+  <!-- ═══ Main ═══ -->
+  <main class="container">
+    <section class="hero">
+      <div>
+        <h2>جميع المنتجات</h2>
+        <p>استعرض جميع المنتجات المتوفرة في المتجر.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <strong id="productsStat">0</strong>
+          <span>المنتجات</span>
+        </div>
+        <div class="stat">
+          <strong id="favoritesStat">0</strong>
+          <span>المفضلة</span>
+        </div>
+        <div class="stat">
+          <strong id="cartStat">0</strong>
+          <span>في السلة</span>
+        </div>
+      </div>
+      <div class="search-bar">
+        <input id="searchInput" type="search" placeholder="ابحث عن منتج…" />
+        <select id="categoryFilter">
+          <option value="">جميع التصنيفات</option>
+        </select>
+      </div>
+    </section>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDcj-R4XEXmLUl7hW38r58paTVHxq2GKVI",
-      authDomain: "test-bfcd3.firebaseapp.com",
-      projectId: "test-bfcd3",
-      storageBucket: "test-bfcd3.firebasestorage.app",
-      messagingSenderId: "178734209574",
-      appId: "1:178734209574:web:a54fbfb0118ac2325b64e7",
-      measurementId: "G-9TVW2LDH08"
-    };
+    <div class="quick-links">
+      <a class="chip" href="home.html">الرئيسية</a>
+      <a class="chip active" href="products.html">المنتجات</a>
+      <a class="chip" href="favorites.html">المفضلة</a>
+      <a class="chip" href="cart.html">السلة</a>
+      <a class="chip" href="profile.html">الحساب</a>
+    </div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
+    <section>
+      <div class="section-title">
+        <h3>قائمة المنتجات</h3>
+        <span id="productsCount">0</span>
+      </div>
+      <div id="productsGrid" class="grid"></div>
+      <div id="productsEmpty" class="empty-state" style="display:none;">
+        لا توجد منتجات حالياً.
+        <div style="font-size:0.9rem;color:var(--text-muted);margin-top:8px;">
+          تأكد من إضافة منتجات عبر صفحة الإدارة.
+        </div>
+      </div>
+      <div id="loadingBox" class="loading-box">⏳ جاري تحميل المنتجات…</div>
+    </section>
+  </main>
 
-    // DOM refs (افتراضية)
-    const productsGrid = document.getElementById('productsGrid');
-    const productsEmpty = document.getElementById('productsEmpty');
-    const productsCount = document.getElementById('productsCount');
-    const productsStat = document.getElementById('productsStat');
-    const favoritesStat = document.getElementById('favoritesStat');
-    const cartStat = document.getElementById('cartStat');
-    const loadingBox = document.getElementById('loadingBox');
-    const searchInput = document.getElementById('searchInput');
-    const categoryFilter = document.getElementById('categoryFilter');
+  <!-- ═══ Bottom Nav ═══ -->
+  <nav class="bottom-nav">
+    <a class="nav-btn" href="home.html">
+      <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>
+      الرئيسية
+    </a>
+    <a class="nav-btn active" href="products.html">
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+      المنتجات
+    </a>
+    <a class="nav-btn" href="favorites.html">
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      المفضلة
+    </a>
+    <a class="nav-btn" href="cart.html">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+      السلة
+    </a>
+    <a class="nav-btn" href="profile.html">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      الحساب
+    </a>
+  </nav>
 
-    let currentUser = null;
-    let allProducts = [];
-    let favoritesMap = {};
-    let cartMap = {};
-    let searchTerm = '';
-    let selectedCategory = '';
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
 
-    // ── دالة تطبيع مرنة جداً ──
-    function normalizeProduct(raw, key) {
-      // إذا كانت القيمة نصاً
-      if (typeof raw === 'string') {
-        return { id: String(key), name: raw, price: '', image: '', category: '', description: '', stock: '' };
-      }
-      // إذا كانت القيمة ليست كائنًا
-      if (typeof raw !== 'object' || raw === null) {
-        return null;
-      }
+  <!-- ═══ Firebase (CDN ⏎  متوافق) ═══ -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
 
-      // استخراج الحقول بأسماء مختلفة
-      const name = raw.name || raw.title || raw.productName || raw.product_name || '';
-      const price = raw.price ?? raw.salePrice ?? raw.amount ?? raw.cost ?? '';
-      const image = raw.image || raw.imageUrl || raw.img || raw.photo || raw.picture || '';
-      const category = raw.category || raw.type || raw.group || raw.cat || '';
-      const description = raw.description || raw.desc || raw.shortDescription || '';
-      const stock = raw.stock ?? raw.quantity ?? raw.inventory ?? '';
-
-      // إذا لم يكن هناك اسم على الأقل، قد يكون المنتج غير صالح
-      if (!name && !image && price === '') {
-        console.warn('⚠️ منتج غير صالح (بدون اسم أو صورة أو سعر):', raw);
-        // لكننا سنحاول الاحتفاظ به بالمعرف فقط
-      }
-
-      return {
-        id: String(key),
-        name: name || 'بدون اسم',
-        price: price,
-        image: image,
-        category: category || '',
-        description: description || '',
-        stock: stock,
-        raw: raw // للرجوع إليه
+  <script>
+    try {
+      // ── تهيئة Firebase ──
+      const firebaseConfig = {
+        apiKey: "AIzaSyDcj-R4XEXmLUl7hW38r58paTVHxq2GKVI",
+        authDomain: "test-bfcd3.firebaseapp.com",
+        projectId: "test-bfcd3",
+        storageBucket: "test-bfcd3.firebasestorage.app",
+        messagingSenderId: "178734209574",
+        appId: "1:178734209574:web:a54fbfb0118ac2325b64e7",
+        measurementId: "G-9TVW2LDH08"
       };
-    }
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.database();
 
-    // ── باقي الدوال (render, filter, إلخ) كما هي ──
-    // (تم حذفها للاختصار، ستجدها في الكود الكامل المرفق)
+      console.log('✅ Firebase initialized successfully');
 
-    // ── تحميل المنتجات ──
-    function loadProducts() {
-      const productsRef = ref(db, 'products');
-      onValue(productsRef, (snapshot) => {
-        const data = snapshot.val();
-        console.log('📦 بيانات Firebase الخام:', data);
+      // ── DOM refs ──
+      const productsGrid = document.getElementById('productsGrid');
+      const productsEmpty = document.getElementById('productsEmpty');
+      const productsCount = document.getElementById('productsCount');
+      const productsStat = document.getElementById('productsStat');
+      const favoritesStat = document.getElementById('favoritesStat');
+      const cartStat = document.getElementById('cartStat');
+      const loadingBox = document.getElementById('loadingBox');
+      const searchInput = document.getElementById('searchInput');
+      const categoryFilter = document.getElementById('categoryFilter');
+      const topAvatar = document.getElementById('topAvatar');
+      const topUserName = document.getElementById('topUserName');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const toast = document.getElementById('toast');
 
-        if (!data) {
-          console.warn('⚠️ لا توجد بيانات في مسار products');
-          allProducts = [];
-          loadingBox.style.display = 'none';
-          renderProducts();
+      let currentUser = null;
+      let allProducts = [];
+      let favoritesMap = {};
+      let cartMap = {};
+      let searchTerm = '';
+      let selectedCategory = '';
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>"]/g, function(m) {
+          if (m === '&') return '&amp;';
+          if (m === '<') return '&lt;';
+          if (m === '>') return '&gt;';
+          if (m === '"') return '&quot;';
+          return m;
+        });
+      }
+
+      function formatPrice(value) {
+        if (value === undefined || value === null || value === '') return '';
+        const num = Number(value);
+        if (isNaN(num)) return String(value);
+        return num.toLocaleString('en-US');
+      }
+
+      function showToast(msg, type = 'success') {
+        toast.textContent = msg;
+        toast.className = `toast ${type}`;
+        toast.style.opacity = '1';
+        toast.style.visibility = 'visible';
+        clearTimeout(toast._hide);
+        toast._hide = setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.visibility = 'hidden';
+        }, 2500);
+      }
+
+      function normalizeProduct(raw, key) {
+        if (typeof raw === 'string') {
+          return { id: key, name: raw, price: '', image: '', category: '', description: '', stock: '' };
+        }
+        if (typeof raw !== 'object' || raw === null) return null;
+        return {
+          id: key,
+          name: raw.name || raw.title || raw.productName || 'بدون اسم',
+          price: raw.price ?? raw.salePrice ?? raw.amount ?? '',
+          image: raw.image || raw.imageUrl || raw.img || raw.photo || '',
+          category: raw.category || raw.type || raw.group || '',
+          description: raw.description || raw.desc || '',
+          stock: raw.stock ?? raw.quantity ?? ''
+        };
+      }
+
+      function getFilteredProducts() {
+        return allProducts.filter(p => {
+          const matchSearch = !searchTerm ||
+            (p.name + ' ' + p.category + ' ' + p.description).toLowerCase().includes(searchTerm.toLowerCase());
+          const matchCategory = !selectedCategory || p.category === selectedCategory;
+          return matchSearch && matchCategory;
+        });
+      }
+
+      function getCategories() {
+        const cats = new Set();
+        allProducts.forEach(p => { if (p.category) cats.add(p.category); });
+        return Array.from(cats).sort();
+      }
+
+      function populateCategories() {
+        const cats = getCategories();
+        const current = categoryFilter.value;
+        categoryFilter.innerHTML = '<option value="">جميع التصنيفات</option>';
+        cats.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c;
+          opt.textContent = c;
+          categoryFilter.appendChild(opt);
+        });
+        if (current && cats.includes(current)) categoryFilter.value = current;
+      }
+
+      function renderProducts() {
+        try {
+          const filtered = getFilteredProducts();
+          productsCount.textContent = filtered.length;
+          productsStat.textContent = allProducts.length;
+          favoritesStat.textContent = Object.keys(favoritesMap).length;
+          cartStat.textContent = Object.keys(cartMap).length;
+
+          if (!filtered.length) {
+            productsGrid.innerHTML = '';
+            productsEmpty.style.display = 'block';
+            return;
+          }
+          productsEmpty.style.display = 'none';
+
+          let html = '';
+          for (const p of filtered) {
+            const isFav = !!favoritesMap[p.id];
+            html += `
+              <div class="product-card">
+                <a class="product-media" href="product.html?id=${encodeURIComponent(p.id)}">
+                  ${p.image ? `<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.style.display='none'">` : `<span class="placeholder-img">لا توجد صورة</span>`}
+                </a>
+                <div class="product-body">
+                  <a class="product-name" href="product.html?id=${encodeURIComponent(p.id)}">${escapeHtml(p.name)}</a>
+                  <div class="meta">
+                    <span>${escapeHtml(p.category || 'بدون تصنيف')}</span>
+                    <span>${p.stock ? 'المخزون: '+escapeHtml(p.stock) : ''}</span>
+                  </div>
+                  <div class="price">${formatPrice(p.price) || '—'}</div>
+                  <div class="card-actions">
+                    <a class="mini-btn" href="product.html?id=${encodeURIComponent(p.id)}">عرض</a>
+                    <button class="mini-btn fav-btn ${isFav ? 'fav-active' : ''}" data-id="${p.id}" data-action="fav">${isFav ? '★' : '☆'}</button>
+                    <button class="mini-btn" data-id="${p.id}" data-action="cart">إضافة</button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+          productsGrid.innerHTML = html;
+
+          // أحداث الأزرار
+          document.querySelectorAll('[data-action="fav"]').forEach(btn => {
+            btn.addEventListener('click', async function(e) {
+              e.preventDefault();
+              const pid = this.dataset.id;
+              await toggleFavorite(pid);
+            });
+          });
+          document.querySelectorAll('[data-action="cart"]').forEach(btn => {
+            btn.addEventListener('click', async function(e) {
+              e.preventDefault();
+              const pid = this.dataset.id;
+              await addToCart(pid);
+            });
+          });
+        } catch (err) {
+          console.error('❌ Error in renderProducts:', err);
+        }
+      }
+
+      async function toggleFavorite(productId) {
+        if (!currentUser) return;
+        const isFav = !!favoritesMap[productId];
+        try {
+          await db.ref(`favorites/${currentUser.uid}/${productId}`).set(isFav ? null : true);
+          showToast(isFav ? 'تم الإزالة من المفضلة' : 'تمت الإضافة إلى المفضلة');
+        } catch (err) {
+          showToast('حدث خطأ', 'error');
+          console.error(err);
+        }
+      }
+
+      async function addToCart(productId) {
+        if (!currentUser) return;
+        const qty = (cartMap[productId] || 0) + 1;
+        try {
+          await db.ref(`cart/${currentUser.uid}/${productId}`).set(qty);
+          showToast('تمت الإضافة إلى السلة');
+        } catch (err) {
+          showToast('حدث خطأ', 'error');
+          console.error(err);
+        }
+      }
+
+      // ── المصادقة ──
+      auth.onAuthStateChanged(user => {
+        if (!user) {
+          window.location.href = 'login.html';
           return;
         }
+        currentUser = user;
+        const name = user.displayName || user.email.split('@')[0] || 'مستخدم';
+        topUserName.textContent = name;
+        topAvatar.textContent = name.charAt(0).toUpperCase();
 
-        // تحويل كل مفتاح وقيمة إلى منتج طبيعي
-        const entries = Object.entries(data);
-        const normalized = entries
-          .map(([key, value]) => normalizeProduct(value, key))
-          .filter(p => p !== null);
-
-        console.log(`✅ تم تطبيع ${normalized.length} منتجاً:`, normalized);
-
-        // إذا كان هناك منتجات ولكن جميعها بدون اسم، قد يكون الهيكل مختلفاً
-        // نحاول فحص أول منتج لفهم الهيكل
-        if (normalized.length > 0) {
-          const sample = normalized[0];
-          console.log('🔍 نموذج منتج بعد التطبيع:', sample);
-          // إذا كان الاسم فارغاً، قد يكون الهيكل مختلفاً
-          if (!sample.name && sample.raw) {
-            console.warn('⚠️ المنتج الأول ليس له اسم، قد يكون هيكل البيانات مختلفاً');
-            console.log('الهيكل الخام:', sample.raw);
-            // نحاول استخراج الاسم من raw بطريقة أخرى (مثل key نفسه)
-            // لكننا سنحتفظ بالمنتج كما هو مع عرض الاسم من المعرف
+        // تحميل المنتجات
+        db.ref('products').on('value', snap => {
+          const data = snap.val();
+          console.log('📦 Products data:', data);
+          if (data) {
+            allProducts = Object.entries(data)
+              .map(([key, val]) => normalizeProduct(val, key))
+              .filter(p => p !== null);
+          } else {
+            allProducts = [];
           }
-        }
+          populateCategories();
+          loadingBox.style.display = 'none';
+          renderProducts();
+        }, err => {
+          console.error('❌ Read error:', err);
+          loadingBox.style.display = 'none';
+          showToast('خطأ في التحميل', 'error');
+        });
 
-        allProducts = normalized;
-        loadingBox.style.display = 'none';
-        populateCategories();
-        renderProducts();
-      }, (error) => {
-        console.error('❌ خطأ في تحميل المنتجات:', error);
-        loadingBox.style.display = 'none';
-        productsEmpty.style.display = 'block';
-        productsEmpty.innerHTML = 'حدث خطأ أثناء تحميل المنتجات. تأكد من اتصالك بالإنترنت وصلاحيات القراءة.';
+        // المفضلة
+        db.ref(`favorites/${user.uid}`).on('value', snap => {
+          favoritesMap = snap.val() || {};
+          renderProducts();
+        });
+
+        // السلة
+        db.ref(`cart/${user.uid}`).on('value', snap => {
+          cartMap = snap.val() || {};
+          renderProducts();
+        });
       });
+
+      // ── أحداث البحث والتصفية ──
+      searchInput.addEventListener('input', () => {
+        searchTerm = searchInput.value.trim();
+        renderProducts();
+      });
+      categoryFilter.addEventListener('change', () => {
+        selectedCategory = categoryFilter.value;
+        renderProducts();
+      });
+
+      // ── خروج ──
+      logoutBtn.addEventListener('click', () => {
+        auth.signOut().then(() => window.location.href = 'login.html');
+      });
+
+      console.log('✅ Products page loaded successfully');
+    } catch (err) {
+      console.error('❌ Fatal error:', err);
+      document.body.innerHTML = `
+        <div style="padding:40px;text-align:center;font-family:sans-serif;direction:rtl;">
+          <h2 style="color:#dc3545;">حدث خطأ في تحميل الصفحة</h2>
+          <p style="color:#666;margin-top:16px;">يرجى التحقق من وحدة التحكم (Console) لمزيد من التفاصيل.</p>
+          <p style="color:#999;font-size:0.9rem;margin-top:12px;">${err.message}</p>
+          <button onclick="location.reload()" style="margin-top:24px;padding:12px 32px;border:none;background:#0b0e14;color:#fff;border-radius:12px;cursor:pointer;">إعادة التحميل</button>
+        </div>
+      `;
     }
-
-    // ── باقي الكود (populateCategories, renderProducts, إلخ) ──
-    // (سيتم تضمينها في الكود الكامل)
-
-    // تشغيل التحميل عند تسجيل الدخول
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = 'login.html';
-        return;
-      }
-      currentUser = user;
-      // تحديث واجهة المستخدم (الصورة، الاسم)
-      // ...
-      loadProducts();
-      // تحميل المفضلة والسلة
-      // ...
-    });
-
-    console.log('✅ تم تهيئة صفحة المنتجات بنجاح');
   </script>
 </body>
 </html>
