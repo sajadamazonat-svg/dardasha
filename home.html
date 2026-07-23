@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>lidercenter - المتجر</title>
+  <title>lidercenter - home</title>
   <style>
     * {
       margin: 0;
@@ -12,35 +12,33 @@
     }
 
     :root {
-      --bg: #f6f7f9;
+      --bg: #f5f6f8;
       --card: #ffffff;
       --text: #111111;
       --muted: #6f7680;
       --line: #e6e8ec;
-      --soft: #f2f4f7;
-      --shadow: 0 10px 30px rgba(17, 17, 17, 0.06);
+      --shadow: 0 10px 28px rgba(17, 17, 17, 0.06);
       --radius-xl: 26px;
       --radius-lg: 20px;
       --radius-md: 16px;
-      --accent: #111111;
     }
 
     body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(180deg, #f8f9fb 0%, #f3f5f8 100%);
+      background: linear-gradient(180deg, #f8f9fb 0%, #f2f4f7 100%);
       color: var(--text);
       min-height: 100vh;
       direction: rtl;
-      padding-top: 88px;
-      padding-bottom: 98px;
+      padding-top: 90px;
+      padding-bottom: 96px;
     }
 
     .topbar {
       position: fixed;
       top: 0;
       inset-inline: 0;
-      height: 88px;
-      background: rgba(255, 255, 255, 0.9);
+      height: 90px;
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid rgba(230, 232, 236, 0.95);
       z-index: 1000;
@@ -68,9 +66,8 @@
       align-items: center;
       justify-content: center;
       flex: 0 0 auto;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 900;
-      letter-spacing: 0.5px;
     }
 
     .brand-text {
@@ -99,7 +96,7 @@
       flex: 0 0 auto;
     }
 
-    .icon-btn {
+    .action-btn {
       height: 44px;
       min-width: 44px;
       padding: 0 14px;
@@ -108,19 +105,23 @@
       background: #fff;
       color: var(--text);
       cursor: pointer;
-      font-weight: 700;
+      font-weight: 800;
       transition: 0.2s ease;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
       box-shadow: 0 2px 8px rgba(17, 17, 17, 0.03);
+      text-decoration: none;
     }
 
-    .icon-btn:hover {
+    .action-btn:hover {
       transform: translateY(-1px);
       border-color: #cfd5dd;
       box-shadow: 0 8px 18px rgba(17, 17, 17, 0.08);
+    }
+
+    .admin-btn {
+      display: none;
     }
 
     .user-pill {
@@ -140,7 +141,7 @@
       width: 34px;
       height: 34px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #111 0%, #444 100%);
+      background: linear-gradient(135deg, #111 0%, #3a3a3a 100%);
       color: #fff;
       display: flex;
       align-items: center;
@@ -258,7 +259,7 @@
       box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.06);
     }
 
-    .tabs {
+    .quick-links {
       display: flex;
       gap: 10px;
       overflow-x: auto;
@@ -267,11 +268,11 @@
       scrollbar-width: none;
     }
 
-    .tabs::-webkit-scrollbar {
+    .quick-links::-webkit-scrollbar {
       display: none;
     }
 
-    .tab {
+    .chip {
       border: 1px solid var(--line);
       background: #fff;
       color: #222;
@@ -283,10 +284,13 @@
       transition: 0.2s ease;
       flex: 0 0 auto;
       box-shadow: 0 2px 8px rgba(17, 17, 17, 0.03);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .tab:hover,
-    .tab.active {
+    .chip:hover {
       background: #111;
       color: #fff;
       border-color: #111;
@@ -347,9 +351,7 @@
       width: 100%;
       aspect-ratio: 1 / 1;
       background: linear-gradient(180deg, #f4f5f7 0%, #eceff3 100%);
-      position: relative;
       overflow: hidden;
-      cursor: pointer;
     }
 
     .product-media img {
@@ -360,8 +362,8 @@
     }
 
     .placeholder {
-      position: absolute;
-      inset: 0;
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -384,7 +386,6 @@
       font-weight: 900;
       line-height: 1.6;
       min-height: 3.1em;
-      cursor: pointer;
     }
 
     .meta {
@@ -418,6 +419,8 @@
       cursor: pointer;
       transition: 0.2s ease;
       font-size: 0.84rem;
+      text-decoration: none;
+      text-align: center;
     }
 
     .mini-btn:hover {
@@ -440,141 +443,6 @@
       line-height: 1.9;
     }
 
-    .panel {
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-      padding: 16px;
-    }
-
-    .list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .list-item {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 10px;
-      background: #fff;
-    }
-
-    .list-item .thumb {
-      width: 66px;
-      height: 66px;
-      border-radius: 16px;
-      overflow: hidden;
-      background: linear-gradient(180deg, #f4f5f7 0%, #eceff3 100%);
-      flex: 0 0 auto;
-    }
-
-    .list-item .thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .list-item .info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .list-item .info h4 {
-      font-size: 0.96rem;
-      margin-bottom: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .list-item .info p {
-      color: var(--muted);
-      font-size: 0.82rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .list-item .actions {
-      display: flex;
-      gap: 8px;
-      flex: 0 0 auto;
-    }
-
-    .account-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    .profile-card {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      padding: 16px;
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      background: #fff;
-    }
-
-    .profile-avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, #111 0%, #3a3a3a 100%);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      overflow: hidden;
-      flex: 0 0 auto;
-      border: 1px solid #111;
-    }
-
-    .profile-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .profile-card h4 {
-      font-size: 1.03rem;
-      margin-bottom: 5px;
-    }
-
-    .profile-card p {
-      color: var(--muted);
-      font-size: 0.9rem;
-      word-break: break-word;
-      line-height: 1.6;
-    }
-
-    .btn-logout {
-      width: 100%;
-      border: none;
-      background: #111;
-      color: #fff;
-      border-radius: 18px;
-      padding: 14px 16px;
-      font-size: 1rem;
-      font-weight: 800;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .btn-logout:hover {
-      background: #2a2a2a;
-      transform: translateY(-1px);
-    }
-
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -588,11 +456,12 @@
       align-items: center;
       z-index: 1000;
       padding: 10px 8px 12px;
+      gap: 6px;
     }
 
     .nav-btn {
       flex: 1;
-      max-width: 92px;
+      max-width: 105px;
       height: 60px;
       border: none;
       background: transparent;
@@ -607,6 +476,7 @@
       transition: 0.2s ease;
       font-size: 0.8rem;
       font-weight: 800;
+      text-decoration: none;
     }
 
     .nav-btn:hover,
@@ -615,141 +485,35 @@
       color: #fff;
     }
 
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(17, 17, 17, 0.48);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 3000;
-      padding: 16px;
-    }
-
-    .modal.show {
-      display: flex;
-    }
-
-    .modal-card {
-      width: min(760px, 100%);
-      max-height: 86vh;
-      overflow: auto;
+    .loading-box {
       background: #fff;
-      border-radius: 26px;
-      padding: 18px;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
-    }
-
-    .modal-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .modal-head h3 {
-      font-size: 1.05rem;
-      font-weight: 900;
-    }
-
-    .close-btn {
-      width: 42px;
-      height: 42px;
       border: 1px solid var(--line);
-      background: #fff;
-      border-radius: 16px;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: 900;
-    }
-
-    .details {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
-
-    .details .image-box {
-      width: 100%;
-      min-height: 280px;
       border-radius: 22px;
-      overflow: hidden;
-      background: linear-gradient(180deg, #f4f5f7 0%, #eceff3 100%);
-    }
-
-    .details .image-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .details h4 {
-      font-size: 1.18rem;
-      margin-bottom: 8px;
-      line-height: 1.6;
-    }
-
-    .details p {
-      color: var(--muted);
-      line-height: 1.9;
-      margin-bottom: 6px;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 104px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #111;
-      color: #fff;
-      padding: 12px 16px;
-      border-radius: 999px;
-      font-size: 0.9rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: 0.25s ease;
-      z-index: 4000;
-      max-width: 92%;
+      padding: 22px;
       text-align: center;
-      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.15);
-    }
-
-    .toast.show {
-      opacity: 1;
-    }
-
-    @media (min-width: 720px) {
-      .details {
-        grid-template-columns: 1.08fr 0.92fr;
-        align-items: start;
-      }
-
-      .account-grid {
-        grid-template-columns: 1fr 1fr;
-      }
+      color: var(--muted);
+      box-shadow: var(--shadow);
     }
 
     @media (max-width: 520px) {
       .topbar {
-        padding: 12px 12px;
-      }
-
-      .icon-btn {
-        padding: 0 12px;
-      }
-
-      .user-pill {
-        max-width: 130px;
-      }
-
-      .user-pill span {
-        max-width: 70px;
+        padding: 12px;
       }
 
       .brand-text p {
         max-width: 120px;
+      }
+
+      .user-pill {
+        max-width: 128px;
+      }
+
+      .user-pill span {
+        max-width: 68px;
+      }
+
+      .grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       }
 
       .hero {
@@ -760,14 +524,13 @@
         min-width: 108px;
       }
 
-      .grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      .nav-btn {
+        max-width: 86px;
       }
     }
   </style>
 </head>
 <body>
-
   <header class="topbar">
     <div class="brand">
       <div class="brand-mark">L</div>
@@ -778,9 +541,9 @@
     </div>
 
     <div class="top-actions">
-      <button class="icon-btn" id="searchBtn" type="button">بحث</button>
-      <button class="icon-btn" id="cartBtn" type="button">السلة</button>
-      <button class="icon-btn" id="logoutIconBtn" type="button">خروج</button>
+      <button class="action-btn" id="searchBtn" type="button">بحث</button>
+      <a class="action-btn admin-btn" id="dashboardBtn" href="dashboard.html">لوحة التحكم</a>
+      <button class="action-btn" id="logoutBtn" type="button">خروج</button>
       <div class="user-pill">
         <div class="avatar" id="topAvatar">U</div>
         <span id="topUserName">...</span>
@@ -817,12 +580,12 @@
       </div>
     </section>
 
-    <div class="tabs" id="mainTabs">
-      <button class="tab active" data-section="homeSection" type="button">الرئيسية</button>
-      <button class="tab" data-section="categoriesSection" type="button">التصنيفات</button>
-      <button class="tab" data-section="favoritesSection" type="button">المفضلة</button>
-      <button class="tab" data-section="cartSection" type="button">السلة</button>
-      <button class="tab" data-section="accountSection" type="button">الحساب</button>
+    <div class="quick-links">
+      <a class="chip" href="products.html">جميع المنتجات</a>
+      <a class="chip" href="categories.html">التصنيفات</a>
+      <a class="chip" href="favorites.html">المفضلة</a>
+      <a class="chip" href="cart.html">السلة</a>
+      <a class="chip" href="profile.html">الحساب</a>
     </div>
 
     <section class="section active" id="homeSection">
@@ -832,83 +595,18 @@
       </div>
       <div id="productsGrid" class="grid"></div>
       <div id="productsEmpty" class="empty-state" style="display:none;">لا توجد منتجات حالياً داخل Firebase.</div>
-    </section>
-
-    <section class="section" id="categoriesSection">
-      <div class="section-title">
-        <h3>التصنيفات</h3>
-        <span id="categoriesCount">0</span>
-      </div>
-      <div id="categoriesWrap" class="tabs" style="margin-top:0;"></div>
-      <div id="categoryProducts" class="grid"></div>
-      <div id="categoryEmpty" class="empty-state" style="display:none;">لا توجد تصنيفات أو منتجات مرتبطة بها.</div>
-    </section>
-
-    <section class="section" id="favoritesSection">
-      <div class="section-title">
-        <h3>المفضلة</h3>
-        <span id="favoritesCount">0</span>
-      </div>
-      <div id="favoritesGrid" class="grid"></div>
-      <div id="favoritesEmpty" class="empty-state" style="display:none;">لا توجد منتجات في المفضلة حالياً.</div>
-    </section>
-
-    <section class="section" id="cartSection">
-      <div class="section-title">
-        <h3>السلة</h3>
-        <span id="cartCount">0</span>
-      </div>
-      <div id="cartList" class="list"></div>
-      <div id="cartEmpty" class="empty-state" style="display:none;">لا توجد منتجات في السلة حالياً.</div>
-    </section>
-
-    <section class="section" id="accountSection">
-      <div class="section-title">
-        <h3>الحساب</h3>
-        <span>Firebase Authentication</span>
-      </div>
-
-      <div class="account-grid">
-        <div class="panel">
-          <div class="profile-card">
-            <div class="profile-avatar" id="accountAvatar">U</div>
-            <div>
-              <h4 id="accountName">...</h4>
-              <p id="accountEmail">...</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="section-title" style="margin-top:0;">
-            <h3>التحكم</h3>
-            <span>جاهز</span>
-          </div>
-          <button class="btn-logout" id="logoutBtn" type="button">تسجيل الخروج</button>
-        </div>
-      </div>
+      <div id="loadingBox" class="loading-box">جاري تحميل البيانات من Firebase...</div>
     </section>
   </main>
 
   <nav class="bottom-nav">
-    <button class="nav-btn active" data-section="homeSection" type="button">الرئيسية</button>
-    <button class="nav-btn" data-section="categoriesSection" type="button">التصنيفات</button>
-    <button class="nav-btn" data-section="favoritesSection" type="button">المفضلة</button>
-    <button class="nav-btn" data-section="cartSection" type="button">السلة</button>
-    <button class="nav-btn" data-section="accountSection" type="button">الحساب</button>
+    <a class="nav-btn active" href="home.html">الرئيسية</a>
+    <a class="nav-btn" href="products.html">المنتجات</a>
+    <a class="nav-btn" href="categories.html">التصنيفات</a>
+    <a class="nav-btn" href="favorites.html">المفضلة</a>
+    <a class="nav-btn" href="cart.html">السلة</a>
+    <a class="nav-btn" href="profile.html">الحساب</a>
   </nav>
-
-  <div class="modal" id="detailsModal">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3>تفاصيل المنتج</h3>
-        <button class="close-btn" id="closeDetailsBtn" type="button">×</button>
-      </div>
-      <div class="details" id="detailsBody"></div>
-    </div>
-  </div>
-
-  <div class="toast" id="toast"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
@@ -920,9 +618,7 @@
     import {
       getDatabase,
       ref,
-      onValue,
-      set,
-      remove
+      onValue
     } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -943,56 +639,26 @@
     const productsEmpty = document.getElementById('productsEmpty');
     const productsCount = document.getElementById('productsCount');
     const productsStat = document.getElementById('productsStat');
-
-    const categoriesWrap = document.getElementById('categoriesWrap');
-    const categoriesCount = document.getElementById('categoriesCount');
-    const categoryProducts = document.getElementById('categoryProducts');
-    const categoryEmpty = document.getElementById('categoryEmpty');
-
-    const favoritesGrid = document.getElementById('favoritesGrid');
-    const favoritesEmpty = document.getElementById('favoritesEmpty');
-    const favoritesCount = document.getElementById('favoritesCount');
     const favoritesStat = document.getElementById('favoritesStat');
-
-    const cartList = document.getElementById('cartList');
-    const cartEmpty = document.getElementById('cartEmpty');
-    const cartCount = document.getElementById('cartCount');
     const cartStat = document.getElementById('cartStat');
+    const loadingBox = document.getElementById('loadingBox');
 
     const topAvatar = document.getElementById('topAvatar');
-    const accountAvatar = document.getElementById('accountAvatar');
     const topUserName = document.getElementById('topUserName');
-    const accountName = document.getElementById('accountName');
-    const accountEmail = document.getElementById('accountEmail');
     const welcomeText = document.getElementById('welcomeText');
     const welcomeSubText = document.getElementById('welcomeSubText');
     const headerSubtitle = document.getElementById('headerSubtitle');
-
     const searchBtn = document.getElementById('searchBtn');
-    const cartBtn = document.getElementById('cartBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const logoutIconBtn = document.getElementById('logoutIconBtn');
     const searchBar = document.getElementById('searchBar');
     const searchInput = document.getElementById('searchInput');
-    const toast = document.getElementById('toast');
-
-    const detailsModal = document.getElementById('detailsModal');
-    const detailsBody = document.getElementById('detailsBody');
-    const closeDetailsBtn = document.getElementById('closeDetailsBtn');
+    const dashboardBtn = document.getElementById('dashboardBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
 
     let currentUser = null;
     let allProducts = [];
     let favoritesMap = {};
     let cartMap = {};
-    let selectedCategory = 'all';
     let searchTerm = '';
-
-    function showToast(text) {
-      toast.textContent = text;
-      toast.classList.add('show');
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
-    }
 
     function escapeHtml(str = '') {
       return String(str)
@@ -1028,18 +694,6 @@
       }
     }
 
-    function renderHeader(user) {
-      const name = userNameValue(user);
-      setAvatar(topAvatar, user);
-      setAvatar(accountAvatar, user);
-      topUserName.textContent = name;
-      accountName.textContent = user?.displayName || name;
-      accountEmail.textContent = user?.email || 'لا يوجد بريد';
-      welcomeText.textContent = `أهلاً ${name}`;
-      welcomeSubText.textContent = 'كل البيانات هنا تُسحب مباشرة من Firebase، بدون أي بيانات افتراضية أو منتجات وهمية.';
-      headerSubtitle.textContent = user?.email || 'المتجر';
-    }
-
     function normalizeProduct(raw, key) {
       const p = raw || {};
       return {
@@ -1056,269 +710,53 @@
 
     function filteredProducts() {
       return allProducts.filter(p => {
-        const matchesSearch =
-          !searchTerm ||
-          `${p.name} ${p.category} ${p.description}`.toLowerCase().includes(searchTerm.toLowerCase());
-
-        const matchesCategory =
-          selectedCategory === 'all' ||
-          (p.category || '').toLowerCase() === selectedCategory.toLowerCase();
-
-        return matchesSearch && matchesCategory;
+        const text = `${p.name} ${p.category} ${p.description}`.toLowerCase();
+        return !searchTerm || text.includes(searchTerm.toLowerCase());
       });
     }
 
-    function openDetails(product) {
-      if (!product) return;
-      const imageHtml = product.image
-        ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name || '')}">`
-        : `<div class="placeholder">لا توجد صورة</div>`;
-
-      detailsBody.innerHTML = `
-        <div class="image-box">${imageHtml}</div>
-        <div>
-          <h4>${escapeHtml(product.name || 'بدون اسم')}</h4>
-          <p><strong>التصنيف:</strong> ${escapeHtml(product.category || 'بدون تصنيف')}</p>
-          <p><strong>السعر:</strong> ${product.price !== '' && product.price !== null && product.price !== undefined ? escapeHtml(formatPrice(product.price)) : '—'}</p>
-          <p><strong>المخزون:</strong> ${product.stock !== '' && product.stock !== null && product.stock !== undefined ? escapeHtml(product.stock) : '—'}</p>
-          <p><strong>الوصف:</strong> ${escapeHtml(product.description || 'لا يوجد وصف')}</p>
-        </div>
-      `;
-      detailsModal.classList.add('show');
-    }
-
-    function productCard(product) {
+    function renderProductCard(product) {
       const id = escapeHtml(product.id);
       const name = escapeHtml(product.name || 'بدون اسم');
-      const price = formatPrice(product.price);
-      const category = escapeHtml(product.category || '');
       const image = product.image || '';
+      const price = formatPrice(product.price);
 
       return `
-        <article class="product-card" data-id="${id}">
-          <div class="product-media" data-open-details="1">
+        <article class="product-card">
+          <a class="product-media" href="product.html?id=${encodeURIComponent(product.id)}">
             ${image ? `<img src="${escapeHtml(image)}" alt="${name}">` : `<div class="placeholder">لا توجد صورة</div>`}
-          </div>
+          </a>
           <div class="product-body">
-            <div class="product-name" data-open-details="1">${name}</div>
+            <a class="product-name" href="product.html?id=${encodeURIComponent(product.id)}" style="text-decoration:none;color:inherit;">${name}</a>
             <div class="meta">
-              <span>${category || 'بدون تصنيف'}</span>
+              <span>${escapeHtml(product.category || 'بدون تصنيف')}</span>
               <span>${product.stock !== '' && product.stock !== null && product.stock !== undefined ? `المخزون: ${escapeHtml(product.stock)}` : ''}</span>
             </div>
-            <div class="price">${price ? `${price}` : '—'}</div>
+            <div class="price">${price ? price : '—'}</div>
             <div class="card-actions">
-              <button class="mini-btn fav ${favoritesMap[product.id] ? 'active' : ''}" data-action="fav" data-id="${id}" type="button">
-                ${favoritesMap[product.id] ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}
-              </button>
-              <button class="mini-btn" data-action="cart" data-id="${id}" type="button">
-                ${cartMap[product.id] ? 'إزالة من السلة' : 'إضافة للسلة'}
-              </button>
+              <a class="mini-btn" href="product.html?id=${encodeURIComponent(product.id)}">عرض</a>
+              <a class="mini-btn" href="cart.html">إلى السلة</a>
             </div>
           </div>
         </article>
       `;
     }
 
-    function renderProducts(targetEl, products, emptyEl) {
-      if (!products.length) {
-        targetEl.innerHTML = '';
-        emptyEl.style.display = 'block';
-        return;
-      }
-      emptyEl.style.display = 'none';
-      targetEl.innerHTML = products.map(productCard).join('');
-    }
-
-    function renderCategories() {
-      const categories = ['all', ...new Set(allProducts.map(p => (p.category || '').trim()).filter(Boolean))];
-      categoriesCount.textContent = String(categories.length > 0 ? categories.length - 1 : 0);
-
-      categoriesWrap.innerHTML = categories.map(cat => {
-        const active = selectedCategory === cat;
-        const label = cat === 'all' ? 'الكل' : cat;
-        return `<button class="tab ${active ? 'active' : ''}" data-cat="${escapeHtml(cat)}" type="button">${escapeHtml(label)}</button>`;
-      }).join('');
-
-      const catList = selectedCategory === 'all'
-        ? filteredProducts()
-        : allProducts.filter(p => (p.category || '').toLowerCase() === selectedCategory.toLowerCase() &&
-            (!searchTerm || `${p.name} ${p.category} ${p.description}`.toLowerCase().includes(searchTerm.toLowerCase())));
-
-      renderProducts(categoryProducts, catList, categoryEmpty);
-    }
-
-    function refreshAllViews() {
-      const visibleProducts = filteredProducts();
-      productsCount.textContent = String(visibleProducts.length);
+    function refreshUI() {
+      const visible = filteredProducts();
+      productsCount.textContent = String(visible.length);
       productsStat.textContent = String(allProducts.length);
       favoritesStat.textContent = String(Object.keys(favoritesMap).length);
       cartStat.textContent = String(Object.keys(cartMap).length);
 
-      renderProducts(productsGrid, visibleProducts, productsEmpty);
-      renderCategories();
-
-      const favProducts = allProducts.filter(p => !!favoritesMap[p.id]);
-      favoritesCount.textContent = String(favProducts.length);
-      renderProducts(favoritesGrid, favProducts, favoritesEmpty);
-
-      const cartProducts = Object.values(cartMap).map(v => v?.product).filter(Boolean);
-      cartCount.textContent = String(cartProducts.length);
-
-      if (!cartProducts.length) {
-        cartList.innerHTML = '';
-        cartEmpty.style.display = 'block';
+      if (!visible.length) {
+        productsGrid.innerHTML = '';
+        productsEmpty.style.display = 'block';
       } else {
-        cartEmpty.style.display = 'none';
-        cartList.innerHTML = cartProducts.map(p => {
-          const id = escapeHtml(p.id);
-          const name = escapeHtml(p.name || 'بدون اسم');
-          const image = p.image || '';
-          return `
-            <div class="list-item">
-              <div class="thumb">
-                ${image ? `<img src="${escapeHtml(image)}" alt="${name}">` : `<div class="placeholder">لا توجد صورة</div>`}
-              </div>
-              <div class="info">
-                <h4>${name}</h4>
-                <p>${escapeHtml(p.category || 'بدون تصنيف')} ${p.price !== '' && p.price !== null && p.price !== undefined ? `• ${escapeHtml(formatPrice(p.price))}` : ''}</p>
-              </div>
-              <div class="actions">
-                <button class="mini-btn" data-action="details" data-id="${id}" type="button">عرض</button>
-                <button class="mini-btn" data-action="remove-cart" data-id="${id}" type="button">حذف</button>
-              </div>
-            </div>
-          `;
-        }).join('');
+        productsEmpty.style.display = 'none';
+        productsGrid.innerHTML = visible.map(renderProductCard).join('');
       }
     }
-
-    async function toggleFavorite(product) {
-      if (!currentUser) return;
-      const path = `favorites/${currentUser.uid}/${product.id}`;
-      const favRef = ref(db, path);
-
-      if (favoritesMap[product.id]) {
-        await remove(favRef);
-        showToast('تمت إزالة المنتج من المفضلة');
-      } else {
-        await set(favRef, {
-          productId: product.id,
-          addedAt: Date.now()
-        });
-        showToast('تمت إضافة المنتج إلى المفضلة');
-      }
-    }
-
-    async function toggleCart(product) {
-      if (!currentUser) return;
-      const path = `cart/${currentUser.uid}/${product.id}`;
-      const cartRef = ref(db, path);
-
-      if (cartMap[product.id]) {
-        await remove(cartRef);
-        showToast('تمت إزالة المنتج من السلة');
-      } else {
-        await set(cartRef, {
-          product: product.raw || product,
-          addedAt: Date.now(),
-          quantity: 1
-        });
-        showToast('تمت إضافة المنتج إلى السلة');
-      }
-    }
-
-    function findProductById(id) {
-      return allProducts.find(p => p.id === id);
-    }
-
-    function bindCardActions(container) {
-      container.addEventListener('click', (e) => {
-        const actionBtn = e.target.closest('[data-action]');
-        const openDetailsTarget = e.target.closest('[data-open-details="1"]');
-        const card = e.target.closest('.product-card');
-        const listItem = e.target.closest('.list-item');
-
-        if (openDetailsTarget && card) {
-          const id = card.dataset.id;
-          openDetails(findProductById(id));
-          return;
-        }
-
-        if (actionBtn) {
-          const id = actionBtn.dataset.id;
-          const product = findProductById(id);
-
-          if (actionBtn.dataset.action === 'details') {
-            openDetails(product);
-            return;
-          }
-
-          if (!product) return;
-
-          if (actionBtn.dataset.action === 'fav') toggleFavorite(product);
-          if (actionBtn.dataset.action === 'cart') toggleCart(product);
-          if (actionBtn.dataset.action === 'remove-cart' && currentUser) {
-            remove(ref(db, `cart/${currentUser.uid}/${id}`)).then(() => showToast('تم حذف المنتج من السلة'));
-          }
-        }
-
-        if (openDetailsTarget && listItem) {
-          const id = listItem.querySelector('[data-action="details"]')?.dataset.id;
-          openDetails(findProductById(id));
-        }
-      });
-    }
-
-    bindCardActions(productsGrid);
-    bindCardActions(categoryProducts);
-    bindCardActions(favoritesGrid);
-    bindCardActions(cartList);
-
-    document.querySelectorAll('.tab[data-section], .nav-btn[data-section]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.section').forEach(sec => {
-          sec.classList.toggle('active', sec.id === btn.dataset.section);
-        });
-        document.querySelectorAll('.tab, .nav-btn').forEach(el => {
-          el.classList.toggle('active', el.dataset.section === btn.dataset.section);
-        });
-        document.getElementById(btn.dataset.section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
-
-    categoriesWrap.addEventListener('click', (e) => {
-      const btn = e.target.closest('[data-cat]');
-      if (!btn) return;
-      selectedCategory = btn.dataset.cat;
-      refreshAllViews();
-    });
-
-    searchBtn.addEventListener('click', () => {
-      searchBar.classList.toggle('show');
-      if (searchBar.classList.contains('show')) searchInput.focus();
-    });
-
-    searchInput.addEventListener('input', () => {
-      searchTerm = searchInput.value.trim();
-      refreshAllViews();
-    });
-
-    cartBtn.addEventListener('click', () => {
-      document.querySelector('[data-section="cartSection"]')?.click();
-    });
-
-    async function doLogout() {
-      await signOut(auth);
-      window.location.href = 'login.html';
-    }
-
-    logoutBtn.addEventListener('click', doLogout);
-    logoutIconBtn.addEventListener('click', doLogout);
-
-    closeDetailsBtn.addEventListener('click', () => detailsModal.classList.remove('show'));
-    detailsModal.addEventListener('click', (e) => {
-      if (e.target === detailsModal) detailsModal.classList.remove('show');
-    });
 
     onAuthStateChanged(auth, (user) => {
       if (!user) {
@@ -1327,7 +765,18 @@
       }
 
       currentUser = user;
-      renderHeader(user);
+      const name = userNameValue(user);
+      setAvatar(topAvatar, user);
+      topUserName.textContent = name;
+      welcomeText.textContent = `أهلاً ${name}`;
+      welcomeSubText.textContent = 'كل البيانات هنا تُسحب مباشرة من Firebase، بدون أي بيانات افتراضية أو منتجات وهمية.';
+      headerSubtitle.textContent = user.email || 'المتجر';
+
+      if (user.email === 'ashlhl.iq@gmail.com') {
+        dashboardBtn.style.display = 'inline-flex';
+      } else {
+        dashboardBtn.style.display = 'none';
+      }
 
       onValue(ref(db, 'products'), (snap) => {
         const val = snap.val() || {};
@@ -1335,23 +784,36 @@
           .map(([key, raw]) => normalizeProduct(raw, key))
           .filter(p => p.id && (p.name || p.image || p.price !== undefined || p.category));
 
-        refreshAllViews();
+        loadingBox.style.display = 'none';
+        refreshUI();
       });
 
       onValue(ref(db, `favorites/${user.uid}`), (snap) => {
         favoritesMap = snap.val() || {};
-        refreshAllViews();
+        refreshUI();
       });
 
       onValue(ref(db, `cart/${user.uid}`), (snap) => {
-        const raw = snap.val() || {};
-        cartMap = {};
-        Object.entries(raw).forEach(([id, item]) => {
-          const product = item?.product ? normalizeProduct(item.product, id) : findProductById(id) || { id };
-          cartMap[id] = { ...item, product };
-        });
-        refreshAllViews();
+        cartMap = snap.val() || {};
+        refreshUI();
       });
+    });
+
+    searchBtn.addEventListener('click', () => {
+      searchBar.classList.toggle('show');
+      if (searchBar.classList.contains('show')) {
+        searchInput.focus();
+      }
+    });
+
+    searchInput.addEventListener('input', () => {
+      searchTerm = searchInput.value.trim();
+      refreshUI();
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      await signOut(auth);
+      window.location.href = 'login.html';
     });
   </script>
 </body>
