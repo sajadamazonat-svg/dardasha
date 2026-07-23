@@ -894,7 +894,6 @@
                 <a href="#" class="active" data-page="home">الرئيسية</a>
                 <a href="#" data-page="store">المتجر</a>
                 <a href="#" data-page="admin" id="adminNavLink" style="display:none;">لوحة التحكم</a>
-                <a href="mailto:ashlhl.iq@gmail.com">📧 اتصل بنا</a>
 
                 <!-- قسم المستخدم -->
                 <div id="userSection">
@@ -1018,7 +1017,6 @@
                     <a href="#" data-page="home">الرئيسية</a>
                     <a href="#" data-page="store">المتجر</a>
                     <a href="#" data-page="admin" id="footerAdminLink" style="display:none;">لوحة التحكم</a>
-                    <a href="mailto:ashlhl.iq@gmail.com">📧 اتصل بنا عبر Gmail</a>
                 </div>
                 <div class="footer-col">
                     <h5>خدماتنا</h5>
@@ -1035,11 +1033,6 @@
                         <a href="#">يوتيوب</a>
                         <a href="#">فيسبوك</a>
                     </div>
-                    <p style="margin-top:0.6rem; font-size:0.8rem; color:#8aa89a;">
-                        <a href="mailto:ashlhl.iq@gmail.com" style="color:#d4af37; text-decoration:none;">
-                            📧 ashlhl.iq@gmail.com
-                        </a>
-                    </p>
                 </div>
             </div>
             <div class="copyright">
@@ -1124,7 +1117,7 @@
                     loadAdminProducts();
                     loadOrderCount();
                 } else {
-                    alert('غير مصرح لك بالدخول إلى لوحة التحكم.');
+                    alert('غير مصرح لك بالدخول إلى لوحة التحكم. يرجى تسجيل الدخول بحساب ashlhl.iq@gmail.com');
                     navigateTo('home');
                 }
             }
@@ -1136,7 +1129,7 @@
         }
 
         // ================================================================
-        // 4. المصادقة وإدارة المستخدم
+        // 4. المصادقة وإدارة المستخدم (تسجيل الدخول عبر Google/Gmail)
         // ================================================================
         function updateUI(user) {
             currentUser = user;
@@ -1172,17 +1165,12 @@
                     });
                 }
 
-                // إذا كان المسؤول ويفتح الصفحة، نظهر لوحة التحكم إذا كانت مخفية
-                if (isAdmin && pageAdmin.style.display === 'none') {
-                    // لا نقوم بالتنقل تلقائياً، فقط نجهز الأزرار
-                }
-
             } else {
                 if (adminNavLink) adminNavLink.style.display = 'none';
                 if (footerAdminLink) footerAdminLink.style.display = 'none';
 
                 userSection.innerHTML = `
-                    <button class="btn-outline-light" id="loginBtn">تسجيل الدخول عبر Google</button>
+                    <button class="btn-outline-light" id="loginBtn">تسجيل الدخول عبر Gmail</button>
                 `;
 
                 const loginBtn = document.getElementById('loginBtn');
@@ -1504,6 +1492,7 @@
 
         console.log('✅ النظام المدمج جاهز بالكامل.');
         console.log('📧 البريد الإداري: ashlhl.iq@gmail.com');
+        console.log('🔑 لتسجيل الدخول، استخدم زر "تسجيل الدخول عبر Gmail"');
     </script>
 
 </body>
