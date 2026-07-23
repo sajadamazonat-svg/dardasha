@@ -71,6 +71,7 @@
             font-weight: 900;
             letter-spacing: -0.3px;
             line-height: 1.2;
+            color: #0b0e14;
         }
 
         .brand-text p {
@@ -118,53 +119,6 @@
 
         .action-btn:active {
             transform: scale(0.97);
-        }
-
-        .user-pill {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 4px 12px 4px 4px;
-            border-radius: 9999px;
-            border: 1px solid #e2e7ef;
-            background: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-            max-width: 200px;
-            min-width: 0;
-            transition: 0.25s cubic-bezier(0.2, 0, 0, 1);
-        }
-        .user-pill:hover {
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-        }
-
-        .avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: #0b0e14;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 0.8rem;
-            font-weight: 800;
-            overflow: hidden;
-        }
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .user-pill span {
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: #0b0e14;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100px;
         }
 
         /* ===== CONTAINER ===== */
@@ -431,32 +385,6 @@
             transform: scale(0.97);
         }
 
-        .product-actions .btn-fav {
-            background: transparent;
-            border-color: #e2e7ef;
-        }
-
-        .product-actions .btn-fav.active {
-            background: #0b0e14;
-            color: #fff;
-            border-color: #0b0e14;
-        }
-
-        .product-actions .btn-fav.active:hover {
-            background: #1e2530;
-        }
-
-        .product-actions .btn-cart {
-            background: #0b0e14;
-            color: #fff;
-            border-color: #0b0e14;
-        }
-
-        .product-actions .btn-cart:hover {
-            background: #1e2530;
-            border-color: #1e2530;
-        }
-
         /* ===== EMPTY & LOADING ===== */
         .empty-state {
             border: 1.5px dashed #d0d8e3;
@@ -483,41 +411,6 @@
             color: #5e6879;
             font-weight: 500;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-        }
-
-        /* ===== TOAST ===== */
-        .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: #0b0e14;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 9999px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.10);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 2000;
-            white-space: nowrap;
-            max-width: 90%;
-        }
-
-        .toast.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .toast.success {
-            background: #1a7a34;
-        }
-
-        .toast.error {
-            background: #dc3545;
         }
 
         /* ===== BOTTOM NAV ===== */
@@ -610,19 +503,6 @@
                 max-width: 100px;
                 font-size: 0.7rem;
             }
-            .user-pill {
-                max-width: 130px;
-                padding: 3px 10px 3px 3px;
-            }
-            .user-pill span {
-                max-width: 60px;
-                font-size: 0.74rem;
-            }
-            .avatar {
-                width: 30px;
-                height: 30px;
-                font-size: 0.7rem;
-            }
             .action-btn {
                 height: 38px;
                 min-width: 38px;
@@ -673,21 +553,13 @@
                 width: 20px;
                 height: 20px;
             }
-            .toast {
-                font-size: 0.8rem;
-                padding: 12px 20px;
-                bottom: 90px;
-                white-space: normal;
-                max-width: 90%;
-                text-align: center;
-            }
             .search-row {
                 gap: 6px;
             }
         }
 
         @media (max-width: 400px) {
-            .top-actions .action-btn:not(.user-pill) {
+            .top-actions .action-btn:not(.brand) {
                 display: none;
             }
             .brand-text p {
@@ -730,13 +602,9 @@
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             }
 
-            .brand-text h1,
-            .brand-text p,
-            .user-pill span,
-            .action-btn {
+            .brand-text h1 {
                 color: #ececec;
             }
-
             .brand-text p {
                 color: #8a8f9e;
             }
@@ -744,25 +612,12 @@
             .action-btn {
                 background: #26282e;
                 border-color: #3a3d45;
+                color: #ececec;
             }
 
             .action-btn:hover {
                 border-color: #6a6f7a;
                 background: #2a2d34;
-            }
-
-            .user-pill {
-                background: #1c1d22;
-                border-color: #33373f;
-            }
-
-            .user-pill span {
-                color: #ececec;
-            }
-
-            .avatar {
-                background: #33373f;
-                color: #ececec;
             }
 
             .container {
@@ -857,26 +712,6 @@
                 border-color: #ececec;
             }
 
-            .product-actions .btn-fav.active {
-                background: #ececec;
-                color: #111;
-                border-color: #ececec;
-            }
-
-            .product-actions .btn-fav.active:hover {
-                background: #ffffff;
-            }
-
-            .product-actions .btn-cart {
-                background: #ececec;
-                color: #111;
-                border-color: #ececec;
-            }
-
-            .product-actions .btn-cart:hover {
-                background: #ffffff;
-            }
-
             .empty-state {
                 border-color: #33373f;
                 background: #1e2026;
@@ -887,21 +722,6 @@
                 background: #23252b;
                 border-color: #33373f;
                 color: #8a8f9e;
-            }
-
-            .toast {
-                background: #26282e;
-                color: #ececec;
-            }
-
-            .toast.success {
-                background: #1a7a34;
-                color: #fff;
-            }
-
-            .toast.error {
-                background: #d93a4a;
-                color: #fff;
             }
 
             .bottom-nav {
@@ -938,16 +758,12 @@
             <div class="brand-mark">L</div>
             <div class="brand-text">
                 <h1>lidercenter</h1>
-                <p id="headerSubtitle">المنتجات</p>
+                <p>المنتجات</p>
             </div>
         </div>
         <div class="top-actions">
             <a class="action-btn" href="home.html">الرئيسية</a>
-            <button class="action-btn" id="logoutBtn" type="button">خروج</button>
-            <div class="user-pill">
-                <div class="avatar" id="topAvatar">U</div>
-                <span id="topUserName">...</span>
-            </div>
+            <a class="action-btn" href="login.html">تسجيل الدخول</a>
         </div>
     </header>
 
@@ -973,12 +789,12 @@
                 <span>المنتجات</span>
             </div>
             <div class="stat-box">
-                <strong id="favoritesStat">0</strong>
-                <span>المفضلة</span>
+                <strong id="categoriesStat">0</strong>
+                <span>التصنيفات</span>
             </div>
             <div class="stat-box">
-                <strong id="cartStat">0</strong>
-                <span>في السلة</span>
+                <strong id="stockStat">0</strong>
+                <span>المخزون</span>
             </div>
         </div>
 
@@ -997,12 +813,9 @@
         </div>
 
         <div id="productsList" class="product-list">
-            <div class="loading-box">جاري تحميل المنتجات من Firebase...</div>
+            <div class="loading-box">جاري تحميل المنتجات...</div>
         </div>
     </div>
-
-    <!-- Toast -->
-    <div class="toast" id="toast"></div>
 
     <!-- ===== BOTTOM NAV ===== -->
     <nav class="bottom-nav">
@@ -1014,26 +827,25 @@
             <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
             المنتجات
         </a>
-        <a class="nav-btn" href="favorites.html">
-            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-            المفضلة
-        </a>
         <a class="nav-btn" href="cart.html">
             <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
             السلة
         </a>
-        <a class="nav-btn" href="profile.html">
-            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            الحساب
+        <a class="nav-btn" href="about.html">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            عن المتجر
+        </a>
+        <a class="nav-btn" href="contact.html">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.574 2.81.7A2 2 0 0122 16.92z"/></svg>
+            اتصل بنا
         </a>
     </nav>
 
-    <!-- ===== FIREBASE (نفس إعدادات صفحة الإضافة) ===== -->
+    <!-- ===== FIREBASE ===== -->
     <script type="importmap">
         {
             "imports": {
                 "firebase/app": "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js",
-                "firebase/auth": "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js",
                 "firebase/database": "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js"
             }
         }
@@ -1041,10 +853,9 @@
 
     <script type="module">
         import { initializeApp } from "firebase/app";
-        import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-        import { getDatabase, ref, onValue, set, remove } from "firebase/database";
+        import { getDatabase, ref, onValue } from "firebase/database";
 
-        // ── نفس إعدادات Firebase المستخدمة في صفحة إضافة المنتج ──
+        // ── إعدادات Firebase (نفس المشروع) ──
         const firebaseConfig = {
             apiKey: "AIzaSyAgjCRON_o4MUqrLKBaTXAOVZxBXMuPOhM",
             authDomain: "studio-3203578995-1262a.firebaseapp.com",
@@ -1056,28 +867,19 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getDatabase(app);
 
         // ── DOM refs ──
         const productsList = document.getElementById('productsList');
         const productsCount = document.getElementById('productsCount');
         const productsStat = document.getElementById('productsStat');
-        const favoritesStat = document.getElementById('favoritesStat');
-        const cartStat = document.getElementById('cartStat');
-        const topAvatar = document.getElementById('topAvatar');
-        const topUserName = document.getElementById('topUserName');
-        const headerSubtitle = document.getElementById('headerSubtitle');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const toast = document.getElementById('toast');
+        const categoriesStat = document.getElementById('categoriesStat');
+        const stockStat = document.getElementById('stockStat');
         const searchInput = document.getElementById('searchInput');
         const categoryFilter = document.getElementById('categoryFilter');
 
         // ── State ──
-        let currentUser = null;
         let allProducts = [];
-        let favoritesMap = {};
-        let cartMap = {};
         let searchTerm = '';
         let selectedCategory = '';
 
@@ -1098,24 +900,6 @@
             return num.toLocaleString('en-US');
         }
 
-        function userNameValue(user) {
-            return user?.displayName || user?.email?.split('@')?.[0] || 'مستخدم';
-        }
-
-        function userInitial(user) {
-            const n = userNameValue(user);
-            return n.trim().charAt(0).toUpperCase() || 'U';
-        }
-
-        function setAvatar(el, user) {
-            const photo = user?.photoURL || '';
-            if (photo) {
-                el.innerHTML = `<img src="${escapeHtml(photo)}" alt="avatar">`;
-            } else {
-                el.textContent = userInitial(user);
-            }
-        }
-
         function normalizeProduct(raw, key) {
             const p = raw || {};
             return {
@@ -1128,17 +912,6 @@
                 stock: p.stock ?? p.quantity ?? '',
                 raw: p
             };
-        }
-
-        function showToast(message, type = 'success') {
-            toast.textContent = message;
-            toast.className = `toast ${type}`;
-            void toast.offsetWidth;
-            toast.classList.add('show');
-            clearTimeout(toast._hideTimer);
-            toast._hideTimer = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 2500);
         }
 
         // ── Filtering ──
@@ -1159,6 +932,7 @@
 
         function populateCategories() {
             const cats = getCategories();
+            const current = categoryFilter.value;
             categoryFilter.innerHTML = '<option value="">جميع التصنيفات</option>';
             cats.forEach(c => {
                 const option = document.createElement('option');
@@ -1166,21 +940,27 @@
                 option.textContent = c;
                 categoryFilter.appendChild(option);
             });
+            if (current && cats.includes(current)) categoryFilter.value = current;
         }
 
         // ── Render Products ──
         function renderProducts() {
             const filtered = getFilteredProducts();
+            const totalStock = allProducts.reduce((sum, p) => {
+                const qty = Number(p.stock) || 0;
+                return sum + qty;
+            }, 0);
+
             productsCount.textContent = String(filtered.length);
             productsStat.textContent = String(allProducts.length);
-            favoritesStat.textContent = String(Object.keys(favoritesMap).length);
-            cartStat.textContent = String(Object.keys(cartMap).length);
+            categoriesStat.textContent = String(getCategories().length);
+            stockStat.textContent = String(totalStock);
 
             if (!filtered.length) {
                 productsList.innerHTML = `
                     <div class="empty-state">
-                        لا توجد منتجات تطابق معايير البحث.
-                        <div class="sub-text">حاول تعديل كلمات البحث أو التصنيف المختار.</div>
+                        ${allProducts.length === 0 ? 'لا توجد منتجات حالياً.' : 'لا توجد منتجات تطابق معايير البحث.'}
+                        <div class="sub-text">${allProducts.length === 0 ? 'تم إضافة المنتجات عبر صفحة الإدارة.' : 'حاول تعديل كلمات البحث أو التصنيف المختار.'}</div>
                     </div>
                 `;
                 return;
@@ -1194,8 +974,6 @@
                 const price = formatPrice(p.price);
                 const category = escapeHtml(p.category || 'بدون تصنيف');
                 const stock = p.stock !== '' && p.stock !== null && p.stock !== undefined ? escapeHtml(p.stock) : '';
-                const isFav = !!favoritesMap[p.id];
-                const favClass = isFav ? 'active' : '';
 
                 html += `
                     <div class="product-card">
@@ -1205,109 +983,32 @@
                         <p><strong>المخزون:</strong> ${stock || '—'}</p>
                         ${image ? `<img class="thumb" src="${escapeHtml(image)}" alt="${name}" onerror="this.style.display='none'" loading="lazy">` : ''}
                         <div class="product-actions">
-                            <a class="btn" href="product.html?id=${encodeURIComponent(p.id)}">عرض</a>
-                            <button class="btn btn-fav ${favClass}" data-id="${p.id}" data-action="toggle-fav">${isFav ? '★ مفضلة' : '☆ مفضلة'}</button>
-                            <button class="btn btn-cart" data-id="${p.id}" data-action="add-cart">+ سلة</button>
+                            <a class="btn" href="product.html?id=${encodeURIComponent(p.id)}">عرض التفاصيل</a>
                         </div>
                     </div>
                 `;
             }
 
             productsList.innerHTML = html;
-
-            // Attach events for fav and cart buttons
-            document.querySelectorAll('[data-action="toggle-fav"]').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    const pid = btn.dataset.id;
-                    await toggleFavorite(pid);
-                });
-            });
-
-            document.querySelectorAll('[data-action="add-cart"]').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    const pid = btn.dataset.id;
-                    await addToCart(pid);
-                });
-            });
         }
 
-        // ── Toggle Favorite ──
-        async function toggleFavorite(productId) {
-            if (!currentUser) return;
-            const isFav = !!favoritesMap[productId];
-            const favRef = ref(db, `favorites/${currentUser.uid}/${productId}`);
-            try {
-                if (isFav) {
-                    await set(favRef, null);
-                    showToast('تم إزالة المنتج من المفضلة', 'success');
-                } else {
-                    await set(favRef, true);
-                    showToast('تم إضافة المنتج إلى المفضلة', 'success');
-                }
-            } catch (error) {
-                console.error('Favorite toggle error:', error);
-                showToast('حدث خطأ، حاول مرة أخرى', 'error');
-            }
-        }
+        // ── Load products ──
+        onValue(ref(db, 'products'), (snap) => {
+            const val = snap.val() || {};
+            allProducts = Object.entries(val)
+                .map(([key, raw]) => normalizeProduct(raw, key))
+                .filter(p => p.id && (p.name || p.image || p.price !== undefined || p.category));
 
-        // ── Add to Cart ──
-        async function addToCart(productId) {
-            if (!currentUser) return;
-            const currentQty = Number(cartMap[productId]) || 0;
-            const newQty = currentQty + 1;
-            const cartRef = ref(db, `cart/${currentUser.uid}/${productId}`);
-            try {
-                await set(cartRef, newQty);
-                showToast('تم إضافة المنتج إلى السلة', 'success');
-            } catch (error) {
-                console.error('Add to cart error:', error);
-                showToast('حدث خطأ أثناء الإضافة', 'error');
-            }
-        }
-
-        // ── Auth ──
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = 'login.html';
-                return;
-            }
-
-            currentUser = user;
-            const name = userNameValue(user);
-            setAvatar(topAvatar, user);
-            topUserName.textContent = name;
-            headerSubtitle.textContent = user.email || 'المنتجات';
-
-            // ── Load products ──
-            onValue(ref(db, 'products'), (snap) => {
-                const val = snap.val() || {};
-                allProducts = Object.entries(val)
-                    .map(([key, raw]) => normalizeProduct(raw, key))
-                    .filter(p => p.id && (p.name || p.image || p.price !== undefined || p.category));
-
-                populateCategories();
-                renderProducts();
-            });
-
-            // ── Favorites ──
-            onValue(ref(db, `favorites/${user.uid}`), (snap) => {
-                favoritesMap = snap.val() || {};
-                renderProducts();
-            });
-
-            // ── Cart ──
-            onValue(ref(db, `cart/${user.uid}`), (snap) => {
-                cartMap = snap.val() || {};
-                renderProducts();
-            });
-        });
-
-        // ── Logout ──
-        logoutBtn.addEventListener('click', async () => {
-            await signOut(auth);
-            window.location.href = 'login.html';
+            populateCategories();
+            renderProducts();
+        }, (error) => {
+            console.error('Load error:', error);
+            productsList.innerHTML = `
+                <div class="empty-state">
+                    فشل تحميل المنتجات.
+                    <div class="sub-text">يرجى التحقق من اتصالك بالإنترنت.</div>
+                </div>
+            `;
         });
 
         // ── Search & Filter events ──
@@ -1321,5 +1022,6 @@
             renderProducts();
         });
     </script>
+
 </body>
 </html>
