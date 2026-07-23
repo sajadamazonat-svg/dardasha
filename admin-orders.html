@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>إدارة الطلبات - LiderCenter</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f2f4f8;
+            padding: 12px;
+            color: #111;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 18px 16px 24px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        /* ===== BACK BUTTON ===== */
+        .back-row {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            color: #0f0f0f;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+            touch-action: manipulation;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .back-btn:active {
+            transform: scale(0.94);
+        }
+
+        .back-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: #0a0a0a;
+            letter-spacing: -0.3px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin: 8px 0 12px;
+            color: #1e1e1e;
+        }
+
+        /* ===== STATUS ===== */
+        #status {
+            text-align: center;
+            margin: 12px 0 8px;
+            font-weight: 600;
+            min-height: 24px;
+            font-size: 15px;
+            padding: 4px 0;
+        }
+
+        .success {
+            color: #1a7a34;
+        }
+        .error {
+            color: #c62828;
+        }
+
+        /* ===== ORDER LIST ===== */
+        .order-list {
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .order-card {
+            border: 1px solid #eaedf2;
+            border-radius: 16px;
+            padding: 14px 16px 16px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .order-card:hover {
+            border-color: #d0d5de;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        .order-card h3 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #0a0a0a;
+            word-break: break-word;
+        }
+
+        .order-card p {
+            font-size: 14px;
+            color: #3d424e;
+            line-height: 1.7;
+            margin-bottom: 2px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 8px;
+        }
+
+        .order-card p strong {
+            color: #1e1e1e;
+            font-weight: 600;
+            min-width: 58px;
+        }
+
+        .order-status {
+            display: inline-block;
+            padding: 2px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            background: #eef0f4;
+            color: #3d424e;
+        }
+
+        .order-status.new {
+            background: #dbeafe;
+            color: #1a3a6a;
+        }
+        .order-status.processing {
+            background: #fef3c7;
+            color: #7a5a0a;
+        }
+        .order-status.shipped {
+            background: #d1fae5;
+            color: #0a5a3a;
+        }
+        .order-status.delivered {
+            background: #d4edda;
+            color: #0a5a2a;
+        }
+        .order-status.cancelled {
+            background: #fde2e2;
+            color: #7a1a1a;
+        }
+
+        .order-actions {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .order-actions select {
+            flex: 1;
+            min-width: 120px;
+            margin: 0;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 10px;
+            height: 42px;
+            border: 1.5px solid #e2e6ee;
+            background: #fafbfc;
+            font-family: inherit;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23555' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 14px center;
+            padding-left: 36px;
+            cursor: pointer;
+        }
+
+        .order-actions select:focus {
+            border-color: #1a1a1a;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #e2e6ee;
+            color: #0f0f0f;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            touch-action: manipulation;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 70px;
+        }
+
+        .btn-outline:hover {
+            background: #f5f6f8;
+            border-color: #c0c6d0;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            font-size: 14px;
+            padding: 10px 16px;
+            margin: 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            touch-action: manipulation;
+            font-weight: 600;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 70px;
+        }
+
+        .btn-danger:hover {
+            background: #b52a37;
+        }
+
+        .btn-danger:active {
+            transform: scale(0.95);
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 13px;
+            min-width: 60px;
+            height: 38px;
+        }
+
+        /* empty state */
+        .order-card.empty {
+            color: #7a8290;
+            text-align: center;
+            font-size: 15px;
+            padding: 28px 16px;
+            background: #f8f9fb;
+            border-style: dashed;
+            border-color: #d0d5de;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 420px) {
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                padding: 14px 12px 20px;
+                border-radius: 16px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin-bottom: 14px;
+            }
+
+            .order-card {
+                padding: 12px 14px 14px;
+            }
+
+            .order-card h3 {
+                font-size: 16px;
+            }
+
+            .order-card p {
+                font-size: 13px;
+                line-height: 1.6;
+            }
+
+            .btn-danger,
+            .btn-outline {
+                font-size: 13px;
+                padding: 9px 12px;
+                min-width: 60px;
+                height: 38px;
+            }
+
+            .order-actions select {
+                height: 38px;
+                font-size: 13px;
+                padding: 6px 10px;
+                min-width: 100px;
+            }
+
+            .section-title {
+                font-size: 16px;
+            }
+
+            .back-btn {
+                font-size: 14px;
+                padding: 5px 10px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .container {
+                padding: 12px 10px 16px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            .order-card h3 {
+                font-size: 15px;
+            }
+
+            .order-card p {
+                font-size: 12px;
+            }
+
+            .order-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .order-actions select {
+                min-width: unset;
+            }
+        }
+
+        @media (max-height: 600px) and (orientation: landscape) {
+            body {
+                padding: 8px 12px;
+            }
+
+            .container {
+                padding: 14px 16px 18px;
+                max-width: 520px;
+            }
+
+            h2 {
+                font-size: 19px;
+                margin-bottom: 10px;
+            }
+
+            .section-title {
+                margin-top: 14px;
+                margin-bottom: 8px;
+                font-size: 15px;
+            }
+
+            .order-card {
+                padding: 10px 12px 12px;
+            }
+
+            .back-btn {
+                font-size: 14px;
+                padding: 4px 10px;
+            }
+        }
+
+        @media (pointer: coarse) {
+            .btn-danger,
+            .btn-outline {
+                min-height: 42px;
+            }
+
+            .back-btn {
+                min-height: 44px;
+            }
+
+            .order-actions select {
+                min-height: 42px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #121316;
+            }
+
+            .container {
+                background: #1c1d22;
+                box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            }
+
+            .back-btn {
+                color: #ececec;
+            }
+            .back-btn:hover {
+                background: rgba(255, 255, 255, 0.06);
+            }
+
+            h2,
+            .section-title,
+            .order-card h3 {
+                color: #ececec;
+            }
+
+            .order-card {
+                background: #23252b;
+                border-color: #33373f;
+            }
+
+            .order-card:hover {
+                border-color: #4a4f5a;
+            }
+
+            .order-card p {
+                color: #b0b6c4;
+            }
+
+            .order-card p strong {
+                color: #d8dce6;
+            }
+
+            .order-card.empty {
+                background: #1e2026;
+                color: #7a8290;
+                border-color: #33373f;
+            }
+
+            .order-actions select {
+                background: #26282e;
+                border-color: #3a3d45;
+                color: #ececec;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23aaa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            }
+
+            .order-actions select:focus {
+                background: #2c2f36;
+                border-color: #8a8f9e;
+                box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+            }
+
+            .btn-outline {
+                border-color: #4a4f5a;
+                color: #d0d4de;
+            }
+
+            .btn-outline:hover {
+                background: #2a2d34;
+                border-color: #6a6f7a;
+            }
+
+            .btn-danger {
+                background: #d93a4a;
+                color: #fff;
+            }
+
+            .btn-danger:hover {
+                background: #e84a5a;
+            }
+
+            .order-status {
+                background: #33373f;
+                color: #b0b6c4;
+            }
+
+            .order-status.new {
+                background: #1a2a4a;
+                color: #8ab4f8;
+            }
+            .order-status.processing {
+                background: #4a3a0a;
+                color: #f5c542;
+            }
+            .order-status.shipped {
+                background: #0a3a2a;
+                color: #5ac4a0;
+            }
+            .order-status.delivered {
+                background: #0a3a1a;
+                color: #5ac480;
+            }
+            .order-status.cancelled {
+                background: #4a1a1a;
+                color: #f06262;
+            }
+
+            .success {
+                color: #4caf7a;
+            }
+            .error {
+                color: #f06262;
+            }
+
+            #status {
+                color: #d0d4de;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Back Button -->
+        <div class="back-row">
+            <button class="back-btn" type="button" onclick="history.back()" aria-label="رجوع">
+                <svg viewBox="0 0 24 24">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+                رجوع
+            </button>
+        </div>
+
+        <h2>إدارة الطلبات</h2>
+        <p id="status"></p>
+
+        <h3 class="section-title">الطلبات المستلمة</h3>
+        <div id="orders" class="order-list">
+            <div class="order-card empty">جاري تحميل الطلبات...</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import {
+            getDatabase,
+            ref,
+            onValue,
+            remove,
+            update
+        } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAgjCRON_o4MUqrLKBaTXAOVZxBXMuPOhM",
+            authDomain: "studio-3203578995-1262a.firebaseapp.com",
+            databaseURL: "https://studio-3203578995-1262a-default-rtdb.firebaseio.com",
+            projectId: "studio-3203578995-1262a",
+            storageBucket: "studio-3203578995-1262a.firebasestorage.app",
+            messagingSenderId: "422562518339",
+            appId: "1:422562518339:web:52bc8169b52e72446f0bf6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const statusMsg = document.getElementById("status");
+        const ordersEl = document.getElementById("orders");
+
+        function setStatus(msg, type = "") {
+            statusMsg.className = "";
+            statusMsg.textContent = msg;
+            if (type) statusMsg.classList.add(type);
+        }
+
+        function escapeHtml(str = "") {
+            return String(str)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#39;");
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                new: "جديد",
+                processing: "قيد المعالجة",
+                shipped: "تم الشحن",
+                delivered: "تم التسليم",
+                cancelled: "ملغي"
+            };
+            return labels[status] || status || "جديد";
+        }
+
+        function getStatusClass(status) {
+            const classes = {
+                new: "new",
+                processing: "processing",
+                shipped: "shipped",
+                delivered: "delivered",
+                cancelled: "cancelled"
+            };
+            return classes[status] || "new";
+        }
+
+        function renderOrders(data) {
+            if (!data) {
+                ordersEl.innerHTML =
+                    `<div class="order-card empty">لا توجد طلبات حتى الآن</div>`;
+                return;
+            }
+
+            const items = Object.entries(data).map(([id, order]) => {
+                const customer = escapeHtml(order?.customerName || "بدون اسم");
+                const total = order?.total ?? "";
+                const status = order?.status || "new";
+                const statusLabel = getStatusLabel(status);
+                const statusClass = getStatusClass(status);
+                const itemsDesc = escapeHtml(order?.items || "");
+
+                // Build status options for dropdown
+                const statusOptions = ["new", "processing", "shipped", "delivered", "cancelled"];
+                const optionsHtml = statusOptions.map(s => {
+                    const label = getStatusLabel(s);
+                    const selected = s === status ? "selected" : "";
+                    return `<option value="${s}" ${selected}>${label}</option>`;
+                }).join("");
+
+                return `
+              <div class="order-card" data-id="${id}">
+                <h3>${customer}</h3>
+                <p><strong>السعر الإجمالي:</strong> ${total !== "" ? total : "—"}</p>
+                <p>
+                  <strong>الحالة:</strong>
+                  <span class="order-status ${statusClass}">${statusLabel}</span>
+                </p>
+                <p><strong>الوصف:</strong> ${itemsDesc || "—"}</p>
+                <div class="order-actions">
+                  <select class="status-update" data-id="${id}">
+                    ${optionsHtml}
+                  </select>
+                  <button class="btn-outline btn-small update-status" data-id="${id}" type="button">تحديث</button>
+                  <button class="btn-danger btn-small" data-delete="${id}" type="button">حذف</button>
+                </div>
+              </div>
+            `;
+            }).join("");
+
+            ordersEl.innerHTML = items;
+
+            // Delete handlers
+            document.querySelectorAll("[data-delete]").forEach((btn) => {
+                btn.addEventListener("click", async () => {
+                    const id = btn.getAttribute("data-delete");
+                    if (!confirm("متأكد تريد حذف هذا الطلب؟")) return;
+
+                    try {
+                        await remove(ref(db, `orders/${id}`));
+                        setStatus("تم حذف الطلب بنجاح", "success");
+                    } catch (error) {
+                        console.error("Delete error:", error);
+                        setStatus("خطأ بالحذف: " + error.message, "error");
+                    }
+                });
+            });
+
+            // Update status handlers
+            document.querySelectorAll(".update-status").forEach((btn) => {
+                btn.addEventListener("click", async () => {
+                    const id = btn.getAttribute("data-id");
+                    const select = document.querySelector(`.status-update[data-id="${id}"]`);
+                    if (!select) return;
+
+                    const newStatus = select.value;
+                    try {
+                        await update(ref(db, `orders/${id}`), {
+                            status: newStatus
+                        });
+                        setStatus("تم تحديث حالة الطلب بنجاح", "success");
+                    } catch (error) {
+                        console.error("Update error:", error);
+                        setStatus("خطأ بالتحديث: " + error.message, "error");
+                    }
+                });
+            });
+        }
+
+        // Real-time listener
+        onValue(ref(db, "orders"), (snapshot) => {
+            renderOrders(snapshot.val());
+        }, (error) => {
+            console.error("Load error:", error);
+            ordersEl.innerHTML =
+                `<div class="order-card empty">فشل تحميل الطلبات</div>`;
+        });
+    </script>
+
+</body>
+</html>
