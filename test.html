@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>إضافة منتج - LiderCenter</title>
+
+<style>
+body{
+    font-family: Arial;
+    background:#f5f5f5;
+    padding:20px;
+}
+
+.container{
+    max-width:400px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 0 10px #ccc;
+}
+
+input,button{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:8px;
+    border:1px solid #ddd;
+    font-size:16px;
+}
+
+button{
+    background:#111;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#333;
+}
+
+#status{
+    text-align:center;
+    margin-top:10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>إضافة منتج</h2>
+
+<input id="name" placeholder="اسم المنتج">
+
+<input id="price" type="number" placeholder="السعر">
+
+<input id="quantity" type="number" placeholder="الكمية">
+
+<input id="barcode" placeholder="الباركود">
+
+
+<button id="save">حفظ المنتج</button>
+
+<p id="status"></p>
+
+</div>
+
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+
+import { 
+getDatabase,
+ref,
+push,
+set
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+
+// إعدادات Firebase
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyAgjCRON_o4MUqrLKBaTXAOVZxBXMuPOhM",
+
+authDomain: "studio-3203578995-1262a.firebaseapp.com",
+
+databaseURL: "https://studio-3203578995-1262a-default-rtdb.firebaseio.com",
+
+projectId: "studio-3203578995-1262a",
+
+storageBucket: "studio-3203578995-1262a.firebasestorage.app",
+
+messagingSenderId: "422562518339",
+
+appId: "1:422562518339:web:52bc8169b52e72446f0bf6"
+
+};
+
+
+// تشغيل Firebase
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+
+
+document.getElementById("save").onclick = async()=>{
+
+
+let name = document.getElementById("name").value;
+
+let price = document.getElementById("price").value;
+
+let quantity = document.getElementById("quantity").value;
+
+let barcode = document.getElementById("barcode").value;
+
+
+
+if(!name){
+
+document.getElementById("status").innerHTML="اكتب اسم المنتج";
+
+return;
+
+}
+
+
+
+try{
+
+
+// إنشاء رقم تلقائي للمنتج
+
+const productRef = push(ref(db,"products"));
+
+
+
+await set(productRef,{
+
+name:name,
+
+price:Number(price),
+
+quantity:Number(quantity),
+
+barcode:barcode,
+
+createdAt:new Date().toISOString()
+
+});
+
+
+
+document.getElementById("status").innerHTML="تم حفظ المنتج بنجاح";
+
+
+document.querySelectorAll("input").forEach(i=>i.value="");
+
+
+
+}
+
+catch(error){
+
+document.getElementById("status").innerHTML=
+"خطأ: "+error.message;
+
+}
+
+
+};
+
+
+</script>
+
+</body>
+</html>
