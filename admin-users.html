@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>إدارة المستخدمين - LiderCenter</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f2f4f8;
+            padding: 12px;
+            color: #111;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 18px 16px 24px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        /* ===== BACK BUTTON ===== */
+        .back-row {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            color: #0f0f0f;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+            touch-action: manipulation;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .back-btn:active {
+            transform: scale(0.94);
+        }
+
+        .back-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: #0a0a0a;
+            letter-spacing: -0.3px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin: 22px 0 12px;
+            color: #1e1e1e;
+        }
+
+        /* ===== FORM ELEMENTS ===== */
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 14px 16px;
+            margin: 6px 0;
+            border-radius: 12px;
+            border: 1.5px solid #e2e6ee;
+            font-size: 16px;
+            font-family: inherit;
+            outline: none;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #1a1a1a;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        }
+
+        input::placeholder {
+            color: #a0a8b8;
+            font-weight: 400;
+        }
+
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23555' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 14px center;
+            padding-left: 36px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-primary {
+            background: #0f0f0f;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 17px;
+            padding: 16px;
+            border-radius: 12px;
+            transition: background 0.2s, transform 0.1s, opacity 0.2s;
+            touch-action: manipulation;
+            letter-spacing: 0.3px;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background: #2a2a2a;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+            background: #555;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            font-size: 14px;
+            padding: 10px 16px;
+            margin: 0;
+            flex: 1;
+            min-width: 70px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            touch-action: manipulation;
+            font-weight: 600;
+        }
+
+        .btn-danger:hover {
+            background: #b52a37;
+        }
+
+        .btn-danger:active {
+            transform: scale(0.95);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #e2e6ee;
+            color: #0f0f0f;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            touch-action: manipulation;
+        }
+
+        .btn-outline:hover {
+            background: #f5f6f8;
+            border-color: #c0c6d0;
+        }
+
+        /* ===== STATUS ===== */
+        #status {
+            text-align: center;
+            margin-top: 12px;
+            font-weight: 600;
+            min-height: 24px;
+            font-size: 15px;
+            padding: 4px 0;
+        }
+
+        .success {
+            color: #1a7a34;
+        }
+        .error {
+            color: #c62828;
+        }
+
+        /* ===== USER LIST ===== */
+        .user-list {
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .user-card {
+            border: 1px solid #eaedf2;
+            border-radius: 16px;
+            padding: 14px 16px 16px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .user-card:hover {
+            border-color: #d0d5de;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        .user-card h3 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #0a0a0a;
+            word-break: break-word;
+        }
+
+        .user-card p {
+            font-size: 14px;
+            color: #3d424e;
+            line-height: 1.7;
+            margin-bottom: 2px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 8px;
+        }
+
+        .user-card p strong {
+            color: #1e1e1e;
+            font-weight: 600;
+            min-width: 58px;
+        }
+
+        .user-role {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            background: #eef0f4;
+            color: #3d424e;
+        }
+
+        .user-role.admin {
+            background: #0f0f0f;
+            color: #fff;
+        }
+
+        .user-role.manager {
+            background: #d4e2f0;
+            color: #1a3a5a;
+        }
+
+        .user-role.user {
+            background: #e8edf4;
+            color: #3d424e;
+        }
+
+        .actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .actions .btn-danger {
+            flex: 0 1 auto;
+            min-width: 80px;
+        }
+
+        .actions .btn-outline {
+            flex: 0 1 auto;
+            min-width: 80px;
+        }
+
+        /* empty state */
+        .user-card.empty {
+            color: #7a8290;
+            text-align: center;
+            font-size: 15px;
+            padding: 28px 16px;
+            background: #f8f9fb;
+            border-style: dashed;
+            border-color: #d0d5de;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 420px) {
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                padding: 14px 12px 20px;
+                border-radius: 16px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin-bottom: 14px;
+            }
+
+            input,
+            select,
+            .btn-primary {
+                padding: 13px 14px;
+                font-size: 15px;
+                margin: 5px 0;
+                border-radius: 10px;
+            }
+
+            .btn-primary {
+                padding: 15px;
+                font-size: 16px;
+            }
+
+            .user-card {
+                padding: 12px 14px 14px;
+            }
+
+            .user-card h3 {
+                font-size: 16px;
+            }
+
+            .user-card p {
+                font-size: 13px;
+                line-height: 1.6;
+            }
+
+            .btn-danger,
+            .btn-outline {
+                font-size: 13px;
+                padding: 9px 14px;
+                min-width: 64px;
+            }
+
+            .section-title {
+                font-size: 16px;
+                margin-top: 18px;
+            }
+
+            .back-btn {
+                font-size: 14px;
+                padding: 5px 10px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .container {
+                padding: 12px 10px 16px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            input,
+            select,
+            .btn-primary {
+                padding: 12px 12px;
+                font-size: 14px;
+                border-radius: 9px;
+            }
+
+            .btn-primary {
+                padding: 14px;
+                font-size: 15px;
+            }
+
+            .user-card h3 {
+                font-size: 15px;
+            }
+
+            .user-card p {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-height: 600px) and (orientation: landscape) {
+            body {
+                padding: 8px 12px;
+            }
+
+            .container {
+                padding: 14px 16px 18px;
+                max-width: 520px;
+            }
+
+            input,
+            select,
+            .btn-primary {
+                padding: 10px 14px;
+                margin: 4px 0;
+                font-size: 15px;
+            }
+
+            h2 {
+                font-size: 19px;
+                margin-bottom: 10px;
+            }
+
+            .section-title {
+                margin-top: 14px;
+                margin-bottom: 8px;
+                font-size: 15px;
+            }
+
+            .user-card {
+                padding: 10px 12px 12px;
+            }
+
+            .back-btn {
+                font-size: 14px;
+                padding: 4px 10px;
+            }
+        }
+
+        @media (pointer: coarse) {
+            input,
+            select,
+            .btn-primary,
+            .btn-danger,
+            .btn-outline {
+                min-height: 48px;
+            }
+
+            .btn-danger,
+            .btn-outline {
+                min-height: 42px;
+            }
+
+            .back-btn {
+                min-height: 44px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #121316;
+            }
+
+            .container {
+                background: #1c1d22;
+                box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            }
+
+            .back-btn {
+                color: #ececec;
+            }
+            .back-btn:hover {
+                background: rgba(255, 255, 255, 0.06);
+            }
+
+            h2,
+            .section-title,
+            .user-card h3 {
+                color: #ececec;
+            }
+
+            input,
+            select {
+                background: #26282e;
+                border-color: #3a3d45;
+                color: #ececec;
+            }
+
+            input:focus,
+            select:focus {
+                background: #2c2f36;
+                border-color: #8a8f9e;
+                box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+            }
+
+            input::placeholder {
+                color: #6e7482;
+            }
+
+            select {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23aaa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            }
+
+            .user-card {
+                background: #23252b;
+                border-color: #33373f;
+            }
+
+            .user-card:hover {
+                border-color: #4a4f5a;
+            }
+
+            .user-card p {
+                color: #b0b6c4;
+            }
+
+            .user-card p strong {
+                color: #d8dce6;
+            }
+
+            .user-card.empty {
+                background: #1e2026;
+                color: #7a8290;
+                border-color: #33373f;
+            }
+
+            .btn-primary {
+                background: #ececec;
+                color: #111;
+            }
+
+            .btn-primary:hover {
+                background: #ffffff;
+            }
+
+            .btn-primary:disabled {
+                background: #4a4f5a;
+                color: #aaa;
+            }
+
+            .btn-danger {
+                background: #d93a4a;
+                color: #fff;
+            }
+
+            .btn-danger:hover {
+                background: #e84a5a;
+            }
+
+            .btn-outline {
+                border-color: #4a4f5a;
+                color: #d0d4de;
+            }
+
+            .btn-outline:hover {
+                background: #2a2d34;
+                border-color: #6a6f7a;
+            }
+
+            .user-role {
+                background: #33373f;
+                color: #b0b6c4;
+            }
+
+            .user-role.admin {
+                background: #ececec;
+                color: #111;
+            }
+
+            .user-role.manager {
+                background: #2a4055;
+                color: #aac4e0;
+            }
+
+            .user-role.user {
+                background: #2a2d34;
+                color: #b0b6c4;
+            }
+
+            .success {
+                color: #4caf7a;
+            }
+            .error {
+                color: #f06262;
+            }
+
+            #status {
+                color: #d0d4de;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Back Button -->
+        <div class="back-row">
+            <button class="back-btn" type="button" onclick="history.back()" aria-label="رجوع">
+                <svg viewBox="0 0 24 24">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+                رجوع
+            </button>
+        </div>
+
+        <h2>إدارة المستخدمين</h2>
+
+        <input id="userName" placeholder="الاسم الكامل" autocomplete="off" />
+        <input id="userEmail" type="email" placeholder="البريد الإلكتروني" autocomplete="off" />
+        <input id="userPhone" type="tel" placeholder="رقم الهاتف (اختياري)" autocomplete="off" />
+        <select id="userRole">
+            <option value="user">مستخدم</option>
+            <option value="manager">مدير</option>
+            <option value="admin">مدير عام</option>
+        </select>
+
+        <button class="btn-primary" id="save" type="button">إضافة مستخدم</button>
+        <p id="status"></p>
+
+        <h3 class="section-title">المستخدمين المسجلين</h3>
+        <div id="users" class="user-list">
+            <div class="user-card empty">جاري تحميل المستخدمين...</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import {
+            getDatabase,
+            ref,
+            push,
+            set,
+            onValue,
+            remove
+        } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAgjCRON_o4MUqrLKBaTXAOVZxBXMuPOhM",
+            authDomain: "studio-3203578995-1262a.firebaseapp.com",
+            databaseURL: "https://studio-3203578995-1262a-default-rtdb.firebaseio.com",
+            projectId: "studio-3203578995-1262a",
+            storageBucket: "studio-3203578995-1262a.firebasestorage.app",
+            messagingSenderId: "422562518339",
+            appId: "1:422562518339:web:52bc8169b52e72446f0bf6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const nameEl = document.getElementById("userName");
+        const emailEl = document.getElementById("userEmail");
+        const phoneEl = document.getElementById("userPhone");
+        const roleEl = document.getElementById("userRole");
+        const saveBtn = document.getElementById("save");
+        const statusEl = document.getElementById("status");
+        const usersEl = document.getElementById("users");
+
+        function setStatus(msg, type = "") {
+            statusEl.className = "";
+            statusEl.textContent = msg;
+            if (type) statusEl.classList.add(type);
+        }
+
+        function escapeHtml(str = "") {
+            return String(str)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#39;");
+        }
+
+        function clearForm() {
+            nameEl.value = "";
+            emailEl.value = "";
+            phoneEl.value = "";
+            roleEl.value = "user";
+            nameEl.focus();
+        }
+
+        function getRoleLabel(role) {
+            const labels = {
+                admin: "مدير عام",
+                manager: "مدير",
+                user: "مستخدم"
+            };
+            return labels[role] || role || "مستخدم";
+        }
+
+        function getRoleClass(role) {
+            const classes = {
+                admin: "admin",
+                manager: "manager",
+                user: "user"
+            };
+            return classes[role] || "user";
+        }
+
+        function renderUsers(data) {
+            if (!data) {
+                usersEl.innerHTML =
+                    `<div class="user-card empty">لا يوجد مستخدمين حتى الآن</div>`;
+                return;
+            }
+
+            const items = Object.entries(data).map(([id, u]) => {
+                const name = escapeHtml(u?.name || "بدون اسم");
+                const email = escapeHtml(u?.email || "");
+                const phone = escapeHtml(u?.phone || "");
+                const role = u?.role || "user";
+                const roleLabel = getRoleLabel(role);
+                const roleClass = getRoleClass(role);
+
+                return `
+              <div class="user-card">
+                <h3>${name}</h3>
+                <p><strong>البريد:</strong> ${email || "—"}</p>
+                <p><strong>الهاتف:</strong> ${phone || "—"}</p>
+                <p>
+                  <strong>الدور:</strong>
+                  <span class="user-role ${roleClass}">${roleLabel}</span>
+                </p>
+                <div class="actions">
+                  <button class="btn-danger" data-delete="${id}" type="button">حذف</button>
+                </div>
+              </div>
+            `;
+            }).join("");
+
+            usersEl.innerHTML = items;
+
+            document.querySelectorAll("[data-delete]").forEach((btn) => {
+                btn.addEventListener("click", async () => {
+                    const id = btn.getAttribute("data-delete");
+                    if (!confirm("متأكد تريد حذف هذا المستخدم؟")) return;
+
+                    try {
+                        await remove(ref(db, `users/${id}`));
+                        setStatus("تم حذف المستخدم بنجاح", "success");
+                    } catch (error) {
+                        console.error("Delete error:", error);
+                        setStatus("خطأ بالحذف: " + error.message, "error");
+                    }
+                });
+            });
+        }
+
+        onValue(ref(db, "users"), (snapshot) => {
+            renderUsers(snapshot.val());
+        }, (error) => {
+            console.error("Load error:", error);
+            usersEl.innerHTML =
+                `<div class="user-card empty">فشل تحميل المستخدمين</div>`;
+        });
+
+        saveBtn.addEventListener("click", async () => {
+            const name = nameEl.value.trim();
+            const email = emailEl.value.trim();
+            const phone = phoneEl.value.trim();
+            const role = roleEl.value;
+
+            if (!name) {
+                setStatus("اكتب الاسم الكامل", "error");
+                return;
+            }
+
+            if (!email) {
+                setStatus("اكتب البريد الإلكتروني", "error");
+                return;
+            }
+
+            if (!email.includes("@") || !email.includes(".")) {
+                setStatus("اكتب بريد إلكتروني صحيح", "error");
+                return;
+            }
+
+            try {
+                saveBtn.disabled = true;
+                saveBtn.textContent = "جاري الحفظ...";
+                setStatus("جاري إضافة المستخدم...", "");
+
+                const userRef = push(ref(db, "users"));
+                await set(userRef, {
+                    name,
+                    email,
+                    phone,
+                    role,
+                    createdAt: new Date().toISOString()
+                });
+
+                setStatus("تم إضافة المستخدم بنجاح", "success");
+                clearForm();
+            } catch (error) {
+                console.error("Save error:", error);
+                setStatus("خطأ: " + error.message, "error");
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = "إضافة مستخدم";
+            }
+        });
+    </script>
+
+</body>
+</html>
