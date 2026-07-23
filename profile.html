@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lidercenter - الحساب</title>
+  <style>
+    /* ── Reset & Variables ── */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f4f6fa;
+      --card: #ffffff;
+      --text: #0b0e14;
+      --text-muted: #5e6879;
+      --border: #e2e7ef;
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.10);
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 24px;
+      --radius-xl: 28px;
+      --radius-full: 9999px;
+      --transition: 0.25s cubic-bezier(0.2, 0, 0, 1);
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --danger: #dc3545;
+      --success: #28a745;
+      --primary: #0b0e14;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-top: 84px;
+      padding-bottom: 92px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c9d0db;
+      border-radius: 999px;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      position: fixed;
+      top: 0;
+      inset-inline: 0;
+      height: 84px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(18px) saturate(1.1);
+      -webkit-backdrop-filter: blur(18px) saturate(1.1);
+      border-bottom: 1px solid rgba(226, 231, 239, 0.7);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(145deg, #0b0e14, #1e2530);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 900;
+      flex-shrink: 0;
+      letter-spacing: -0.5px;
+      box-shadow: 0 4px 12px rgba(11, 14, 20, 0.15);
+    }
+
+    .brand-text h1 {
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+
+    .brand-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px;
+      font-weight: 500;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .action-btn {
+      height: 42px;
+      min-width: 42px;
+      padding: 0 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.82rem;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+      text-decoration: none;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+      border-color: #b8c2d0;
+      box-shadow: var(--shadow-md);
+    }
+
+    .action-btn:active {
+      transform: scale(0.97);
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 12px 4px 4px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+      background: #fff;
+      box-shadow: var(--shadow-sm);
+      max-width: 200px;
+      min-width: 0;
+      transition: var(--transition);
+    }
+    .user-pill:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #0b0e14, #2a3340);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.8rem;
+      font-weight: 800;
+      overflow: hidden;
+    }
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-pill span {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100px;
+    }
+
+    /* ── Container ── */
+    .container {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 24px 28px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60%;
+      right: -10%;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(11, 14, 20, 0.03) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h2 {
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      line-height: 1.8;
+      font-size: 0.92rem;
+      max-width: 660px;
+    }
+
+    /* ── Quick Links ── */
+    .quick-links {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 6px 0 12px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .quick-links::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      padding: 10px 20px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.82rem;
+      white-space: nowrap;
+      transition: var(--transition);
+      flex-shrink: 0;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .chip:hover {
+      background: #0b0e14;
+      color: #fff;
+      border-color: #0b0e14;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .chip:active {
+      transform: scale(0.97);
+    }
+    .chip.active {
+      background: #0b0e14;
+      color: #fff;
+      border-color: #0b0e14;
+    }
+
+    /* ── Profile Section ── */
+    .section {
+      margin-top: 12px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 14px 0 12px;
+    }
+    .section-title h3 {
+      font-size: 1.05rem;
+      font-weight: 900;
+      letter-spacing: -0.2px;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .profile-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .profile-card .card-title {
+      font-weight: 900;
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .profile-avatar-large {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0 16px;
+    }
+    .profile-avatar-large .avatar-big {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #0b0e14, #2a3340);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      font-weight: 900;
+      overflow: hidden;
+      border: 3px solid var(--border);
+    }
+    .profile-avatar-large .avatar-big img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-avatar-large .display-name {
+      font-size: 1.2rem;
+      font-weight: 900;
+    }
+    .profile-avatar-large .user-email {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .profile-field {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.92rem;
+    }
+    .profile-field:last-child {
+      border-bottom: none;
+    }
+    .profile-field .label {
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .profile-field .value {
+      font-weight: 700;
+      text-align: left;
+      word-break: break-all;
+    }
+
+    .profile-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .form-group label {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .form-group input {
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      background: var(--bg);
+      transition: var(--transition);
+      outline: none;
+      color: var(--text);
+    }
+    .form-group input:focus {
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(11, 14, 20, 0.06);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      background: #1e2530;
+    }
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+      text-align: center;
+    }
+    .btn-secondary:hover {
+      background: var(--bg);
+      border-color: #b8c2d0;
+    }
+
+    .btn-danger-outline {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid var(--danger);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+      text-align: center;
+    }
+    .btn-danger-outline:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #0b0e14;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 2000;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast.success {
+      background: var(--success);
+    }
+    .toast.error {
+      background: var(--danger);
+    }
+
+    /* ── Bottom Nav ── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      inset-inline: 0;
+      height: 84px;
+      background: rgba(255, 255, 255, 0.90);
+      backdrop-filter: blur(18px) saturate(1.1);
+      -webkit-backdrop-filter: blur(18px) saturate(1.1);
+      border-top: 1px solid rgba(226, 231, 239, 0.7);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 1000;
+      padding: 8px 6px 12px;
+      gap: 2px;
+    }
+
+    .nav-btn {
+      flex: 1;
+      max-width: 100px;
+      height: 58px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 0.2px;
+      padding: 0 4px;
+    }
+    .nav-btn:hover {
+      background: rgba(11, 14, 20, 0.05);
+      color: var(--text);
+    }
+    .nav-btn.active {
+      background: #0b0e14;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(11, 14, 20, 0.20);
+    }
+    .nav-btn.active:hover {
+      background: #1e2530;
+    }
+
+    .nav-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+    }
+    .nav-btn.active svg {
+      stroke: #fff;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      body {
+        padding-top: 76px;
+        padding-bottom: 80px;
+      }
+      .topbar {
+        height: 76px;
+        padding: 0 14px;
+      }
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+      }
+      .brand-text h1 {
+        font-size: 0.95rem;
+      }
+      .brand-text p {
+        max-width: 100px;
+        font-size: 0.7rem;
+      }
+      .user-pill {
+        max-width: 130px;
+        padding: 3px 10px 3px 3px;
+      }
+      .user-pill span {
+        max-width: 60px;
+        font-size: 0.74rem;
+      }
+      .avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 0.7rem;
+      }
+      .action-btn {
+        height: 38px;
+        min-width: 38px;
+        padding: 0 12px;
+        font-size: 0.72rem;
+      }
+      .hero {
+        padding: 18px 16px;
+        border-radius: var(--radius-lg);
+      }
+      .hero h2 {
+        font-size: 1.15rem;
+      }
+      .hero p {
+        font-size: 0.85rem;
+      }
+      .profile-card {
+        padding: 16px;
+      }
+      .profile-avatar-large .avatar-big {
+        width: 72px;
+        height: 72px;
+        font-size: 1.8rem;
+      }
+      .profile-field {
+        font-size: 0.82rem;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .profile-field .value {
+        text-align: right;
+      }
+      .bottom-nav {
+        height: 76px;
+        padding: 6px 4px 10px;
+      }
+      .nav-btn {
+        height: 52px;
+        font-size: 0.6rem;
+        max-width: 72px;
+      }
+      .nav-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+      .toast {
+        font-size: 0.8rem;
+        padding: 12px 20px;
+        bottom: 90px;
+        white-space: normal;
+        max-width: 90%;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .top-actions .action-btn:not(.user-pill) {
+        display: none;
+      }
+      .brand-text p {
+        max-width: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ Topbar ═══ -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">L</div>
+      <div class="brand-text">
+        <h1>lidercenter</h1>
+        <p id="headerSubtitle">الحساب</p>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <a class="action-btn" href="home.html">الرئيسية</a>
+      <button class="action-btn" id="logoutBtn" type="button">خروج</button>
+      <div class="user-pill">
+        <div class="avatar" id="topAvatar">U</div>
+        <span id="topUserName">...</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ Toast ═══ -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ═══ Main ═══ -->
+  <main class="container">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <h2 id="welcomeText">مرحباً في حسابك</h2>
+          <p id="welcomeSubText">يمكنك إدارة بيانات حسابك الشخصي، تحديث اسمك، أو إعادة تعيين كلمة المرور.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Links -->
+    <div class="quick-links">
+      <a class="chip" href="home.html">الرئيسية</a>
+      <a class="chip" href="products.html">جميع المنتجات</a>
+      <a class="chip" href="favorites.html">المفضلة</a>
+      <a class="chip" href="cart.html">السلة</a>
+      <a class="chip active" href="profile.html">الحساب</a>
+    </div>
+
+    <!-- Profile Section -->
+    <section class="section">
+      <div class="section-title">
+        <h3>بيانات الحساب</h3>
+      </div>
+
+      <div class="profile-grid">
+
+        <!-- البطاقة الشخصية -->
+        <div class="profile-card">
+          <div class="card-title">الملف الشخصي</div>
+          <div class="profile-avatar-large">
+            <div class="avatar-big" id="profileAvatar">U</div>
+            <div class="display-name" id="profileName">...</div>
+            <div class="user-email" id="profileEmail">...</div>
+          </div>
+          <div class="divider"></div>
+          <div class="profile-field">
+            <span class="label">معرف المستخدم</span>
+            <span class="value" id="profileUid">...</span>
+          </div>
+          <div class="profile-field">
+            <span class="label">تاريخ التسجيل</span>
+            <span class="value" id="profileCreated">...</span>
+          </div>
+          <div class="profile-field">
+            <span class="label">آخر تسجيل دخول</span>
+            <span class="value" id="profileLastLogin">...</span>
+          </div>
+        </div>
+
+        <!-- الإعدادات والإجراءات -->
+        <div class="profile-card">
+          <div class="card-title">إعدادات الحساب</div>
+
+          <!-- تحديث الاسم -->
+          <div class="form-group">
+            <label for="displayNameInput">تحديث اسم العرض</label>
+            <input type="text" id="displayNameInput" placeholder="أدخل الاسم الجديد" />
+            <button class="btn-primary" id="updateNameBtn">حفظ الاسم</button>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- إعادة تعيين كلمة المرور -->
+          <button class="btn-secondary" id="resetPasswordBtn">إعادة تعيين كلمة المرور</button>
+
+          <div class="divider"></div>
+
+          <!-- تسجيل الخروج -->
+          <button class="btn-danger-outline" id="logoutBtn2">تسجيل الخروج من الحساب</button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══ Bottom Navigation ═══ -->
+  <nav class="bottom-nav">
+    <a class="nav-btn" href="home.html">
+      <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>
+      الرئيسية
+    </a>
+    <a class="nav-btn" href="products.html">
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+      المنتجات
+    </a>
+    <a class="nav-btn" href="favorites.html">
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      المفضلة
+    </a>
+    <a class="nav-btn" href="cart.html">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+      السلة
+    </a>
+    <a class="nav-btn active" href="profile.html">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      الحساب
+    </a>
+  </nav>
+
+  <!-- ═══ Firebase ═══ -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut,
+      updateProfile,
+      sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDcj-R4XEXmLUl7hW38r58paTVHxq2GKVI",
+      authDomain: "test-bfcd3.firebaseapp.com",
+      projectId: "test-bfcd3",
+      storageBucket: "test-bfcd3.firebasestorage.app",
+      messagingSenderId: "178734209574",
+      appId: "1:178734209574:web:a54fbfb0118ac2325b64e7",
+      measurementId: "G-9TVW2LDH08"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // ── DOM refs ──
+    const topAvatar = document.getElementById('topAvatar');
+    const topUserName = document.getElementById('topUserName');
+    const headerSubtitle = document.getElementById('headerSubtitle');
+    const welcomeText = document.getElementById('welcomeText');
+    const welcomeSubText = document.getElementById('welcomeSubText');
+
+    const profileAvatar = document.getElementById('profileAvatar');
+    const profileName = document.getElementById('profileName');
+    const profileEmail = document.getElementById('profileEmail');
+    const profileUid = document.getElementById('profileUid');
+    const profileCreated = document.getElementById('profileCreated');
+    const profileLastLogin = document.getElementById('profileLastLogin');
+
+    const displayNameInput = document.getElementById('displayNameInput');
+    const updateNameBtn = document.getElementById('updateNameBtn');
+    const resetPasswordBtn = document.getElementById('resetPasswordBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const logoutBtn2 = document.getElementById('logoutBtn2');
+
+    const toast = document.getElementById('toast');
+
+    // ── Helpers ──
+    function escapeHtml(str = '') {
+      return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function formatDate(timestamp) {
+      if (!timestamp) return 'غير متاح';
+      try {
+        const date = new Date(timestamp);
+        return date.toLocaleString('ar-EG', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      } catch {
+        return 'غير متاح';
+      }
+    }
+
+    function userNameValue(user) {
+      return user?.displayName || user?.email?.split('@')?.[0] || 'مستخدم';
+    }
+
+    function userInitial(user) {
+      const n = userNameValue(user);
+      return n.trim().charAt(0).toUpperCase() || 'U';
+    }
+
+    function setAvatar(el, user) {
+      const photo = user?.photoURL || '';
+      if (photo) {
+        el.innerHTML = `<img src="${escapeHtml(photo)}" alt="avatar">`;
+      } else {
+        el.textContent = userInitial(user);
+      }
+    }
+
+    function setBigAvatar(el, user) {
+      const photo = user?.photoURL || '';
+      if (photo) {
+        el.innerHTML = `<img src="${escapeHtml(photo)}" alt="avatar">`;
+      } else {
+        el.textContent = userInitial(user);
+      }
+    }
+
+    function showToast(message, type = 'success') {
+      toast.textContent = message;
+      toast.className = `toast ${type}`;
+      void toast.offsetWidth;
+      toast.classList.add('show');
+      clearTimeout(toast._hideTimer);
+      toast._hideTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function updateUI(user) {
+      if (!user) return;
+      const name = userNameValue(user);
+      const email = user.email || 'بريد إلكتروني غير مسجل';
+
+      // Topbar
+      setAvatar(topAvatar, user);
+      topUserName.textContent = name;
+      headerSubtitle.textContent = email;
+
+      // Hero
+      welcomeText.textContent = `مرحباً ${name}`;
+      welcomeSubText.textContent = 'يمكنك إدارة بيانات حسابك الشخصي، تحديث اسمك، أو إعادة تعيين كلمة المرور.';
+
+      // Profile card
+      setBigAvatar(profileAvatar, user);
+      profileName.textContent = name;
+      profileEmail.textContent = email;
+      profileUid.textContent = user.uid || 'غير متاح';
+
+      // Metadata
+      const metadata = user.metadata || {};
+      profileCreated.textContent = formatDate(metadata.creationTime);
+      profileLastLogin.textContent = formatDate(metadata.lastSignInTime);
+
+      // Fill input
+      displayNameInput.value = user.displayName || '';
+    }
+
+    // ── Auth ──
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      updateUI(user);
+    });
+
+    // ── Update display name ──
+    updateNameBtn.addEventListener('click', async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        showToast('الرجاء تسجيل الدخول أولاً', 'error');
+        return;
+      }
+      const newName = displayNameInput.value.trim();
+      if (!newName) {
+        showToast('الرجاء إدخال اسم صالح', 'error');
+        return;
+      }
+      if (newName === user.displayName) {
+        showToast('الاسم الجديد مطابق للاسم الحالي', 'error');
+        return;
+      }
+
+      updateNameBtn.disabled = true;
+      updateNameBtn.textContent = 'جاري الحفظ...';
+
+      try {
+        await updateProfile(user, { displayName: newName });
+        // Refresh user object
+        await user.reload();
+        const refreshedUser = auth.currentUser;
+        updateUI(refreshedUser);
+        showToast('تم تحديث الاسم بنجاح', 'success');
+      } catch (error) {
+        console.error('Update name error:', error);
+        showToast('حدث خطأ أثناء تحديث الاسم', 'error');
+      } finally {
+        updateNameBtn.disabled = false;
+        updateNameBtn.textContent = 'حفظ الاسم';
+      }
+    });
+
+    // ── Reset password ──
+    resetPasswordBtn.addEventListener('click', async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        showToast('الرجاء تسجيل الدخول أولاً', 'error');
+        return;
+      }
+      const email = user.email;
+      if (!email) {
+        showToast('لا يوجد بريد إلكتروني مرتبط بهذا الحساب', 'error');
+        return;
+      }
+
+      resetPasswordBtn.disabled = true;
+      resetPasswordBtn.textContent = 'جاري الإرسال...';
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+        showToast(`تم إرسال رابط إعادة التعيين إلى ${email}`, 'success');
+      } catch (error) {
+        console.error('Reset password error:', error);
+        if (error.code === 'auth/user-not-found') {
+          showToast('المستخدم غير موجود', 'error');
+        } else {
+          showToast('حدث خطأ أثناء إرسال الرابط', 'error');
+        }
+      } finally {
+        resetPasswordBtn.disabled = false;
+        resetPasswordBtn.textContent = 'إعادة تعيين كلمة المرور';
+      }
+    });
+
+    // ── Logout ──
+    async function handleLogout() {
+      try {
+        await signOut(auth);
+        window.location.href = 'login.html';
+      } catch (error) {
+        console.error('Logout error:', error);
+        showToast('حدث خطأ أثناء تسجيل الخروج', 'error');
+      }
+    }
+
+    logoutBtn.addEventListener('click', handleLogout);
+    logoutBtn2.addEventListener('click', handleLogout);
+
+  </script>
+</body>
+</html>
