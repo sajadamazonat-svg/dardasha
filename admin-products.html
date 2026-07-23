@@ -1,299 +1,169 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html><html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>lidercenter - إدارة المنتجات</title>
-
+  <title>إضافة منتج - LiderCenter</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --bg: #f4f6fa;
-      --card: #ffffff;
-      --text: #0b0e14;
-      --text-muted: #5e6879;
-      --border: #e2e7ef;
-      --primary: #0b0e14;
-      --danger: #dc3545;
-      --success: #28a745;
-      --radius: 18px;
-      --shadow: 0 10px 30px rgba(0,0,0,.06);
-      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 24px;
-    }
-
-    .container {
-      width: min(1100px, 100%);
-      margin: 0 auto;
-    }
-
-    .card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
       padding: 20px;
-      margin-bottom: 18px;
+      color: #111;
     }
-
-    h1, h2, h3 {
-      margin-bottom: 12px;
+    .container {
+      max-width: 520px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 12px rgba(0,0,0,.08);
     }
-
-    .muted {
-      color: var(--text-muted);
+    h2 {
       margin-bottom: 14px;
-      line-height: 1.8;
+      font-size: 22px;
     }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .full {
-      grid-column: 1 / -1;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-
-    input, textarea, button {
+    input, button, textarea {
       width: 100%;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      padding: 12px 14px;
-      font-size: 1rem;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 16px;
       font-family: inherit;
       outline: none;
     }
-
     input:focus, textarea:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(11,14,20,.06);
+      border-color: #111;
     }
-
     textarea {
       min-height: 90px;
       resize: vertical;
     }
-
     button {
-      border: none;
-      background: var(--primary);
+      background: #111;
       color: #fff;
-      font-weight: 800;
+      border: none;
       cursor: pointer;
-      transition: .2s ease;
+      font-weight: 700;
     }
-
     button:hover {
-      transform: translateY(-1px);
+      background: #333;
     }
-
     button:disabled {
       opacity: .7;
       cursor: not-allowed;
-      transform: none;
     }
-
-    .btn-danger {
-      background: var(--danger);
-    }
-
-    .status {
-      margin-top: 12px;
+    #status {
+      text-align: center;
+      margin-top: 10px;
       font-weight: 700;
-      min-height: 24px;
+      min-height: 22px;
     }
-
-    .status.success { color: var(--success); }
-    .status.error { color: var(--danger); }
-
-    .table-wrap {
-      overflow-x: auto;
+    .success { color: #1a8f3c; }
+    .error { color: #c62828; }
+    .section-title {
+      margin: 18px 0 10px;
+      font-size: 18px;
     }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 700px;
+    .product-list {
+      margin-top: 10px;
+      display: grid;
+      gap: 10px;
     }
-
-    th, td {
+    .product-card {
+      border: 1px solid #e7e7e7;
+      border-radius: 14px;
       padding: 12px;
-      border-bottom: 1px solid var(--border);
-      text-align: right;
-      vertical-align: middle;
+      background: #fafafa;
     }
-
-    th {
-      font-size: .85rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: .3px;
+    .product-card h3 {
+      font-size: 16px;
+      margin-bottom: 6px;
     }
-
-    .thumb {
-      width: 52px;
-      height: 52px;
-      border-radius: 12px;
-      object-fit: cover;
-      background: var(--bg);
-      display: block;
+    .product-card p {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.6;
     }
-
-    .placeholder {
-      width: 52px;
-      height: 52px;
-      border-radius: 12px;
-      background: var(--bg);
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: .72rem;
-    }
-
     .actions {
+      margin-top: 10px;
       display: flex;
       gap: 8px;
-      flex-wrap: wrap;
     }
-
-    @media (max-width: 760px) {
-      .grid { grid-template-columns: 1fr; }
-      .full { grid-column: 1; }
+    .btn-danger {
+      background: #dc3545;
+    }
+    .btn-danger:hover {
+      background: #b52a37;
+    }
+    .thumb {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-top: 10px;
+      background: #eee;
+      display: block;
     }
   </style>
 </head>
+<body>  <div class="container">
+    <h2>إضافة منتج</h2><input id="name" placeholder="اسم المنتج" />
+<input id="price" type="number" placeholder="السعر" />
+<input id="quantity" type="number" placeholder="الكمية" />
+<input id="barcode" placeholder="الباركود" />
+<input id="category" placeholder="التصنيف (اختياري)" />
+<input id="image" type="url" placeholder="رابط الصورة (اختياري)" />
+<textarea id="description" placeholder="الوصف (اختياري)"></textarea>
 
-<body>
-  <div class="container">
-    <div class="card">
-      <h1>إدارة المنتجات</h1>
-      <p class="muted">أضف منتج جديد إلى Realtime Database، وشوف المنتجات الموجودة واحذفها من نفس الصفحة.</p>
+<button id="save" type="button">حفظ المنتج</button>
+<p id="status"></p>
 
-      <form id="addProductForm" class="grid">
-        <div>
-          <label for="productName">اسم المنتج *</label>
-          <input type="text" id="productName" placeholder="مثال: آيفون 15" required />
-        </div>
+<h3 class="section-title">المنتجات الموجودة</h3>
+<div id="products" class="product-list">
+  <div class="product-card">جاري تحميل المنتجات...</div>
+</div>
 
-        <div>
-          <label for="productPrice">السعر *</label>
-          <input type="number" id="productPrice" placeholder="مثال: 499" step="0.01" required />
-        </div>
-
-        <div>
-          <label for="productCategory">التصنيف</label>
-          <input type="text" id="productCategory" placeholder="مثال: إلكترونيات" />
-        </div>
-
-        <div>
-          <label for="productStock">المخزون</label>
-          <input type="number" id="productStock" placeholder="مثال: 10" step="1" />
-        </div>
-
-        <div class="full">
-          <label for="productImage">رابط الصورة *</label>
-          <input type="url" id="productImage" placeholder="https://example.com/image.jpg" required />
-        </div>
-
-        <div class="full">
-          <label for="productDescription">الوصف</label>
-          <textarea id="productDescription" placeholder="وصف المنتج"></textarea>
-        </div>
-
-        <div class="full">
-          <button type="submit" id="submitBtn">إضافة المنتج</button>
-          <div id="status" class="status"></div>
-        </div>
-      </form>
-    </div>
-
-    <div class="card">
-      <h2>المنتجات الموجودة</h2>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>الصورة</th>
-              <th>الاسم</th>
-              <th>السعر</th>
-              <th>التصنيف</th>
-              <th>المخزون</th>
-              <th>الإجراءات</th>
-            </tr>
-          </thead>
-          <tbody id="productsTableBody">
-            <tr>
-              <td colspan="6">جاري تحميل المنتجات...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <script type="importmap">
-    {
-      "imports": {
-        "firebase/app": "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js",
-        "firebase/auth": "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js",
-        "firebase/database": "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js"
-      }
-    }
-  </script>
-
-  <script type="module">
-    import { initializeApp } from "firebase/app";
-    import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-    import { getDatabase, ref, push, set, onValue, remove } from "firebase/database";
+  </div>  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      push,
+      set,
+      onValue,
+      remove
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
     const firebaseConfig = {
-      apiKey: "PUT_YOUR_API_KEY_HERE",
-      authDomain: "PUT_YOUR_AUTH_DOMAIN_HERE",
-      databaseURL: "https://YOUR-PROJECT-default-rtdb.firebaseio.com",
-      projectId: "PUT_YOUR_PROJECT_ID_HERE",
-      storageBucket: "PUT_YOUR_STORAGE_BUCKET_HERE",
-      messagingSenderId: "PUT_YOUR_MESSAGING_SENDER_ID_HERE",
-      appId: "PUT_YOUR_APP_ID_HERE"
+      apiKey: "AIzaSyAgjCRON_o4MUqrLKBaTXAOVZxBXMuPOhM",
+      authDomain: "studio-3203578995-1262a.firebaseapp.com",
+      databaseURL: "https://studio-3203578995-1262a-default-rtdb.firebaseio.com",
+      projectId: "studio-3203578995-1262a",
+      storageBucket: "studio-3203578995-1262a.firebasestorage.app",
+      messagingSenderId: "422562518339",
+      appId: "1:422562518339:web:52bc8169b52e72446f0bf6"
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getDatabase(app);
 
-    const ADMIN_EMAIL = "ashlhl.iq@gmail.com";
-
-    const form = document.getElementById("addProductForm");
-    const submitBtn = document.getElementById("submitBtn");
+    const nameEl = document.getElementById("name");
+    const priceEl = document.getElementById("price");
+    const quantityEl = document.getElementById("quantity");
+    const barcodeEl = document.getElementById("barcode");
+    const categoryEl = document.getElementById("category");
+    const imageEl = document.getElementById("image");
+    const descriptionEl = document.getElementById("description");
+    const saveBtn = document.getElementById("save");
     const statusEl = document.getElementById("status");
-    const tableBody = document.getElementById("productsTableBody");
+    const productsEl = document.getElementById("products");
 
-    const productName = document.getElementById("productName");
-    const productPrice = document.getElementById("productPrice");
-    const productCategory = document.getElementById("productCategory");
-    const productStock = document.getElementById("productStock");
-    const productImage = document.getElementById("productImage");
-    const productDescription = document.getElementById("productDescription");
-
-    function showStatus(message, type = "") {
-      statusEl.textContent = message;
-      statusEl.className = `status ${type}`;
+    function setStatus(msg, type = "") {
+      statusEl.className = "";
+      statusEl.textContent = msg;
+      if (type) statusEl.classList.add(type);
     }
 
     function escapeHtml(str = "") {
@@ -305,135 +175,123 @@
         .replaceAll("'", "&#39;");
     }
 
-    function renderEmpty(message) {
-      tableBody.innerHTML = `<tr><td colspan="6">${message}</td></tr>`;
+    function clearForm() {
+      nameEl.value = "";
+      priceEl.value = "";
+      quantityEl.value = "";
+      barcodeEl.value = "";
+      categoryEl.value = "";
+      imageEl.value = "";
+      descriptionEl.value = "";
+      nameEl.focus();
     }
 
-    function loadProducts() {
-      const productsRef = ref(db, "products");
+    function renderProducts(data) {
+      if (!data) {
+        productsEl.innerHTML = `<div class="product-card">لا توجد منتجات حتى الآن</div>`;
+        return;
+      }
 
-      onValue(productsRef, (snapshot) => {
-        const data = snapshot.val();
+      const items = Object.entries(data).map(([id, p]) => {
+        const name = escapeHtml(p?.name || "بدون اسم");
+        const price = p?.price ?? "";
+        const quantity = p?.quantity ?? "";
+        const barcode = escapeHtml(p?.barcode || "");
+        const category = escapeHtml(p?.category || "");
+        const image = p?.image || "";
+        const description = escapeHtml(p?.description || "");
 
-        if (!data) {
-          renderEmpty("لا توجد منتجات حتى الآن");
-          return;
-        }
+        return `
+          <div class="product-card">
+            <h3>${name}</h3>
+            <p><strong>السعر:</strong> ${price !== "" ? price : "—"}</p>
+            <p><strong>الكمية:</strong> ${quantity !== "" ? quantity : "—"}</p>
+            <p><strong>الباركود:</strong> ${barcode || "—"}</p>
+            <p><strong>التصنيف:</strong> ${category || "—"}</p>
+            <p><strong>الوصف:</strong> ${description || "—"}</p>
+            ${image ? `<img class="thumb" src="${escapeHtml(image)}" alt="${name}" onerror="this.style.display='none'">` : ""}
+            <div class="actions">
+              <button class="btn-danger" data-delete="${id}" type="button">حذف</button>
+            </div>
+          </div>
+        `;
+      }).join("");
 
-        const rows = Object.entries(data).map(([id, p]) => {
-          const name = escapeHtml(p?.name || "بدون اسم");
-          const price = p?.price ?? "";
-          const category = escapeHtml(p?.category || "—");
-          const stock = p?.stock ?? "—";
-          const image = p?.image || "";
+      productsEl.innerHTML = items;
 
-          return `
-            <tr>
-              <td>
-                ${
-                  image
-                    ? `<img class="thumb" src="${escapeHtml(image)}" alt="${name}" onerror="this.style.display='none'">`
-                    : `<div class="placeholder">لا توجد</div>`
-                }
-              </td>
-              <td><strong>${name}</strong></td>
-              <td>${price !== "" ? Number(price).toLocaleString() : "—"}</td>
-              <td>${category}</td>
-              <td>${stock}</td>
-              <td>
-                <div class="actions">
-                  <button class="btn-danger" data-delete="${id}" type="button">حذف</button>
-                </div>
-              </td>
-            </tr>
-          `;
-        }).join("");
+      document.querySelectorAll("[data-delete]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const id = btn.getAttribute("data-delete");
+          if (!confirm("متأكد تريد حذف المنتج؟")) return;
 
-        tableBody.innerHTML = rows;
-
-        document.querySelectorAll("[data-delete]").forEach((btn) => {
-          btn.addEventListener("click", async () => {
-            const id = btn.getAttribute("data-delete");
-            if (!confirm("متأكد تريد حذف هذا المنتج؟")) return;
-
-            try {
-              await remove(ref(db, `products/${id}`));
-              showStatus("تم حذف المنتج بنجاح", "success");
-            } catch (error) {
-              console.error(error);
-              showStatus("خطأ بالحذف: " + error.message, "error");
-            }
-          });
+          try {
+            await remove(ref(db, `products/${id}`));
+            setStatus("تم حذف المنتج بنجاح", "success");
+          } catch (error) {
+            console.error("Delete error:", error);
+            setStatus("خطأ بالحذف: " + error.message, "error");
+          }
         });
-      }, (error) => {
-        console.error("loadProducts error:", error);
-        renderEmpty("فشل تحميل المنتجات");
       });
     }
 
-    onAuthStateChanged(auth, async (user) => {
-      try {
-        if (!user) {
-          window.location.href = "login.html";
-          return;
-        }
-
-        if (user.email !== ADMIN_EMAIL) {
-          window.location.href = "home.html";
-          return;
-        }
-
-        loadProducts();
-      } catch (error) {
-        console.error(error);
-      }
+    onValue(ref(db, "products"), (snapshot) => {
+      renderProducts(snapshot.val());
+    }, (error) => {
+      console.error("Load error:", error);
+      productsEl.innerHTML = `<div class="product-card">فشل تحميل المنتجات</div>`;
     });
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    saveBtn.addEventListener("click", async () => {
+      const name = nameEl.value.trim();
+      const price = Number(priceEl.value);
+      const quantity = Number(quantityEl.value);
+      const barcode = barcodeEl.value.trim();
+      const category = categoryEl.value.trim();
+      const image = imageEl.value.trim();
+      const description = descriptionEl.value.trim();
 
-      const name = productName.value.trim();
-      const price = Number(productPrice.value);
-      const category = productCategory.value.trim();
-      const stock = Number(productStock.value || 0);
-      const image = productImage.value.trim();
-      const description = productDescription.value.trim();
+      if (!name) {
+        setStatus("اكتب اسم المنتج", "error");
+        return;
+      }
 
-      if (!name) return showStatus("اكتب اسم المنتج", "error");
-      if (!image) return showStatus("اكتب رابط الصورة", "error");
-      if (Number.isNaN(price) || price <= 0) return showStatus("اكتب سعر صحيح", "error");
+      if (Number.isNaN(price) || price <= 0) {
+        setStatus("اكتب سعر صحيح", "error");
+        return;
+      }
 
-      submitBtn.disabled = true;
-      submitBtn.textContent = "جاري الحفظ...";
-      showStatus("جاري حفظ المنتج...", "");
+      if (Number.isNaN(quantity) || quantity < 0) {
+        setStatus("اكتب كمية صحيحة", "error");
+        return;
+      }
 
       try {
-        const productData = {
+        saveBtn.disabled = true;
+        saveBtn.textContent = "جاري الحفظ...";
+        setStatus("جاري حفظ المنتج...", "");
+
+        const productRef = push(ref(db, "products"));
+        await set(productRef, {
           name,
           price,
+          quantity,
+          barcode,
           category,
-          stock,
           image,
           description,
-          createdAt: Date.now()
-        };
+          createdAt: new Date().toISOString()
+        });
 
-        console.log("Saving product:", productData);
-
-        const newRef = push(ref(db, "products"));
-        await set(newRef, productData);
-
-        showStatus("تمت إضافة المنتج بنجاح", "success");
-        form.reset();
-        productName.focus();
+        setStatus("تم حفظ المنتج بنجاح", "success");
+        clearForm();
       } catch (error) {
-        console.error("save error:", error);
-        showStatus("فشل الحفظ: " + error.message, "error");
+        console.error("Save error:", error);
+        setStatus("خطأ: " + error.message, "error");
       } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "إضافة المنتج";
+        saveBtn.disabled = false;
+        saveBtn.textContent = "حفظ المنتج";
       }
     });
-  </script>
-</body>
+  </script></body>
 </html>
