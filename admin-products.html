@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>lidercenter - إدارة المنتجات</title>
   <style>
-    /* ── Reset & Variables ── (نفس الكود السابق) ── */
+    /* ── Reset & Variables ── */
     * {
       margin: 0;
       padding: 0;
@@ -725,7 +725,7 @@
       <div class="hero-top">
         <div>
           <h2 id="welcomeText">إدارة المنتجات</h2>
-          <p id="welcomeSubText">أضف منتجاً جديداً باستخدام رابط الصورة، أو عدّل أو احذف المنتجات الموجودة.</p>
+          <p id="welcomeSubText">أضف منتجاً جديداً باستخدام رابط الصورة، أو احذف المنتجات الموجودة.</p>
           <span class="badge-admin">مدير</span>
         </div>
       </div>
@@ -821,14 +821,18 @@
     </a>
   </nav>
 
-  <!-- ═══ Firebase ═══ (باستخدام طريقة import من الحزم) ═══ -->
+  <!-- ═══ Firebase (CDN - يعمل 100% مع Realtime Database فقط) ═══ -->
+  <script>
+    // ── استيراد Firebase من CDN ──
+    // استخدمنا importmap لتحميل الحزم بشكل صحيح
+  </script>
+  
   <script type="importmap">
     {
       "imports": {
         "firebase/app": "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js",
         "firebase/auth": "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js",
-        "firebase/database": "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js",
-        "firebase/analytics": "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js"
+        "firebase/database": "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js"
       }
     }
   </script>
@@ -836,11 +840,10 @@
   <script type="module">
     // ── استيراد Firebase SDK ──
     import { initializeApp } from "firebase/app";
-    import { getAnalytics } from "firebase/analytics";
     import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
     import { getDatabase, ref, push, set, onValue, remove } from "firebase/database";
 
-    // ── إعدادات Firebase (نفس الكود الذي أرفقته) ──
+    // ── إعدادات Firebase (Realtime Database فقط) ──
     const firebaseConfig = {
       apiKey: "AIzaSyDcj-R4XEXmLUl7hW38r58paTVHxq2GKVI",
       authDomain: "test-bfcd3.firebaseapp.com",
@@ -853,9 +856,10 @@
 
     // ── تهيئة Firebase ──
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getDatabase(app);
+
+    console.log("✅ Firebase initialized successfully!");
 
     // ── DOM refs ──
     const topAvatar = document.getElementById('topAvatar');
@@ -918,19 +922,23 @@
     // ── التحقق من صلاحية المدير ──
     const ADMIN_EMAIL = 'ashlhl.iq@gmail.com';
 
-    let currentUser = null;
-
     onAuthStateChanged(auth, (user) => {
+      console.log("Auth state changed:", user?.email);
+      
       if (!user) {
+        console.log("No user, redirecting to login");
         window.location.href = 'login.html';
         return;
       }
+      
       if (user.email !== ADMIN_EMAIL) {
+        console.log("Not admin, redirecting to home");
         window.location.href = 'home.html';
         return;
       }
 
-      currentUser = user;
+      // ✅ المدير: عرض لوحة التحكم
+      console.log("Admin logged in:", user.email);
       const name = userNameValue(user);
       setAvatar(topAvatar, user);
       topUserName.textContent = name;
@@ -944,9 +952,12 @@
 
     // ── تحميل المنتجات وعرضها في الجدول ──
     function loadProducts() {
+      console.log("Loading products...");
       const productsRef = ref(db, 'products');
       onValue(productsRef, (snapshot) => {
         const data = snapshot.val();
+        console.log("Products data:", data);
+        
         if (!data) {
           tableBody.innerHTML = `<tr><td colspan="6" class="empty-state">لا توجد منتجات حتى الآن</td></tr>`;
           return;
@@ -967,7 +978,7 @@
             <tr>
               <td>
                 ${image
-                  ? `<img src="${escapeHtml(image)}" alt="${name}" class="product-img-thumb" loading="lazy">`
+                  ? `<img src="${escapeHtml(image)}" alt="${name}" class="product-img-thumb" loading="lazy" onerror="this.style.display='none'">`
                   : `<div class="product-img-placeholder">لا توجد</div>`
                 }
               </td>
@@ -994,6 +1005,9 @@
             }
           });
         });
+      }, (error) => {
+        console.error("Error loading products:", error);
+        showToast('خطأ في تحميل المنتجات', 'error');
       });
     }
 
@@ -1009,7 +1023,7 @@
       }
     }
 
-    // ── إضافة منتج (يتم حفظه في Firebase) ──
+    // ── إضافة منتج (يتم حفظه في Firebase Realtime Database) ──
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -1047,16 +1061,17 @@
           createdAt: Date.now()
         };
 
-        // ✅ حفظ المنتج في Firebase Realtime Database
+        console.log("Saving product:", newProduct);
         const productsRef = ref(db, 'products');
         await push(productsRef, newProduct);
+        console.log("Product saved successfully!");
 
         showToast('تم إضافة المنتج بنجاح', 'success');
         form.reset();
         productName.focus();
       } catch (error) {
         console.error('Add product error:', error);
-        showToast('حدث خطأ أثناء الإضافة', 'error');
+        showToast('حدث خطأ أثناء الإضافة: ' + error.message, 'error');
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'إضافة المنتج';
@@ -1068,6 +1083,8 @@
       await signOut(auth);
       window.location.href = 'login.html';
     });
+
+    console.log("✅ Script loaded successfully!");
   </script>
 </body>
 </html>
