@@ -1,297 +1,768 @@
-<!DOCTYPE html><html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>إضافة منتج - LiderCenter</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      padding: 20px;
-      color: #111;
-    }
-    .container {
-      max-width: 520px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 0 12px rgba(0,0,0,.08);
-    }
-    h2 {
-      margin-bottom: 14px;
-      font-size: 22px;
-    }
-    input, button, textarea {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      font-size: 16px;
-      font-family: inherit;
-      outline: none;
-    }
-    input:focus, textarea:focus {
-      border-color: #111;
-    }
-    textarea {
-      min-height: 90px;
-      resize: vertical;
-    }
-    button {
-      background: #111;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      font-weight: 700;
-    }
-    button:hover {
-      background: #333;
-    }
-    button:disabled {
-      opacity: .7;
-      cursor: not-allowed;
-    }
-    #status {
-      text-align: center;
-      margin-top: 10px;
-      font-weight: 700;
-      min-height: 22px;
-    }
-    .success { color: #1a8f3c; }
-    .error { color: #c62828; }
-    .section-title {
-      margin: 18px 0 10px;
-      font-size: 18px;
-    }
-    .product-list {
-      margin-top: 10px;
-      display: grid;
-      gap: 10px;
-    }
-    .product-card {
-      border: 1px solid #e7e7e7;
-      border-radius: 14px;
-      padding: 12px;
-      background: #fafafa;
-    }
-    .product-card h3 {
-      font-size: 16px;
-      margin-bottom: 6px;
-    }
-    .product-card p {
-      font-size: 14px;
-      color: #444;
-      line-height: 1.6;
-    }
-    .actions {
-      margin-top: 10px;
-      display: flex;
-      gap: 8px;
-    }
-    .btn-danger {
-      background: #dc3545;
-    }
-    .btn-danger:hover {
-      background: #b52a37;
-    }
-    .thumb {
-      width: 100%;
-      max-height: 220px;
-      object-fit: cover;
-      border-radius: 12px;
-      margin-top: 10px;
-      background: #eee;
-      display: block;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>إضافة منتج - LiderCenter</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f2f4f8;
+            padding: 12px;
+            color: #111;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 18px 16px 24px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            transition: box-shadow 0.2s;
+        }
+
+        /* ===== BACK BUTTON ===== */
+        .back-row {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            color: #0f0f0f;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+            touch-action: manipulation;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .back-btn:active {
+            transform: scale(0.94);
+        }
+
+        .back-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* dark mode support for back button */
+        @media (prefers-color-scheme: dark) {
+            .back-btn {
+                color: #ececec;
+            }
+            .back-btn:hover {
+                background: rgba(255, 255, 255, 0.06);
+            }
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: #0a0a0a;
+            letter-spacing: -0.3px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin: 22px 0 12px;
+            color: #1e1e1e;
+        }
+
+        /* ===== FORM ELEMENTS ===== */
+        input,
+        textarea,
+        button {
+            width: 100%;
+            padding: 14px 16px;
+            margin: 6px 0;
+            border-radius: 12px;
+            border: 1.5px solid #e2e6ee;
+            font-size: 16px;
+            font-family: inherit;
+            outline: none;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #1a1a1a;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #a0a8b8;
+            font-weight: 400;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        /* number input spinners hidden */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        /* ===== BUTTONS ===== */
+        button {
+            background: #0f0f0f;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 17px;
+            padding: 16px;
+            border-radius: 12px;
+            transition: background 0.2s, transform 0.1s, opacity 0.2s;
+            touch-action: manipulation;
+            letter-spacing: 0.3px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #2a2a2a;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+            background: #555;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            font-size: 14px;
+            padding: 10px 16px;
+            margin: 0;
+            flex: 1;
+            min-width: 70px;
+            border-radius: 10px;
+        }
+
+        .btn-danger:hover {
+            background: #b52a37;
+        }
+
+        .btn-danger:active {
+            transform: scale(0.95);
+        }
+
+        /* ===== STATUS ===== */
+        #status {
+            text-align: center;
+            margin-top: 12px;
+            font-weight: 600;
+            min-height: 24px;
+            font-size: 15px;
+            padding: 4px 0;
+            transition: opacity 0.2s;
+        }
+
+        .success {
+            color: #1a7a34;
+        }
+        .error {
+            color: #c62828;
+        }
+
+        /* ===== PRODUCT LIST ===== */
+        .product-list {
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .product-card {
+            border: 1px solid #eaedf2;
+            border-radius: 16px;
+            padding: 14px 16px 16px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .product-card:hover {
+            border-color: #d0d5de;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        .product-card h3 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #0a0a0a;
+            word-break: break-word;
+            line-height: 1.3;
+        }
+
+        .product-card p {
+            font-size: 14px;
+            color: #3d424e;
+            line-height: 1.7;
+            margin-bottom: 2px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 8px;
+        }
+
+        .product-card p strong {
+            color: #1e1e1e;
+            font-weight: 600;
+            min-width: 58px;
+        }
+
+        .product-card .thumb {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-top: 12px;
+            background: #eef0f4;
+            display: block;
+            border: 1px solid #e2e6ee;
+        }
+
+        .actions {
+            margin-top: 14px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .actions .btn-danger {
+            flex: 0 1 auto;
+            min-width: 80px;
+        }
+
+        /* empty state */
+        .product-card.empty {
+            color: #7a8290;
+            text-align: center;
+            font-size: 15px;
+            padding: 28px 16px;
+            background: #f8f9fb;
+            border-style: dashed;
+            border-color: #d0d5de;
+        }
+
+        /* ===== RESPONSIVE TWEAKS ===== */
+
+        /* very small screens */
+        @media (max-width: 420px) {
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                padding: 14px 12px 20px;
+                border-radius: 16px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin-bottom: 14px;
+            }
+
+            input,
+            textarea,
+            button {
+                padding: 13px 14px;
+                font-size: 15px;
+                margin: 5px 0;
+                border-radius: 10px;
+            }
+
+            button {
+                padding: 15px;
+                font-size: 16px;
+            }
+
+            .product-card {
+                padding: 12px 14px 14px;
+            }
+
+            .product-card h3 {
+                font-size: 16px;
+            }
+
+            .product-card p {
+                font-size: 13px;
+                line-height: 1.6;
+            }
+
+            .btn-danger {
+                font-size: 13px;
+                padding: 9px 14px;
+                min-width: 64px;
+            }
+
+            .section-title {
+                font-size: 16px;
+                margin-top: 18px;
+            }
+
+            .back-btn {
+                font-size: 14px;
+                padding: 5px 10px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .container {
+                padding: 12px 10px 16px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            input,
+            textarea,
+            button {
+                padding: 12px 12px;
+                font-size: 14px;
+                border-radius: 9px;
+            }
+
+            button {
+                padding: 14px;
+                font-size: 15px;
+            }
+
+            .product-card h3 {
+                font-size: 15px;
+            }
+
+            .product-card p {
+                font-size: 12px;
+            }
+        }
+
+        /* landscape phone support */
+        @media (max-height: 600px) and (orientation: landscape) {
+            body {
+                padding: 8px 12px;
+            }
+
+            .container {
+                padding: 14px 16px 18px;
+                max-width: 520px;
+            }
+
+            input,
+            textarea,
+            button {
+                padding: 10px 14px;
+                margin: 4px 0;
+                font-size: 15px;
+            }
+
+            textarea {
+                min-height: 56px;
+            }
+
+            h2 {
+                font-size: 19px;
+                margin-bottom: 10px;
+            }
+
+            .section-title {
+                margin-top: 14px;
+                margin-bottom: 8px;
+                font-size: 15px;
+            }
+
+            .product-card {
+                padding: 10px 12px 12px;
+            }
+
+            .product-card .thumb {
+                max-height: 120px;
+                margin-top: 8px;
+            }
+
+            .back-btn {
+                font-size: 14px;
+                padding: 4px 10px;
+            }
+        }
+
+        /* touch-friendly: larger tap targets */
+        @media (pointer: coarse) {
+            input,
+            textarea,
+            button,
+            .btn-danger {
+                min-height: 48px;
+            }
+
+            .btn-danger {
+                min-height: 42px;
+            }
+
+            .back-btn {
+                min-height: 44px;
+            }
+        }
+
+        /* reduce motion if user prefers */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+            }
+        }
+
+        /* dark mode support – subtle */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #121316;
+            }
+
+            .container {
+                background: #1c1d22;
+                box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            }
+
+            h2,
+            .section-title,
+            .product-card h3 {
+                color: #ececec;
+            }
+
+            input,
+            textarea {
+                background: #26282e;
+                border-color: #3a3d45;
+                color: #ececec;
+            }
+
+            input:focus,
+            textarea:focus {
+                background: #2c2f36;
+                border-color: #8a8f9e;
+                box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+            }
+
+            input::placeholder,
+            textarea::placeholder {
+                color: #6e7482;
+            }
+
+            .product-card {
+                background: #23252b;
+                border-color: #33373f;
+            }
+
+            .product-card:hover {
+                border-color: #4a4f5a;
+            }
+
+            .product-card p {
+                color: #b0b6c4;
+            }
+
+            .product-card p strong {
+                color: #d8dce6;
+            }
+
+            .product-card .thumb {
+                background: #2a2d34;
+                border-color: #3a3d45;
+            }
+
+            .product-card.empty {
+                background: #1e2026;
+                color: #7a8290;
+                border-color: #33373f;
+            }
+
+            button {
+                background: #ececec;
+                color: #111;
+            }
+
+            button:hover {
+                background: #ffffff;
+            }
+
+            button:disabled {
+                background: #4a4f5a;
+                color: #aaa;
+            }
+
+            .btn-danger {
+                background: #d93a4a;
+                color: #fff;
+            }
+
+            .btn-danger:hover {
+                background: #e84a5a;
+            }
+
+            .success {
+                color: #4caf7a;
+            }
+            .error {
+                color: #f06262;
+            }
+
+            #status {
+                color: #d0d4de;
+            }
+        }
+    </style>
 </head>
-<body>  <div class="container">
-    <h2>إضافة منتج</h2><input id="name" placeholder="اسم المنتج" />
-<input id="price" type="number" placeholder="السعر" />
-<input id="quantity" type="number" placeholder="الكمية" />
-<input id="barcode" placeholder="الباركود" />
-<input id="category" placeholder="التصنيف (اختياري)" />
-<input id="image" type="url" placeholder="رابط الصورة (اختياري)" />
-<textarea id="description" placeholder="الوصف (اختياري)"></textarea>
+<body>
 
-<button id="save" type="button">حفظ المنتج</button>
-<p id="status"></p>
+    <div class="container">
+        <!-- Back Button -->
+        <div class="back-row">
+            <button class="back-btn" type="button" onclick="history.back()" aria-label="رجوع">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+                رجوع
+            </button>
+        </div>
 
-<h3 class="section-title">المنتجات الموجودة</h3>
-<div id="products" class="product-list">
-  <div class="product-card">جاري تحميل المنتجات...</div>
-</div>
+        <h2>إضافة منتج</h2>
 
-  </div>  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import {
-      getDatabase,
-      ref,
-      push,
-      set,
-      onValue,
-      remove
-    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+        <input id="name" placeholder="اسم المنتج" autocomplete="off" />
+        <input id="price" type="number" placeholder="السعر" step="0.01" min="0" />
+        <input id="quantity" type="number" placeholder="الكمية" step="1" min="0" />
+        <input id="barcode" placeholder="الباركود" autocomplete="off" />
+        <input id="category" placeholder="التصنيف (اختياري)" autocomplete="off" />
+        <input id="image" type="url" placeholder="رابط الصورة (اختياري)" autocomplete="off" />
+        <textarea id="description" placeholder="الوصف (اختياري)"></textarea>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAgjCRON_o4MUqrLKBaTXAOVZxBXMuPOhM",
-      authDomain: "studio-3203578995-1262a.firebaseapp.com",
-      databaseURL: "https://studio-3203578995-1262a-default-rtdb.firebaseio.com",
-      projectId: "studio-3203578995-1262a",
-      storageBucket: "studio-3203578995-1262a.firebasestorage.app",
-      messagingSenderId: "422562518339",
-      appId: "1:422562518339:web:52bc8169b52e72446f0bf6"
-    };
+        <button id="save" type="button">حفظ المنتج</button>
+        <p id="status"></p>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+        <h3 class="section-title">المنتجات الموجودة</h3>
+        <div id="products" class="product-list">
+            <div class="product-card empty">جاري تحميل المنتجات...</div>
+        </div>
+    </div>
 
-    const nameEl = document.getElementById("name");
-    const priceEl = document.getElementById("price");
-    const quantityEl = document.getElementById("quantity");
-    const barcodeEl = document.getElementById("barcode");
-    const categoryEl = document.getElementById("category");
-    const imageEl = document.getElementById("image");
-    const descriptionEl = document.getElementById("description");
-    const saveBtn = document.getElementById("save");
-    const statusEl = document.getElementById("status");
-    const productsEl = document.getElementById("products");
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import {
+            getDatabase,
+            ref,
+            push,
+            set,
+            onValue,
+            remove
+        } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
-    function setStatus(msg, type = "") {
-      statusEl.className = "";
-      statusEl.textContent = msg;
-      if (type) statusEl.classList.add(type);
-    }
+        const firebaseConfig = {
+            apiKey: "AIzaSyAgjCRON_o4MUqrLKBaTXAOVZxBXMuPOhM",
+            authDomain: "studio-3203578995-1262a.firebaseapp.com",
+            databaseURL: "https://studio-3203578995-1262a-default-rtdb.firebaseio.com",
+            projectId: "studio-3203578995-1262a",
+            storageBucket: "studio-3203578995-1262a.firebasestorage.app",
+            messagingSenderId: "422562518339",
+            appId: "1:422562518339:web:52bc8169b52e72446f0bf6"
+        };
 
-    function escapeHtml(str = "") {
-      return String(str)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
-    }
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-    function clearForm() {
-      nameEl.value = "";
-      priceEl.value = "";
-      quantityEl.value = "";
-      barcodeEl.value = "";
-      categoryEl.value = "";
-      imageEl.value = "";
-      descriptionEl.value = "";
-      nameEl.focus();
-    }
+        const nameEl = document.getElementById("name");
+        const priceEl = document.getElementById("price");
+        const quantityEl = document.getElementById("quantity");
+        const barcodeEl = document.getElementById("barcode");
+        const categoryEl = document.getElementById("category");
+        const imageEl = document.getElementById("image");
+        const descriptionEl = document.getElementById("description");
+        const saveBtn = document.getElementById("save");
+        const statusEl = document.getElementById("status");
+        const productsEl = document.getElementById("products");
 
-    function renderProducts(data) {
-      if (!data) {
-        productsEl.innerHTML = `<div class="product-card">لا توجد منتجات حتى الآن</div>`;
-        return;
-      }
+        function setStatus(msg, type = "") {
+            statusEl.className = "";
+            statusEl.textContent = msg;
+            if (type) statusEl.classList.add(type);
+        }
 
-      const items = Object.entries(data).map(([id, p]) => {
-        const name = escapeHtml(p?.name || "بدون اسم");
-        const price = p?.price ?? "";
-        const quantity = p?.quantity ?? "";
-        const barcode = escapeHtml(p?.barcode || "");
-        const category = escapeHtml(p?.category || "");
-        const image = p?.image || "";
-        const description = escapeHtml(p?.description || "");
+        function escapeHtml(str = "") {
+            return String(str)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#39;");
+        }
 
-        return `
-          <div class="product-card">
-            <h3>${name}</h3>
-            <p><strong>السعر:</strong> ${price !== "" ? price : "—"}</p>
-            <p><strong>الكمية:</strong> ${quantity !== "" ? quantity : "—"}</p>
-            <p><strong>الباركود:</strong> ${barcode || "—"}</p>
-            <p><strong>التصنيف:</strong> ${category || "—"}</p>
-            <p><strong>الوصف:</strong> ${description || "—"}</p>
-            ${image ? `<img class="thumb" src="${escapeHtml(image)}" alt="${name}" onerror="this.style.display='none'">` : ""}
-            <div class="actions">
-              <button class="btn-danger" data-delete="${id}" type="button">حذف</button>
-            </div>
-          </div>
-        `;
-      }).join("");
+        function clearForm() {
+            nameEl.value = "";
+            priceEl.value = "";
+            quantityEl.value = "";
+            barcodeEl.value = "";
+            categoryEl.value = "";
+            imageEl.value = "";
+            descriptionEl.value = "";
+            nameEl.focus();
+        }
 
-      productsEl.innerHTML = items;
+        function renderProducts(data) {
+            if (!data) {
+                productsEl.innerHTML =
+                    `<div class="product-card empty">لا توجد منتجات حتى الآن</div>`;
+                return;
+            }
 
-      document.querySelectorAll("[data-delete]").forEach((btn) => {
-        btn.addEventListener("click", async () => {
-          const id = btn.getAttribute("data-delete");
-          if (!confirm("متأكد تريد حذف المنتج؟")) return;
+            const items = Object.entries(data).map(([id, p]) => {
+                const name = escapeHtml(p?.name || "بدون اسم");
+                const price = p?.price ?? "";
+                const quantity = p?.quantity ?? "";
+                const barcode = escapeHtml(p?.barcode || "");
+                const category = escapeHtml(p?.category || "");
+                const image = p?.image || "";
+                const description = escapeHtml(p?.description || "");
 
-          try {
-            await remove(ref(db, `products/${id}`));
-            setStatus("تم حذف المنتج بنجاح", "success");
-          } catch (error) {
-            console.error("Delete error:", error);
-            setStatus("خطأ بالحذف: " + error.message, "error");
-          }
-        });
-      });
-    }
+                return `
+              <div class="product-card">
+                <h3>${name}</h3>
+                <p><strong>السعر:</strong> ${price !== "" ? price : "—"}</p>
+                <p><strong>الكمية:</strong> ${quantity !== "" ? quantity : "—"}</p>
+                <p><strong>الباركود:</strong> ${barcode || "—"}</p>
+                <p><strong>التصنيف:</strong> ${category || "—"}</p>
+                <p><strong>الوصف:</strong> ${description || "—"}</p>
+                ${image ? `<img class="thumb" src="${escapeHtml(image)}" alt="${name}" onerror="this.style.display='none'" loading="lazy">` : ""}
+                <div class="actions">
+                  <button class="btn-danger" data-delete="${id}" type="button">حذف</button>
+                </div>
+              </div>
+            `;
+            }).join("");
 
-    onValue(ref(db, "products"), (snapshot) => {
-      renderProducts(snapshot.val());
-    }, (error) => {
-      console.error("Load error:", error);
-      productsEl.innerHTML = `<div class="product-card">فشل تحميل المنتجات</div>`;
-    });
+            productsEl.innerHTML = items;
 
-    saveBtn.addEventListener("click", async () => {
-      const name = nameEl.value.trim();
-      const price = Number(priceEl.value);
-      const quantity = Number(quantityEl.value);
-      const barcode = barcodeEl.value.trim();
-      const category = categoryEl.value.trim();
-      const image = imageEl.value.trim();
-      const description = descriptionEl.value.trim();
+            document.querySelectorAll("[data-delete]").forEach((btn) => {
+                btn.addEventListener("click", async () => {
+                    const id = btn.getAttribute("data-delete");
+                    if (!confirm("متأكد تريد حذف المنتج؟")) return;
 
-      if (!name) {
-        setStatus("اكتب اسم المنتج", "error");
-        return;
-      }
+                    try {
+                        await remove(ref(db, `products/${id}`));
+                        setStatus("تم حذف المنتج بنجاح", "success");
+                    } catch (error) {
+                        console.error("Delete error:", error);
+                        setStatus("خطأ بالحذف: " + error.message, "error");
+                    }
+                });
+            });
+        }
 
-      if (Number.isNaN(price) || price <= 0) {
-        setStatus("اكتب سعر صحيح", "error");
-        return;
-      }
-
-      if (Number.isNaN(quantity) || quantity < 0) {
-        setStatus("اكتب كمية صحيحة", "error");
-        return;
-      }
-
-      try {
-        saveBtn.disabled = true;
-        saveBtn.textContent = "جاري الحفظ...";
-        setStatus("جاري حفظ المنتج...", "");
-
-        const productRef = push(ref(db, "products"));
-        await set(productRef, {
-          name,
-          price,
-          quantity,
-          barcode,
-          category,
-          image,
-          description,
-          createdAt: new Date().toISOString()
+        onValue(ref(db, "products"), (snapshot) => {
+            renderProducts(snapshot.val());
+        }, (error) => {
+            console.error("Load error:", error);
+            productsEl.innerHTML =
+                `<div class="product-card empty">فشل تحميل المنتجات</div>`;
         });
 
-        setStatus("تم حفظ المنتج بنجاح", "success");
-        clearForm();
-      } catch (error) {
-        console.error("Save error:", error);
-        setStatus("خطأ: " + error.message, "error");
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = "حفظ المنتج";
-      }
-    });
-  </script></body>
+        saveBtn.addEventListener("click", async () => {
+            const name = nameEl.value.trim();
+            const price = Number(priceEl.value);
+            const quantity = Number(quantityEl.value);
+            const barcode = barcodeEl.value.trim();
+            const category = categoryEl.value.trim();
+            const image = imageEl.value.trim();
+            const description = descriptionEl.value.trim();
+
+            if (!name) {
+                setStatus("اكتب اسم المنتج", "error");
+                return;
+            }
+
+            if (Number.isNaN(price) || price <= 0) {
+                setStatus("اكتب سعر صحيح", "error");
+                return;
+            }
+
+            if (Number.isNaN(quantity) || quantity < 0) {
+                setStatus("اكتب كمية صحيحة", "error");
+                return;
+            }
+
+            try {
+                saveBtn.disabled = true;
+                saveBtn.textContent = "جاري الحفظ...";
+                setStatus("جاري حفظ المنتج...", "");
+
+                const productRef = push(ref(db, "products"));
+                await set(productRef, {
+                    name,
+                    price,
+                    quantity,
+                    barcode,
+                    category,
+                    image,
+                    description,
+                    createdAt: new Date().toISOString()
+                });
+
+                setStatus("تم حفظ المنتج بنجاح", "success");
+                clearForm();
+            } catch (error) {
+                console.error("Save error:", error);
+                setStatus("خطأ: " + error.message, "error");
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = "حفظ المنتج";
+            }
+        });
+    </script>
+
+</body>
 </html>
