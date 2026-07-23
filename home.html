@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>مركز ليدر - الرئيسية</title>
-    <!-- Firebase SDKs (compat) -->
+    <title>مركز ليدر - المتجر</title>
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js">
     </script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js">
@@ -314,6 +314,13 @@
             letter-spacing: 1px;
         }
 
+        .product-card .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.8rem;
+        }
+
         .product-card h4 {
             font-size: 1.1rem;
             color: #1a3a2a;
@@ -591,13 +598,11 @@
             <button class="hamburger" id="hamburgerBtn" aria-label="القائمة">☰</button>
 
             <nav class="top-nav" id="topNav">
-                <a href="home.html" class="active">الرئيسية</a>
-                <a href="#">الخدمات</a>
-                <a href="#">المنتجات</a>
-                <a href="#">عن المركز</a>
+                <a href="index.html">الرئيسية</a>
+                <a href="home.html" class="active">المتجر</a>
+                <a href="admin.html">لوحة التحكم</a>
                 <a href="#">اتصل بنا</a>
 
-                <!-- زر السلة -->
                 <button class="btn-icon" id="cartBtn" aria-label="السلة">
                     السلة
                     <span class="badge" id="cartCount">0</span>
@@ -609,7 +614,6 @@
         <!-- ===== المحتوى الرئيسي ===== -->
         <div class="main-content">
 
-            <!-- زر عرض القائمة الجانبية (للشاشات الصغيرة) -->
             <button class="toggle-sidebar-btn" id="toggleSidebarBtn">☰ الفئات</button>
 
             <!-- ===== القائمة الجانبية ===== -->
@@ -652,12 +656,10 @@
                     </div>
                 </div>
 
-                <!-- شبكة المنتجات (تقرأ من Firebase) -->
                 <div class="product-grid" id="productGrid">
-                    <!-- سيتم ملؤها بواسطة JavaScript -->
                     <div class="empty-state" id="emptyState">
                         <h3>لا توجد منتجات</h3>
-                        <p>قم بإضافة منتجات من لوحة التحكم أو عبر Firebase Console.</p>
+                        <p>قم بإضافة منتجات من لوحة التحكم.</p>
                     </div>
                 </div>
             </section>
@@ -672,9 +674,9 @@
                 </div>
                 <div class="footer-col">
                     <h5>روابط سريعة</h5>
-                    <a href="home.html">الرئيسية</a>
-                    <a href="#">الخدمات</a>
-                    <a href="#">المنتجات</a>
+                    <a href="index.html">الرئيسية</a>
+                    <a href="home.html">المتجر</a>
+                    <a href="admin.html">لوحة التحكم</a>
                     <a href="#">اتصل بنا</a>
                 </div>
                 <div class="footer-col">
@@ -703,31 +705,29 @@
 
     <script>
         // ================================================================
-        // 1. تهيئة Firebase (تم ربطها بمشروعك)
+        // 1. تهيئة Firebase (الإعدادات الجديدة)
         // ================================================================
         const firebaseConfig = {
-            apiKey: "AIzaSyB0lg1AkTQF1ZdntWZsWUoCG8GpqbK-WAY",
-            authDomain: "ashlhl-ed7c7e17.firebaseapp.com",
-            databaseURL: "https://ashlhl-ed7c7e17-default-rtdb.firebaseio.com",
-            projectId: "ashlhl-ed7c7e17",
-            storageBucket: "ashlhl-ed7c7e17.firebasestorage.app",
-            messagingSenderId: "246682226738",
-            appId: "1:246682226738:web:4301ea8caebe2c1325ac2b"
+            apiKey: "AIzaSyAgjCRON_o4MUqrLKBaTXAOVZxBXMuPOhM",
+            authDomain: "studio-3203578995-1262a.firebaseapp.com",
+            databaseURL: "https://studio-3203578995-1262a-default-rtdb.firebaseio.com",
+            projectId: "studio-3203578995-1262a",
+            storageBucket: "studio-3203578995-1262a.firebasestorage.app",
+            messagingSenderId: "422562518339",
+            appId: "1:422562518339:web:52bc8169b52e72446f0bf6"
         };
 
-        // تهيئة Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        console.log('🔥 Firebase connected successfully!');
+        console.log('🔥 Firebase connected successfully! (home.html)');
 
         // ================================================================
-        // 2. كود التفاعل الكامل (سلة، قوائم، منتجات، Firebase)
+        // 2. كود التفاعل الكامل
         // ================================================================
         (function() {
             'use strict';
 
-            // ---- عناصر DOM ----
             const hamburger = document.getElementById('hamburgerBtn');
             const topNav = document.getElementById('topNav');
             const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
@@ -738,39 +738,34 @@
             const cartBtn = document.getElementById('cartBtn');
             const loginBtn = document.getElementById('loginBtn');
 
-            // ---- السلة (عداد محلي + حفظ في Firebase) ----
+            // ---- السلة ----
             let cartCount = 0;
 
-            // تحديث العداد من Firebase (عند التحميل)
             function loadCartCount() {
                 database.ref('cart').once('value').then((snapshot) => {
                     const data = snapshot.val();
                     if (data) {
-                        const count = Object.keys(data).length;
-                        cartCount = count;
-                        if (cartBadge) cartBadge.textContent = count;
+                        cartCount = Object.keys(data).length;
+                        if (cartBadge) cartBadge.textContent = cartCount;
                     }
                 }).catch(err => console.warn('خطأ في جلب السلة:', err));
             }
             loadCartCount();
 
-            // ---- عرض المنتجات من Firebase ----
+            // ---- عرض المنتجات ----
             function loadProducts() {
                 database.ref('products').on('value', (snapshot) => {
                     const products = snapshot.val();
-                    // إزالة جميع العناصر باستثناء الحالة الفارغة (سنعيد إضافتها لاحقاً)
                     const items = productGrid.querySelectorAll('.product-card');
                     items.forEach(el => el.remove());
 
                     if (!products) {
-                        // إظهار الحالة الفارغة
                         emptyState.style.display = 'block';
                         return;
                     }
 
                     emptyState.style.display = 'none';
 
-                    // تحويل الكائن إلى مصفوفة
                     const productArray = Object.keys(products).map(key => ({
                         id: key,
                         ...products[key]
@@ -783,7 +778,18 @@
 
                         const image = document.createElement('div');
                         image.className = 'product-image';
-                        image.textContent = product.name ? product.name.substring(0, 2) : 'منتج';
+                        if (product.image && product.image.trim() !== '') {
+                            const img = document.createElement('img');
+                            img.src = product.image;
+                            img.alt = product.name || 'منتج';
+                            img.onerror = function() {
+                                this.style.display = 'none';
+                                this.parentElement.textContent = product.name ? product.name.substring(0, 2) : 'منتج';
+                            };
+                            image.appendChild(img);
+                        } else {
+                            image.textContent = product.name ? product.name.substring(0, 2) : 'منتج';
+                        }
 
                         const name = document.createElement('h4');
                         name.textContent = product.name || 'منتج بدون اسم';
@@ -821,12 +827,10 @@
 
                         productGrid.appendChild(card);
 
-                        // ربط حدث الإضافة
                         addBtn.addEventListener('click', function(e) {
                             e.stopPropagation();
                             const pId = this.dataset.productId;
                             const pName = this.dataset.productName;
-                            // حفظ في Firebase تحت cart
                             database.ref('cart').push({
                                 productId: pId,
                                 productName: pName,
@@ -836,11 +840,9 @@
                                 if (cartBadge) cartBadge.textContent = cartCount;
                                 this.textContent = 'تم';
                                 setTimeout(() => { this.textContent = 'إضافة'; }, 1000);
-                                console.log('✅ تمت إضافة المنتج إلى السلة:', pName);
-                            }).catch(err => console.error('❌ خطأ في الإضافة:', err));
+                            }).catch(err => console.error('خطأ في الإضافة:', err));
                         });
 
-                        // تفاصيل المنتج (محاكاة)
                         detailBtn.addEventListener('click', function() {
                             alert('تفاصيل المنتج: ' + (product.name || 'غير معروف'));
                         });
@@ -850,10 +852,9 @@
                 });
             }
 
-            // تحميل المنتجات (مع الاستماع للتحديثات)
             loadProducts();
 
-            // ---- زر السلة (عرض المحتوى) ----
+            // ---- زر السلة ----
             if (cartBtn) {
                 cartBtn.addEventListener('click', function() {
                     database.ref('cart').once('value').then((snapshot) => {
@@ -879,14 +880,14 @@
                 });
             }
 
-            // ---- الهامبرغر (القائمة العلوية) ----
+            // ---- الهامبرغر ----
             if (hamburger && topNav) {
                 hamburger.addEventListener('click', function() {
                     topNav.classList.toggle('open');
                 });
             }
 
-            // ---- زر القائمة الجانبية ----
+            // ---- القائمة الجانبية ----
             if (toggleSidebarBtn && sidebar) {
                 toggleSidebarBtn.addEventListener('click', function() {
                     sidebar.classList.toggle('open');
@@ -900,7 +901,6 @@
                     e.preventDefault();
                     categoryLinks.forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
-                    // يمكن فلترة المنتجات حسب الفئة (سيتم تنفيذها لاحقاً)
                     alert('سيتم تصفية المنتجات حسب: ' + this.textContent.trim());
                 });
             });
@@ -913,7 +913,7 @@
                 });
             }
 
-            // ---- أزرار العرض (شبكة/قائمة) ----
+            // ---- أزرار العرض ----
             const gridBtn = document.getElementById('gridView');
             const listBtn = document.getElementById('listView');
             if (gridBtn && listBtn) {
@@ -934,13 +934,13 @@
                 });
             }
 
-            // ---- روابط الشريط العلوي (باستثناء الأزرار) ----
+            // ---- روابط الشريط العلوي ----
             const topLinks = document.querySelectorAll('.top-nav a:not(.btn-outline-light)');
             topLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     const href = this.getAttribute('href');
-                    if (href && href === 'home.html') {
-                        return; // يسمح بالتنقل
+                    if (href && (href === 'index.html' || href === 'home.html' || href === 'admin.html')) {
+                        return;
                     }
                     e.preventDefault();
                     alert('سيتم الانتقال إلى: ' + this.textContent.trim());
@@ -952,15 +952,13 @@
             footerLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     const href = this.getAttribute('href');
-                    if (href && href === 'home.html') {
+                    if (href && (href === 'index.html' || href === 'home.html' || href === 'admin.html')) {
                         return;
                     }
                     e.preventDefault();
                     alert('سيتم الانتقال إلى: ' + this.textContent.trim());
                 });
             });
-
-            console.log('✅ home.html جاهز مع Firebase وجميع المكونات.');
 
         })();
     </script>
