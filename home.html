@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>مركز ليدر - الرئيسية</title>
+    <!-- Firebase SDKs (compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js">
+    </script>
+    <style>
+        /* ===== إعادة ضبط ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Tahoma', system-ui, -apple-system, sans-serif;
+            background: #eef4f0;
+            color: #1a2a1a;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .app-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ===== الشريط العلوي ===== */
+        .top-bar {
+            background: #1a4a2a;
+            color: #ffffff;
+            padding: 0.6rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-bar .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .top-bar .logo-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .top-bar .logo-text span {
+            color: #d4af37;
+        }
+
+        .top-nav {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .top-nav a {
+            color: #e8f0e8;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            font-size: 0.95rem;
+            padding: 0.3rem 0.1rem;
+            border-bottom: 2px solid transparent;
+        }
+
+        .top-nav a:hover {
+            color: #d4af37;
+            border-bottom-color: #d4af37;
+        }
+
+        .top-nav .btn-icon {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.2rem 0.4rem;
+            transition: color 0.2s;
+            position: relative;
+            font-family: inherit;
+        }
+
+        .top-nav .btn-icon:hover {
+            color: #d4af37;
+        }
+
+        .top-nav .btn-icon .badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: #d4af37;
+            color: #1a4a2a;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.1rem 0.4rem;
+            border-radius: 50%;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .top-nav .btn-outline-light {
+            background: transparent;
+            border: 1.5px solid #d4af37;
+            color: #d4af37;
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            transition: all 0.25s;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .top-nav .btn-outline-light:hover {
+            background: #d4af37;
+            color: #1a4a2a;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 2rem;
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            padding: 0.2rem 0.6rem;
+            font-weight: 300;
+        }
+
+        /* ===== المحتوى الرئيسي ===== */
+        .main-content {
+            display: flex;
+            flex: 1;
+            padding: 1.5rem 2rem;
+            gap: 2rem;
+        }
+
+        /* ===== القائمة الجانبية ===== */
+        .sidebar {
+            width: 240px;
+            min-width: 200px;
+            background: #ffffff;
+            border-radius: 1.2rem;
+            padding: 1.5rem 1rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(26, 74, 42, 0.06);
+            height: fit-content;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar h3 {
+            color: #1a4a2a;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 0.6rem;
+            font-weight: 700;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 0.3rem;
+        }
+
+        .sidebar ul li a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #1a3a2a;
+            text-decoration: none;
+            border-radius: 0.6rem;
+            transition: background 0.2s, color 0.2s;
+            font-weight: 500;
+        }
+
+        .sidebar ul li a:hover {
+            background: #e4ede8;
+            color: #1a4a2a;
+        }
+
+        .sidebar ul li a.active {
+            background: #1a4a2a;
+            color: #ffffff;
+        }
+
+        .sidebar .filter-section {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0ebe4;
+        }
+
+        .sidebar .filter-section label {
+            display: block;
+            font-weight: 500;
+            color: #1a4a2a;
+            margin: 0.6rem 0 0.2rem;
+        }
+
+        .sidebar .filter-section select,
+        .sidebar .filter-section input {
+            width: 100%;
+            padding: 0.4rem;
+            border: 1px solid #c0d0c4;
+            border-radius: 0.6rem;
+            background: #f8faf9;
+            font-family: inherit;
+        }
+
+        .sidebar .filter-section .btn {
+            width: 100%;
+            margin-top: 0.8rem;
+        }
+
+        /* ===== قسم المنتجات ===== */
+        .products-section {
+            flex: 1;
+        }
+
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .products-header h2 {
+            font-size: 1.8rem;
+            color: #1a4a2a;
+            font-weight: 700;
+        }
+
+        .products-header .view-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .products-header .view-options button {
+            background: #ffffff;
+            border: 1px solid #c0d0c4;
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+            color: #1a4a2a;
+            font-family: inherit;
+        }
+
+        .products-header .view-options button:hover {
+            background: #d4af37;
+            color: #1a4a2a;
+            border-color: #d4af37;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.8rem;
+        }
+
+        .product-card {
+            background: #ffffff;
+            border-radius: 1.2rem;
+            padding: 1.2rem 1rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(26, 74, 42, 0.06);
+            transition: transform 0.25s, box-shadow 0.25s;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .product-card .product-image {
+            background: #eef4f0;
+            height: 140px;
+            border-radius: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a4a2a;
+            margin-bottom: 0.8rem;
+            border: 1px solid #dce8e0;
+            background: #e4ede8;
+            letter-spacing: 1px;
+        }
+
+        .product-card h4 {
+            font-size: 1.1rem;
+            color: #1a3a2a;
+            margin-bottom: 0.2rem;
+        }
+
+        .product-card .price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #d4af37;
+            margin: 0.4rem 0;
+        }
+
+        .product-card .old-price {
+            font-size: 0.85rem;
+            color: #8a9a8a;
+            text-decoration: line-through;
+            margin-left: 0.4rem;
+        }
+
+        .product-card .btn-group {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1.2rem;
+            border: none;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #1a4a2a;
+            color: #ffffff;
+            box-shadow: 0 4px 0 #0d2a18;
+        }
+
+        .btn-primary:hover {
+            background: #2d7a4a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #0d2a18;
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 0 #0d2a18;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #1a4a2a;
+            color: #1a4a2a;
+        }
+
+        .btn-outline:hover {
+            background: #1a4a2a;
+            color: #ffffff;
+        }
+
+        .btn-gold {
+            background: #d4af37;
+            color: #1a4a2a;
+            box-shadow: 0 4px 0 #b8962e;
+        }
+
+        .btn-gold:hover {
+            background: #e8c84a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #b8962e;
+        }
+
+        .btn-sm {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        /* ===== رسالة فارغة ===== */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: #3a5a4a;
+            background: #ffffff;
+            border-radius: 1.5rem;
+            border: 1px dashed #b0c8b8;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: #1a4a2a;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            color: #5a7a6a;
+        }
+
+        /* ===== الشريط السفلي ===== */
+        .bottom-bar {
+            background: #1a3a2a;
+            color: #d0e0d0;
+            padding: 2rem 2rem 1.2rem;
+            margin-top: auto;
+            border-top: 3px solid #d4af37;
+        }
+
+        .bottom-bar .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .bottom-bar .footer-col h5 {
+            color: #ffffff;
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 0.4rem;
+        }
+
+        .bottom-bar .footer-col a {
+            display: block;
+            color: #b0c8b8;
+            text-decoration: none;
+            padding: 0.2rem 0;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .bottom-bar .footer-col a:hover {
+            color: #d4af37;
+        }
+
+        .bottom-bar .footer-col .social-links {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .bottom-bar .footer-col .social-links a {
+            color: #b0c8b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.2rem 0;
+            border-bottom: 1px solid transparent;
+        }
+
+        .bottom-bar .footer-col .social-links a:hover {
+            color: #d4af37;
+            border-bottom-color: #d4af37;
+        }
+
+        .bottom-bar .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85rem;
+            color: #8aa89a;
+        }
+
+        /* ===== زر عرض القائمة الجانبية ===== */
+        .toggle-sidebar-btn {
+            display: none;
+            background: #1a4a2a;
+            color: #ffffff;
+            border: none;
+            padding: 0.4rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        /* ===== استجابة ===== */
+        @media (max-width: 768px) {
+            .top-bar .top-nav {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.6rem;
+                padding: 0.8rem 0;
+                border-top: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .top-bar .top-nav.open {
+                display: flex;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .main-content {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-width: unset;
+                display: none;
+            }
+
+            .sidebar.open {
+                display: block;
+            }
+
+            .toggle-sidebar-btn {
+                display: inline-block;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .top-bar {
+                padding: 0.6rem 1rem;
+            }
+
+            .top-bar .logo-text {
+                font-size: 1.2rem;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.8rem;
+            }
+
+            .product-card {
+                padding: 0.8rem;
+            }
+
+            .product-card .product-image {
+                height: 100px;
+                font-size: 1rem;
+            }
+
+            .btn {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-wrapper">
+
+        <!-- ===== الشريط العلوي ===== -->
+        <header class="top-bar">
+            <div class="logo-area">
+                <span class="logo-text">مركز <span>ليدر</span></span>
+            </div>
+
+            <button class="hamburger" id="hamburgerBtn" aria-label="القائمة">☰</button>
+
+            <nav class="top-nav" id="topNav">
+                <a href="home.html" class="active">الرئيسية</a>
+                <a href="#">الخدمات</a>
+                <a href="#">المنتجات</a>
+                <a href="#">عن المركز</a>
+                <a href="#">اتصل بنا</a>
+
+                <!-- زر السلة -->
+                <button class="btn-icon" id="cartBtn" aria-label="السلة">
+                    السلة
+                    <span class="badge" id="cartCount">0</span>
+                </button>
+                <button class="btn-outline-light" id="loginBtn">تسجيل الدخول</button>
+            </nav>
+        </header>
+
+        <!-- ===== المحتوى الرئيسي ===== -->
+        <div class="main-content">
+
+            <!-- زر عرض القائمة الجانبية (للشاشات الصغيرة) -->
+            <button class="toggle-sidebar-btn" id="toggleSidebarBtn">☰ الفئات</button>
+
+            <!-- ===== القائمة الجانبية ===== -->
+            <aside class="sidebar" id="sidebar">
+                <h3>الفئات</h3>
+                <ul id="categoryList">
+                    <li><a href="#" class="active" data-category="all">جميع المنتجات</a></li>
+                    <li><a href="#" data-category="washing">غسالات</a></li>
+                    <li><a href="#" data-category="dryer">نشافات</a></li>
+                    <li><a href="#" data-category="spare">قطع غيار</a></li>
+                </ul>
+
+                <div class="filter-section">
+                    <h4 style="color:#1a4a2a; margin-bottom:0.6rem;">تصفية</h4>
+                    <label for="brand">الماركة</label>
+                    <select id="brand">
+                        <option>الكل</option>
+                        <option>سامسونج</option>
+                        <option>إل جي</option>
+                        <option>وايت ويل</option>
+                    </select>
+
+                    <label for="priceRange">السعر</label>
+                    <input type="range" id="priceRange" min="0" max="10000" value="5000" />
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#3a5a3a;">
+                        <span>٠</span>
+                        <span>١٠٠٠٠</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" id="applyFilterBtn" style="width:100%; margin-top:0.8rem;">تطبيق</button>
+                </div>
+            </aside>
+
+            <!-- ===== قسم المنتجات ===== -->
+            <section class="products-section">
+                <div class="products-header">
+                    <h2>المنتجات</h2>
+                    <div class="view-options">
+                        <button id="gridView">شبكة</button>
+                        <button id="listView">قائمة</button>
+                    </div>
+                </div>
+
+                <!-- شبكة المنتجات (تقرأ من Firebase) -->
+                <div class="product-grid" id="productGrid">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                    <div class="empty-state" id="emptyState">
+                        <h3>لا توجد منتجات</h3>
+                        <p>قم بإضافة منتجات من لوحة التحكم أو عبر Firebase Console.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ===== الشريط السفلي ===== -->
+        <footer class="bottom-bar">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h5>مركز ليدر</h5>
+                    <p style="font-size:0.9rem; color:#b0c8b8;">أفضل تشكيلة غسالات وأجهزة منزلية.</p>
+                </div>
+                <div class="footer-col">
+                    <h5>روابط سريعة</h5>
+                    <a href="home.html">الرئيسية</a>
+                    <a href="#">الخدمات</a>
+                    <a href="#">المنتجات</a>
+                    <a href="#">اتصل بنا</a>
+                </div>
+                <div class="footer-col">
+                    <h5>خدمات</h5>
+                    <a href="#">التوصيل</a>
+                    <a href="#">الضمان</a>
+                    <a href="#">الصيانة</a>
+                    <a href="#">قطع الغيار</a>
+                </div>
+                <div class="footer-col">
+                    <h5>تابعنا</h5>
+                    <div class="social-links">
+                        <a href="#">تويتر</a>
+                        <a href="#">إنستغرام</a>
+                        <a href="#">يوتيوب</a>
+                        <a href="#">فيسبوك</a>
+                    </div>
+                    <p style="margin-top:0.6rem; font-size:0.8rem; color:#8aa89a;">info@lidercenter.com</p>
+                </div>
+            </div>
+            <div class="copyright">
+                © ٢٠٢٦ مركز ليدر - جميع الحقوق محفوظة
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ================================================================
+        // 1. تهيئة Firebase (تم ربطها بمشروعك)
+        // ================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyB0lg1AkTQF1ZdntWZsWUoCG8GpqbK-WAY",
+            authDomain: "ashlhl-ed7c7e17.firebaseapp.com",
+            databaseURL: "https://ashlhl-ed7c7e17-default-rtdb.firebaseio.com",
+            projectId: "ashlhl-ed7c7e17",
+            storageBucket: "ashlhl-ed7c7e17.firebasestorage.app",
+            messagingSenderId: "246682226738",
+            appId: "1:246682226738:web:4301ea8caebe2c1325ac2b"
+        };
+
+        // تهيئة Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        console.log('🔥 Firebase connected successfully!');
+
+        // ================================================================
+        // 2. كود التفاعل الكامل (سلة، قوائم، منتجات، Firebase)
+        // ================================================================
+        (function() {
+            'use strict';
+
+            // ---- عناصر DOM ----
+            const hamburger = document.getElementById('hamburgerBtn');
+            const topNav = document.getElementById('topNav');
+            const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+            const sidebar = document.getElementById('sidebar');
+            const productGrid = document.getElementById('productGrid');
+            const emptyState = document.getElementById('emptyState');
+            const cartBadge = document.getElementById('cartCount');
+            const cartBtn = document.getElementById('cartBtn');
+            const loginBtn = document.getElementById('loginBtn');
+
+            // ---- السلة (عداد محلي + حفظ في Firebase) ----
+            let cartCount = 0;
+
+            // تحديث العداد من Firebase (عند التحميل)
+            function loadCartCount() {
+                database.ref('cart').once('value').then((snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        const count = Object.keys(data).length;
+                        cartCount = count;
+                        if (cartBadge) cartBadge.textContent = count;
+                    }
+                }).catch(err => console.warn('خطأ في جلب السلة:', err));
+            }
+            loadCartCount();
+
+            // ---- عرض المنتجات من Firebase ----
+            function loadProducts() {
+                database.ref('products').on('value', (snapshot) => {
+                    const products = snapshot.val();
+                    // إزالة جميع العناصر باستثناء الحالة الفارغة (سنعيد إضافتها لاحقاً)
+                    const items = productGrid.querySelectorAll('.product-card');
+                    items.forEach(el => el.remove());
+
+                    if (!products) {
+                        // إظهار الحالة الفارغة
+                        emptyState.style.display = 'block';
+                        return;
+                    }
+
+                    emptyState.style.display = 'none';
+
+                    // تحويل الكائن إلى مصفوفة
+                    const productArray = Object.keys(products).map(key => ({
+                        id: key,
+                        ...products[key]
+                    }));
+
+                    productArray.forEach(product => {
+                        const card = document.createElement('div');
+                        card.className = 'product-card';
+                        card.dataset.id = product.id;
+
+                        const image = document.createElement('div');
+                        image.className = 'product-image';
+                        image.textContent = product.name ? product.name.substring(0, 2) : 'منتج';
+
+                        const name = document.createElement('h4');
+                        name.textContent = product.name || 'منتج بدون اسم';
+
+                        const priceDiv = document.createElement('div');
+                        priceDiv.className = 'price';
+                        priceDiv.textContent = (product.price || '٠') + ' ر.س';
+                        if (product.oldPrice) {
+                            const old = document.createElement('span');
+                            old.className = 'old-price';
+                            old.textContent = product.oldPrice + ' ر.س';
+                            priceDiv.appendChild(old);
+                        }
+
+                        const btnGroup = document.createElement('div');
+                        btnGroup.className = 'btn-group';
+
+                        const addBtn = document.createElement('button');
+                        addBtn.className = 'btn btn-primary btn-sm add-to-cart';
+                        addBtn.textContent = 'إضافة';
+                        addBtn.dataset.productId = product.id;
+                        addBtn.dataset.productName = product.name || 'منتج';
+
+                        const detailBtn = document.createElement('button');
+                        detailBtn.className = 'btn btn-outline btn-sm';
+                        detailBtn.textContent = 'تفاصيل';
+
+                        btnGroup.appendChild(addBtn);
+                        btnGroup.appendChild(detailBtn);
+
+                        card.appendChild(image);
+                        card.appendChild(name);
+                        card.appendChild(priceDiv);
+                        card.appendChild(btnGroup);
+
+                        productGrid.appendChild(card);
+
+                        // ربط حدث الإضافة
+                        addBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const pId = this.dataset.productId;
+                            const pName = this.dataset.productName;
+                            // حفظ في Firebase تحت cart
+                            database.ref('cart').push({
+                                productId: pId,
+                                productName: pName,
+                                timestamp: Date.now()
+                            }).then(() => {
+                                cartCount++;
+                                if (cartBadge) cartBadge.textContent = cartCount;
+                                this.textContent = 'تم';
+                                setTimeout(() => { this.textContent = 'إضافة'; }, 1000);
+                                console.log('✅ تمت إضافة المنتج إلى السلة:', pName);
+                            }).catch(err => console.error('❌ خطأ في الإضافة:', err));
+                        });
+
+                        // تفاصيل المنتج (محاكاة)
+                        detailBtn.addEventListener('click', function() {
+                            alert('تفاصيل المنتج: ' + (product.name || 'غير معروف'));
+                        });
+                    });
+                }, (error) => {
+                    console.error('خطأ في قراءة المنتجات:', error);
+                });
+            }
+
+            // تحميل المنتجات (مع الاستماع للتحديثات)
+            loadProducts();
+
+            // ---- زر السلة (عرض المحتوى) ----
+            if (cartBtn) {
+                cartBtn.addEventListener('click', function() {
+                    database.ref('cart').once('value').then((snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            const items = Object.values(data);
+                            let msg = 'محتويات السلة:\n';
+                            items.forEach((item, index) => {
+                                msg += (index + 1) + '- ' + (item.productName || 'منتج') + '\n';
+                            });
+                            alert(msg);
+                        } else {
+                            alert('السلة فارغة.');
+                        }
+                    });
+                });
+            }
+
+            // ---- زر تسجيل الدخول ----
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function() {
+                    alert('نافذة تسجيل الدخول (سيتم ربطها مع Firebase Auth لاحقاً).');
+                });
+            }
+
+            // ---- الهامبرغر (القائمة العلوية) ----
+            if (hamburger && topNav) {
+                hamburger.addEventListener('click', function() {
+                    topNav.classList.toggle('open');
+                });
+            }
+
+            // ---- زر القائمة الجانبية ----
+            if (toggleSidebarBtn && sidebar) {
+                toggleSidebarBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('open');
+                });
+            }
+
+            // ---- روابط القائمة الجانبية ----
+            const categoryLinks = document.querySelectorAll('#categoryList a');
+            categoryLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    categoryLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    // يمكن فلترة المنتجات حسب الفئة (سيتم تنفيذها لاحقاً)
+                    alert('سيتم تصفية المنتجات حسب: ' + this.textContent.trim());
+                });
+            });
+
+            // ---- زر تطبيق الفلتر ----
+            const filterBtn = document.getElementById('applyFilterBtn');
+            if (filterBtn) {
+                filterBtn.addEventListener('click', function() {
+                    alert('تم تطبيق الفلتر (سيتم ربطه مع Firebase لاحقاً).');
+                });
+            }
+
+            // ---- أزرار العرض (شبكة/قائمة) ----
+            const gridBtn = document.getElementById('gridView');
+            const listBtn = document.getElementById('listView');
+            if (gridBtn && listBtn) {
+                gridBtn.addEventListener('click', function() {
+                    productGrid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(200px, 1fr))';
+                    gridBtn.style.background = '#d4af37';
+                    gridBtn.style.color = '#1a4a2a';
+                    listBtn.style.background = '#ffffff';
+                    listBtn.style.color = '#1a4a2a';
+                });
+
+                listBtn.addEventListener('click', function() {
+                    productGrid.style.gridTemplateColumns = '1fr';
+                    listBtn.style.background = '#d4af37';
+                    listBtn.style.color = '#1a4a2a';
+                    gridBtn.style.background = '#ffffff';
+                    gridBtn.style.color = '#1a4a2a';
+                });
+            }
+
+            // ---- روابط الشريط العلوي (باستثناء الأزرار) ----
+            const topLinks = document.querySelectorAll('.top-nav a:not(.btn-outline-light)');
+            topLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href && href === 'home.html') {
+                        return; // يسمح بالتنقل
+                    }
+                    e.preventDefault();
+                    alert('سيتم الانتقال إلى: ' + this.textContent.trim());
+                });
+            });
+
+            // ---- روابط الشريط السفلي ----
+            const footerLinks = document.querySelectorAll('.footer-col a');
+            footerLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href && href === 'home.html') {
+                        return;
+                    }
+                    e.preventDefault();
+                    alert('سيتم الانتقال إلى: ' + this.textContent.trim());
+                });
+            });
+
+            console.log('✅ home.html جاهز مع Firebase وجميع المكونات.');
+
+        })();
+    </script>
+
+</body>
+</html>
