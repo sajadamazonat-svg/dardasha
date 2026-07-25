@@ -210,6 +210,16 @@
             stroke: #fff;
         }
 
+        .topbar-btn.logout-btn {
+            display: none;
+        }
+
+        .topbar-btn.logout-btn:hover {
+            color: #c0392b;
+            border-color: #c0392b;
+            background: rgba(192, 57, 43, 0.06);
+        }
+
         /* ===== SIDEBAR ===== */
         .sidebar-overlay {
             position: fixed;
@@ -383,6 +393,15 @@
 
         .sidebar-nav .admin-section.show {
             display: block;
+        }
+
+        .sidebar-nav .logout-sidebar-btn {
+            color: #c0392b;
+        }
+
+        .sidebar-nav .logout-sidebar-btn:hover {
+            background: rgba(192, 57, 43, 0.08);
+            color: #c0392b;
         }
 
         .sidebar-footer {
@@ -890,6 +909,10 @@
                 color: #fff;
             }
 
+            .sidebar-nav .logout-sidebar-btn:hover {
+                background: rgba(192, 57, 43, 0.15);
+            }
+
             .product-card {
                 background: #1d2822;
                 border-color: var(--border-light);
@@ -962,6 +985,12 @@
                 border-color: var(--primary-light);
             }
 
+            .topbar-btn.logout-btn:hover {
+                color: #e74c3c;
+                border-color: #e74c3c;
+                background: rgba(231, 76, 60, 0.1);
+            }
+
             .sidebar-close:hover {
                 background: #25352e;
             }
@@ -999,6 +1028,10 @@
                 <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                 <span class="btn-label">لوحة التحكم</span>
             </a>
+            <button class="topbar-btn logout-btn" id="logoutTopBtn" aria-label="تسجيل الخروج">
+                <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <span class="btn-label">خروج</span>
+            </button>
             <button class="topbar-btn icon-btn" id="menuToggle" aria-label="القائمة">
                 <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
@@ -1065,7 +1098,7 @@
                     <svg class="icon" viewBox="0 0 24 24" stroke="#fff"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                     لوحة التحكم
                 </a>
-                <a href="#" id="logoutSidebarBtn" style="color: #c0392b;">
+                <a href="#" class="logout-sidebar-btn" id="logoutSidebarBtn">
                     <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                     تسجيل الخروج
                 </a>
@@ -1176,6 +1209,7 @@
         const dashboardBtn = document.getElementById('dashboardBtn');
         const adminSidebarSection = document.getElementById('adminSidebarSection');
         const logoutSidebarBtn = document.getElementById('logoutSidebarBtn');
+        const logoutTopBtn = document.getElementById('logoutTopBtn');
 
         // ── State ──
         let allProducts = [];
@@ -1286,6 +1320,13 @@
                 dashboardBtn.style.display = 'none';
                 adminSidebarSection.classList.remove('show');
             }
+
+            // Show/hide logout button in top bar
+            if (user) {
+                logoutTopBtn.style.display = 'inline-flex';
+            } else {
+                logoutTopBtn.style.display = 'none';
+            }
         }
 
         onAuthStateChanged(auth, (user) => {
@@ -1355,18 +1396,25 @@
             if (e.key === 'Escape') closeSidebar();
         });
 
-        // ── Logout ──
-        logoutSidebarBtn.addEventListener('click', async (e) => {
-            e.preventDefault();
+        // ── Logout functions ──
+        async function handleLogout() {
             try {
                 await signOut(auth);
                 window.location.href = 'login.html';
             } catch (error) {
                 console.error('خطأ في تسجيل الخروج:', error);
             }
+        }
+
+        logoutTopBtn.addEventListener('click', handleLogout);
+        logoutSidebarBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleLogout();
         });
 
-        console.log('🔥 lidercenter — الرئيسية (مع تحقق المدير)');
+        console.log('🔥 lidercenter — الرئيسية (نسخة نهائية)');
+        console.log('👤 المدير: ashlhl.iq@gmail.com');
+        console.log('📌 زر الخروج في الشريط العلوي والقائمة الجانبية');
     </script>
 
 </body>
