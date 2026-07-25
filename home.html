@@ -210,6 +210,7 @@
             stroke: #fff;
         }
 
+        /* ===== زر تسجيل الخروج في الشريط العلوي ===== */
         .topbar-btn.logout-btn {
             display: none;
         }
@@ -395,6 +396,7 @@
             display: block;
         }
 
+        /* ===== زر تسجيل الخروج في القائمة الجانبية ===== */
         .sidebar-nav .logout-sidebar-btn {
             color: #c0392b;
         }
@@ -1024,14 +1026,19 @@
                 <span class="btn-label">السلة</span>
                 <span class="badge" id="cartBadge">0</span>
             </a>
+
+            <!-- ===== زر "لوحة التحكم" - يظهر للمدير فقط ===== -->
             <a href="dashboard.html" class="topbar-btn dashboard-btn" id="dashboardBtn">
                 <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                 <span class="btn-label">لوحة التحكم</span>
             </a>
+
+            <!-- ===== زر "خروج" - يظهر لجميع المستخدمين المسجلين ===== -->
             <button class="topbar-btn logout-btn" id="logoutTopBtn" aria-label="تسجيل الخروج">
                 <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 <span class="btn-label">خروج</span>
             </button>
+
             <button class="topbar-btn icon-btn" id="menuToggle" aria-label="القائمة">
                 <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </button>
@@ -1092,12 +1099,13 @@
 
             <div class="divider"></div>
 
-            <!-- Admin section - shown only when admin is logged in -->
+            <!-- ===== قسم المدير - يظهر فقط عند تسجيل الدخول بحساب ashlhl.iq@gmail.com ===== -->
             <div class="admin-section" id="adminSidebarSection">
                 <a href="dashboard.html" style="background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(45,90,75,0.2);">
                     <svg class="icon" viewBox="0 0 24 24" stroke="#fff"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                     لوحة التحكم
                 </a>
+                <!-- ===== زر "تسجيل الخروج" في القائمة الجانبية (للمدير فقط) ===== -->
                 <a href="#" class="logout-sidebar-btn" id="logoutSidebarBtn">
                     <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                     تسجيل الخروج
@@ -1312,7 +1320,7 @@
         function updateAdminUI(user) {
             const isAdmin = user && user.email === 'ashlhl.iq@gmail.com';
 
-            // Show/hide dashboard button in top bar
+            // زر لوحة التحكم في الشريط العلوي
             if (isAdmin) {
                 dashboardBtn.style.display = 'inline-flex';
                 adminSidebarSection.classList.add('show');
@@ -1321,7 +1329,7 @@
                 adminSidebarSection.classList.remove('show');
             }
 
-            // Show/hide logout button in top bar
+            // زر الخروج في الشريط العلوي - يظهر لجميع المستخدمين المسجلين
             if (user) {
                 logoutTopBtn.style.display = 'inline-flex';
             } else {
@@ -1414,7 +1422,7 @@
 
         console.log('🔥 lidercenter — الرئيسية (نسخة نهائية)');
         console.log('👤 المدير: ashlhl.iq@gmail.com');
-        console.log('📌 زر الخروج في الشريط العلوي والقائمة الجانبية');
+        console.log('📍 زر الخروج في الشريط العلوي (لجميع المستخدمين) وفي القائمة الجانبية (للمدير فقط)');
     </script>
 
 </body>
