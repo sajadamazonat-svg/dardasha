@@ -1,160 +1,552 @@
-<!DOCTYPE html><html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="google-site-verification" content="nghol-rwAaSoHbjlS_SLo1_WZ6_TP_0mXKx3TfGyzYE" />
-<title>lidercenter - مرحباً</title><style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="google-site-verification" content="nghol-rwAaSoHbjlS_SLo1_WZ6_TP_0mXKx3TfGyzYE" />
+    <title>lidercenter - الصفحة الترحيبية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body{
-    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-    background:#ffffff;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    direction:rtl;
-}
+        body {
+            font-family: -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f2f5f0;
+            color: #1f2a24;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            line-height: 1.6;
+        }
 
-.welcome-card{
-    width:420px;
-    max-width:92%;
-    background:#fff;
-    border:1px solid #e5e5e5;
-    border-radius:22px;
-    padding:45px 35px;
-    text-align:center;
-    box-shadow:0 8px 25px rgba(0,0,0,.05);
-    animation:fade .7s ease;
-}
+        .navbar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.9);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(190, 205, 190, 0.3);
+            border-radius: 50px;
+            padding: 10px 24px;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: calc(100% - 40px);
+            box-shadow: 0 4px 20px rgba(45, 90, 75, 0.04);
+        }
 
-.logo{
-    width:90px;
-    height:90px;
-    margin:auto;
-    border:2px solid #000;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:42px;
-    font-weight:900;
-    color:#000;
-    margin-bottom:25px;
-}
+        @supports not (backdrop-filter: blur(6px)) {
+            .navbar {
+                background: rgba(255, 255, 255, 0.95);
+            }
+        }
 
-.store-name{
-    font-size:2.7rem;
-    font-weight:900;
-    color:#000;
-    margin-bottom:10px;
-}
+        .navbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #1f2a24;
+        }
 
-.sub-title{
-    color:#888;
-    font-size:.95rem;
-    margin-bottom:30px;
-    border-bottom:1px solid #efefef;
-    padding-bottom:18px;
-}
+        .navbar .brand .logo-mark {
+            width: 36px;
+            height: 36px;
+            background: #2d5a4b;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #f2f5f0;
+            letter-spacing: -0.5px;
+            flex-shrink: 0;
+        }
 
-.welcome-title{
-    font-size:1.5rem;
-    color:#000;
-    font-weight:700;
-    margin-bottom:12px;
-}
+        .navbar .brand span {
+            font-size: 1.15rem;
+            font-weight: 650;
+            color: #1f2a24;
+        }
 
-.description{
-    color:#666;
-    line-height:1.9;
-    font-size:.95rem;
-    margin-bottom:35px;
-}
+        .nav-links {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
 
-.btn{
-    display:block;
-    width:100%;
-    padding:14px;
-    border:none;
-    border-radius:50px;
-    font-size:1rem;
-    font-weight:700;
-    cursor:pointer;
-    transition:.25s;
-    text-decoration:none;
-}
+        .nav-links a {
+            color: #5b6f62;
+            text-decoration: none;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: 0.25s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-.btn-primary{
-    background:#000;
-    color:#fff;
-    margin-bottom:12px;
-}
+        .nav-links a:hover {
+            background: #e1e8e2;
+            color: #1f2a24;
+        }
 
-.btn-primary:hover{
-    background:#222;
-    transform:translateY(-2px);
-}
+        .nav-links a.primary-link {
+            background: #2d5a4b;
+            color: #ffffff;
+            font-weight: 500;
+            box-shadow: 0 4px 0 #1a3d31;
+            transition: 0.1s ease;
+        }
 
-.btn-secondary{
-    background:#fff;
-    color:#000;
-    border:2px solid #000;
-}
+        .nav-links a.primary-link:hover {
+            background: #3f735f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #1a3d31;
+        }
 
-.btn-secondary:hover{
-    background:#000;
-    color:#fff;
-}
+        .nav-links a.primary-link:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 #1a3d31;
+        }
 
-.footer{
-    margin-top:28px;
-    color:#999;
-    font-size:.8rem;
-}
+        .hero-card {
+            background: #ffffff;
+            border-radius: 48px;
+            padding: 50px 48px 42px;
+            max-width: 620px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(45, 90, 75, 0.06), 0 2px 0 0 rgba(255, 255, 255, 0.8) inset;
+            border: 1px solid rgba(190, 205, 190, 0.25);
+            margin-top: 50px;
+            transition: 0.3s ease;
+        }
 
-@keyframes fade{
-    from{
-        opacity:0;
-        transform:translateY(20px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-</style></head><body><div class="welcome-card"><div class="logo">L</div>
+        .logo-circle {
+            width: 96px;
+            height: 96px;
+            margin: 0 auto 28px;
+            border-radius: 50%;
+            background: #e3ede7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.4rem;
+            font-weight: 500;
+            color: #2d5a4b;
+            letter-spacing: -2px;
+            border: 1px solid #cbd8cf;
+            box-shadow: 0 8px 0 #b8ccc0;
+            transition: 0.15s linear;
+        }
 
-<div class="store-name">lidercenter</div>
+        .logo-circle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 0 #b8ccc0;
+        }
 
-<div class="sub-title">
-    منصة حديثة لإدارة المنتجات والمتاجر
-</div>
+        .hero-sub {
+            color: #7a8f80;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
 
-<div class="welcome-title">
-    👋 أهلاً وسهلاً بك
-</div>
+        .hero-title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+            color: #1f2a24;
+            margin-bottom: 8px;
+        }
 
-<div class="description">
-    يسعدنا انضمامك إلى <b>lidercenter</b>.<br>
-    يمكنك إدارة منتجاتك ومتابعة أعمالك بسهولة من خلال لوحة تحكم سريعة وآمنة.
-</div>
+        .hero-title .highlight {
+            color: #c8792e;
+            font-weight: 800;
+        }
 
-<a href="login.html" class="btn btn-primary">
-    تسجيل الدخول
-</a>
+        .hero-desc {
+            color: #5b6f62;
+            font-size: 1.1rem;
+            line-height: 2;
+            max-width: 440px;
+            margin: 14px auto 34px;
+            font-weight: 400;
+        }
 
-<a href="register.html" class="btn btn-secondary">
-    إنشاء حساب جديد
-</a>
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+            margin-bottom: 34px;
+        }
 
-<div class="footer">
-    © 2026 lidercenter. جميع الحقوق محفوظة.
-</div>
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 28px;
+            border-radius: 60px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: 0.1s linear;
+            letter-spacing: 0.2px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
 
-</div></body>
+        .btn-primary {
+            background: #2d5a4b;
+            color: #ffffff;
+            box-shadow: 0 6px 0 #1a3d31, 0 4px 16px rgba(45, 90, 75, 0.15);
+        }
+
+        .btn-primary:hover {
+            background: #3f735f;
+            transform: translateY(-3px);
+            box-shadow: 0 9px 0 #1a3d31, 0 8px 24px rgba(45, 90, 75, 0.2);
+        }
+
+        .btn-primary:active {
+            transform: translateY(6px);
+            box-shadow: 0 0px 0 #1a3d31, 0 4px 12px rgba(45, 90, 75, 0.1);
+        }
+
+        .btn-secondary {
+            background: #c8792e;
+            color: #ffffff;
+            box-shadow: 0 6px 0 #8f5621, 0 4px 16px rgba(200, 121, 46, 0.15);
+        }
+
+        .btn-secondary:hover {
+            background: #db8d40;
+            transform: translateY(-3px);
+            box-shadow: 0 9px 0 #8f5621, 0 8px 24px rgba(200, 121, 46, 0.2);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(6px);
+            box-shadow: 0 0px 0 #8f5621, 0 4px 12px rgba(200, 121, 46, 0.1);
+        }
+
+        .btn-guest {
+            background: transparent;
+            color: #2d5a4b;
+            border: 2px solid #2d5a4b;
+            box-shadow: 0 4px 0 #b8ccc0;
+            font-weight: 600;
+        }
+
+        .btn-guest:hover {
+            background: #e3ede7;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 0 #b8ccc0;
+        }
+
+        .btn-guest:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 #b8ccc0;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            border-top: 1px solid #e6ede8;
+            padding-top: 30px;
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .feature-item .marker {
+            display: block;
+            width: 28px;
+            height: 3px;
+            background: #cbd8cf;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            transition: 0.2s;
+        }
+
+        .feature-item:hover .marker {
+            width: 40px;
+            background: #c8792e;
+        }
+
+        .feature-item h4 {
+            color: #1f2a24;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .feature-item p {
+            color: #7a8f80;
+            font-size: 0.8rem;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .footer-note {
+            margin-top: 28px;
+            color: #b0c4b8;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            border-top: 1px solid #eef4ef;
+            padding-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+
+            .navbar {
+                top: 16px;
+                padding: 8px 16px;
+                border-radius: 40px;
+                width: calc(100% - 32px);
+            }
+            .navbar .brand span {
+                font-size: 1rem;
+            }
+            .nav-links a:not(.primary-link) {
+                display: none;
+            }
+            .nav-links a.primary-link {
+                font-size: 0.8rem;
+                padding: 6px 14px;
+                box-shadow: 0 3px 0 #1a3d31;
+            }
+            .nav-links a.primary-link:hover {
+                box-shadow: 0 5px 0 #1a3d31;
+            }
+            .nav-links a.primary-link:active {
+                transform: translateY(3px);
+                box-shadow: 0 0px 0 #1a3d31;
+            }
+
+            .hero-card {
+                padding: 34px 22px 28px;
+                border-radius: 32px;
+                margin-top: 40px;
+            }
+
+            .hero-title {
+                font-size: 2.6rem;
+            }
+            .hero-desc {
+                font-size: 1rem;
+                padding: 0 4px;
+            }
+
+            .logo-circle {
+                width: 80px;
+                height: 80px;
+                font-size: 2.8rem;
+                box-shadow: 0 6px 0 #b8ccc0;
+            }
+            .logo-circle:hover {
+                box-shadow: 0 8px 0 #b8ccc0;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .feature-item {
+                flex-direction: row;
+                gap: 14px;
+                justify-content: flex-start;
+                text-align: right;
+            }
+            .feature-item .marker {
+                width: 16px;
+                height: 2px;
+                margin-bottom: 0;
+                flex-shrink: 0;
+            }
+            .feature-item:hover .marker {
+                width: 24px;
+            }
+
+            .btn {
+                padding: 14px 20px;
+                font-size: 1rem;
+            }
+            .btn-primary,
+            .btn-secondary {
+                box-shadow: 0 5px 0 #1a3d31;
+            }
+            .btn-primary:hover,
+            .btn-secondary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 7px 0 #1a3d31;
+            }
+            .btn-primary:active,
+            .btn-secondary:active {
+                transform: translateY(5px);
+                box-shadow: 0 0px 0 #1a3d31;
+            }
+
+            .btn-guest {
+                box-shadow: 0 3px 0 #b8ccc0;
+            }
+            .btn-guest:hover {
+                box-shadow: 0 5px 0 #b8ccc0;
+            }
+            .btn-guest:active {
+                transform: translateY(3px);
+                box-shadow: 0 0px 0 #b8ccc0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+        }
+
+        ::selection {
+            background: #c8792e;
+            color: #ffffff;
+        }
+        ::-moz-selection {
+            background: #c8792e;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="brand">
+            <div class="logo-mark">L</div>
+            <span>lidercenter</span>
+        </a>
+        <div class="nav-links">
+            <a href="#">الرئيسية</a>
+            <a href="#">المنتجات</a>
+            <a href="#" class="primary-link">تسجيل الدخول</a>
+        </div>
+    </nav>
+
+    <main class="hero-card">
+        <div class="logo-circle">L</div>
+        <p class="hero-sub">مرحباً بك في منصتك</p>
+        <h1 class="hero-title">
+            <span class="highlight">lidercenter</span>
+        </h1>
+        <p class="hero-desc">
+            هنا نضع بين يديك أداة عمل متكاملة لإدارة منتجاتك<br />
+            ومتابعة متجرك بكل يسر وسلاسة.
+        </p>
+
+        <div class="btn-group">
+            <a href="#" class="btn btn-primary">ابدأ رحلتك الآن</a>
+            <a href="#" class="btn btn-secondary">تعرف على المنصة</a>
+            <a href="#" class="btn btn-guest" id="guestLoginBtn">دخول كزائر</a>
+        </div>
+
+        <div class="features">
+            <div class="feature-item">
+                <span class="marker"></span>
+                <div>
+                    <h4>بيئة آمنة</h4>
+                    <p>نضع خصوصية عملك في مقدمة اهتماماتنا</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <span class="marker"></span>
+                <div>
+                    <h4>تجربة سلسة</h4>
+                    <p>واجهة مصممة لتناسب احتياجاتك اليومية</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <span class="marker"></span>
+                <div>
+                    <h4>دعم متواصل</h4>
+                    <p>نحن هنا لمساعدتك في كل خطوة</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            &copy; 2026 lidercenter — جميع الحقوق محفوظة
+        </div>
+    </main>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js",
+                "firebase/analytics": "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "firebase/app";
+        import { getAnalytics } from "firebase/analytics";
+        import { getAuth, onAuthStateChanged, signInAnonymously } from "firebase/auth";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDcj-R4XEXmLUl7hW38r58paTVHxq2GKVI",
+            authDomain: "test-bfcd3.firebaseapp.com",
+            projectId: "test-bfcd3",
+            storageBucket: "test-bfcd3.firebasestorage.app",
+            messagingSenderId: "178734209574",
+            appId: "1:178734209574:web:a54fbfb0118ac2325b64e7",
+            measurementId: "G-9TVW2LDH08"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = 'home.html';
+            }
+        });
+
+        document.getElementById('guestLoginBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            signInAnonymously(auth)
+                .then(() => {})
+                .catch(() => {
+                    window.location.href = 'home.html?guest=true';
+                });
+        });
+    </script>
+
+</body>
 </html>
