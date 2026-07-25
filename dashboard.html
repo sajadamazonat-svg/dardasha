@@ -2,10 +2,10 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <title>lidercenter - لوحة التحكم</title>
   <style>
-    /* ── Reset & Variables ── (مطابقة للصفحات الأخرى) */
+    /* ===== RESET & VARIABLES (مطابقة للصفحة الرئيسية) ===== */
     * {
       margin: 0;
       padding: 0;
@@ -13,22 +13,26 @@
     }
 
     :root {
-      --bg: #f4f6fa;
+      --bg: #f4f7f5;
       --card: #ffffff;
-      --text: #0b0e14;
-      --text-muted: #5e6879;
-      --border: #e2e7ef;
-      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.10);
-      --radius-sm: 12px;
-      --radius-md: 18px;
+      --text: #1a2822;
+      --text-muted: #5b6f62;
+      --border: #dce6df;
+      --border-light: rgba(60, 85, 75, 0.12);
+      --primary: #2d5a4b;
+      --primary-dark: #1e4034;
+      --primary-light: #3f735f;
+      --accent: #c8792e;
+      --shadow-sm: 0 2px 8px rgba(45, 90, 75, 0.04);
+      --shadow-md: 0 8px 30px rgba(45, 90, 75, 0.06);
+      --shadow-lg: 0 20px 50px rgba(45, 90, 75, 0.08);
+      --radius-sm: 10px;
+      --radius-md: 16px;
       --radius-lg: 24px;
-      --radius-xl: 28px;
+      --radius-xl: 40px;
       --radius-full: 9999px;
       --transition: 0.25s cubic-bezier(0.2, 0, 0, 1);
-      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      --primary: #0b0e14;
+      --font: -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
       --success: #28a745;
       --warning: #ffc107;
       --danger: #dc3545;
@@ -39,9 +43,11 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding-top: 84px;
-      padding-bottom: 92px;
+      padding-top: 76px;
+      padding-bottom: 20px;
       -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+      overflow-x: hidden;
     }
 
     ::-webkit-scrollbar {
@@ -52,102 +58,147 @@
       background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: #c9d0db;
-      border-radius: 999px;
+      background: #cbd8cf;
+      border-radius: var(--radius-full);
     }
 
-    /* ── Topbar ── */
+    ::selection {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    /* ===== TOP BAR (مطابق للصفحة الرئيسية) ===== */
     .topbar {
       position: fixed;
       top: 0;
       inset-inline: 0;
-      height: 84px;
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(18px) saturate(1.1);
-      -webkit-backdrop-filter: blur(18px) saturate(1.1);
-      border-bottom: 1px solid rgba(226, 231, 239, 0.7);
+      height: 72px;
+      background: rgba(255, 255, 255, 0.92);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-light);
       z-index: 1000;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
+      padding: 0 24px;
       gap: 12px;
     }
 
-    .brand {
+    .topbar .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      min-width: 0;
+      text-decoration: none;
+      color: var(--text);
+      flex-shrink: 0;
     }
 
-    .brand-mark {
-      width: 44px;
-      height: 44px;
-      border-radius: var(--radius-md);
-      background: linear-gradient(145deg, #0b0e14, #1e2530);
-      color: #fff;
+    .topbar .brand .logo-mark {
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
-      font-weight: 900;
-      flex-shrink: 0;
-      letter-spacing: -0.5px;
-      box-shadow: 0 4px 12px rgba(11, 14, 20, 0.15);
-    }
-
-    .brand-text h1 {
+      font-weight: 700;
       font-size: 1.1rem;
-      font-weight: 900;
-      letter-spacing: -0.3px;
-      line-height: 1.2;
+      color: #f4f7f5;
+      letter-spacing: -0.5px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(45, 90, 75, 0.15);
     }
 
-    .brand-text p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 160px;
-      font-weight: 500;
+    .topbar .brand span {
+      font-size: 1.15rem;
+      font-weight: 650;
+      color: var(--text);
     }
 
-    .top-actions {
+    .topbar-actions {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       flex-shrink: 0;
     }
 
-    .action-btn {
+    .topbar-btn {
       height: 42px;
       min-width: 42px;
-      padding: 0 16px;
+      padding: 0 14px;
       border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--text);
+      border: 1px solid var(--border-light);
+      background: var(--card);
+      color: var(--text-muted);
       cursor: pointer;
-      font-weight: 700;
-      font-size: 0.82rem;
+      font-weight: 600;
+      font-size: 0.8rem;
       transition: var(--transition);
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 6px;
       box-shadow: var(--shadow-sm);
+      font-family: var(--font);
       text-decoration: none;
+      position: relative;
     }
 
-    .action-btn:hover {
-      transform: translateY(-1px);
-      border-color: #b8c2d0;
+    .topbar-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
       box-shadow: var(--shadow-md);
+      color: var(--primary);
+      background: #f4faf7;
     }
 
-    .action-btn:active {
-      transform: scale(0.97);
+    .topbar-btn:active {
+      transform: scale(0.96);
+    }
+
+    .topbar-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      display: block;
+    }
+
+    .topbar-btn .btn-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .topbar-btn.logout-btn:hover {
+      color: #c0392b;
+      border-color: #c0392b;
+      background: rgba(192, 57, 43, 0.06);
+    }
+
+    .topbar-btn .badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      padding: 0 6px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      min-width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--card);
+      line-height: 1;
+    }
+
+    .topbar-btn.icon-btn {
+      min-width: 42px;
+      padding: 0 10px;
     }
 
     .user-pill {
@@ -156,13 +207,14 @@
       gap: 10px;
       padding: 4px 12px 4px 4px;
       border-radius: var(--radius-full);
-      border: 1px solid var(--border);
-      background: #fff;
+      border: 1px solid var(--border-light);
+      background: var(--card);
       box-shadow: var(--shadow-sm);
       max-width: 200px;
       min-width: 0;
       transition: var(--transition);
     }
+
     .user-pill:hover {
       box-shadow: var(--shadow-md);
     }
@@ -171,7 +223,7 @@
       width: 34px;
       height: 34px;
       border-radius: 50%;
-      background: linear-gradient(145deg, #0b0e14, #2a3340);
+      background: var(--primary);
       color: #fff;
       display: flex;
       align-items: center;
@@ -197,155 +249,104 @@
       max-width: 100px;
     }
 
-    /* ── Container ── */
+    /* ===== CONTAINER ===== */
     .container {
-      width: min(1180px, 100%);
+      width: min(1100px, 100%);
       margin: 0 auto;
-      padding: 0 16px;
+      padding: 0 20px;
     }
 
-    /* ── Hero ── */
+    /* ===== HERO ===== */
     .hero {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 24px 28px;
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 12px;
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      padding: 32px 40px 28px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-light);
+      margin-bottom: 20px;
       position: relative;
       overflow: hidden;
     }
+
     .hero::before {
       content: '';
       position: absolute;
       top: -60%;
       right: -10%;
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(11, 14, 20, 0.03) 0%, transparent 70%);
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(45, 90, 75, 0.03) 0%, transparent 70%);
       border-radius: 50%;
       pointer-events: none;
     }
 
-    .hero-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      flex-wrap: wrap;
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -40%;
+      left: -10%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(200, 121, 46, 0.03) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-inner {
       position: relative;
       z-index: 1;
     }
 
     .hero h2 {
-      font-size: 1.4rem;
-      font-weight: 900;
+      font-size: 1.6rem;
+      font-weight: 800;
       letter-spacing: -0.3px;
-      line-height: 1.4;
+      line-height: 1.3;
       margin-bottom: 6px;
+      color: var(--text);
     }
 
     .hero p {
       color: var(--text-muted);
       line-height: 1.8;
-      font-size: 0.92rem;
+      font-size: 0.95rem;
       max-width: 660px;
     }
 
     .badge-admin {
       background: var(--primary);
       color: #fff;
-      padding: 4px 16px;
+      padding: 4px 18px;
       border-radius: var(--radius-full);
       font-size: 0.75rem;
       font-weight: 700;
       display: inline-block;
-      margin-top: 6px;
+      margin-top: 8px;
+      letter-spacing: 0.5px;
     }
 
-    /* ── Dashboard Grid ── */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 20px;
-      margin-top: 12px;
-    }
-
-    .dashboard-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 24px 20px;
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition);
-      text-decoration: none;
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 12px;
-    }
-    .dashboard-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-      border-color: #d0d8e3;
-    }
-    .dashboard-card .icon {
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0.8;
-    }
-    .dashboard-card .icon svg {
-      width: 36px;
-      height: 36px;
-      stroke: var(--text);
-      stroke-width: 1.8;
-      fill: none;
-    }
-    .dashboard-card .card-title {
-      font-weight: 900;
-      font-size: 1.05rem;
-    }
-    .dashboard-card .card-desc {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      line-height: 1.6;
-    }
-    .dashboard-card .arrow {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      transition: var(--transition);
-    }
-    .dashboard-card:hover .arrow {
-      color: var(--text);
-      transform: translateX(-4px);
-    }
-
-    /* ── Quick Links (مطابق للصفحات الأخرى) ── */
+    /* ===== QUICK LINKS (مطابق للصفحة الرئيسية) ===== */
     .quick-links {
       display: flex;
       gap: 10px;
       overflow-x: auto;
-      padding: 6px 0 12px;
+      padding: 4px 0 16px;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
     }
+
     .quick-links::-webkit-scrollbar {
       display: none;
     }
 
     .chip {
-      border: 1px solid var(--border);
-      background: #fff;
+      border: 1px solid var(--border-light);
+      background: var(--card);
       color: var(--text);
-      padding: 10px 20px;
+      padding: 10px 22px;
       border-radius: var(--radius-full);
       cursor: pointer;
-      font-weight: 700;
+      font-weight: 600;
       font-size: 0.82rem;
       white-space: nowrap;
       transition: var(--transition);
@@ -355,108 +356,179 @@
       align-items: center;
       justify-content: center;
       box-shadow: var(--shadow-sm);
+      font-family: var(--font);
     }
+
     .chip:hover {
-      background: #0b0e14;
+      background: var(--primary);
       color: #fff;
-      border-color: #0b0e14;
-      transform: translateY(-2px);
+      border-color: var(--primary);
+      transform: translateY(-3px);
       box-shadow: var(--shadow-md);
     }
+
     .chip:active {
       transform: scale(0.97);
     }
+
     .chip.active {
-      background: #0b0e14;
+      background: var(--primary);
       color: #fff;
-      border-color: #0b0e14;
+      border-color: var(--primary);
     }
 
-    /* ── Bottom Nav (مطابق للصفحات الأخرى) ── */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      inset-inline: 0;
-      height: 84px;
-      background: rgba(255, 255, 255, 0.90);
-      backdrop-filter: blur(18px) saturate(1.1);
-      -webkit-backdrop-filter: blur(18px) saturate(1.1);
-      border-top: 1px solid rgba(226, 231, 239, 0.7);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 1000;
-      padding: 8px 6px 12px;
-      gap: 2px;
+    /* ===== DASHBOARD GRID ===== */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 4px;
     }
 
-    .nav-btn {
-      flex: 1;
-      max-width: 100px;
-      height: 58px;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
+    .dashboard-card {
+      background: var(--card);
+      border: 1px solid var(--border-light);
       border-radius: var(--radius-md);
+      padding: 28px 20px 24px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      text-decoration: none;
+      color: var(--text);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 4px;
-      cursor: pointer;
-      transition: var(--transition);
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-decoration: none;
-      letter-spacing: 0.2px;
-      padding: 0 4px;
-    }
-    .nav-btn:hover {
-      background: rgba(11, 14, 20, 0.05);
-      color: var(--text);
-    }
-    .nav-btn.active {
-      background: #0b0e14;
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(11, 14, 20, 0.20);
-    }
-    .nav-btn.active:hover {
-      background: #1e2530;
+      text-align: center;
+      gap: 10px;
     }
 
-    .nav-btn svg {
-      width: 22px;
-      height: 22px;
-      stroke: currentColor;
+    .dashboard-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: #b8ccc0;
+    }
+
+    .dashboard-card .icon {
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+
+    .dashboard-card:hover .icon {
+      background: var(--primary);
+    }
+
+    .dashboard-card .icon svg {
+      width: 30px;
+      height: 30px;
+      stroke: var(--text-muted);
       stroke-width: 1.8;
       fill: none;
+      transition: var(--transition);
     }
-    .nav-btn.active svg {
+
+    .dashboard-card:hover .icon svg {
       stroke: #fff;
     }
 
-    /* ── Responsive ── */
-    @media (max-width: 600px) {
+    .dashboard-card .card-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+
+    .dashboard-card .card-desc {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+
+    .dashboard-card .arrow {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      transition: var(--transition);
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .dashboard-card:hover .arrow {
+      color: var(--primary);
+      transform: translateX(-4px);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
       body {
-        padding-top: 76px;
-        padding-bottom: 80px;
+        padding-top: 64px;
       }
+
       .topbar {
-        height: 76px;
-        padding: 0 14px;
+        height: 64px;
+        padding: 0 16px;
       }
-      .brand-mark {
-        width: 38px;
-        height: 38px;
+
+      .topbar .brand span {
         font-size: 1rem;
       }
-      .brand-text h1 {
-        font-size: 0.95rem;
+
+      .topbar-btn .btn-label {
+        display: none;
       }
-      .brand-text p {
-        max-width: 100px;
-        font-size: 0.7rem;
+
+      .topbar-btn {
+        min-width: 38px;
+        height: 38px;
+        padding: 0 8px;
       }
+
+      .topbar-btn svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .hero {
+        padding: 24px 20px 20px;
+        border-radius: var(--radius-md);
+      }
+
+      .hero h2 {
+        font-size: 1.3rem;
+      }
+
+      .hero p {
+        font-size: 0.85rem;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 14px;
+      }
+
+      .dashboard-card {
+        padding: 20px 14px 18px;
+      }
+
+      .dashboard-card .icon {
+        width: 44px;
+        height: 44px;
+      }
+
+      .dashboard-card .icon svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .dashboard-card .card-title {
+        font-size: 0.92rem;
+      }
+      .dashboard-card .card-desc {
+        font-size: 0.75rem;
+      }
+
       .user-pill {
         max-width: 130px;
         padding: 3px 10px 3px 3px;
@@ -470,76 +542,152 @@
         height: 30px;
         font-size: 0.7rem;
       }
-      .action-btn {
-        height: 38px;
-        min-width: 38px;
-        padding: 0 12px;
-        font-size: 0.72rem;
-      }
-      .hero {
-        padding: 18px 16px;
-        border-radius: var(--radius-lg);
-      }
-      .hero h2 {
-        font-size: 1.15rem;
-      }
-      .hero p {
-        font-size: 0.85rem;
-      }
-      .dashboard-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 14px;
-      }
-      .dashboard-card {
-        padding: 18px 14px;
-      }
-      .dashboard-card .icon svg {
-        width: 28px;
-        height: 28px;
-      }
-      .bottom-nav {
-        height: 76px;
-        padding: 6px 4px 10px;
-      }
-      .nav-btn {
-        height: 52px;
-        font-size: 0.6rem;
-        max-width: 72px;
-      }
-      .nav-btn svg {
-        width: 20px;
-        height: 20px;
-      }
     }
 
-    @media (max-width: 400px) {
-      .top-actions .action-btn:not(.user-pill) {
-        display: none;
+    @media (max-width: 480px) {
+      .hero {
+        padding: 18px 14px 16px;
       }
-      .brand-text p {
-        max-width: 70px;
+      .hero h2 {
+        font-size: 1.1rem;
       }
       .dashboard-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .dashboard-card {
+        padding: 16px 10px 14px;
+      }
+      .dashboard-card .icon {
+        width: 38px;
+        height: 38px;
+      }
+      .dashboard-card .icon svg {
+        width: 20px;
+        height: 20px;
+      }
+      .topbar .brand span {
+        font-size: 0.85rem;
+      }
+      .topbar .brand .logo-mark {
+        width: 34px;
+        height: 34px;
+        font-size: 0.9rem;
+      }
+      .topbar-actions .topbar-btn:not(.user-pill):not(.icon-btn) {
+        display: none;
+      }
+      .quick-links .chip:not(.active) {
+        display: none;
+      }
+    }
+
+    /* ===== DARK MODE (مطابق للصفحة الرئيسية) ===== */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141c17;
+        --card: #1d2822;
+        --text: #e8ede8;
+        --text-muted: #8ba094;
+        --border: #2a3d33;
+        --border-light: rgba(60, 85, 75, 0.25);
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.5);
+      }
+
+      .topbar {
+        background: rgba(29, 40, 34, 0.92);
+        border-color: var(--border-light);
+      }
+
+      .user-pill {
+        background: #1d2822;
+        border-color: var(--border-light);
+      }
+
+      .hero {
+        background: #1d2822;
+        border-color: var(--border-light);
+      }
+
+      .dashboard-card {
+        background: #1d2822;
+        border-color: var(--border-light);
+      }
+      .dashboard-card:hover {
+        border-color: #3a5548;
+      }
+      .dashboard-card .icon {
+        background: #141c17;
+      }
+      .dashboard-card:hover .icon {
+        background: var(--primary);
+      }
+      .dashboard-card .icon svg {
+        stroke: #8ba094;
+      }
+      .dashboard-card:hover .icon svg {
+        stroke: #fff;
+      }
+
+      .chip {
+        background: #1d2822;
+        border-color: var(--border-light);
+      }
+      .chip:hover,
+      .chip.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+      }
+
+      .topbar-btn {
+        background: #1d2822;
+        border-color: var(--border-light);
+        color: var(--text-muted);
+      }
+      .topbar-btn:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+      }
+      .topbar-btn.logout-btn:hover {
+        color: #e74c3c;
+        border-color: #e74c3c;
+        background: rgba(231, 76, 60, 0.1);
+      }
+
+      .badge-admin {
+        background: var(--primary);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #2a3d33;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- ═══ Topbar ═══ -->
+  <!-- ═══ TOP BAR (مطابق للصفحة الرئيسية) ═══ -->
   <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">L</div>
-      <div class="brand-text">
-        <h1>lidercenter</h1>
-        <p id="headerSubtitle">لوحة التحكم</p>
-      </div>
-    </div>
+    <a href="home.html" class="brand">
+      <div class="logo-mark">L</div>
+      <span>lidercenter</span>
+    </a>
 
-    <div class="top-actions">
-      <a class="action-btn" href="home.html">الرئيسية</a>
-      <button class="action-btn" id="logoutBtn" type="button">خروج</button>
+    <div class="topbar-actions">
+      <a href="home.html" class="topbar-btn">
+        <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>
+        <span class="btn-label">الرئيسية</span>
+      </a>
+
+      <button class="topbar-btn logout-btn" id="logoutBtn" aria-label="تسجيل الخروج">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span class="btn-label">خروج</span>
+      </button>
+
       <div class="user-pill">
         <div class="avatar" id="topAvatar">U</div>
         <span id="topUserName">...</span>
@@ -547,21 +695,19 @@
     </div>
   </header>
 
-  <!-- ═══ Main ═══ -->
+  <!-- ═══ MAIN CONTENT ═══ -->
   <main class="container">
 
-    <!-- Hero -->
+    <!-- HERO -->
     <section class="hero">
-      <div class="hero-top">
-        <div>
-          <h2 id="welcomeText">لوحة تحكم المدير</h2>
-          <p id="welcomeSubText">مرحباً بك في لوحة الإدارة. من هنا يمكنك إدارة المنتجات، المستخدمين، الطلبات، والإعدادات.</p>
-          <span class="badge-admin">مدير</span>
-        </div>
+      <div class="hero-inner">
+        <h2 id="welcomeText">لوحة تحكم المدير</h2>
+        <p id="welcomeSubText">مرحباً بك في لوحة الإدارة. من هنا يمكنك إدارة المنتجات، المستخدمين، الطلبات، والإعدادات.</p>
+        <span class="badge-admin">مدير</span>
       </div>
     </section>
 
-    <!-- Quick Links (سريعة للتنقل بين صفحات المتجر) -->
+    <!-- QUICK LINKS -->
     <div class="quick-links">
       <a class="chip" href="home.html">الرئيسية</a>
       <a class="chip" href="products.html">جميع المنتجات</a>
@@ -570,7 +716,7 @@
       <a class="chip active" href="dashboard.html">لوحة التحكم</a>
     </div>
 
-    <!-- Dashboard Grid (بدون إيموجي، استخدمنا SVG) -->
+    <!-- DASHBOARD GRID (بدون إيموجي، SVG فقط) -->
     <div class="dashboard-grid">
 
       <a class="dashboard-card" href="admin-products.html">
@@ -650,39 +796,21 @@
 
   </main>
 
-  <!-- ═══ Bottom Navigation ═══ -->
-  <nav class="bottom-nav">
-    <a class="nav-btn" href="home.html">
-      <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>
-      الرئيسية
-    </a>
-    <a class="nav-btn" href="products.html">
-      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
-      المنتجات
-    </a>
-    <a class="nav-btn" href="favorites.html">
-      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-      المفضلة
-    </a>
-    <a class="nav-btn" href="cart.html">
-      <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
-      السلة
-    </a>
-    <a class="nav-btn active" href="dashboard.html">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      لوحة التحكم
-    </a>
-  </nav>
+  <!-- ═══ FIREBASE (نفس إعدادات الصفحة الرئيسية) ═══ -->
+  <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"
+      }
+    }
+  </script>
 
-  <!-- ═══ Firebase ═══ -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-    import {
-      getAuth,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+    import { initializeApp } from "firebase/app";
+    import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
+    // ── Firebase Config (نفس المستخدم في الصفحة الرئيسية) ──
     const firebaseConfig = {
       apiKey: "AIzaSyDcj-R4XEXmLUl7hW38r58paTVHxq2GKVI",
       authDomain: "test-bfcd3.firebaseapp.com",
@@ -690,18 +818,21 @@
       storageBucket: "test-bfcd3.firebasestorage.app",
       messagingSenderId: "178734209574",
       appId: "1:178734209574:web:a54fbfb0118ac2325b64e7",
-      measurementId: "G-9TVW2LDH08"
+      measurementId: "G-9TVW2LDH08",
+      databaseURL: "https://test-bfcd3-default-rtdb.firebaseio.com"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+
+    // ── البريد الإلكتروني للمدير ──
+    const ADMIN_EMAIL = 'ashlhl.iq@gmail.com';
 
     // ── DOM refs ──
     const topAvatar = document.getElementById('topAvatar');
     const topUserName = document.getElementById('topUserName');
     const welcomeText = document.getElementById('welcomeText');
     const welcomeSubText = document.getElementById('welcomeSubText');
-    const headerSubtitle = document.getElementById('headerSubtitle');
     const logoutBtn = document.getElementById('logoutBtn');
 
     // ── Helpers ──
@@ -733,28 +864,25 @@
     }
 
     // ── التحقق من الصلاحية ──
-    const ADMIN_EMAIL = 'ashlhl.iq@gmail.com';
-
     onAuthStateChanged(auth, (user) => {
-      // إذا لم يكن هناك مستخدم → اذهب إلى تسجيل الدخول
+      // 1. إذا لم يكن هناك مستخدم → اذهب إلى تسجيل الدخول
       if (!user) {
         window.location.href = 'login.html';
         return;
       }
 
-      // إذا كان المستخدم عادي (ليس المدير) → اذهب إلى الصفحة الرئيسية
+      // 2. إذا كان المستخدم عادي (ليس المدير) → اذهب إلى الصفحة الرئيسية
       if (user.email !== ADMIN_EMAIL) {
         window.location.href = 'home.html';
         return;
       }
 
-      // ✅ المدير: عرض لوحة التحكم
+      // 3. ✅ المدير: عرض لوحة التحكم
       const name = userNameValue(user);
       setAvatar(topAvatar, user);
       topUserName.textContent = name;
       welcomeText.textContent = `مرحباً ${name}`;
       welcomeSubText.textContent = 'يمكنك إدارة المنتجات، المستخدمين، الطلبات، والإعدادات من هنا.';
-      headerSubtitle.textContent = user.email || 'لوحة التحكم';
     });
 
     // ── تسجيل الخروج ──
@@ -762,6 +890,10 @@
       await signOut(auth);
       window.location.href = 'login.html';
     });
+
+    console.log('🔥 lidercenter — لوحة التحكم (للمدير فقط)');
+    console.log('👤 المدير:', ADMIN_EMAIL);
   </script>
+
 </body>
 </html>
