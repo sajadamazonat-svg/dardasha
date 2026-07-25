@@ -1177,7 +1177,7 @@
 
             try {
                 saveBtn.disabled = true;
-                saveBtn.textContent = 'جاري الحفظ...';
+                saveBtn.textContent = 'جاري حفظ المنتج...'; // ✅ تم تصحيح النص
                 setStatus('⏳ جاري حفظ المنتج...', '');
 
                 const newRef = push(ref(db, 'products'));
