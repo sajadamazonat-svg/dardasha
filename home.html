@@ -1,1181 +1,1373 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-  <title>lidercenter - الرئيسية</title>
-  <style>
-    /* ===== RESET & VARIABLES ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --bg: #f2f4f8;
-      --card: #ffffff;
-      --text: #0b0e14;
-      --text-muted: #5e6879;
-      --border: #e2e7ef;
-      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.10);
-      --radius-sm: 12px;
-      --radius-md: 18px;
-      --radius-lg: 24px;
-      --radius-xl: 28px;
-      --radius-full: 9999px;
-      --transition: 0.25s cubic-bezier(0.2, 0, 0, 1);
-      --font: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-    }
-
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding-top: 84px;
-      padding-bottom: 92px;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    ::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #c9d0db;
-      border-radius: 999px;
-    }
-
-    /* ===== TOPBAR ===== */
-    .topbar {
-      position: fixed;
-      top: 0;
-      inset-inline: 0;
-      height: 84px;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      gap: 12px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .brand-mark {
-      width: 44px;
-      height: 44px;
-      border-radius: var(--radius-sm);
-      background: #0b0e14;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      font-weight: 900;
-      flex-shrink: 0;
-      letter-spacing: -0.5px;
-      box-shadow: 0 4px 12px rgba(11, 14, 20, 0.15);
-    }
-
-    .brand-text h1 {
-      font-size: 1.1rem;
-      font-weight: 900;
-      letter-spacing: -0.3px;
-      line-height: 1.2;
-    }
-
-    .brand-text p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 160px;
-      font-weight: 500;
-    }
-
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .action-btn {
-      height: 42px;
-      min-width: 42px;
-      padding: 0 16px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--text);
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.82rem;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: var(--shadow-sm);
-      text-decoration: none;
-    }
-
-    .action-btn:hover {
-      transform: translateY(-1px);
-      border-color: #b8c2d0;
-      box-shadow: var(--shadow-md);
-    }
-
-    .action-btn:active {
-      transform: scale(0.97);
-    }
-
-    .admin-btn {
-      display: none;
-      background: #0b0e14;
-      color: #fff;
-      border-color: #0b0e14;
-    }
-    .admin-btn:hover {
-      background: #1e2530;
-      border-color: #1e2530;
-      color: #fff;
-    }
-
-    .user-pill {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 4px 12px 4px 4px;
-      border-radius: var(--radius-full);
-      border: 1px solid var(--border);
-      background: #fff;
-      box-shadow: var(--shadow-sm);
-      max-width: 200px;
-      min-width: 0;
-      transition: var(--transition);
-    }
-    .user-pill:hover {
-      box-shadow: var(--shadow-md);
-    }
-
-    .avatar {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: #0b0e14;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 0.8rem;
-      font-weight: 800;
-      overflow: hidden;
-    }
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .user-pill span {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100px;
-    }
-
-    /* ===== CONTAINER ===== */
-    .container {
-      width: min(1180px, 100%);
-      margin: 0 auto;
-      padding: 0 16px;
-    }
-
-    /* ===== HERO ===== */
-    .hero {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 24px 28px;
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 12px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -60%;
-      right: -10%;
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(11, 14, 20, 0.02) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .hero-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      flex-wrap: wrap;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero h2 {
-      font-size: 1.4rem;
-      font-weight: 900;
-      letter-spacing: -0.3px;
-      line-height: 1.4;
-      margin-bottom: 6px;
-    }
-
-    .hero p {
-      color: var(--text-muted);
-      line-height: 1.8;
-      font-size: 0.92rem;
-      max-width: 660px;
-    }
-
-    .hero-stats {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      flex-shrink: 0;
-    }
-
-    .stat {
-      min-width: 110px;
-      background: var(--bg);
-      border-radius: var(--radius-md);
-      padding: 12px 16px;
-      text-align: center;
-      transition: var(--transition);
-      border: 1px solid transparent;
-    }
-    .stat:hover {
-      border-color: var(--border);
-      background: #fff;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 1.2rem;
-      font-weight: 900;
-      letter-spacing: -0.2px;
-    }
-    .stat span {
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-
-    /* ===== SEARCH ===== */
-    .search-bar {
-      margin-top: 16px;
-      display: none;
-      gap: 10px;
-      position: relative;
-      z-index: 1;
-    }
-    .search-bar.show {
-      display: flex;
-    }
-
-    .search-bar input {
-      width: 100%;
-      padding: 14px 18px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--bg);
-      outline: none;
-      font-size: 0.95rem;
-      font-weight: 500;
-      transition: var(--transition);
-      color: var(--text);
-      font-family: inherit;
-    }
-    .search-bar input::placeholder {
-      color: var(--text-muted);
-      font-weight: 400;
-    }
-    .search-bar input:focus {
-      border-color: #0b0e14;
-      background: #fff;
-      box-shadow: 0 0 0 4px rgba(11, 14, 20, 0.06);
-    }
-
-    /* ===== QUICK LINKS ===== */
-    .quick-links {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding: 6px 0 12px;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-    }
-    .quick-links::-webkit-scrollbar {
-      display: none;
-    }
-
-    .chip {
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--text);
-      padding: 10px 20px;
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.82rem;
-      white-space: nowrap;
-      transition: var(--transition);
-      flex-shrink: 0;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: var(--shadow-sm);
-    }
-    .chip:hover {
-      background: #0b0e14;
-      color: #fff;
-      border-color: #0b0e14;
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-    .chip:active {
-      transform: scale(0.97);
-    }
-
-    /* ===== SECTIONS ===== */
-    .section {
-      display: none;
-      margin-top: 12px;
-    }
-    .section.active {
-      display: block;
-    }
-
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin: 14px 0 12px;
-    }
-    .section-title h3 {
-      font-size: 1.05rem;
-      font-weight: 900;
-      letter-spacing: -0.2px;
-    }
-    .section-title span {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      font-weight: 600;
-      background: var(--bg);
-      padding: 4px 14px;
-      border-radius: var(--radius-full);
-    }
-
-    /* ===== PRODUCT GRID ===== */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-      gap: 16px;
-    }
-
-    .product-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      display: flex;
-      flex-direction: column;
-      transition: var(--transition);
-      will-change: transform, box-shadow;
-    }
-    .product-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-      border-color: #d0d8e3;
-    }
-
-    .product-media {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      background: var(--bg);
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-    .product-media img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: var(--transition);
-    }
-    .product-card:hover .product-media img {
-      transform: scale(1.02);
-    }
-
-    .placeholder-img {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-
-    .product-body {
-      padding: 14px 16px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      flex: 1;
-    }
-
-    .product-name {
-      font-size: 0.92rem;
-      font-weight: 800;
-      line-height: 1.5;
-      text-decoration: none;
-      color: var(--text);
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .product-name:hover {
-      text-decoration: underline;
-    }
-
-    .meta {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      color: var(--text-muted);
-      font-size: 0.72rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.2px;
-    }
-
-    .price {
-      font-size: 1.05rem;
-      font-weight: 900;
-      color: var(--text);
-      letter-spacing: -0.2px;
-    }
-
-    .card-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 4px;
-    }
-
-    .mini-btn {
-      flex: 1;
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--text);
-      border-radius: var(--radius-sm);
-      padding: 10px 8px;
-      font-weight: 700;
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: var(--transition);
-      text-decoration: none;
-      text-align: center;
-    }
-    .mini-btn:hover {
-      background: #0b0e14;
-      color: #fff;
-      border-color: #0b0e14;
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-sm);
-    }
-    .mini-btn:active {
-      transform: scale(0.97);
-    }
-
-    /* ===== EMPTY & LOADING ===== */
-    .empty-state {
-      border: 1.5px dashed #d0d8e3;
-      background: #fafbfc;
-      border-radius: var(--radius-lg);
-      padding: 32px 20px;
-      text-align: center;
-      color: var(--text-muted);
-      font-weight: 500;
-      line-height: 2;
-    }
-
-    .loading-box {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      text-align: center;
-      color: var(--text-muted);
-      font-weight: 500;
-      box-shadow: var(--shadow-sm);
-    }
-
-    /* ===== BOTTOM NAV ===== */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      inset-inline: 0;
-      height: 84px;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 1000;
-      padding: 8px 6px 12px;
-      gap: 2px;
-    }
-
-    .nav-btn {
-      flex: 1;
-      max-width: 100px;
-      height: 58px;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      border-radius: var(--radius-sm);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      cursor: pointer;
-      transition: var(--transition);
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-decoration: none;
-      letter-spacing: 0.2px;
-      padding: 0 4px;
-    }
-    .nav-btn:hover {
-      background: rgba(11, 14, 20, 0.05);
-      color: var(--text);
-    }
-    .nav-btn.active {
-      background: #0b0e14;
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(11, 14, 20, 0.20);
-    }
-    .nav-btn.active:hover {
-      background: #1e2530;
-    }
-
-    .nav-btn svg {
-      width: 22px;
-      height: 22px;
-      stroke: currentColor;
-      stroke-width: 1.8;
-      fill: none;
-    }
-    .nav-btn.active svg {
-      stroke: #fff;
-    }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 600px) {
-      body {
-        padding-top: 76px;
-        padding-bottom: 80px;
-      }
-      .topbar {
-        height: 76px;
-        padding: 0 14px;
-      }
-      .brand-mark {
-        width: 38px;
-        height: 38px;
-        font-size: 1rem;
-      }
-      .brand-text h1 {
-        font-size: 0.95rem;
-      }
-      .brand-text p {
-        max-width: 100px;
-        font-size: 0.7rem;
-      }
-      .user-pill {
-        max-width: 130px;
-        padding: 3px 10px 3px 3px;
-      }
-      .user-pill span {
-        max-width: 60px;
-        font-size: 0.74rem;
-      }
-      .avatar {
-        width: 30px;
-        height: 30px;
-        font-size: 0.7rem;
-      }
-      .action-btn {
-        height: 38px;
-        min-width: 38px;
-        padding: 0 12px;
-        font-size: 0.72rem;
-      }
-      .hero {
-        padding: 18px 16px;
-        border-radius: var(--radius-lg);
-      }
-      .hero h2 {
-        font-size: 1.15rem;
-      }
-      .hero p {
-        font-size: 0.85rem;
-      }
-      .stat {
-        min-width: 80px;
-        padding: 10px 12px;
-      }
-      .stat strong {
-        font-size: 1rem;
-      }
-      .grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 12px;
-      }
-      .product-body {
-        padding: 12px 12px 14px;
-      }
-      .product-name {
-        font-size: 0.85rem;
-      }
-      .price {
-        font-size: 0.95rem;
-      }
-      .mini-btn {
-        font-size: 0.7rem;
-        padding: 8px 6px;
-      }
-      .bottom-nav {
-        height: 76px;
-        padding: 6px 4px 10px;
-      }
-      .nav-btn {
-        height: 52px;
-        font-size: 0.6rem;
-        max-width: 72px;
-      }
-      .nav-btn svg {
-        width: 20px;
-        height: 20px;
-      }
-    }
-
-    @media (max-width: 400px) {
-      .top-actions .action-btn:not(.user-pill) {
-        display: none;
-      }
-      .brand-text p {
-        max-width: 70px;
-      }
-      .grid {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      }
-    }
-
-    /* ===== DARK MODE (متوافق مع الصفحات الإدارية) ===== */
-    @media (prefers-color-scheme: dark) {
-      body {
-        background: #121316;
-      }
-
-      .topbar,
-      .bottom-nav {
-        background: rgba(28, 29, 34, 0.92);
-        border-color: #33373f;
-      }
-
-      .brand-mark {
-        background: #ececec;
-        color: #111;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      }
-
-      .brand-text h1,
-      .brand-text p,
-      .hero h2,
-      .section-title h3,
-      .product-name,
-      .price,
-      .stat strong,
-      .user-pill span,
-      .action-btn {
-        color: #ececec;
-      }
-
-      .brand-text p,
-      .hero p,
-      .stat span,
-      .meta,
-      .section-title span,
-      .empty-state,
-      .loading-box,
-      .placeholder-img {
-        color: #8a8f9e;
-      }
-
-      .hero,
-      .product-card,
-      .stat,
-      .chip,
-      .loading-box,
-      .empty-state,
-      .user-pill,
-      .action-btn {
-        background: #1c1d22;
-        border-color: #33373f;
-      }
-
-      .hero::before {
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
-      }
-
-      .stat:hover,
-      .product-card:hover {
-        border-color: #4a4f5a;
-      }
-
-      .chip:hover {
-        background: #ececec;
-        color: #111;
-        border-color: #ececec;
-      }
-
-      .action-btn:hover {
-        border-color: #6a6f7a;
-        background: #2a2d34;
-      }
-
-      .admin-btn {
-        background: #ececec;
-        color: #111;
-        border-color: #ececec;
-      }
-      .admin-btn:hover {
-        background: #fff;
-        border-color: #fff;
-      }
-
-      .nav-btn:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: #ececec;
-      }
-      .nav-btn.active {
-        background: #ececec;
-        color: #111;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-      }
-      .nav-btn.active svg {
-        stroke: #111;
-      }
-
-      .mini-btn {
-        background: #26282e;
-        border-color: #3a3d45;
-        color: #ececec;
-      }
-      .mini-btn:hover {
-        background: #ececec;
-        color: #111;
-        border-color: #ececec;
-      }
-
-      .search-bar input {
-        background: #26282e;
-        border-color: #3a3d45;
-        color: #ececec;
-      }
-      .search-bar input:focus {
-        background: #2c2f36;
-        border-color: #8a8f9e;
-        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.06);
-      }
-      .search-bar input::placeholder {
-        color: #6e7482;
-      }
-
-      .empty-state {
-        border-color: #33373f;
-        background: #1e2026;
-      }
-
-      .user-pill {
-        background: #1c1d22;
-        border-color: #33373f;
-      }
-      .user-pill:hover {
-        box-shadow: var(--shadow-md);
-      }
-
-      .avatar {
-        background: #33373f;
-        color: #ececec;
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background: #4a4f5a;
-      }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>lidercenter - الرئيسية</title>
+    <style>
+        /* ===== RESET & VARIABLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #f4f7f5;
+            --card: #ffffff;
+            --text: #1a2822;
+            --text-muted: #5b6f62;
+            --border: #dce6df;
+            --border-light: rgba(60, 85, 75, 0.12);
+            --primary: #2d5a4b;
+            --primary-dark: #1e4034;
+            --primary-light: #3f735f;
+            --accent: #c8792e;
+            --shadow-sm: 0 2px 8px rgba(45, 90, 75, 0.04);
+            --shadow-md: 0 8px 30px rgba(45, 90, 75, 0.06);
+            --shadow-lg: 0 20px 50px rgba(45, 90, 75, 0.08);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 40px;
+            --radius-full: 9999px;
+            --transition: 0.25s cubic-bezier(0.2, 0, 0, 1);
+            --font: -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-top: 76px;
+            padding-bottom: 20px;
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd8cf;
+            border-radius: var(--radius-full);
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: #ffffff;
+        }
+
+        /* ===== TOP BAR ===== */
+        .topbar {
+            position: fixed;
+            top: 0;
+            inset-inline: 0;
+            height: 72px;
+            background: rgba(255, 255, 255, 0.92);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-light);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            gap: 12px;
+        }
+
+        .topbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text);
+            flex-shrink: 0;
+        }
+
+        .topbar .brand .logo-mark {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #f4f7f5;
+            letter-spacing: -0.5px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(45, 90, 75, 0.15);
+        }
+
+        .topbar .brand span {
+            font-size: 1.15rem;
+            font-weight: 650;
+            color: var(--text);
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .topbar-btn {
+            height: 42px;
+            min-width: 42px;
+            padding: 0 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-light);
+            background: var(--card);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: var(--shadow-sm);
+            font-family: var(--font);
+            text-decoration: none;
+            position: relative;
+        }
+
+        .topbar-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+            color: var(--primary);
+            background: #f4faf7;
+        }
+
+        .topbar-btn:active {
+            transform: scale(0.96);
+        }
+
+        .topbar-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            display: block;
+        }
+
+        .topbar-btn .btn-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .topbar-btn .badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            padding: 0 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            min-width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--card);
+            line-height: 1;
+        }
+
+        .topbar-btn.icon-btn {
+            min-width: 42px;
+            padding: 0 10px;
+        }
+
+        .topbar-btn.dashboard-btn {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            display: none;
+        }
+
+        .topbar-btn.dashboard-btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary-light);
+            color: #fff;
+        }
+
+        .topbar-btn.dashboard-btn svg {
+            stroke: #fff;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1100;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .sidebar-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: var(--sidebar-width);
+            height: 100%;
+            background: var(--card);
+            border-left: 1px solid var(--border-light);
+            box-shadow: var(--shadow-lg);
+            z-index: 1200;
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.2, 0, 0, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 20px 30px;
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .sidebar-header .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .sidebar-header .brand .logo-mark {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #f4f7f5;
+        }
+
+        .sidebar-header .brand span {
+            font-size: 1rem;
+            font-weight: 650;
+        }
+
+        .sidebar-close {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: var(--transition);
+            padding: 6px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-close:hover {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .sidebar-close svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            stroke-width: 2;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .sidebar-nav a:hover {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .sidebar-nav a.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(45, 90, 75, 0.2);
+        }
+
+        .sidebar-nav a .icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .sidebar-nav a.active .icon {
+            stroke: #fff;
+        }
+
+        .sidebar-nav a .badge {
+            margin-right: auto;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            padding: 0 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            min-width: 22px;
+            height: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-nav .divider {
+            height: 1px;
+            background: var(--border-light);
+            margin: 8px 12px;
+        }
+
+        .sidebar-nav .admin-section {
+            display: none;
+        }
+
+        .sidebar-nav .admin-section.show {
+            display: block;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            width: min(1100px, 100%);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== HERO CARD ===== */
+        .hero-card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 32px 40px 28px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            right: -10%;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(45, 90, 75, 0.03) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-card::after {
+            content: '';
+            position: absolute;
+            bottom: -40%;
+            left: -10%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(200, 121, 46, 0.03) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 2.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .hero-title .highlight {
+            color: var(--accent);
+        }
+
+        .hero-desc {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.9;
+            max-width: 520px;
+            margin: 6px auto 0;
+            font-weight: 400;
+        }
+
+        /* ===== SEARCH ===== */
+        .search-wrap {
+            margin-top: 18px;
+            display: none;
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .search-wrap.show {
+            display: block;
+        }
+
+        .search-wrap input {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-full);
+            background: var(--bg);
+            outline: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: var(--transition);
+            color: var(--text);
+            font-family: var(--font);
+            text-align: right;
+        }
+
+        .search-wrap input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .search-wrap input:focus {
+            border-color: var(--primary);
+            background: var(--card);
+            box-shadow: 0 0 0 4px rgba(45, 90, 75, 0.08);
+        }
+
+        /* ===== QUICK LINKS ===== */
+        .quick-links {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 4px 0 16px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .quick-links::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip {
+            border: 1px solid var(--border-light);
+            background: var(--card);
+            color: var(--text);
+            padding: 10px 22px;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.82rem;
+            white-space: nowrap;
+            transition: var(--transition);
+            flex-shrink: 0;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+            font-family: var(--font);
+        }
+
+        .chip:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .chip:active {
+            transform: scale(0.97);
+        }
+
+        /* ===== PRODUCTS ===== */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin: 8px 0 16px;
+        }
+
+        .section-header h3 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            color: var(--text);
+        }
+
+        .section-header .badge {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 600;
+            background: var(--bg);
+            padding: 4px 16px;
+            border-radius: var(--radius-full);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: var(--card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            will-change: transform, box-shadow;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: #b8ccc0;
+        }
+
+        .product-media {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: var(--bg);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .product-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .product-media img {
+            transform: scale(1.03);
+        }
+
+        .placeholder-img {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .product-body {
+            padding: 16px 18px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .product-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            line-height: 1.5;
+            text-decoration: none;
+            color: var(--text);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-name:hover {
+            color: var(--primary);
+        }
+
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .price {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.2px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .mini-btn {
+            flex: 1;
+            border: 1px solid var(--border-light);
+            background: var(--card);
+            color: var(--text);
+            border-radius: var(--radius-sm);
+            padding: 10px 8px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            text-align: center;
+            font-family: var(--font);
+        }
+
+        .mini-btn:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .mini-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* ===== EMPTY & LOADING ===== */
+        .empty-state {
+            border: 2px dashed #dce6df;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: var(--radius-lg);
+            padding: 48px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-weight: 500;
+            line-height: 2;
+        }
+
+        .loading-box {
+            background: var(--card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            text-align: center;
+            color: var(--text-muted);
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        .loading-box .spinner {
+            width: 28px;
+            height: 28px;
+            border: 3px solid var(--border-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 64px;
+            }
+
+            .topbar {
+                height: 64px;
+                padding: 0 16px;
+            }
+
+            .topbar .brand span {
+                font-size: 1rem;
+            }
+
+            .topbar-btn .btn-label {
+                display: none;
+            }
+
+            .topbar-btn {
+                min-width: 38px;
+                height: 38px;
+                padding: 0 8px;
+            }
+
+            .topbar-btn svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .hero-card {
+                padding: 24px 20px 20px;
+                border-radius: var(--radius-md);
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .hero-desc {
+                font-size: 0.9rem;
+            }
+
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 14px;
+            }
+
+            .product-body {
+                padding: 12px 14px 14px;
+            }
+            .product-name {
+                font-size: 0.85rem;
+            }
+            .price {
+                font-size: 1rem;
+            }
+            .mini-btn {
+                font-size: 0.7rem;
+                padding: 8px 6px;
+            }
+
+            .sidebar {
+                width: 260px;
+                padding: 20px 16px 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 1.5rem;
+            }
+            .hero-card {
+                padding: 18px 14px 16px;
+            }
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+                gap: 10px;
+            }
+            .topbar .brand span {
+                font-size: 0.85rem;
+            }
+            .topbar .brand .logo-mark {
+                width: 34px;
+                height: 34px;
+                font-size: 0.9rem;
+            }
+            .sidebar {
+                width: 240px;
+                padding: 16px 12px 20px;
+            }
+            .sidebar-nav a {
+                font-size: 0.85rem;
+                padding: 10px 12px;
+            }
+            .search-wrap input {
+                padding: 12px 16px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* ===== DARK MODE ===== */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #141c17;
+                --card: #1d2822;
+                --text: #e8ede8;
+                --text-muted: #8ba094;
+                --border: #2a3d33;
+                --border-light: rgba(60, 85, 75, 0.25);
+                --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+                --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.4);
+                --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.5);
+            }
+
+            .topbar {
+                background: rgba(29, 40, 34, 0.92);
+                border-color: var(--border-light);
+            }
+
+            .sidebar {
+                background: #1d2822;
+                border-color: var(--border-light);
+            }
+
+            .sidebar-header {
+                border-color: var(--border-light);
+            }
+
+            .sidebar-footer {
+                border-color: var(--border-light);
+            }
+
+            .sidebar-nav a:hover {
+                background: #25352e;
+            }
+
+            .sidebar-nav a.active {
+                background: var(--primary);
+                color: #fff;
+            }
+
+            .product-card {
+                background: #1d2822;
+                border-color: var(--border-light);
+            }
+            .product-card:hover {
+                border-color: #3a5548;
+            }
+
+            .chip {
+                background: #1d2822;
+                border-color: var(--border-light);
+            }
+            .chip:hover {
+                background: var(--primary);
+                border-color: var(--primary);
+                color: #fff;
+            }
+
+            .mini-btn {
+                background: #1d2822;
+                border-color: var(--border-light);
+                color: var(--text);
+            }
+            .mini-btn:hover {
+                background: var(--primary);
+                border-color: var(--primary);
+                color: #fff;
+            }
+
+            .search-wrap input {
+                background: #141c17;
+                border-color: #2a3d33;
+                color: var(--text);
+            }
+            .search-wrap input:focus {
+                background: #1d2822;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 4px rgba(45, 90, 75, 0.15);
+            }
+
+            .empty-state {
+                border-color: #2a3d33;
+                background: #141c17;
+            }
+
+            .loading-box {
+                background: #1d2822;
+                border-color: #2a3d33;
+                color: #8ba094;
+            }
+
+            .topbar-btn {
+                background: #1d2822;
+                border-color: var(--border-light);
+                color: var(--text-muted);
+            }
+            .topbar-btn:hover {
+                background: var(--primary);
+                border-color: var(--primary);
+                color: #fff;
+            }
+
+            .topbar-btn.dashboard-btn {
+                background: var(--primary);
+                border-color: var(--primary);
+                color: #fff;
+            }
+            .topbar-btn.dashboard-btn:hover {
+                background: var(--primary-light);
+                border-color: var(--primary-light);
+            }
+
+            .sidebar-close:hover {
+                background: #25352e;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #2a3d33;
+            }
+
+            .topbar-btn .badge {
+                border-color: #1d2822;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- ═══ TOPBAR ═══ -->
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">L</div>
-      <div class="brand-text">
-        <h1>lidercenter</h1>
-        <p id="headerSubtitle">المتجر</p>
-      </div>
-    </div>
-
-    <div class="top-actions">
-      <button class="action-btn" id="searchBtn" type="button">بحث</button>
-      <a class="action-btn admin-btn" id="dashboardBtn" href="dashboard.html">لوحة</a>
-      <button class="action-btn" id="logoutBtn" type="button">خروج</button>
-      <div class="user-pill">
-        <div class="avatar" id="topAvatar">U</div>
-        <span id="topUserName">...</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- ═══ MAIN ═══ -->
-  <main class="container">
-
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-top">
-        <div>
-          <h2 id="welcomeText">أهلاً بك</h2>
-          <p id="welcomeSubText">كل البيانات هنا تُسحب مباشرة من Firebase، بدون أي بيانات افتراضية أو منتجات وهمية.</p>
+    <!-- ═══ TOP BAR ═══ -->
+    <header class="topbar">
+        <div class="brand">
+            <div class="logo-mark">L</div>
+            <span>lidercenter</span>
         </div>
-        <div class="hero-stats">
-          <div class="stat">
-            <strong id="productsStat">0</strong>
-            <span>المنتجات</span>
-          </div>
-          <div class="stat">
-            <strong id="favoritesStat">0</strong>
-            <span>المفضلة</span>
-          </div>
-          <div class="stat">
-            <strong id="cartStat">0</strong>
-            <span>في السلة</span>
-          </div>
+
+        <div class="topbar-actions">
+            <button class="topbar-btn" id="searchToggle" aria-label="بحث">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+                <span class="btn-label">بحث</span>
+            </button>
+            <a href="cart.html" class="topbar-btn" aria-label="السلة">
+                <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1" fill="currentColor"/><circle cx="20" cy="21" r="1" fill="currentColor"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+                <span class="btn-label">السلة</span>
+                <span class="badge" id="cartBadge">0</span>
+            </a>
+            <a href="dashboard.html" class="topbar-btn dashboard-btn" id="dashboardBtn">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                <span class="btn-label">لوحة التحكم</span>
+            </a>
+            <button class="topbar-btn icon-btn" id="menuToggle" aria-label="القائمة">
+                <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
         </div>
-      </div>
+    </header>
 
-      <div class="search-bar" id="searchBar">
-        <input id="searchInput" type="search" placeholder="ابحث عن منتج…" />
-      </div>
-    </section>
+    <!-- ═══ SIDEBAR OVERLAY ═══ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- QUICK LINKS -->
-    <div class="quick-links">
-      <a class="chip" href="products.html">جميع المنتجات</a>
-      <a class="chip" href="categories.html">التصنيفات</a>
-      <a class="chip" href="favorites.html">المفضلة</a>
-      <a class="chip" href="cart.html">السلة</a>
-      <a class="chip" href="profile.html">الحساب</a>
-    </div>
+    <!-- ═══ SIDEBAR ═══ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="brand">
+                <div class="logo-mark">L</div>
+                <span>lidercenter</span>
+            </div>
+            <button class="sidebar-close" id="sidebarClose" aria-label="إغلاق القائمة">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
 
-    <!-- PRODUCTS SECTION -->
-    <section class="section active" id="homeSection">
-      <div class="section-title">
-        <h3>المنتجات</h3>
-        <span id="productsCount">0</span>
-      </div>
-      <div id="productsGrid" class="grid"></div>
-      <div id="productsEmpty" class="empty-state" style="display:none;">لا توجد منتجات حالياً داخل Firebase.</div>
-      <div id="loadingBox" class="loading-box">جاري تحميل البيانات من Firebase…</div>
-    </section>
+        <nav class="sidebar-nav">
+            <a href="home.html" class="active">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>
+                الرئيسية
+            </a>
+            <a href="products.html">
+                <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+                جميع المنتجات
+                <span class="badge" id="sidebarProductsCount">0</span>
+            </a>
+            <a href="categories.html">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M7 7h10v10M7 17L17 7"/><circle cx="7" cy="7" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+                التصنيفات
+            </a>
+            <a href="favorites.html">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                المفضلة
+                <span class="badge" id="sidebarFavoritesCount">0</span>
+            </a>
+            <a href="cart.html">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1" fill="currentColor"/><circle cx="20" cy="21" r="1" fill="currentColor"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+                السلة
+                <span class="badge" id="sidebarCartCount">0</span>
+            </a>
+            <a href="profile.html">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                الحساب
+            </a>
+            <a href="orders.html">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M6 3L3 6l3 3M18 3l3 3-3 3M3 18l3 3 3-3M18 18l3 3-3-3"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+                الطلبات
+            </a>
+            <a href="settings.html">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+                الإعدادات
+            </a>
 
-  </main>
+            <div class="divider"></div>
 
-  <!-- ═══ BOTTOM NAV ═══ -->
-  <nav class="bottom-nav">
-    <a class="nav-btn active" href="home.html">
-      <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>
-      الرئيسية
-    </a>
-    <a class="nav-btn" href="products.html">
-      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
-      المنتجات
-    </a>
-    <a class="nav-btn" href="favorites.html">
-      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-      المفضلة
-    </a>
-    <a class="nav-btn" href="cart.html">
-      <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
-      السلة
-    </a>
-    <a class="nav-btn" href="profile.html">
-      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      الحساب
-    </a>
-  </nav>
+            <!-- Admin section - shown only when admin is logged in -->
+            <div class="admin-section" id="adminSidebarSection">
+                <a href="dashboard.html" style="background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(45,90,75,0.2);">
+                    <svg class="icon" viewBox="0 0 24 24" stroke="#fff"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    لوحة التحكم
+                </a>
+                <a href="#" id="logoutSidebarBtn" style="color: #c0392b;">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    تسجيل الخروج
+                </a>
+            </div>
+        </nav>
 
-  <!-- ═══ FIREBASE ═══ -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-    import {
-      getAuth,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-    import {
-      getDatabase,
-      ref,
-      onValue
-    } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+        <div class="sidebar-footer">
+            &copy; 2026 lidercenter — جميع الحقوق محفوظة
+        </div>
+    </aside>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDcj-R4XEXmLUl7hW38r58paTVHxq2GKVI",
-      authDomain: "test-bfcd3.firebaseapp.com",
-      projectId: "test-bfcd3",
-      storageBucket: "test-bfcd3.firebasestorage.app",
-      messagingSenderId: "178734209574",
-      appId: "1:178734209574:web:a54fbfb0118ac2325b64e7",
-      measurementId: "G-9TVW2LDH08"
-    };
+    <!-- ═══ MAIN CONTENT ═══ -->
+    <main class="container">
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
+        <!-- HERO -->
+        <section class="hero-card">
+            <div class="hero-inner">
+                <h1 class="hero-title">
+                    <span class="highlight">lidercenter</span>
+                </h1>
+                <p class="hero-desc">
+                    منصتك المتكاملة لإدارة المنتجات ومتابعة المتجر بكل يسر وسلاسة.
+                </p>
 
-    // ── DOM refs ──
-    const productsGrid = document.getElementById('productsGrid');
-    const productsEmpty = document.getElementById('productsEmpty');
-    const productsCount = document.getElementById('productsCount');
-    const productsStat = document.getElementById('productsStat');
-    const favoritesStat = document.getElementById('favoritesStat');
-    const cartStat = document.getElementById('cartStat');
-    const loadingBox = document.getElementById('loadingBox');
+                <div class="search-wrap" id="searchWrap">
+                    <input id="searchInput" type="search" placeholder="ابحث عن منتج…" />
+                </div>
+            </div>
+        </section>
 
-    const topAvatar = document.getElementById('topAvatar');
-    const topUserName = document.getElementById('topUserName');
-    const welcomeText = document.getElementById('welcomeText');
-    const welcomeSubText = document.getElementById('welcomeSubText');
-    const headerSubtitle = document.getElementById('headerSubtitle');
-    const searchBtn = document.getElementById('searchBtn');
-    const searchBar = document.getElementById('searchBar');
-    const searchInput = document.getElementById('searchInput');
-    const dashboardBtn = document.getElementById('dashboardBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
+        <!-- QUICK LINKS -->
+        <div class="quick-links">
+            <a class="chip" href="products.html">جميع المنتجات</a>
+            <a class="chip" href="categories.html">التصنيفات</a>
+            <a class="chip" href="favorites.html">المفضلة</a>
+            <a class="chip" href="cart.html">السلة</a>
+            <a class="chip" href="profile.html">الحساب</a>
+        </div>
 
-    // ── State ──
-    let currentUser = null;
-    let allProducts = [];
-    let favoritesMap = {};
-    let cartMap = {};
-    let searchTerm = '';
+        <!-- PRODUCTS SECTION -->
+        <section>
+            <div class="section-header">
+                <h3>المنتجات</h3>
+                <span class="badge" id="productsCount">0</span>
+            </div>
+            <div id="productsGrid" class="grid"></div>
+            <div id="productsEmpty" class="empty-state" style="display:none;">لا توجد منتجات حالياً.</div>
+            <div id="loadingBox" class="loading-box">
+                <span class="spinner"></span>
+                تحميل المنتجات...
+            </div>
+        </section>
 
-    // ── Helpers ──
-    function escapeHtml(str = '') {
-      return String(str)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-    }
+    </main>
 
-    function formatPrice(value) {
-      if (value === undefined || value === null || value === '') return '';
-      const num = Number(value);
-      if (Number.isNaN(num)) return String(value);
-      return num.toLocaleString('en-US');
-    }
-
-    function userNameValue(user) {
-      return user?.displayName || user?.email?.split('@')?.[0] || 'مستخدم';
-    }
-
-    function userInitial(user) {
-      const n = userNameValue(user);
-      return n.trim().charAt(0).toUpperCase() || 'U';
-    }
-
-    function setAvatar(el, user) {
-      const photo = user?.photoURL || '';
-      if (photo) {
-        el.innerHTML = `<img src="${escapeHtml(photo)}" alt="avatar">`;
-      } else {
-        el.textContent = userInitial(user);
-      }
-    }
-
-    function normalizeProduct(raw, key) {
-      const p = raw || {};
-      return {
-        id: String(p.id || key || p.productId || ''),
-        name: p.name || p.title || p.productName || '',
-        price: p.price ?? p.salePrice ?? p.amount ?? '',
-        image: p.image || p.imageUrl || p.img || p.photo || '',
-        category: p.category || p.type || p.group || '',
-        description: p.description || p.desc || '',
-        stock: p.stock ?? p.quantity ?? '',
-        raw: p
-      };
-    }
-
-    function filteredProducts() {
-      return allProducts.filter(p => {
-        const text = `${p.name} ${p.category} ${p.description}`.toLowerCase();
-        return !searchTerm || text.includes(searchTerm.toLowerCase());
-      });
-    }
-
-    function renderProductCard(product) {
-      const id = escapeHtml(product.id);
-      const name = escapeHtml(product.name || 'بدون اسم');
-      const image = product.image || '';
-      const price = formatPrice(product.price);
-
-      return `
-        <article class="product-card">
-          <a class="product-media" href="product.html?id=${encodeURIComponent(product.id)}">
-            ${image
-              ? `<img src="${escapeHtml(image)}" alt="${name}" loading="lazy">`
-              : `<span class="placeholder-img">لا توجد صورة</span>`
+    <!-- ═══ FIREBASE ═══ -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js",
+                "firebase/database": "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js"
             }
-          </a>
-          <div class="product-body">
-            <a class="product-name" href="product.html?id=${encodeURIComponent(product.id)}">${name}</a>
-            <div class="meta">
-              <span>${escapeHtml(product.category || 'بدون تصنيف')}</span>
-              <span>${product.stock !== '' && product.stock !== null && product.stock !== undefined ? `المخزون: ${escapeHtml(product.stock)}` : ''}</span>
-            </div>
-            <div class="price">${price ? price : '—'}</div>
-            <div class="card-actions">
-              <a class="mini-btn" href="product.html?id=${encodeURIComponent(product.id)}">عرض</a>
-              <a class="mini-btn" href="cart.html">إلى السلة</a>
-            </div>
-          </div>
-        </article>
-      `;
-    }
+        }
+    </script>
 
-    function refreshUI() {
-      const visible = filteredProducts();
-      productsCount.textContent = String(visible.length);
-      productsStat.textContent = String(allProducts.length);
-      favoritesStat.textContent = String(Object.keys(favoritesMap).length);
-      cartStat.textContent = String(Object.keys(cartMap).length);
+    <script type="module">
+        import { initializeApp } from "firebase/app";
+        import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+        import { getDatabase, ref, onValue } from "firebase/database";
 
-      if (!visible.length) {
-        productsGrid.innerHTML = '';
-        productsEmpty.style.display = 'block';
-      } else {
-        productsEmpty.style.display = 'none';
-        productsGrid.innerHTML = visible.map(renderProductCard).join('');
-      }
-    }
+        // ── Firebase Config ──
+        const firebaseConfig = {
+            apiKey: "AIzaSyDcj-R4XEXmLUl7hW38r58paTVHxq2GKVI",
+            authDomain: "test-bfcd3.firebaseapp.com",
+            projectId: "test-bfcd3",
+            storageBucket: "test-bfcd3.firebasestorage.app",
+            messagingSenderId: "178734209574",
+            appId: "1:178734209574:web:a54fbfb0118ac2325b64e7",
+            measurementId: "G-9TVW2LDH08",
+            databaseURL: "https://test-bfcd3-default-rtdb.firebaseio.com"
+        };
 
-    // ── Auth ──
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = 'login.html';
-        return;
-      }
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
 
-      currentUser = user;
-      const name = userNameValue(user);
-      setAvatar(topAvatar, user);
-      topUserName.textContent = name;
-      welcomeText.textContent = `أهلاً ${name}`;
-      welcomeSubText.textContent = 'كل البيانات هنا تُسحب مباشرة من Firebase، بدون أي بيانات افتراضية أو منتجات وهمية.';
-      headerSubtitle.textContent = user.email || 'المتجر';
+        // ── DOM refs ──
+        const productsGrid = document.getElementById('productsGrid');
+        const productsEmpty = document.getElementById('productsEmpty');
+        const productsCount = document.getElementById('productsCount');
+        const loadingBox = document.getElementById('loadingBox');
 
-      if (user.email === 'ashlhl.iq@gmail.com') {
-        dashboardBtn.style.display = 'inline-flex';
-      } else {
-        dashboardBtn.style.display = 'none';
-      }
+        const sidebarProductsCount = document.getElementById('sidebarProductsCount');
+        const sidebarFavoritesCount = document.getElementById('sidebarFavoritesCount');
+        const sidebarCartCount = document.getElementById('sidebarCartCount');
+        const cartBadge = document.getElementById('cartBadge');
 
-      // ── Products ──
-      onValue(ref(db, 'products'), (snap) => {
-        const val = snap.val() || {};
-        allProducts = Object.entries(val)
-          .map(([key, raw]) => normalizeProduct(raw, key))
-          .filter(p => p.id && (p.name || p.image || p.price !== undefined || p.category));
+        const searchToggle = document.getElementById('searchToggle');
+        const searchWrap = document.getElementById('searchWrap');
+        const searchInput = document.getElementById('searchInput');
 
-        loadingBox.style.display = 'none';
-        refreshUI();
-      });
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const sidebarClose = document.getElementById('sidebarClose');
 
-      // ── Favorites ──
-      onValue(ref(db, `favorites/${user.uid}`), (snap) => {
-        favoritesMap = snap.val() || {};
-        refreshUI();
-      });
+        const dashboardBtn = document.getElementById('dashboardBtn');
+        const adminSidebarSection = document.getElementById('adminSidebarSection');
+        const logoutSidebarBtn = document.getElementById('logoutSidebarBtn');
 
-      // ── Cart ──
-      onValue(ref(db, `cart/${user.uid}`), (snap) => {
-        cartMap = snap.val() || {};
-        refreshUI();
-      });
-    });
+        // ── State ──
+        let allProducts = [];
+        let favoritesMap = {};
+        let cartMap = {};
+        let searchTerm = '';
+        let currentUser = null;
 
-    // ── Events ──
-    searchBtn.addEventListener('click', () => {
-      searchBar.classList.toggle('show');
-      if (searchBar.classList.contains('show')) {
-        searchInput.focus();
-      }
-    });
+        // ── Helpers ──
+        function escapeHtml(str = '') {
+            return String(str)
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
+        }
 
-    searchInput.addEventListener('input', () => {
-      searchTerm = searchInput.value.trim();
-      refreshUI();
-    });
+        function formatPrice(value) {
+            if (value === undefined || value === null || value === '') return '';
+            const num = Number(value);
+            if (Number.isNaN(num)) return String(value);
+            return num.toLocaleString('en-US');
+        }
 
-    logoutBtn.addEventListener('click', async () => {
-      await signOut(auth);
-      window.location.href = 'login.html';
-    });
-  </script>
+        function normalizeProduct(raw, key) {
+            const p = raw || {};
+            return {
+                id: String(p.id || key || p.productId || ''),
+                name: p.name || p.title || p.productName || '',
+                price: p.price ?? p.salePrice ?? p.amount ?? '',
+                image: p.image || p.imageUrl || p.img || p.photo || '',
+                category: p.category || p.type || p.group || '',
+                description: p.description || p.desc || '',
+                stock: p.stock ?? p.quantity ?? '',
+                raw: p
+            };
+        }
+
+        function filteredProducts() {
+            return allProducts.filter(p => {
+                const text = `${p.name} ${p.category} ${p.description}`.toLowerCase();
+                return !searchTerm || text.includes(searchTerm.toLowerCase());
+            });
+        }
+
+        function renderProductCard(product) {
+            const id = escapeHtml(product.id);
+            const name = escapeHtml(product.name || 'بدون اسم');
+            const image = product.image || '';
+            const price = formatPrice(product.price);
+
+            return `
+                <article class="product-card">
+                    <a class="product-media" href="product.html?id=${encodeURIComponent(product.id)}">
+                        ${image
+                            ? `<img src="${escapeHtml(image)}" alt="${name}" loading="lazy">`
+                            : `<span class="placeholder-img">لا توجد صورة</span>`
+                        }
+                    </a>
+                    <div class="product-body">
+                        <a class="product-name" href="product.html?id=${encodeURIComponent(product.id)}">${name}</a>
+                        <div class="meta">
+                            <span>${escapeHtml(product.category || 'بدون تصنيف')}</span>
+                            <span>${product.stock !== '' && product.stock !== null && product.stock !== undefined ? `المخزون: ${escapeHtml(product.stock)}` : ''}</span>
+                        </div>
+                        <div class="price">${price ? price : '—'}</div>
+                        <div class="card-actions">
+                            <a class="mini-btn" href="product.html?id=${encodeURIComponent(product.id)}">عرض</a>
+                            <a class="mini-btn" href="cart.html">إلى السلة</a>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function refreshUI() {
+            const visible = filteredProducts();
+            const total = allProducts.length;
+            const favCount = Object.keys(favoritesMap).length;
+            const cartCount = Object.keys(cartMap).length;
+
+            productsCount.textContent = String(visible.length);
+
+            sidebarProductsCount.textContent = String(total);
+            sidebarFavoritesCount.textContent = String(favCount);
+            sidebarCartCount.textContent = String(cartCount);
+            cartBadge.textContent = String(cartCount);
+
+            if (!visible.length) {
+                productsGrid.innerHTML = '';
+                productsEmpty.style.display = 'block';
+            } else {
+                productsEmpty.style.display = 'none';
+                productsGrid.innerHTML = visible.map(renderProductCard).join('');
+            }
+        }
+
+        // ── Auth state ──
+        function updateAdminUI(user) {
+            const isAdmin = user && user.email === 'ashlhl.iq@gmail.com';
+
+            // Show/hide dashboard button in top bar
+            if (isAdmin) {
+                dashboardBtn.style.display = 'inline-flex';
+                adminSidebarSection.classList.add('show');
+            } else {
+                dashboardBtn.style.display = 'none';
+                adminSidebarSection.classList.remove('show');
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            updateAdminUI(user);
+            console.log('🔐 حالة المصادقة:', user ? user.email : 'غير مسجل');
+        });
+
+        // ── Load products from Firebase ──
+        const productsRef = ref(db, 'products');
+        onValue(productsRef, (snap) => {
+            const val = snap.val() || {};
+            allProducts = Object.entries(val)
+                .map(([key, raw]) => normalizeProduct(raw, key))
+                .filter(p => p.id && (p.name || p.image || p.price !== undefined || p.category));
+
+            loadingBox.style.display = 'none';
+            refreshUI();
+        }, (error) => {
+            console.error('خطأ في تحميل المنتجات:', error);
+            loadingBox.innerHTML = '⚠️ فشل تحميل المنتجات. يرجى المحاولة لاحقاً.';
+        });
+
+        // ── Favorites (demo path) ──
+        onValue(ref(db, 'favorites/demo'), (snap) => {
+            favoritesMap = snap.val() || {};
+            refreshUI();
+        });
+
+        // ── Cart (demo path) ──
+        onValue(ref(db, 'cart/demo'), (snap) => {
+            cartMap = snap.val() || {};
+            refreshUI();
+        });
+
+        // ── Events ──
+        searchToggle.addEventListener('click', () => {
+            searchWrap.classList.toggle('show');
+            if (searchWrap.classList.contains('show')) {
+                searchInput.focus();
+            }
+        });
+
+        searchInput.addEventListener('input', () => {
+            searchTerm = searchInput.value.trim();
+            refreshUI();
+        });
+
+        // Sidebar
+        function openSidebar() {
+            sidebar.classList.add('open');
+            sidebarOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        menuToggle.addEventListener('click', openSidebar);
+        sidebarClose.addEventListener('click', closeSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeSidebar();
+        });
+
+        // ── Logout ──
+        logoutSidebarBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('خطأ في تسجيل الخروج:', error);
+            }
+        });
+
+        console.log('🔥 lidercenter — الرئيسية (مع تحقق المدير)');
+    </script>
+
 </body>
 </html>
