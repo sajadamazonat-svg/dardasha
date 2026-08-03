@@ -1,0 +1,234 @@
+/* Reset */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+
+/* Body */
+
+body {
+
+    font-family: "Arial", sans-serif;
+    min-height: 100vh;
+    overflow: hidden;
+
+}
+
+
+
+/* Splash Screen */
+
+.splash-screen {
+
+    width: 100%;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(
+        135deg,
+        #f5f7fa,
+        #c3cfe2
+    );
+
+}
+
+
+
+/* Content */
+
+.splash-content {
+
+    text-align: center;
+
+    animation: fadeIn 1.2s ease;
+
+}
+
+
+
+/* Logo */
+
+.logo-box {
+
+    width: 120px;
+    height: 120px;
+
+    margin: auto;
+    margin-bottom: 25px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 30px;
+
+    background: white;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,0.12);
+
+    overflow: hidden;
+
+}
+
+
+
+.logo-box img {
+
+    width: 75%;
+    height: 75%;
+
+    object-fit: contain;
+
+}
+
+
+
+/* Store Name */
+
+.store-name {
+
+    font-size: 34px;
+
+    color: #222;
+
+    margin-bottom: 12px;
+
+    font-weight: 700;
+
+}
+
+
+
+/* Description */
+
+.store-description {
+
+    font-size: 16px;
+
+    color: #555;
+
+    margin-bottom: 35px;
+
+}
+
+
+
+/* Loading */
+
+.loader {
+
+    width: 45px;
+    height: 45px;
+
+    margin: auto;
+
+    border-radius: 50%;
+
+    border: 4px solid rgba(0,0,0,0.15);
+
+    border-top-color: #2563eb;
+
+    animation: rotate 1s linear infinite;
+
+}
+
+
+
+/* Animations */
+
+
+@keyframes rotate {
+
+    from {
+
+        transform: rotate(0deg);
+
+    }
+
+    to {
+
+        transform: rotate(360deg);
+
+    }
+
+}
+
+
+
+@keyframes fadeIn {
+
+    from {
+
+        opacity: 0;
+
+        transform: translateY(20px);
+
+    }
+
+
+    to {
+
+        opacity: 1;
+
+        transform: translateY(0);
+
+    }
+
+}
+
+
+
+/* Dark Mode */
+
+@media (prefers-color-scheme: dark) {
+
+
+    .splash-screen {
+
+        background: linear-gradient(
+            135deg,
+            #111827,
+            #1f2937
+        );
+
+    }
+
+
+    .logo-box {
+
+        background: #1e293b;
+
+    }
+
+
+    .store-name {
+
+        color: white;
+
+    }
+
+
+    .store-description {
+
+        color: #cbd5e1;
+
+    }
+
+
+    .loader {
+
+        border-color: rgba(255,255,255,0.2);
+
+        border-top-color: #60a5fa;
+
+    }
+
+}
