@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="سيفاش — تطبيق لمشاهدة أشهر الأفلام والمسلسلات والأنمي بجودة 4K." />
-  <title>سيفاش | حمّل التطبيق</title>
+  <meta name="description" content="سيفاش — تطبيق أندرويد لمشاهدة أشهر الأفلام والمسلسلات والأنمي بجودة 4K." />
+  <meta name="theme-color" content="#08080a" />
+  <title>سيفاش | حمّل التطبيق للأندرويد</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -20,12 +21,14 @@
       --text-muted: #a0a0a8;
       --text-dim: #65656e;
 
-      --red: #ff2d3f;
-      --red-soft: #ff5867;
-      --red-deep: #b01020;
-      --red-glow: rgba(255, 45, 63, 0.5);
+      --gold: #ffd60a;
+      --gold-soft: #ffe066;
+      --gold-deep: #c9a000;
+      --gold-glow: rgba(255, 214, 10, 0.5);
+      --gold-glow-soft: rgba(255, 214, 10, 0.2);
 
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
       --ease-smooth: cubic-bezier(0.65, 0, 0.35, 1);
     }
 
@@ -39,30 +42,48 @@
       line-height: 1.7;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      cursor: none;
     }
 
     body.loading { overflow: hidden; }
+
+    @media (hover: none) {
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none !important; }
+    }
 
     body::before {
       content: "";
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 45, 63, 0.14), transparent 65%),
-        radial-gradient(ellipse 50% 40% at 100% 90%, rgba(255, 45, 63, 0.06), transparent 70%);
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 214, 10, 0.15), transparent 65%),
+        radial-gradient(ellipse 50% 40% at 100% 90%, rgba(255, 214, 10, 0.06), transparent 70%);
       pointer-events: none;
       z-index: 0;
+      animation: bgShift 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgShift {
+      0% { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1.05) rotate(1deg); }
     }
 
     body::after {
       content: "";
       position: fixed;
       inset: 0;
-      background-image: radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-image: radial-gradient(rgba(255, 214, 10, 0.04) 1px, transparent 1px);
       background-size: 36px 36px;
       pointer-events: none;
       z-index: 0;
-      opacity: 0.5;
+      opacity: 0.6;
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 36px 36px; }
     }
 
     .container {
@@ -73,9 +94,40 @@
       z-index: 1;
     }
 
-    /* ============================================
-       شريط التحميل الحقيقي
-       ============================================ */
+    /* المؤشر */
+    .cursor {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s var(--ease), height 0.2s var(--ease);
+      mix-blend-mode: difference;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(255, 214, 10, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s var(--ease), height 0.3s var(--ease), border-color 0.3s var(--ease), background 0.3s var(--ease);
+    }
+
+    .cursor.hover, .cursor-ring.hover {
+      width: 56px;
+      height: 56px;
+      background: rgba(255, 214, 10, 0.15);
+      border-color: var(--gold);
+    }
+
+    /* شاشة التحميل */
     .loading-screen {
       position: fixed;
       inset: 0;
@@ -95,19 +147,19 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 32px;
+      gap: 34px;
       width: 320px;
       max-width: calc(100% - 48px);
     }
 
     .loading-logo {
-      width: 82px;
-      height: 82px;
+      width: 84px;
+      height: 84px;
       display: grid;
       place-items: center;
-      background: linear-gradient(145deg, var(--red-soft), var(--red-deep));
+      background: linear-gradient(145deg, var(--gold-soft), var(--gold-deep));
       border-radius: 26px;
-      box-shadow: 0 0 60px var(--red-glow), 0 0 30px var(--red-glow);
+      box-shadow: 0 0 60px var(--gold-glow), 0 0 30px var(--gold-glow);
       animation: logoPulse 1.6s ease-in-out infinite;
       position: relative;
     }
@@ -115,23 +167,32 @@
     .loading-logo::after {
       content: "";
       position: absolute;
-      inset: -6px;
-      border-radius: 30px;
-      border: 1px solid rgba(255, 45, 63, 0.3);
+      inset: -8px;
+      border-radius: 32px;
+      border: 1px solid rgba(255, 214, 10, 0.4);
       animation: logoRing 2s ease-out infinite;
+    }
+
+    .loading-logo::before {
+      content: "";
+      position: absolute;
+      inset: -16px;
+      border-radius: 38px;
+      border: 1px solid rgba(255, 214, 10, 0.15);
+      animation: logoRing 2s ease-out infinite 0.4s;
     }
 
     @keyframes logoPulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.06); }
+      50% { transform: scale(1.08); }
     }
 
     @keyframes logoRing {
       0% { transform: scale(1); opacity: 0.8; }
-      100% { transform: scale(1.35); opacity: 0; }
+      100% { transform: scale(1.4); opacity: 0; }
     }
 
-    .loading-logo svg { width: 42px; height: 42px; }
+    .loading-logo svg { width: 44px; height: 44px; }
 
     .loading-text {
       display: flex;
@@ -142,10 +203,13 @@
     }
 
     .loading-text strong {
-      font-size: 1.4rem;
+      font-size: 1.45rem;
       font-weight: 800;
-      color: #fff;
       letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff 30%, var(--gold-soft) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
 
     .loading-text span {
@@ -155,7 +219,6 @@
       letter-spacing: 0.3px;
     }
 
-    /* Progress bar */
     .loading-progress {
       width: 100%;
       display: flex;
@@ -175,10 +238,10 @@
     .loading-bar-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--red-soft), var(--red));
+      background: linear-gradient(90deg, var(--gold-soft), var(--gold));
       border-radius: 4px;
       transition: width 0.3s var(--ease-smooth);
-      box-shadow: 0 0 12px var(--red-glow);
+      box-shadow: 0 0 14px var(--gold-glow);
       position: relative;
     }
 
@@ -187,7 +250,7 @@
       position: absolute;
       top: 0; right: 0; bottom: 0;
       width: 40px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5));
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6));
       animation: barShine 1.2s ease-in-out infinite;
     }
 
@@ -206,19 +269,17 @@
     }
 
     .loading-status .percent {
-      color: var(--red-soft);
+      color: var(--gold-soft);
       font-weight: 700;
       font-variant-numeric: tabular-nums;
     }
 
-    /* ============================================
-       Nav
-       ============================================ */
+    /* Nav */
     .nav {
       position: fixed;
       top: 20px;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%) translateY(-20px);
       z-index: 100;
       padding: 10px 12px 10px 20px;
       background: rgba(12, 12, 16, 0.72);
@@ -226,23 +287,22 @@
       -webkit-backdrop-filter: blur(24px) saturate(180%);
       border: 1px solid var(--border-strong);
       border-radius: 100px;
-      transition: all 0.4s var(--ease);
       box-shadow: 0 20px 40px -20px rgba(0,0,0,0.8);
       max-width: calc(100% - 40px);
       opacity: 0;
-      transform: translateX(-50%) translateY(-20px);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease),
+                  background 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
     }
 
     .nav.ready {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
-      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease), background 0.4s, border-color 0.4s, box-shadow 0.4s;
     }
 
     .nav.scrolled {
       background: rgba(12, 12, 16, 0.94);
-      border-color: rgba(255, 45, 63, 0.3);
-      box-shadow: 0 20px 40px -20px rgba(0,0,0,0.9), 0 0 30px -8px var(--red-glow);
+      border-color: rgba(255, 214, 10, 0.35);
+      box-shadow: 0 20px 40px -20px rgba(0,0,0,0.9), 0 0 30px -8px var(--gold-glow);
     }
 
     .nav-inner {
@@ -265,13 +325,13 @@
       height: 34px;
       display: grid;
       place-items: center;
-      background: linear-gradient(145deg, var(--red-soft), var(--red-deep));
+      background: linear-gradient(145deg, var(--gold-soft), var(--gold-deep));
       border-radius: 10px;
-      box-shadow: 0 6px 18px -4px var(--red-glow);
-      transition: transform 0.4s var(--ease);
+      box-shadow: 0 6px 18px -4px var(--gold-glow);
+      transition: transform 0.5s var(--ease-spring);
     }
 
-    .brand:hover .brand-logo { transform: rotate(-8deg) scale(1.05); }
+    .brand:hover .brand-logo { transform: rotate(-12deg) scale(1.1); }
 
     .brand-logo svg { width: 18px; height: 18px; }
 
@@ -298,21 +358,21 @@
       transition: all 0.25s var(--ease);
     }
 
-    .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+    .nav-links a:hover { color: #fff; background: rgba(255,214,10,0.08); }
 
     .nav-cta {
       display: inline-flex;
       align-items: center;
       gap: 7px;
       padding: 9px 18px;
-      background: linear-gradient(145deg, var(--red-soft), var(--red));
-      color: #fff;
+      background: linear-gradient(145deg, var(--gold-soft), var(--gold));
+      color: #14100a;
       border-radius: 100px;
       font-weight: 700;
       font-size: 0.82rem;
       text-decoration: none;
-      transition: all 0.3s var(--ease);
-      box-shadow: 0 8px 20px -8px var(--red-glow);
+      transition: all 0.35s var(--ease);
+      box-shadow: 0 8px 20px -8px var(--gold-glow);
       white-space: nowrap;
       position: relative;
       overflow: hidden;
@@ -323,17 +383,15 @@
       position: absolute;
       top: 0; left: -100%;
       width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      transition: left 0.6s var(--ease);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+      transition: left 0.7s var(--ease);
     }
 
     .nav-cta:hover::before { left: 100%; }
-    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 12px 28px -8px var(--red-glow); }
+    .nav-cta:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 14px 30px -8px var(--gold-glow); }
     .nav-cta svg { width: 13px; height: 13px; }
 
-    /* ============================================
-       Hero
-       ============================================ */
+    /* Hero */
     .hero {
       padding: 170px 0 90px;
       position: relative;
@@ -360,12 +418,18 @@
       color: var(--text-muted);
       margin-bottom: 28px;
       backdrop-filter: blur(10px);
+      transition: all 0.3s var(--ease);
+    }
+
+    .hero-badge:hover {
+      border-color: rgba(255, 214, 10, 0.4);
+      box-shadow: 0 0 20px -4px var(--gold-glow-soft);
     }
 
     .hero-badge .tag {
       padding: 4px 10px;
-      background: linear-gradient(145deg, var(--red-soft), var(--red));
-      color: #fff;
+      background: linear-gradient(145deg, var(--gold-soft), var(--gold));
+      color: #14100a;
       border-radius: 100px;
       font-size: 0.66rem;
       font-weight: 800;
@@ -383,10 +447,17 @@
 
     .hero h1 .accent {
       display: block;
-      background: linear-gradient(120deg, var(--red-soft) 0%, var(--red) 55%, var(--red-deep) 100%);
+      background: linear-gradient(120deg, var(--gold-soft) 0%, var(--gold) 55%, var(--gold-deep) 100%);
+      background-size: 200% 200%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
+      animation: gradientShift 4s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
 
     .hero p.lead {
@@ -398,22 +469,21 @@
       line-height: 1.9;
     }
 
-    /* Download button - primary */
     .btn-download {
       display: inline-flex;
       align-items: center;
       gap: 14px;
       padding: 18px 34px;
-      background: linear-gradient(145deg, var(--red-soft), var(--red));
-      color: #fff;
+      background: linear-gradient(145deg, var(--gold-soft), var(--gold));
+      color: #14100a;
       border-radius: 100px;
       text-decoration: none;
       font-weight: 700;
       font-size: 1.05rem;
       box-shadow:
-        0 20px 40px -15px var(--red-glow),
-        0 0 0 1px rgba(255,255,255,0.12) inset;
-      transition: all 0.35s var(--ease);
+        0 20px 40px -15px var(--gold-glow),
+        0 0 0 1px rgba(255,255,255,0.15) inset;
+      transition: all 0.4s var(--ease);
       position: relative;
       overflow: hidden;
     }
@@ -423,20 +493,26 @@
       position: absolute;
       top: 0; left: -100%;
       width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
-      transition: left 0.7s var(--ease);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.8s var(--ease);
     }
 
     .btn-download:hover::before { left: 100%; }
 
     .btn-download:hover {
-      transform: translateY(-3px);
+      transform: translateY(-4px) scale(1.02);
       box-shadow:
-        0 30px 60px -18px var(--red-glow),
-        0 0 0 1px rgba(255,255,255,0.2) inset;
+        0 30px 60px -18px var(--gold-glow),
+        0 0 0 1px rgba(255,255,255,0.25) inset;
     }
 
-    .btn-download svg { width: 22px; height: 22px; flex-shrink: 0; }
+    .btn-download:active { transform: translateY(-2px) scale(0.99); }
+
+    .btn-download svg {
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
+    }
 
     .btn-download-info {
       display: flex;
@@ -452,8 +528,8 @@
 
     .btn-download-info small {
       font-size: 0.7rem;
-      opacity: 0.85;
-      font-weight: 500;
+      opacity: 0.8;
+      font-weight: 600;
       letter-spacing: 0.3px;
     }
 
@@ -471,9 +547,12 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      transition: color 0.25s var(--ease);
     }
 
-    .download-details svg { width: 14px; height: 14px; fill: var(--text-dim); }
+    .download-details span:hover { color: var(--gold-soft); }
+
+    .download-details svg { width: 14px; height: 14px; fill: currentColor; }
 
     .hero-trust {
       display: flex;
@@ -492,13 +571,14 @@
       font-size: 0.86rem;
       color: var(--text-muted);
       font-weight: 500;
+      transition: color 0.25s;
     }
 
-    .trust-item svg { width: 16px; height: 16px; fill: var(--red-soft); flex-shrink: 0; }
+    .trust-item:hover { color: var(--gold-soft); }
 
-    /* ============================================
-       Phone
-       ============================================ */
+    .trust-item svg { width: 16px; height: 16px; fill: var(--gold); flex-shrink: 0; }
+
+    /* Phone */
     .hero-visual {
       display: flex;
       justify-content: center;
@@ -508,17 +588,43 @@
 
     .glow {
       position: absolute;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(255, 45, 63, 0.3), rgba(255, 45, 63, 0.08) 40%, transparent 70%);
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(255, 214, 10, 0.35), rgba(255, 214, 10, 0.1) 40%, transparent 70%);
       filter: blur(50px);
       z-index: 0;
-      animation: glowPulse 7s ease-in-out infinite;
+      animation: glowPulse 6s ease-in-out infinite;
     }
 
     @keyframes glowPulse {
       0%, 100% { transform: scale(1); opacity: 0.85; }
-      50% { transform: scale(1.1); opacity: 0.55; }
+      50% { transform: scale(1.15); opacity: 0.6; }
+    }
+
+    .particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--gold);
+      border-radius: 50%;
+      opacity: 0.4;
+      box-shadow: 0 0 8px var(--gold-glow);
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100%) scale(0); opacity: 0; }
+      20% { opacity: 0.6; }
+      80% { opacity: 0.6; }
+      100% { transform: translateY(-100vh) scale(1); opacity: 0; }
     }
 
     .phone {
@@ -532,20 +638,23 @@
         0 50px 90px -30px rgba(0,0,0,0.95),
         0 0 0 2px rgba(255,255,255,0.06),
         0 0 0 9px #161114,
-        0 0 0 10px rgba(255, 45, 63, 0.3),
-        0 0 60px -10px var(--red-glow);
+        0 0 0 10px rgba(255, 214, 10, 0.35),
+        0 0 70px -10px var(--gold-glow);
       transform: rotate(-4deg);
-      transition: transform 0.7s var(--ease);
+      transition: transform 0.8s var(--ease-spring);
       z-index: 1;
-      animation: floatPhone 7s ease-in-out infinite;
+      animation: floatPhone 6s ease-in-out infinite;
     }
 
     @keyframes floatPhone {
       0%, 100% { transform: rotate(-4deg) translateY(0); }
-      50% { transform: rotate(-4deg) translateY(-12px); }
+      50% { transform: rotate(-4deg) translateY(-14px); }
     }
 
-    .phone:hover { transform: rotate(-1deg) translateY(-8px); animation-play-state: paused; }
+    .phone:hover {
+      transform: rotate(0deg) translateY(-10px) scale(1.02);
+      animation-play-state: paused;
+    }
 
     .phone-notch {
       position: absolute;
@@ -580,7 +689,7 @@
     .app-logo-mini {
       font-size: 0.9rem;
       font-weight: 800;
-      background: linear-gradient(135deg, var(--red-soft), var(--red));
+      background: linear-gradient(135deg, var(--gold-soft), var(--gold));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -590,7 +699,7 @@
       width: 26px;
       height: 26px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--red), var(--red-deep));
+      background: linear-gradient(135deg, var(--gold), var(--gold-deep));
       border: 1px solid rgba(255,255,255,0.1);
     }
 
@@ -614,7 +723,10 @@
     .app-card img {
       width: 100%; height: 100%;
       object-fit: cover;
+      transition: transform 0.7s var(--ease);
     }
+
+    .app-card:hover img { transform: scale(1.08); }
 
     .app-card::after {
       content: "";
@@ -664,7 +776,10 @@
       overflow: hidden;
       position: relative;
       box-shadow: 0 6px 16px -6px rgba(0,0,0,0.8);
+      transition: transform 0.4s var(--ease);
     }
+
+    .app-poster:hover { transform: translateY(-4px) scale(1.03); }
 
     .app-poster img {
       width: 100%; height: 100%;
@@ -678,9 +793,7 @@
       background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.75));
     }
 
-    /* ============================================
-       Features
-       ============================================ */
+    /* Features */
     .section {
       padding: 90px 0;
     }
@@ -697,13 +810,13 @@
       display: inline-block;
       font-size: 0.72rem;
       font-weight: 700;
-      color: var(--red-soft);
+      color: var(--gold-soft);
       letter-spacing: 3px;
       text-transform: uppercase;
       margin-bottom: 16px;
       padding: 6px 14px;
-      background: rgba(255, 45, 63, 0.08);
-      border: 1px solid rgba(255, 45, 63, 0.2);
+      background: rgba(255, 214, 10, 0.08);
+      border: 1px solid rgba(255, 214, 10, 0.25);
       border-radius: 100px;
     }
 
@@ -733,10 +846,11 @@
       border: 1px solid var(--border);
       border-radius: 22px;
       padding: 34px 30px;
-      transition: all 0.4s var(--ease);
+      transition: all 0.5s var(--ease);
       backdrop-filter: blur(10px);
       position: relative;
       overflow: hidden;
+      transform-style: preserve-3d;
     }
 
     .feature::before {
@@ -746,19 +860,19 @@
       right: -60%;
       width: 180%;
       height: 180%;
-      background: radial-gradient(circle, rgba(255, 45, 63, 0.12), transparent 45%);
+      background: radial-gradient(circle, rgba(255, 214, 10, 0.15), transparent 45%);
       opacity: 0;
-      transition: opacity 0.5s var(--ease);
+      transition: opacity 0.6s var(--ease);
       pointer-events: none;
     }
 
     .feature:hover::before { opacity: 1; }
 
     .feature:hover {
-      border-color: rgba(255, 45, 63, 0.35);
-      transform: translateY(-5px);
+      border-color: rgba(255, 214, 10, 0.4);
+      transform: translateY(-8px) scale(1.02);
       background: rgba(255,255,255,0.04);
-      box-shadow: 0 25px 55px -30px var(--red-glow);
+      box-shadow: 0 30px 60px -30px var(--gold-glow);
     }
 
     .feature-icon {
@@ -766,17 +880,21 @@
       height: 52px;
       display: grid;
       place-items: center;
-      background: linear-gradient(145deg, rgba(255, 45, 63, 0.15), rgba(255, 45, 63, 0.05));
-      border: 1px solid rgba(255, 45, 63, 0.25);
+      background: linear-gradient(145deg, rgba(255, 214, 10, 0.15), rgba(255, 214, 10, 0.05));
+      border: 1px solid rgba(255, 214, 10, 0.25);
       border-radius: 16px;
       margin-bottom: 24px;
-      transition: transform 0.4s var(--ease);
+      transition: transform 0.6s var(--ease-spring);
       position: relative;
       z-index: 1;
     }
 
-    .feature:hover .feature-icon { transform: scale(1.1) rotate(-5deg); }
-    .feature-icon svg { width: 25px; height: 25px; fill: var(--red-soft); }
+    .feature:hover .feature-icon {
+      transform: scale(1.15) rotate(-8deg);
+      box-shadow: 0 0 24px -4px var(--gold-glow);
+    }
+
+    .feature-icon svg { width: 25px; height: 25px; fill: var(--gold-soft); }
 
     .feature h3 {
       font-size: 1.15rem;
@@ -797,18 +915,16 @@
       z-index: 1;
     }
 
-    /* ============================================
-       Download CTA
-       ============================================ */
+    /* Download */
     .download {
       padding: 40px 0 90px;
     }
 
     .download-box {
       background:
-        radial-gradient(ellipse 60% 100% at 50% 0%, rgba(255, 45, 63, 0.2), transparent 70%),
+        radial-gradient(ellipse 60% 100% at 50% 0%, rgba(255, 214, 10, 0.22), transparent 70%),
         linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-      border: 1px solid rgba(255, 45, 63, 0.25);
+      border: 1px solid rgba(255, 214, 10, 0.3);
       border-radius: 32px;
       padding: 70px 40px;
       text-align: center;
@@ -822,20 +938,36 @@
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 1px;
-      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
     }
+
+    .download-box::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 100%, rgba(255, 214, 10, 0.1), transparent 60%);
+      pointer-events: none;
+      animation: boxGlow 5s ease-in-out infinite;
+    }
+
+    @keyframes boxGlow {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    .download-box > * { position: relative; z-index: 1; }
 
     .download-box .box-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       padding: 6px 14px;
-      background: rgba(255, 45, 63, 0.12);
-      border: 1px solid rgba(255, 45, 63, 0.3);
+      background: rgba(255, 214, 10, 0.12);
+      border: 1px solid rgba(255, 214, 10, 0.35);
       border-radius: 100px;
       font-size: 0.72rem;
       font-weight: 700;
-      color: var(--red-soft);
+      color: var(--gold-soft);
       letter-spacing: 0.5px;
       margin-bottom: 20px;
     }
@@ -859,8 +991,14 @@
     }
 
     .download-box .btn-download {
-      font-size: 1.08rem;
-      padding: 20px 38px;
+      font-size: 1.1rem;
+      padding: 20px 40px;
+      animation: btnPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes btnPulse {
+      0%, 100% { box-shadow: 0 20px 40px -15px var(--gold-glow), 0 0 0 1px rgba(255,255,255,0.15) inset; }
+      50% { box-shadow: 0 20px 50px -15px var(--gold-glow), 0 0 30px -8px var(--gold-glow), 0 0 0 1px rgba(255,255,255,0.2) inset; }
     }
 
     .download-note {
@@ -879,11 +1017,9 @@
       gap: 6px;
     }
 
-    .download-note svg { width: 14px; height: 14px; fill: var(--text-dim); }
+    .download-note svg { width: 14px; height: 14px; fill: var(--gold); }
 
-    /* ============================================
-       Footer
-       ============================================ */
+    /* Footer */
     footer {
       border-top: 1px solid var(--border);
       padding: 44px 0 32px;
@@ -925,28 +1061,63 @@
       font-size: 0.85rem;
       color: var(--text-muted);
       text-decoration: none;
-      transition: color 0.2s;
+      transition: color 0.25s;
+      position: relative;
     }
 
-    .footer-links a:hover { color: var(--red-soft); }
+    .footer-links a::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      right: 0;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      transition: width 0.3s var(--ease);
+    }
 
-    /* ============================================
-       Reveal animations
-       ============================================ */
+    .footer-links a:hover { color: var(--gold-soft); }
+    .footer-links a:hover::after { width: 100%; }
+
+    /* Reveal */
     .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1s var(--ease), transform 1s var(--ease);
+    }
+
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 1s var(--ease), transform 1s var(--ease-spring);
+    }
+
+    .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+    .stagger > * {
       opacity: 0;
       transform: translateY(30px);
       transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
     }
 
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .stagger.visible > * { opacity: 1; transform: translateY(0); }
+
+    .stagger.visible > *:nth-child(1) { transition-delay: 0s; }
+    .stagger.visible > *:nth-child(2) { transition-delay: 0.1s; }
+    .stagger.visible > *:nth-child(3) { transition-delay: 0.2s; }
+
     .reveal-d1 { transition-delay: 0.1s; }
     .reveal-d2 { transition-delay: 0.2s; }
     .reveal-d3 { transition-delay: 0.3s; }
 
-    /* ============================================
-       Responsive
-       ============================================ */
+    .counter {
+      font-variant-numeric: tabular-nums;
+      display: inline-block;
+    }
+
+    /* Responsive */
     @media (max-width: 1024px) {
       .hero-grid { grid-template-columns: 1fr; gap: 60px; text-align: center; }
       .hero p.lead { margin-left: auto; margin-right: auto; }
@@ -963,7 +1134,7 @@
       .hero { padding: 130px 0 60px; }
       .section { padding: 60px 0; }
       .phone { width: 240px; height: 490px; }
-      .glow { width: 300px; height: 300px; }
+      .glow { width: 320px; height: 320px; }
       .download-box { padding: 50px 24px; }
       .btn-download { padding: 16px 26px; font-size: 0.95rem; }
       .download-box .btn-download { padding: 17px 30px; }
@@ -975,7 +1146,7 @@
       .nav { max-width: calc(100% - 28px); }
       .brand-name { display: none; }
       .btn-download { padding: 14px 22px; font-size: 0.9rem; gap: 10px; }
-      .btn-download svg { width: 18px; height: 18px; }
+      .btn-download svg { width: 20px; height: 20px; }
       .btn-download-info strong { font-size: 0.88rem; }
       .btn-download-info small { font-size: 0.65rem; }
       .download-box .btn-download { padding: 15px 24px; font-size: 0.95rem; }
@@ -994,14 +1165,16 @@
 </head>
 <body class="loading">
 
-  <!-- ============================================
-       شاشة التحميل مع Progress Bar
-       ============================================ -->
+  <!-- المؤشر -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- شاشة التحميل -->
   <div class="loading-screen" id="loadingScreen">
     <div class="loading-inner">
       <div class="loading-logo">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm2 3v2h2V7H6zm0 4v2h2v-2H6zm0 4v2h2v-2H6zm10-8v2h2V7h-2zm0 4v2h2v-2h-2zm0 4v2h2v-2h-2zM9 7v10h6V7H9z" fill="#fff"/>
+          <path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24c-1.28-.56-2.72-.87-4.23-.87-1.5 0-2.95.31-4.23.87L6.13 5.67c-.19-.29-.55-.38-.84-.22-.3.16-.42.54-.26.85l1.84 3.18C3.62 11.02 1.65 14.24 1.32 18h21.36c-.33-3.76-2.3-6.98-5.08-8.52zM7 15.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25zm10 0c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z" fill="#14100a"/>
         </svg>
       </div>
 
@@ -1027,7 +1200,7 @@
     <div class="nav-inner">
       <a href="#" class="brand">
         <span class="brand-logo">
-          <svg viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm2 3v2h2V7H6zm0 4v2h2v-2H6zm0 4v2h2v-2H6zm10-8v2h2V7h-2zm0 4v2h2v-2h-2zm0 4v2h2v-2h-2zM9 7v10h6V7H9z" fill="#fff"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24c-1.28-.56-2.72-.87-4.23-.87-1.5 0-2.95.31-4.23.87L6.13 5.67c-.19-.29-.55-.38-.84-.22-.3.16-.42.54-.26.85l1.84 3.18C3.62 11.02 1.65 14.24 1.32 18h21.36c-.33-3.76-2.3-6.98-5.08-8.52z" fill="#14100a"/></svg>
         </span>
         <span class="brand-name">سيفاش</span>
       </a>
@@ -1035,9 +1208,9 @@
         <li><a href="#features">المميزات</a></li>
         <li><a href="#download">التحميل</a></li>
       </ul>
-      <a href="#download" class="nav-cta">
+      <a href="https://pixeldrain.com/api/file/xN9CGTQg?download" target="_blank" rel="noopener" class="nav-cta">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zM5 18h14v2H5z"/></svg>
-        حمّل التطبيق
+        حمّل للأندرويد
       </a>
     </div>
   </nav>
@@ -1057,27 +1230,27 @@
         </h1>
 
         <p class="lead reveal reveal-d2">
-          حمّل سيفاش واستمتع بمشاهدة أشهر الأفلام والمسلسلات والأنمي بجودة 4K HDR،
+          حمّل سيفاش على جهاز الأندرويد واستمتع بمشاهدة أشهر الأفلام والمسلسلات والأنمي بجودة 4K HDR،
           مع واجهة عربية بسيطة وسريعة.
         </p>
 
-        <!-- زر التحميل الوحيد (رابطك الخارجي) -->
-        <a href="https://your-download-link.com" target="_blank" rel="noopener" class="btn-download reveal reveal-d3" id="mainDownloadBtn">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zM5 18h14v2H5z"/></svg>
+        <!-- زر التحميل الرئيسي -->
+        <a href="https://pixeldrain.com/api/file/xN9CGTQg?download" target="_blank" rel="noopener" class="btn-download reveal reveal-d3">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24c-1.28-.56-2.72-.87-4.23-.87-1.5 0-2.95.31-4.23.87L6.13 5.67c-.19-.29-.55-.38-.84-.22-.3.16-.42.54-.26.85l1.84 3.18C3.62 11.02 1.65 14.24 1.32 18h21.36c-.33-3.76-2.3-6.98-5.08-8.52zM7 15.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25zm10 0c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
           <span class="btn-download-info">
             <strong>حمّل التطبيق الآن</strong>
-            <small>الإصدار 2.0 • 45 ميجابايت</small>
+            <small>أندرويد • الإصدار 2.0 • 45MB</small>
           </span>
         </a>
 
         <div class="download-details reveal reveal-d3">
           <span>
             <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-            ملف آمن وموثوق
+            ملف APK آمن
           </span>
           <span>
-            <svg viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99z"/></svg>
-            Android و iOS
+            <svg viewBox="0 0 24 24"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24c-1.28-.56-2.72-.87-4.23-.87-1.5 0-2.95.31-4.23.87L6.13 5.67c-.19-.29-.55-.38-.84-.22-.3.16-.42.54-.26.85l1.84 3.18C3.62 11.02 1.65 14.24 1.32 18h21.36c-.33-3.76-2.3-6.98-5.08-8.52z"/></svg>
+            أندرويد 7.0+
           </span>
           <span>
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
@@ -1088,11 +1261,11 @@
         <div class="hero-trust reveal reveal-d3">
           <div class="trust-item">
             <svg viewBox="0 0 24 24"><path d="M12 1l3 6 6 1-4.5 4.5L18 19l-6-3-6 3 1.5-6.5L3 8l6-1z"/></svg>
-            +500K تحميل
+            <span><span class="counter" data-target="500">0</span>K+ تحميل</span>
           </div>
           <div class="trust-item">
             <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-            تقييم 4.9
+            تقييم <span class="counter" data-target="49" data-decimal="true">0</span>
           </div>
           <div class="trust-item">
             <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
@@ -1101,8 +1274,9 @@
         </div>
       </div>
 
-      <div class="hero-visual reveal">
+      <div class="hero-visual reveal-scale">
         <div class="glow"></div>
+        <div class="particles" id="particles"></div>
         <div class="phone">
           <div class="phone-notch"></div>
           <div class="phone-screen">
@@ -1145,11 +1319,11 @@
       <div class="section-head reveal">
         <span class="label">المميزات</span>
         <h2>لماذا سيفاش؟</h2>
-        <p>ثلاثة أسباب تجعله تطبيقك المفضل للمشاهدة.</p>
+        <p>ثلاثة أسباب تجعله تطبيقك المفضل للمشاهدة على الأندرويد.</p>
       </div>
 
-      <div class="features-grid">
-        <div class="feature reveal">
+      <div class="features-grid stagger">
+        <div class="feature">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg>
           </div>
@@ -1157,7 +1331,7 @@
           <p>آلاف الأفلام والمسلسلات والأنمي من مختلف التصنيفات — كلاسيكيات وحديثة.</p>
         </div>
 
-        <div class="feature reveal reveal-d1">
+        <div class="feature">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
           </div>
@@ -1165,7 +1339,7 @@
           <p>بث بجودة عالية مع دعم Dolby Vision و Atmos لتجربة سينمائية كاملة.</p>
         </div>
 
-        <div class="feature reveal reveal-d2">
+        <div class="feature">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
           </div>
@@ -1182,23 +1356,23 @@
       <div class="download-box reveal">
         <span class="box-badge">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l3 6 6 1-4.5 4.5L18 19l-6-3-6 3 1.5-6.5L3 8l6-1z"/></svg>
-          تحميل مجاني
+          تحميل مجاني للأندرويد
         </span>
         <h2>جاهز تبدأ المشاهدة؟</h2>
-        <p>حمّل سيفاش الآن وابدأ باستكشاف أفضل الأفلام والمسلسلات والأنمي.</p>
+        <p>حمّل سيفاش الآن على جهاز الأندرويد وابدأ باستكشاف أفضل الأفلام والمسلسلات والأنمي.</p>
 
-        <a href="https://your-download-link.com" target="_blank" rel="noopener" class="btn-download">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zM5 18h14v2H5z"/></svg>
+        <a href="https://pixeldrain.com/api/file/xN9CGTQg?download" target="_blank" rel="noopener" class="btn-download">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24c-1.28-.56-2.72-.87-4.23-.87-1.5 0-2.95.31-4.23.87L6.13 5.67c-.19-.29-.55-.38-.84-.22-.3.16-.42.54-.26.85l1.84 3.18C3.62 11.02 1.65 14.24 1.32 18h21.36c-.33-3.76-2.3-6.98-5.08-8.52zM7 15.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25zm10 0c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
           <span class="btn-download-info">
             <strong>حمّل التطبيق الآن</strong>
-            <small>الإصدار 2.0 • 45 ميجابايت</small>
+            <small>أندرويد • الإصدار 2.0 • 45MB</small>
           </span>
         </a>
 
         <div class="download-note">
           <span>
             <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-            ملف آمن
+            APK آمن
           </span>
           <span>
             <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
@@ -1218,7 +1392,7 @@
     <div class="container footer-inner">
       <div class="footer-brand">
         <span class="brand-logo">
-          <svg viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm2 3v2h2V7H6zm0 4v2h2v-2H6zm0 4v2h2v-2H6zm10-8v2h2V7h-2zm0 4v2h2v-2h-2zm0 4v2h2v-2h-2zM9 7v10h6V7H9z" fill="#fff"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24c-1.28-.56-2.72-.87-4.23-.87-1.5 0-2.95.31-4.23.87L6.13 5.67c-.19-.29-.55-.38-.84-.22-.3.16-.42.54-.26.85l1.84 3.18C3.62 11.02 1.65 14.24 1.32 18h21.36c-.33-3.76-2.3-6.98-5.08-8.52z" fill="#14100a"/></svg>
         </span>
         <span class="footer-brand-name">سيفاش</span>
       </div>
@@ -1234,9 +1408,7 @@
   </footer>
 
   <script>
-    /* ============================================
-       شريط التحميل الذكي
-       ============================================ */
+    /* شريط التحميل */
     (function() {
       const loadingScreen = document.getElementById('loadingScreen');
       const fill = document.getElementById('loadingFill');
@@ -1244,7 +1416,6 @@
       const statusEl = document.getElementById('loadingStatusText');
       const nav = document.getElementById('nav');
 
-      // مراحل التحميل مع النصوص
       const stages = [
         { p: 15, label: 'تحضير الواجهة' },
         { p: 35, label: 'تحميل الخطوط' },
@@ -1254,14 +1425,12 @@
         { p: 100, label: 'جاهز!' }
       ];
 
-      let currentProgress = 0;
       let stageIndex = 0;
       const startTime = performance.now();
 
       function setProgress(value) {
-        currentProgress = Math.min(value, 100);
-        fill.style.width = currentProgress + '%';
-        percentEl.textContent = Math.round(currentProgress) + '%';
+        fill.style.width = Math.min(value, 100) + '%';
+        percentEl.textContent = Math.round(value) + '%';
       }
 
       function advanceStage() {
@@ -1270,8 +1439,6 @@
           setProgress(stage.p);
           statusEl.textContent = stage.label;
           stageIndex++;
-
-          // سرعة الانتقال بين المراحل: أسرع في البداية، أبطأ قليلاً مع النهاية
           const delay = 180 + Math.random() * 220;
           setTimeout(advanceStage, delay);
         } else {
@@ -1280,48 +1447,70 @@
       }
 
       function finish() {
-        // نضمن وصول الحد الأدنى 700ms حتى لا يومض
         const elapsed = performance.now() - startTime;
         const minWait = Math.max(0, 900 - elapsed);
 
         setTimeout(() => {
           setProgress(100);
           statusEl.textContent = 'جاهز!';
-
           setTimeout(() => {
             loadingScreen.classList.add('done');
             document.body.classList.remove('loading');
-
-            // إظهار الناف بار بحركة أنيقة
-            setTimeout(() => {
-              nav.classList.add('ready');
-            }, 150);
-
-            // تفعيل أنيميشن العناصر
+            setTimeout(() => nav.classList.add('ready'), 150);
             setTimeout(activateReveals, 200);
           }, 400);
         }, minWait);
       }
 
-      // نبدأ بعد حدث load (أو DOMContentLoaded إن تأخر)
       if (document.readyState === 'complete') {
         advanceStage();
       } else {
         window.addEventListener('load', advanceStage, { once: true });
-        // احتياطي: نبدأ بعد 400ms حتى لو لم يكتمل التحميل
-        setTimeout(() => {
-          if (stageIndex === 0) advanceStage();
-        }, 400);
+        setTimeout(() => { if (stageIndex === 0) advanceStage(); }, 400);
       }
     })();
 
-    /* ============================================
-       Reveal على التمرير
-       ============================================ */
+    /* المؤشر المغناطيسي */
+    (function() {
+      const cursor = document.getElementById('cursor');
+      const ring = document.getElementById('cursorRing');
+      if (!cursor || !ring) return;
+      if (window.matchMedia('(hover: none)').matches) return;
+
+      let mx = 0, my = 0, rx = 0, ry = 0;
+
+      document.addEventListener('mousemove', (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+        cursor.style.left = mx + 'px';
+        cursor.style.top = my + 'px';
+      });
+
+      function animateRing() {
+        rx += (mx - rx) * 0.15;
+        ry += (my - ry) * 0.15;
+        ring.style.left = rx + 'px';
+        ring.style.top = ry + 'px';
+        requestAnimationFrame(animateRing);
+      }
+      animateRing();
+
+      document.querySelectorAll('a, button, .feature, .trust-item, .download-details span').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursor.classList.add('hover');
+          ring.classList.add('hover');
+        });
+        el.addEventListener('mouseleave', () => {
+          cursor.classList.remove('hover');
+          ring.classList.remove('hover');
+        });
+      });
+    })();
+
+    /* Reveal on scroll */
     let revealObserver;
     function activateReveals() {
       if (revealObserver) return;
-
       revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(e => {
           if (e.isIntersecting) {
@@ -1331,20 +1520,73 @@
         });
       }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
 
-      document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+      document.querySelectorAll('.reveal, .reveal-scale, .stagger').forEach(el => revealObserver.observe(el));
     }
 
-    /* ============================================
-       Nav scrolled state
-       ============================================ */
+    /* عدّادات */
+    function initCounters() {
+      const counters = document.querySelectorAll('.counter');
+      if (!counters.length) return;
+
+      const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const el = entry.target;
+          const target = parseFloat(el.dataset.target);
+          const isDecimal = el.dataset.decimal === 'true';
+          const duration = 1800;
+          const start = performance.now();
+
+          function update(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const value = eased * target;
+            if (isDecimal) {
+              el.textContent = (value / 10).toFixed(1);
+            } else {
+              el.textContent = Math.floor(value);
+            }
+            if (progress < 1) requestAnimationFrame(update);
+            else {
+              if (isDecimal) el.textContent = (target / 10).toFixed(1);
+              else el.textContent = target;
+            }
+          }
+          requestAnimationFrame(update);
+          counterObserver.unobserve(el);
+        });
+      }, { threshold: 0.5 });
+
+      counters.forEach(c => counterObserver.observe(c));
+    }
+    initCounters();
+
+    /* جزيئات */
+    (function() {
+      const container = document.getElementById('particles');
+      if (!container) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      for (let i = 0; i < 12; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.bottom = '-10px';
+        p.style.animationDuration = (6 + Math.random() * 8) + 's';
+        p.style.animationDelay = (Math.random() * 8) + 's';
+        p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+        p.style.opacity = 0.3 + Math.random() * 0.5;
+        container.appendChild(p);
+      }
+    })();
+
+    /* Nav */
     const navEl = document.getElementById('nav');
     window.addEventListener('scroll', () => {
       navEl.classList.toggle('scrolled', window.scrollY > 30);
     }, { passive: true });
 
-    /* ============================================
-       Smooth scroll
-       ============================================ */
+    /* Smooth scroll */
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', e => {
         const t = document.querySelector(a.getAttribute('href'));
@@ -1356,10 +1598,26 @@
       });
     });
 
-    /* ============================================
-       ملاحظة: استبدل الرابط الخارجي
-       ============================================ */
-    // استبدل "https://your-download-link.com" برابطك الحقيقي
+    /* Parallax */
+    (function() {
+      const phone = document.querySelector('.phone');
+      const visual = document.querySelector('.hero-visual');
+      if (!phone || !visual) return;
+      if (window.matchMedia('(hover: none)').matches) return;
+
+      visual.addEventListener('mousemove', (e) => {
+        const rect = visual.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = (e.clientX - cx) / rect.width;
+        const dy = (e.clientY - cy) / rect.height;
+        phone.style.transform = `rotate(${-4 + dx * 4}deg) translate(${dx * 15}px, ${-10 + dy * 15}px) scale(1.02)`;
+      });
+
+      visual.addEventListener('mouseleave', () => {
+        phone.style.transform = '';
+      });
+    })();
   </script>
 
 </body>
