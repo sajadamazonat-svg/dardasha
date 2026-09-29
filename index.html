@@ -851,7 +851,6 @@
       backdrop-filter: blur(10px);
       position: relative;
       overflow: hidden;
-      transform-style: preserve-3d;
     }
 
     .feature::before {
@@ -1283,10 +1282,10 @@
         <li><a href="#features">المميزات</a></li>
         <li><a href="#download">التحميل</a></li>
       </ul>
-      <a href="https://pixeldrain.com/api/file/svh24omk?download" target="_blank" rel="noopener noreferrer" class="nav-cta js-download">
+      <button type="button" class="nav-cta js-download" data-url="https://pixeldrain.com/api/file/svh24omk?download">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zM5 18h14v2H5z"/></svg>
         حمّل للأندرويد
-      </a>
+      </button>
     </div>
   </nav>
 
@@ -1309,14 +1308,13 @@
           مع واجهة عربية بسيطة وسريعة.
         </p>
 
-        <!-- زر التحميل الرئيسي -->
-        <a href="https://pixeldrain.com/api/file/svh24omk?download" target="_blank" rel="noopener noreferrer" class="btn-download js-download reveal reveal-d3">
+        <button type="button" class="btn-download js-download reveal reveal-d3" data-url="https://pixeldrain.com/api/file/svh24omk?download">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24c-1.28-.56-2.72-.87-4.23-.87-1.5 0-2.95.31-4.23.87L6.13 5.67c-.19-.29-.55-.38-.84-.22-.3.16-.42.54-.26.85l1.84 3.18C3.62 11.02 1.65 14.24 1.32 18h21.36c-.33-3.76-2.3-6.98-5.08-8.52zM7 15.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25zm10 0c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
           <span class="btn-download-info">
             <strong>حمّل التطبيق الآن</strong>
             <small>أندرويد • الإصدار 2.0 • 45MB</small>
           </span>
-        </a>
+        </button>
 
         <div class="download-details reveal reveal-d3">
           <span>
@@ -1436,13 +1434,13 @@
         <h2>جاهز تبدأ المشاهدة؟</h2>
         <p>حمّل سيفاش الآن على جهاز الأندرويد وابدأ باستكشاف أفضل الأفلام والمسلسلات والأنمي.</p>
 
-        <a href="https://pixeldrain.com/api/file/svh24omk?download" target="_blank" rel="noopener noreferrer" class="btn-download js-download">
+        <button type="button" class="btn-download js-download" data-url="https://pixeldrain.com/api/file/svh24omk?download">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24c-1.28-.56-2.72-.87-4.23-.87-1.5 0-2.95.31-4.23.87L6.13 5.67c-.19-.29-.55-.38-.84-.22-.3.16-.42.54-.26.85l1.84 3.18C3.62 11.02 1.65 14.24 1.32 18h21.36c-.33-3.76-2.3-6.98-5.08-8.52zM7 15.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25zm10 0c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
           <span class="btn-download-info">
             <strong>حمّل التطبيق الآن</strong>
             <small>أندرويد • الإصدار 2.0 • 45MB</small>
           </span>
-        </a>
+        </button>
 
         <div class="download-note">
           <span>
@@ -1546,7 +1544,7 @@
     })();
 
     /* ============================================
-       التحميل في تبويب جديد + إشعار
+       التحميل — الرابط في شريط العنوان وتشغيله
        ============================================ */
     (function() {
       const DOWNLOAD_URL = 'https://pixeldrain.com/api/file/svh24omk?download';
@@ -1554,8 +1552,7 @@
 
       buttons.forEach(btn => {
         btn.addEventListener('click', function(e) {
-          // نترك المتصفح يفتح الرابط في تبويب جديد عبر target="_blank"
-          // لكن نضيف إشعار + تأثير بصري
+          e.preventDefault();
 
           // تأثير بصري مؤقت
           this.style.transform = 'scale(0.97)';
@@ -1563,11 +1560,15 @@
 
           // إشعار
           showToast();
+
+          // وضع الرابط في شريط العنوان وتشغيله — يبدأ التنزيل مباشرة
+          setTimeout(() => {
+            window.location.href = DOWNLOAD_URL;
+          }, 350);
         });
       });
 
       function showToast() {
-        // إزالة أي توست سابق
         const existing = document.querySelector('.download-toast');
         if (existing) existing.remove();
 
@@ -1580,8 +1581,8 @@
             </svg>
           </div>
           <div class="download-toast-text">
-            <strong>بدأ التحميل في تبويب جديد</strong>
-            <span>تحقق من التنزيلات في المتصفح</span>
+            <strong>جارٍ تشغيل التحميل...</strong>
+            <span>سيبدأ تنزيل الملف مباشرة</span>
           </div>
         `;
         document.body.appendChild(toast);
@@ -1591,7 +1592,7 @@
         setTimeout(() => {
           toast.classList.remove('show');
           setTimeout(() => toast.remove(), 500);
-        }, 3500);
+        }, 3000);
       }
     })();
 
