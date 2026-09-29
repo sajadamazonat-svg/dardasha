@@ -376,6 +376,8 @@
       white-space: nowrap;
       position: relative;
       overflow: hidden;
+      border: none;
+      cursor: none;
     }
 
     .nav-cta::before {
@@ -486,6 +488,9 @@
       transition: all 0.4s var(--ease);
       position: relative;
       overflow: hidden;
+      border: none;
+      cursor: none;
+      font-family: inherit;
     }
 
     .btn-download::before {
@@ -531,6 +536,28 @@
       opacity: 0.8;
       font-weight: 600;
       letter-spacing: 0.3px;
+    }
+
+    /* حالة التحميل */
+    .btn-download.downloading {
+      pointer-events: none;
+    }
+
+    .btn-download.downloading .btn-download-info strong::after {
+      content: "";
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-right: 8px;
+      border: 2px solid rgba(20, 16, 10, 0.3);
+      border-top-color: #14100a;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     .download-details {
@@ -1165,7 +1192,6 @@
 </head>
 <body class="loading">
 
-  <!-- المؤشر -->
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
 
@@ -1208,7 +1234,7 @@
         <li><a href="#features">المميزات</a></li>
         <li><a href="#download">التحميل</a></li>
       </ul>
-      <a href="https://pixeldrain.com/api/file/xN9CGTQg?download" target="_blank" rel="noopener" class="nav-cta">
+      <a href="https://pixeldrain.com/api/file/xN9CGTQg?download" class="nav-cta js-download" data-url="https://pixeldrain.com/api/file/xN9CGTQg?download">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zM5 18h14v2H5z"/></svg>
         حمّل للأندرويد
       </a>
@@ -1235,7 +1261,7 @@
         </p>
 
         <!-- زر التحميل الرئيسي -->
-        <a href="https://pixeldrain.com/api/file/xN9CGTQg?download" target="_blank" rel="noopener" class="btn-download reveal reveal-d3">
+        <a href="https://pixeldrain.com/api/file/xN9CGTQg?download" class="btn-download js-download reveal reveal-d3" data-url="https://pixeldrain.com/api/file/xN9CGTQg?download">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24c-1.28-.56-2.72-.87-4.23-.87-1.5 0-2.95.31-4.23.87L6.13 5.67c-.19-.29-.55-.38-.84-.22-.3.16-.42.54-.26.85l1.84 3.18C3.62 11.02 1.65 14.24 1.32 18h21.36c-.33-3.76-2.3-6.98-5.08-8.52zM7 15.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25zm10 0c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
           <span class="btn-download-info">
             <strong>حمّل التطبيق الآن</strong>
@@ -1361,7 +1387,7 @@
         <h2>جاهز تبدأ المشاهدة؟</h2>
         <p>حمّل سيفاش الآن على جهاز الأندرويد وابدأ باستكشاف أفضل الأفلام والمسلسلات والأنمي.</p>
 
-        <a href="https://pixeldrain.com/api/file/xN9CGTQg?download" target="_blank" rel="noopener" class="btn-download">
+        <a href="https://pixeldrain.com/api/file/xN9CGTQg?download" class="btn-download js-download" data-url="https://pixeldrain.com/api/file/xN9CGTQg?download">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24c-1.28-.56-2.72-.87-4.23-.87-1.5 0-2.95.31-4.23.87L6.13 5.67c-.19-.29-.55-.38-.84-.22-.3.16-.42.54-.26.85l1.84 3.18C3.62 11.02 1.65 14.24 1.32 18h21.36c-.33-3.76-2.3-6.98-5.08-8.52zM7 15.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25zm10 0c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
           <span class="btn-download-info">
             <strong>حمّل التطبيق الآن</strong>
@@ -1408,7 +1434,9 @@
   </footer>
 
   <script>
-    /* شريط التحميل */
+    /* ============================================
+       شريط التحميل
+       ============================================ */
     (function() {
       const loadingScreen = document.getElementById('loadingScreen');
       const fill = document.getElementById('loadingFill');
@@ -1470,7 +1498,95 @@
       }
     })();
 
-    /* المؤشر المغناطيسي */
+    /* ============================================
+       التحميل المباشر عند الضغط
+       ============================================ */
+    (function() {
+      const DOWNLOAD_URL = 'https://pixeldrain.com/api/file/xN9CGTQg?download';
+      const buttons = document.querySelectorAll('.js-download');
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+
+          // منع النقر المتكرر
+          if (this.classList.contains('downloading')) return;
+          this.classList.add('downloading');
+
+          const originalText = this.querySelector('.btn-download-info strong');
+          const originalSmall = this.querySelector('.btn-download-info small');
+          const originalNavText = this.textContent.trim();
+
+          // نص التحميل
+          if (originalText) originalText.textContent = 'جاري التحميل...';
+          if (originalSmall) originalSmall.textContent = 'يبدأ التنزيل خلال ثوانٍ';
+          if (!originalText && this.classList.contains('nav-cta')) {
+            this.lastChild.textContent = ' جاري التحميل...';
+          }
+
+          // ===== التحميل المباشر =====
+          // الطريقة 1: iframe مخفي — لا يترك الصفحة، يبدأ التحميل مباشرة
+          const iframe = document.createElement('iframe');
+          iframe.style.display = 'none';
+          iframe.style.visibility = 'hidden';
+          iframe.style.width = '0';
+          iframe.style.height = '0';
+          iframe.style.position = 'absolute';
+          iframe.src = DOWNLOAD_URL;
+          document.body.appendChild(iframe);
+
+          // تنظيف الـ iframe بعد فترة
+          setTimeout(() => {
+            if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+          }, 60000);
+
+          // ===== إشعار نجاح =====
+          showToast();
+
+          // إرجاع الزر لحالته الطبيعية بعد 3.5 ثانية
+          setTimeout(() => {
+            this.classList.remove('downloading');
+            if (originalText) originalText.textContent = 'حمّل التطبيق الآن';
+            if (originalSmall) originalSmall.textContent = 'أندرويد • الإصدار 2.0 • 45MB';
+            if (!originalText && this.classList.contains('nav-cta')) {
+              this.lastChild.textContent = ' حمّل للأندرويد';
+            }
+          }, 3500);
+        });
+      });
+
+      /* إشعار عائم */
+      function showToast() {
+        // إنشاء عنصر الإشعار
+        const toast = document.createElement('div');
+        toast.className = 'download-toast';
+        toast.innerHTML = `
+          <div class="download-toast-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+          </div>
+          <div class="download-toast-text">
+            <strong>بدأ التحميل</strong>
+            <span>سيظهر التطبيق في تنزيلات جهازك</span>
+          </div>
+        `;
+        document.body.appendChild(toast);
+
+        // إظهار
+        requestAnimationFrame(() => toast.classList.add('show'));
+
+        // إخفاء
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => toast.remove(), 500);
+        }, 3000);
+      }
+    })();
+
+    /* ============================================
+       المؤشر المغناطيسي
+       ============================================ */
     (function() {
       const cursor = document.getElementById('cursor');
       const ring = document.getElementById('cursorRing');
@@ -1507,7 +1623,9 @@
       });
     })();
 
-    /* Reveal on scroll */
+    /* ============================================
+       Reveal on scroll
+       ============================================ */
     let revealObserver;
     function activateReveals() {
       if (revealObserver) return;
@@ -1523,8 +1641,10 @@
       document.querySelectorAll('.reveal, .reveal-scale, .stagger').forEach(el => revealObserver.observe(el));
     }
 
-    /* عدّادات */
-    function initCounters() {
+    /* ============================================
+       عدّادات
+       ============================================ */
+    (function() {
       const counters = document.querySelectorAll('.counter');
       if (!counters.length) return;
 
@@ -1541,11 +1661,8 @@
             const progress = Math.min((now - start) / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 3);
             const value = eased * target;
-            if (isDecimal) {
-              el.textContent = (value / 10).toFixed(1);
-            } else {
-              el.textContent = Math.floor(value);
-            }
+            if (isDecimal) el.textContent = (value / 10).toFixed(1);
+            else el.textContent = Math.floor(value);
             if (progress < 1) requestAnimationFrame(update);
             else {
               if (isDecimal) el.textContent = (target / 10).toFixed(1);
@@ -1558,10 +1675,11 @@
       }, { threshold: 0.5 });
 
       counters.forEach(c => counterObserver.observe(c));
-    }
-    initCounters();
+    })();
 
-    /* جزيئات */
+    /* ============================================
+       جزيئات عائمة
+       ============================================ */
     (function() {
       const container = document.getElementById('particles');
       if (!container) return;
@@ -1580,13 +1698,17 @@
       }
     })();
 
-    /* Nav */
+    /* ============================================
+       Nav scrolled
+       ============================================ */
     const navEl = document.getElementById('nav');
     window.addEventListener('scroll', () => {
       navEl.classList.toggle('scrolled', window.scrollY > 30);
     }, { passive: true });
 
-    /* Smooth scroll */
+    /* ============================================
+       Smooth scroll
+       ============================================ */
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', e => {
         const t = document.querySelector(a.getAttribute('href'));
@@ -1598,7 +1720,9 @@
       });
     });
 
-    /* Parallax */
+    /* ============================================
+       Parallax على الهاتف
+       ============================================ */
     (function() {
       const phone = document.querySelector('.phone');
       const visual = document.querySelector('.hero-visual');
@@ -1619,6 +1743,94 @@
       });
     })();
   </script>
+
+  <style>
+    /* ============================================
+       إشعار التحميل العائم
+       ============================================ */
+    .download-toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 22px;
+      background: rgba(20, 20, 26, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 214, 10, 0.4);
+      border-radius: 16px;
+      box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.9), 0 0 40px -10px rgba(255, 214, 10, 0.4);
+      transform: translateY(120%) scale(0.9);
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+      max-width: calc(100% - 60px);
+    }
+
+    .download-toast.show {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .download-toast-icon {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, #ffe066, #ffd60a);
+      border-radius: 12px;
+      box-shadow: 0 0 20px -4px rgba(255, 214, 10, 0.6);
+      animation: toastIconPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes toastIconPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .download-toast-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: #14100a;
+    }
+
+    .download-toast-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.3;
+      text-align: right;
+    }
+
+    .download-toast-text strong {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .download-toast-text span {
+      font-size: 0.78rem;
+      color: #a0a0a8;
+      font-weight: 400;
+    }
+
+    @media (max-width: 480px) {
+      .download-toast {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        max-width: none;
+        padding: 14px 18px;
+      }
+      .download-toast-icon { width: 36px; height: 36px; }
+      .download-toast-icon svg { width: 18px; height: 18px; }
+      .download-toast-text strong { font-size: 0.88rem; }
+      .download-toast-text span { font-size: 0.72rem; }
+    }
+  </style>
 
 </body>
 </html>
