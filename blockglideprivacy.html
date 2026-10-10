@@ -3,185 +3,635 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0b1020">
-  <meta name="description" content="Official Privacy Policy for Block Glide.">
-  <title>Privacy Policy | Block Glide</title>
-  <link rel="stylesheet" href="blockglideprivacy.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b14">
+  <meta name="description" content="Read the privacy policy for Block Glide, a mobile game.">
+  <title>Privacy Policy — Block Glide</title>
+
+  <style>
+    :root {
+      --bg: #080b14;
+      --surface: #101727;
+      --surface-2: #151f33;
+      --text: #f5f7ff;
+      --muted: #a4afc5;
+      --blue: #80aaff;
+      --border: rgba(255,255,255,.09);
+      --green: #76e2b0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 50% -10%, #233d70 0, transparent 45%),
+        var(--bg);
+      font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Arial, sans-serif;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: #b7ceff;
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 15px max(20px, calc((100% - 1000px) / 2));
+      background: rgba(8, 11, 20, .88);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 37px;
+      height: 37px;
+      color: #081020;
+      background: linear-gradient(135deg, #a8c7ff, #5f8dff);
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 900;
+      box-shadow: 0 5px 25px #477dff30;
+    }
+
+    .nav-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+    }
+
+    .container {
+      width: min(900px, calc(100% - 32px));
+      margin: auto;
+    }
+
+    .hero {
+      padding: 76px 0 44px;
+      animation: appear .7s ease both;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 12px;
+      color: #c4d6ff;
+      background: #8bb0ff12;
+      border: 1px solid #8bb0ff25;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.6px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 12px #76e2b080;
+    }
+
+    h1 {
+      margin: 23px 0 16px;
+      font-size: clamp(38px, 7vw, 66px);
+      line-height: 1.08;
+      letter-spacing: -2.5px;
+    }
+
+    h1 span {
+      color: var(--blue);
+    }
+
+    .intro {
+      max-width: 600px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .meta-item {
+      min-width: 180px;
+      padding: 13px 17px;
+      background: #ffffff06;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .meta-item small {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.3px;
+    }
+
+    .meta-item strong {
+      display: block;
+      margin-top: 2px;
+      font-size: 13px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 205px minmax(0, 1fr);
+      align-items: start;
+      gap: 22px;
+      padding-bottom: 70px;
+    }
+
+    .toc {
+      position: sticky;
+      top: 85px;
+      padding: 18px 12px;
+      background: #101727b8;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    .toc h2 {
+      margin: 0 8px 10px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 1.7px;
+    }
+
+    .toc a {
+      display: block;
+      padding: 8px;
+      color: #b3bfd4;
+      border-radius: 8px;
+      font-size: 12px;
+      transition: background .2s, color .2s;
+    }
+
+    .toc a:hover {
+      color: white;
+      background: #ffffff0b;
+    }
+
+    .policy {
+      min-width: 0;
+      padding: 25px;
+      background: linear-gradient(150deg, #121b2c, #0d1421);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 20px 80px #00000018;
+    }
+
+    .notice {
+      display: flex;
+      gap: 12px;
+      padding: 15px;
+      color: #c6d5ee;
+      background: #7faaff0b;
+      border: 1px solid #7faaff24;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+
+    .notice-icon {
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      width: 23px;
+      height: 23px;
+      color: #0a1425;
+      background: var(--blue);
+      border-radius: 50%;
+      font-weight: 900;
+    }
+
+    .notice p {
+      margin: 0;
+    }
+
+    .section {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr);
+      gap: 13px;
+      padding: 27px 0;
+      border-bottom: 1px solid var(--border);
+      scroll-margin-top: 90px;
+    }
+
+    .section:last-of-type {
+      border-bottom: 0;
+    }
+
+    .number {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      color: var(--blue);
+      background: #80aaff12;
+      border: 1px solid #80aaff20;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .section h2,
+    .contact h2 {
+      margin: 1px 0 9px;
+      font-size: 17px;
+      line-height: 1.5;
+      letter-spacing: -.3px;
+    }
+
+    .section p,
+    .contact p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    .contact {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-top: 15px;
+      padding: 20px;
+      background: linear-gradient(120deg, #1b2c4b, #152035);
+      border: 1px solid #8bb0ff20;
+      border-radius: 14px;
+    }
+
+    .contact-icon {
+      display: grid;
+      flex-shrink: 0;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      color: #091120;
+      background: var(--blue);
+      border-radius: 11px;
+      font-weight: 900;
+    }
+
+    .document-note {
+      margin: 22px 0 0;
+      color: #7f8da5;
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
+    footer {
+      padding: 24px 16px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    footer strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text);
+      letter-spacing: 2px;
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 680px) {
+      .navbar {
+        padding: 12px 17px;
+      }
+
+      .nav-label {
+        font-size: 9px;
+        letter-spacing: 1px;
+      }
+
+      .hero {
+        padding: 54px 0 30px;
+      }
+
+      h1 {
+        letter-spacing: -1.5px;
+      }
+
+      .intro {
+        font-size: 14px;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .toc {
+        position: static;
+        padding: 15px;
+      }
+
+      .toc nav {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2px 8px;
+      }
+
+      .policy {
+        padding: 18px;
+        border-radius: 16px;
+      }
+
+      .section {
+        grid-template-columns: 30px minmax(0, 1fr);
+        gap: 10px;
+        padding: 23px 0;
+      }
+
+      .number {
+        width: 29px;
+        height: 29px;
+      }
+
+      .section h2 {
+        font-size: 16px;
+      }
+
+      .meta-item {
+        flex: 1;
+        min-width: 135px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="Block Glide">
-      <span class="brand-icon">B</span>
-      <span>BLOCK <strong>GLIDE</strong></span>
+
+  <header class="navbar">
+    <a class="brand" href="#top" aria-label="Block Glide home">
+      <span class="logo">B</span>
+      <span>BLOCK GLIDE</span>
     </a>
-    <span class="status">PRIVACY CENTER</span>
+    <span class="nav-label">PRIVACY CENTER</span>
   </header>
 
-  <main class="container">
+  <main class="container" id="top">
+
     <section class="hero">
-      <div class="hero-label">
+      <div class="eyebrow">
         <span class="dot"></span>
-        TRANSPARENCY & TRUST
+        PRIVACY & TRANSPARENCY
       </div>
 
       <h1>Your privacy.<br><span>Your control.</span></h1>
 
-      <p class="hero-text">
-        Learn how Block Glide handles information when you play.
-        We believe privacy information should be clear, simple, and accessible.
+      <p class="intro">
+        Welcome to the Block Glide Privacy Policy.
+        This page explains how information is handled when you
+        use our game and how applicable third-party services may
+        process information.
       </p>
 
-      <div class="hero-meta">
-        <div>
-          <span class="meta-label">APPLICATION</span>
+      <div class="meta">
+        <div class="meta-item">
+          <small>APPLICATION</small>
           <strong>Block Glide</strong>
         </div>
-        <div>
-          <span class="meta-label">LAST UPDATED</span>
+        <div class="meta-item">
+          <small>LAST UPDATED</small>
           <strong>October 11, 2026</strong>
         </div>
       </div>
     </section>
 
-    <section class="policy-card">
-      <aside class="notice">
-        <span class="notice-icon">i</span>
-        <p>
-          This policy describes the game's data practices.
-          The actual information collected depends on the features
-          and third-party services included in the released version.
-        </p>
+    <div class="layout">
+
+      <aside class="toc">
+        <h2>ON THIS PAGE</h2>
+        <nav aria-label="Policy sections">
+          <a href="#collection">01. Information</a>
+          <a href="#ads">02. Advertising</a>
+          <a href="#services">03. Services</a>
+          <a href="#sharing">04. Data Sharing</a>
+          <a href="#security">05. Security</a>
+          <a href="#children">06. Children</a>
+          <a href="#retention">07. Data Deletion</a>
+          <a href="#changes">08. Changes</a>
+          <a href="#contact">09. Contact</a>
+        </nav>
       </aside>
 
-      <article class="policy-section" id="collection">
-        <span class="section-number">01</span>
-        <div>
-          <h2>Information We Collect</h2>
+      <div class="policy">
+
+        <div class="notice">
+          <span class="notice-icon">i</span>
           <p>
-            The developer does not intentionally collect personal
-            information directly through Block Glide. The game,
-            your device platform, or integrated services may process
-            technical information where applicable.
+            This policy must be read alongside the actual features,
+            permissions, software libraries, and data practices
+            of the published version of Block Glide.
           </p>
         </div>
-      </article>
 
-      <article class="policy-section" id="advertising">
-        <span class="section-number">02</span>
-        <div>
-          <h2>Advertising</h2>
-          <p>
-            Block Glide currently does not display advertisements.
-            If advertising is introduced in a future version, this
-            policy will be updated to describe the applicable practices.
-          </p>
+        <section class="section" id="collection">
+          <span class="number">01</span>
+          <div>
+            <h2>Information We Collect</h2>
+            <p>
+              The developer does not intentionally collect personal
+              information directly from players through the game.
+              Depending on the features and software libraries
+              included, technical information may be processed by
+              the device platform or third-party services.
+            </p>
+          </div>
+        </section>
+
+        <section class="section" id="ads">
+          <span class="number">02</span>
+          <div>
+            <h2>Advertising</h2>
+            <p>
+              Block Glide currently does not display advertisements.
+              If advertising services are introduced in a future
+              version, this policy will be updated to explain the
+              applicable data collection and processing practices.
+            </p>
+          </div>
+        </section>
+
+        <section class="section" id="services">
+          <span class="number">03</span>
+          <div>
+            <h2>Third-Party Services</h2>
+            <p>
+              The game may use platform features or third-party
+              software libraries. Where applicable, those services
+              may process information under their own privacy
+              policies. The actual services and information involved
+              depend on the released version of the game.
+            </p>
+          </div>
+        </section>
+
+        <section class="section" id="sharing">
+          <span class="number">04</span>
+          <div>
+            <h2>Data Sharing</h2>
+            <p>
+              The developer does not intentionally sell users'
+              personal information. Data may be processed by service
+              providers where necessary to operate features that
+              are actually included in the game. Any applicable
+              recipients depend on those services.
+            </p>
+          </div>
+        </section>
+
+        <section class="section" id="security">
+          <span class="number">05</span>
+          <div>
+            <h2>Data Storage & Security</h2>
+            <p>
+              Game progress and settings may be stored locally on
+              your device. Locally stored data may be removed by
+              clearing the game's application data or uninstalling
+              the game. Any additional storage depends on the
+              features and services implemented in the game.
+            </p>
+          </div>
+        </section>
+
+        <section class="section" id="children">
+          <span class="number">06</span>
+          <div>
+            <h2>Children's Privacy</h2>
+            <p>
+              The developer does not intentionally collect personal
+              information directly from children through the game.
+              If you believe information has been collected or
+              handled improperly, please contact the developer.
+            </p>
+          </div>
+        </section>
+
+        <section class="section" id="retention">
+          <span class="number">07</span>
+          <div>
+            <h2>Data Retention & Deletion</h2>
+            <p>
+              Locally stored game data can generally be removed by
+              clearing the application's data or uninstalling it.
+              Information processed by third-party services may
+              be retained or deleted according to their applicable
+              procedures and policies.
+            </p>
+          </div>
+        </section>
+
+        <section class="section" id="changes">
+          <span class="number">08</span>
+          <div>
+            <h2>Changes to This Policy</h2>
+            <p>
+              This policy may be updated when the game or its
+              information practices change. The revised policy
+              will be published on this page with an updated date.
+              Please review it periodically.
+            </p>
+          </div>
+        </section>
+
+        <section class="section" id="contact">
+          <span class="number">09</span>
+          <div>
+            <h2>Contact</h2>
+            <p>
+              For questions about this Privacy Policy, contact
+              the developer through the contact information
+              provided on the Block Glide Google Play Store listing.
+            </p>
+          </div>
+        </section>
+
+        <div class="contact">
+          <span class="contact-icon">@</span>
+          <div>
+            <h2>Privacy matters.</h2>
+            <p>
+              We aim to keep privacy information clear and accessible.
+              Please review this policy whenever the game's features
+              or data practices change.
+            </p>
+          </div>
         </div>
-      </article>
 
-      <article class="policy-section" id="services">
-        <span class="section-number">03</span>
-        <div>
-          <h2>Third-Party Services</h2>
-          <p>
-            The game may use platform features or third-party
-            libraries. If included, these services may process
-            information as described in their own privacy policies.
-            Their names and data practices depend on the actual
-            services integrated into the game.
-          </p>
-        </div>
-      </article>
+        <p class="document-note">
+          This document describes general privacy practices and
+          must be verified against the actual behavior of the
+          published application before use.
+        </p>
 
-      <article class="policy-section" id="sharing">
-        <span class="section-number">04</span>
-        <div>
-          <h2>Data Sharing</h2>
-          <p>
-            The developer does not intentionally sell users'
-            personal information. Any processing or sharing by
-            service providers depends on the features used and
-            the services integrated into the game.
-          </p>
-        </div>
-      </article>
-
-      <article class="policy-section" id="storage">
-        <span class="section-number">05</span>
-        <div>
-          <h2>Data Storage & Security</h2>
-          <p>
-            Game progress and settings may be stored on your device.
-            Locally stored data may be removed by clearing the
-            application's data or uninstalling the game. Other
-            storage arrangements, if any, depend on the game's
-            implemented features and services.
-          </p>
-        </div>
-      </article>
-
-      <article class="policy-section" id="children">
-        <span class="section-number">06</span>
-        <div>
-          <h2>Children's Privacy</h2>
-          <p>
-            The developer does not intentionally collect personal
-            information directly from children through the game.
-            If you believe information has been handled improperly,
-            please contact the developer.
-          </p>
-        </div>
-      </article>
-
-      <article class="policy-section" id="deletion">
-        <span class="section-number">07</span>
-        <div>
-          <h2>Data Retention & Deletion</h2>
-          <p>
-            Locally stored game data can generally be removed by
-            clearing the game's application data or uninstalling it.
-            Information handled by third-party services may be
-            subject to their own retention and deletion procedures.
-          </p>
-        </div>
-      </article>
-
-      <article class="policy-section" id="changes">
-        <span class="section-number">08</span>
-        <div>
-          <h2>Changes to This Policy</h2>
-          <p>
-            This policy may change when the game or its data
-            practices change. Updates will be published on this
-            page with a revised date.
-          </p>
-        </div>
-      </article>
-
-      <article class="contact-card" id="contact">
-        <div class="contact-symbol">@</div>
-        <div>
-          <h2>Privacy Questions?</h2>
-          <p>
-            For questions about this policy, contact the developer
-            using the contact information provided on the game's
-            Google Play Store listing.
-          </p>
-        </div>
-      </article>
-
-      <p class="document-note">
-        Please review this policy alongside the actual data practices
-        of the installed version of Block Glide.
-      </p>
-    </section>
+      </div>
+    </div>
   </main>
 
-  <footer class="footer">
-    <a class="footer-brand" href="#">BLOCK GLIDE</a>
-    <span>Privacy Policy</span>
-    <span>© 2026 Block Glide</span>
+  <footer>
+    <strong>BLOCK GLIDE</strong>
+    <span>Privacy Policy · Last updated October 11, 2026</span>
   </footer>
+
 </body>
 </html>
